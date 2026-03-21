@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* ========== 晚唐风云 全局样式 ========== */
+
+:root {
+  /* 中国古风配色 */
+  --color-bg: #1a1a2e;
+  --color-bg-panel: #16213e;
+  --color-bg-surface: #0f3460;
+  --color-text: #e0d5c1;
+  --color-text-muted: #8b7e6a;
+  --color-accent-gold: #c9a959;
+  --color-accent-red: #c0392b;
+  --color-accent-green: #27ae60;
+  --color-accent-blue: #2980b9;
+  --color-border: #2a2a4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Noto Serif SC", "Source Han Serif CN", "SimSun", serif;
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
