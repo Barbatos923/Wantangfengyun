@@ -3,6 +3,19 @@
 import type { Territory } from './types';
 import type { Abilities } from '@engine/character/types';
 import { buildingMap } from '@data/buildings';
+import { positionMap } from '@data/positions';
+
+/**
+ * 内联版 getActualController：避免循环依赖（territoryUtils ↔ officialUtils）。
+ * 返回领地主岗位（grantsControl === true）的持有人 ID，无则 null。
+ */
+function getActualControllerLocal(territory: Territory): string | null {
+  const mainPost = territory.posts.find(p => {
+    const tpl = positionMap.get(p.templateId);
+    return tpl?.grantsControl === true;
+  });
+  return mainPost?.holderId ?? null;
+}
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {
@@ -64,17 +77,15 @@ export function calculateMonthlyIncome(
 ): MonthlyIncome {
   if (territory.tier !== 'zhou') return { money: 0, grain: 0, troops: 0 };
   const bonuses = getBuildingBonuses(territory);
-  const { basePopulation, development, control, populace } = territory;
+  const { basePopulation, development, control, populace, moneyRatio, grainRatio } = territory;
 
-  const money =
-    basePopulation * 0.01 * (development / 100) * (control / 100)
-    * (1 + rulerAbilities.administration * 0.02)
-    + bonuses.money;
+  const K = 0.9;
+  const totalOutput = basePopulation * K * (development / 100) * (control / 100)
+    * (1 + rulerAbilities.administration * 0.02);
 
-  const grain =
-    basePopulation * 0.02 * (development / 100) * (control / 100)
-    * (1 + rulerAbilities.administration * 0.015)
-    + bonuses.grain;
+  const ratioSum = moneyRatio + grainRatio;
+  const money = totalOutput * (moneyRatio / ratioSum) + bonuses.money;
+  const grain = totalOutput * (grainRatio / ratioSum) + bonuses.grain;
 
   const troops =
     basePopulation * 0.001 * (control / 100) * (populace / 100)
@@ -101,7 +112,7 @@ export function calculateAttributeDrift(
   const bonuses = getBuildingBonuses(territory);
 
   // 控制度：向目标值漂移，每月最多±2
-  const dejureMatch = territory.dejureControllerId === territory.actualControllerId;
+  const dejureMatch = territory.dejureControllerId === getActualControllerLocal(territory);
   const controlTarget = dejureMatch ? 80 : 40;
   let controlDrift = 0;
   if (territory.control < controlTarget) {

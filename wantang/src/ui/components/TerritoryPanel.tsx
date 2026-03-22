@@ -4,6 +4,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { buildingMap } from '@data/buildings';
 import BuildMenu from './BuildMenu';
+import { getActualController } from '@engine/official/officialUtils';
 
 interface TerritoryPanelProps {
   territory: Territory;
@@ -12,13 +13,14 @@ interface TerritoryPanelProps {
 }
 
 const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onClickRuler }) => {
-  const ruler = useCharacterStore((s) => s.characters.get(territory.actualControllerId));
+  const controllerId = getActualController(territory);
+  const ruler = useCharacterStore((s) => controllerId ? s.characters.get(controllerId) : undefined);
   const dejureRuler = useCharacterStore((s) => s.characters.get(territory.dejureControllerId));
   const territories = useTerritoryStore((s) => s.territories);
   const characters = useCharacterStore((s) => s.characters);
   const [buildSlotIndex, setBuildSlotIndex] = useState<number | null>(null);
   const playerId = useCharacterStore((s) => s.playerId);
-  const isPlayerTerritory = territory.actualControllerId === playerId;
+  const isPlayerTerritory = controllerId === playerId;
 
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50" onClick={onClose}>
@@ -72,7 +74,8 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
               {territory.childIds.map((childId) => {
                 const child = territories.get(childId);
                 if (!child) return null;
-                const childRuler = characters.get(child.actualControllerId);
+                const childControllerId = getActualController(child);
+                const childRuler = childControllerId ? characters.get(childControllerId) : undefined;
                 return (
                   <button
                     key={childId}

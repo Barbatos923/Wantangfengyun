@@ -1,17 +1,18 @@
 // ===== 角色完整类型定义 =====
 
 import type { OfficialData } from '../official/types';
+import type { CentralizationLevel } from '../territory/types';
 
 /** 性别 */
 export type Gender = '男' | '女';
 
 /** 角色能力值 */
 export interface Abilities {
-  military: number;    // 军事 0-30
-  administration: number; // 管理 0-30
-  strategy: number;    // 谋略 0-30
-  diplomacy: number;   // 外交 0-30
-  scholarship: number; // 学识 0-30
+  military: number;
+  administration: number;
+  strategy: number;
+  diplomacy: number;
+  scholarship: number;
 }
 
 /** 家族关系 */
@@ -26,7 +27,7 @@ export interface FamilyRelations {
 export interface OpinionEntry {
   reason: string;
   value: number;
-  decayable: boolean; // 事件类好感度可衰减
+  decayable: boolean;
 }
 
 /** 与某角色的关系 */
@@ -38,7 +39,7 @@ export interface Relationship {
 /** 建筑施工进度 */
 export interface ConstructionProgress {
   buildingId: string;
-  level: number;       // 正在建造的等级
+  level: number;
   remainingMonths: number;
 }
 
@@ -47,11 +48,11 @@ export interface Character {
   // 身份
   id: string;
   name: string;
-  courtesy: string;    // 字
+  courtesy: string;
   gender: Gender;
   birthYear: number;
   deathYear?: number;
-  clan: string;        // 家族
+  clan: string;
   family: FamilyRelations;
 
   // 能力
@@ -61,8 +62,8 @@ export interface Character {
   traitIds: string[];
 
   // 状态
-  health: number;      // 0-100
-  stress: number;      // 0-100
+  health: number;
+  stress: number;
   alive: boolean;
 
   // 资源
@@ -78,11 +79,12 @@ export interface Character {
 
   // 效忠
   overlordId?: string;
+  centralization?: CentralizationLevel;
+  redistributionRate?: number;
 
   // 标记
   isPlayer: boolean;
   isRuler: boolean;
-  controlledTerritoryIds: string[];
 
   // 头衔
   title: string;

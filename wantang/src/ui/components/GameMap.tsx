@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { getDynamicTitle } from '@engine/official/officialUtils';
+import { getDynamicTitle, getActualController } from '@engine/official/officialUtils';
 
 /* ------------------------------------------------------------------ */
 /*  Static layout data                                                 */
@@ -78,7 +78,10 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory }) => {
   const controllerColorMap = useMemo(() => {
     const ids = new Set<string>();
     territories.forEach((t) => {
-      if (t.tier === 'zhou') ids.add(t.actualControllerId);
+      if (t.tier === 'zhou') {
+        const cid = getActualController(t);
+        if (cid) ids.add(cid);
+      }
     });
     const map = new Map<string, string>();
     let idx = 0;
@@ -133,7 +136,8 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory }) => {
       setHoveredId(id);
       const t = territories.get(id);
       if (!t) return;
-      const ctrl = characters.get(t.actualControllerId);
+      const ctrlId = getActualController(t);
+      const ctrl = ctrlId ? characters.get(ctrlId) : undefined;
       const text = `${t.name}${ctrl ? ' - ' + ctrl.name + ' (' + getDynamicTitle(ctrl, territories) + ')' : ''} | 控${Math.floor(t.control)} 发${Math.floor(t.development)} 民${Math.floor(t.populace)}`;
       setTooltip({ text, x: e.clientX, y: e.clientY });
     },
@@ -217,8 +221,9 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory }) => {
           {ZHOU_LAYOUTS.map((layout) => {
             const t = territories.get(layout.id);
             if (!t) return null;
-            const ctrl = characters.get(t.actualControllerId);
-            const fillColor = controllerColorMap.get(t.actualControllerId) ?? '#555';
+            const actualControllerId = getActualController(t);
+            const ctrl = actualControllerId ? characters.get(actualControllerId) : undefined;
+            const fillColor = actualControllerId ? (controllerColorMap.get(actualControllerId) ?? '#555') : '#555';
             const isSelected = selectedId === layout.id;
             const isHovered = hoveredId === layout.id;
 

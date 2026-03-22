@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import type { Character } from '@engine/character/types';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { getRankTitle, calculateSalary, getDynamicTitle } from '@engine/official/officialUtils';
+import { getRankTitle, calculateSalary, getDynamicTitle, getHeldPosts, getControlledZhou } from '@engine/official/officialUtils';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import { usePanelStore } from '@ui/stores/panelStore';
@@ -27,7 +27,8 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
   const territories = useTerritoryStore((s) => s.territories);
 
   // ── Tab 1 helpers ──────────────────────────────────────────────────────────
-  const isEmperor = player?.official?.positions.some((p) => p.positionId === 'pos-emperor') ?? false;
+  const heldPosts = player ? getHeldPosts(player.id) : [];
+  const isEmperor = heldPosts.some((p) => p.templateId === 'pos-emperor');
   const rankTitle = player ? getRankTitle(player) : '';
   const rankDef = player?.official ? rankMap.get(player.official.rankLevel) : undefined;
   const virtue = player?.official?.virtue ?? 0;
@@ -43,7 +44,7 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
   if (player) {
     for (const c of characters.values()) {
       if (!c.alive || c.overlordId !== player.id) continue;
-      if (c.controlledTerritoryIds.length > 0) {
+      if (getControlledZhou(c.id, territories).length > 0) {
         vassalsWithLand.push(c);
       } else {
         vassalsWithoutLand.push(c);
@@ -138,15 +139,15 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                     <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-2 uppercase tracking-wide">
                       担任职位
                     </h3>
-                    {player.official.positions.length === 0 ? (
+                    {heldPosts.length === 0 ? (
                       <p className="text-sm text-[var(--color-text-muted)] px-1">暂无差遣</p>
                     ) : (
                       <div className="space-y-1.5">
-                        {player.official.positions.map((holding, idx) => {
-                          const posDef = positionMap.get(holding.positionId);
+                        {heldPosts.map((post, idx) => {
+                          const posDef = positionMap.get(post.templateId);
                           if (!posDef) return null;
-                          const territoryName = holding.territoryId
-                            ? territories.get(holding.territoryId)?.name
+                          const territoryName = post.territoryId
+                            ? territories.get(post.territoryId)?.name
                             : undefined;
                           return (
                             <div

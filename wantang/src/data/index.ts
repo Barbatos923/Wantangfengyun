@@ -10,8 +10,6 @@ export {
 
 export {
   Registry,
-  characterRegistry,
-  territoryRegistry,
   buildingRegistry,
 } from './registries';
 export type { BuildingStub } from './registries';

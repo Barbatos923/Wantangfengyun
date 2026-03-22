@@ -3,6 +3,7 @@ import GameMap from './GameMap';
 import TerritoryPanel from './TerritoryPanel';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { usePanelStore } from '@ui/stores/panelStore';
+import { getActualController } from '@engine/official/officialUtils';
 
 const MapPlaceholder: React.FC = () => {
   const territories = useTerritoryStore((s) => s.territories);
@@ -12,14 +13,15 @@ const MapPlaceholder: React.FC = () => {
 
   const handleSelectTerritory = (id: string) => {
     const t = territories.get(id);
-    if (!t?.actualControllerId) return;
+    const controller = t ? getActualController(t) : null;
+    if (!controller) return;
 
     // If the ruler is already shown in the left panel, open territory modal
-    if (currentCharacterId === t.actualControllerId) {
+    if (currentCharacterId === controller) {
       usePanelStore.getState().openTerritoryModal(id);
     } else {
       // First click: show ruler in left panel
-      usePanelStore.getState().pushCharacter(t.actualControllerId);
+      usePanelStore.getState().pushCharacter(controller);
     }
   };
 

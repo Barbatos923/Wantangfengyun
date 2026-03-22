@@ -1,12 +1,12 @@
 // ===== 完整示例数据 =====
 
 import type { Character } from '@engine/character/types';
-import type { OfficialData } from '@engine/official/types';
 import { isCivilByAbilities } from '@engine/official/officialUtils';
-import type { Territory } from '@engine/territory/types';
+import type { Territory, Post } from '@engine/territory/types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { characterRegistry, territoryRegistry } from './registries';
+import { useLedgerStore } from '@engine/official/LedgerStore';
+import { calculateMonthlyLedger } from '@engine/official/officialUtils';
 
 /** 示例角色数据 */
 function createSampleCharacters(): Character[] {
@@ -24,19 +24,17 @@ function createSampleCharacters(): Character[] {
       health: 55,
       stress: 40,
       alive: true,
-      resources: { money: 5000, grain: 12000, prestige: 80, legitimacy: 85 },
+      resources: { money: 200000, grain: 500000, prestige: 80, legitimacy: 85 },
       relationships: [],
       overlordId: undefined,
-
+      redistributionRate: 60,
       isPlayer: true,
       isRuler: true,
-      controlledTerritoryIds: ['zhou-changan', 'zhou-luoyang', 'zhou-chengdu'],
       title: '大唐天子',
       official: {
         rankLevel: 29,
         virtue: 9999,
-        positions: [{ positionId: 'pos-emperor', appointedBy: 'system', appointedDate: { year: 859, month: 1 } }],
-        isCivil: false, // 自动覆盖
+        isCivil: false,
       },
     },
     {
@@ -52,18 +50,16 @@ function createSampleCharacters(): Character[] {
       health: 70,
       stress: 35,
       alive: true,
-      resources: { money: 3000, grain: 8000, prestige: 60, legitimacy: 40 },
+      resources: { money: 120000, grain: 300000, prestige: 60, legitimacy: 40 },
       relationships: [],
       overlordId: 'char-yizong',
-
+      centralization: 2,
       isPlayer: false,
       isRuler: true,
-      controlledTerritoryIds: ['zhou-yangzhou'],
       title: '淮南节度使',
       official: {
         rankLevel: 18,
         virtue: 1075,
-        positions: [{ positionId: 'pos-jiedushi', appointedBy: 'char-yizong', appointedDate: { year: 865, month: 3 }, territoryId: 'dao-guannei' }],
         isCivil: false,
       },
     },
@@ -80,13 +76,11 @@ function createSampleCharacters(): Character[] {
       health: 85,
       stress: 25,
       alive: true,
-      resources: { money: 800, grain: 2000, prestige: 30, legitimacy: 5 },
+      resources: { money: 30000, grain: 80000, prestige: 30, legitimacy: 5 },
       relationships: [],
       overlordId: undefined,
-
       isPlayer: false,
       isRuler: true,
-      controlledTerritoryIds: [],
       title: '草军首领',
     },
     {
@@ -102,18 +96,16 @@ function createSampleCharacters(): Character[] {
       health: 90,
       stress: 30,
       alive: true,
-      resources: { money: 2000, grain: 5000, prestige: 40, legitimacy: 20 },
+      resources: { money: 80000, grain: 200000, prestige: 40, legitimacy: 20 },
       relationships: [],
       overlordId: 'char-yizong',
-
+      centralization: 2,
       isPlayer: false,
       isRuler: true,
-      controlledTerritoryIds: [],
       title: '宣武节度使',
       official: {
         rankLevel: 15,
         virtue: 720,
-        positions: [{ positionId: 'pos-jiedushi', appointedBy: 'char-yizong', appointedDate: { year: 868, month: 6 } }],
         isCivil: false,
       },
     },
@@ -130,18 +122,16 @@ function createSampleCharacters(): Character[] {
       health: 40,
       stress: 50,
       alive: true,
-      resources: { money: 500, grain: 1500, prestige: 25, legitimacy: 10 },
+      resources: { money: 20000, grain: 60000, prestige: 25, legitimacy: 10 },
       relationships: [],
       overlordId: 'char-likeyong',
-
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '振武军节度使（前）',
       official: {
         rankLevel: 14,
         virtue: 680,
-        positions: [],
         isCivil: false,
       },
     },
@@ -155,22 +145,20 @@ function createSampleCharacters(): Character[] {
       family: { fatherId: 'char-liguochang', childrenIds: [] },
       abilities: { military: 20, administration: 10, strategy: 14, diplomacy: 8, scholarship: 6 },
       traitIds: ['trait-brave', 'trait-ambitious'],
-      // 870年14岁，尚未获得教育特质
       health: 95,
       stress: 15,
       alive: true,
-      resources: { money: 1500, grain: 4000, prestige: 35, legitimacy: 15 },
+      resources: { money: 60000, grain: 150000, prestige: 35, legitimacy: 15 },
       relationships: [],
       overlordId: 'char-yizong',
-
+      centralization: 1,
+      redistributionRate: 30,
       isPlayer: false,
       isRuler: true,
-      controlledTerritoryIds: ['zhou-taiyuan'],
       title: '河东节度使',
       official: {
         rankLevel: 16,
         virtue: 990,
-        positions: [{ positionId: 'pos-jiedushi', appointedBy: 'char-yizong', appointedDate: { year: 869, month: 1 }, territoryId: 'dao-hedong' }],
         isCivil: false,
       },
     },
@@ -187,18 +175,17 @@ function createSampleCharacters(): Character[] {
       health: 65,
       stress: 35,
       alive: true,
-      resources: { money: 2000, grain: 3000, prestige: 50, legitimacy: 45 },
+      resources: { money: 80000, grain: 120000, prestige: 50, legitimacy: 45 },
       relationships: [],
       overlordId: 'char-yizong',
-
+      centralization: 3,
+      redistributionRate: 0,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '三司使',
       official: {
         rankLevel: 18,
         virtue: 1060,
-        positions: [{ positionId: 'pos-sansi-shi', appointedBy: 'char-yizong', appointedDate: { year: 866, month: 3 } }],
         isCivil: false,
       },
     },
@@ -215,18 +202,16 @@ function createSampleCharacters(): Character[] {
       health: 75,
       stress: 20,
       alive: true,
-      resources: { money: 800, grain: 1500, prestige: 20, legitimacy: 25 },
+      resources: { money: 30000, grain: 60000, prestige: 20, legitimacy: 25 },
       relationships: [],
       overlordId: 'char-luyan',
-
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '三司推官',
       official: {
         rankLevel: 8,
         virtue: 360,
-        positions: [{ positionId: 'pos-sansi-tuiguan', appointedBy: 'char-luyan', appointedDate: { year: 868, month: 6 } }],
         isCivil: false,
       },
     },
@@ -245,17 +230,16 @@ function createSampleCharacters(): Character[] {
       health: 70,
       stress: 20,
       alive: true,
-      resources: { money: 300, grain: 600, prestige: 15, legitimacy: 10 },
+      resources: { money: 12000, grain: 24000, prestige: 15, legitimacy: 10 },
       relationships: [],
       overlordId: 'char-likeyong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 14,
         virtue: 660,
-        positions: [],
         isCivil: false,
       },
     },
@@ -272,17 +256,16 @@ function createSampleCharacters(): Character[] {
       health: 85,
       stress: 15,
       alive: true,
-      resources: { money: 200, grain: 500, prestige: 10, legitimacy: 5 },
+      resources: { money: 8000, grain: 20000, prestige: 10, legitimacy: 5 },
       relationships: [],
       overlordId: 'char-likeyong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 8,
         virtue: 360,
-        positions: [],
         isCivil: false,
       },
     },
@@ -299,17 +282,16 @@ function createSampleCharacters(): Character[] {
       health: 90,
       stress: 10,
       alive: true,
-      resources: { money: 150, grain: 400, prestige: 8, legitimacy: 5 },
+      resources: { money: 6000, grain: 16000, prestige: 8, legitimacy: 5 },
       relationships: [],
       overlordId: 'char-likeyong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 6,
         virtue: 260,
-        positions: [],
         isCivil: false,
       },
     },
@@ -328,17 +310,16 @@ function createSampleCharacters(): Character[] {
       health: 60,
       stress: 30,
       alive: true,
-      resources: { money: 1000, grain: 1500, prestige: 35, legitimacy: 30 },
+      resources: { money: 40000, grain: 60000, prestige: 35, legitimacy: 30 },
       relationships: [],
       overlordId: 'char-yizong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 20,
         virtue: 1160,
-        positions: [],
         isCivil: false,
       },
     },
@@ -355,17 +336,16 @@ function createSampleCharacters(): Character[] {
       health: 45,
       stress: 40,
       alive: true,
-      resources: { money: 800, grain: 1200, prestige: 40, legitimacy: 35 },
+      resources: { money: 30000, grain: 50000, prestige: 40, legitimacy: 35 },
       relationships: [],
       overlordId: 'char-yizong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 22,
         virtue: 1260,
-        positions: [],
         isCivil: false,
       },
     },
@@ -382,20 +362,35 @@ function createSampleCharacters(): Character[] {
       health: 75,
       stress: 25,
       alive: true,
-      resources: { money: 600, grain: 1000, prestige: 25, legitimacy: 20 },
+      resources: { money: 24000, grain: 40000, prestige: 25, legitimacy: 20 },
       relationships: [],
       overlordId: 'char-yizong',
+      centralization: 2,
       isPlayer: false,
       isRuler: false,
-      controlledTerritoryIds: [],
       title: '廷臣',
       official: {
         rankLevel: 18,
         virtue: 1060,
-        positions: [],
         isCivil: false,
       },
     },
+  ];
+}
+
+/** 中央岗位初始数据 */
+function createCentralPosts(): Post[] {
+  return [
+    { id: 'post-emperor', templateId: 'pos-emperor', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 859, month: 1 } },
+    { id: 'post-sansi-shi', templateId: 'pos-sansi-shi', holderId: 'char-luyan', appointedBy: 'char-yizong', appointedDate: { year: 866, month: 3 } },
+    { id: 'post-sansi-tuiguan', templateId: 'pos-sansi-tuiguan', holderId: 'char-chenjingxuan', appointedBy: 'char-luyan', appointedDate: { year: 868, month: 6 } },
+    // 空缺中央岗位
+    { id: 'post-zaixiang', templateId: 'pos-zaixiang', holderId: null },
+    { id: 'post-hanlin', templateId: 'pos-hanlin', holderId: null },
+    { id: 'post-shumi', templateId: 'pos-shumi', holderId: null },
+    { id: 'post-shence', templateId: 'pos-shence', holderId: null },
+    { id: 'post-yushi-dafu', templateId: 'pos-yushi-dafu', holderId: null },
+    { id: 'post-yushi-zhongcheng', templateId: 'pos-yushi-zhongcheng', holderId: null },
   ];
 }
 
@@ -411,10 +406,16 @@ function createSampleTerritories(): Territory[] {
       parentId: 'dao-guannei',
       childIds: [],
       dejureControllerId: 'char-yizong',
-      actualControllerId: 'char-yizong',
-      centralization: 3,
+      posts: [
+        { id: 'post-cishi-changan', templateId: 'pos-cishi', territoryId: 'zhou-changan', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 870, month: 1 } },
+        { id: 'post-sima-changan', templateId: 'pos-sima', territoryId: 'zhou-changan', holderId: null },
+        { id: 'post-zhangshi-changan', templateId: 'pos-zhangshi', territoryId: 'zhou-changan', holderId: null },
+        { id: 'post-lushibcanjun-changan', templateId: 'pos-lushibcanjun', territoryId: 'zhou-changan', holderId: null },
+      ],
+      moneyRatio: 3,
+      grainRatio: 4,
       control: 85,
-      development: 90,
+      development: 60,
       populace: 60,
       buildings: [
         { buildingId: 'building-market', level: 2 },
@@ -424,7 +425,7 @@ function createSampleTerritories(): Territory[] {
       ],
       constructions: [],
       garrison: 5000,
-      basePopulation: 50000,
+      basePopulation: 120000,
     },
     {
       id: 'zhou-luoyang',
@@ -434,10 +435,16 @@ function createSampleTerritories(): Territory[] {
       parentId: 'dao-guannei',
       childIds: [],
       dejureControllerId: 'char-yizong',
-      actualControllerId: 'char-yizong',
-      centralization: 2,
+      posts: [
+        { id: 'post-cishi-luoyang', templateId: 'pos-cishi', territoryId: 'zhou-luoyang', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 870, month: 1 } },
+        { id: 'post-sima-luoyang', templateId: 'pos-sima', territoryId: 'zhou-luoyang', holderId: null },
+        { id: 'post-zhangshi-luoyang', templateId: 'pos-zhangshi', territoryId: 'zhou-luoyang', holderId: null },
+        { id: 'post-lushibcanjun-luoyang', templateId: 'pos-lushibcanjun', territoryId: 'zhou-luoyang', holderId: null },
+      ],
+      moneyRatio: 2,
+      grainRatio: 3,
       control: 70,
-      development: 80,
+      development: 60,
       populace: 55,
       buildings: [
         { buildingId: 'building-market', level: 1 },
@@ -447,7 +454,7 @@ function createSampleTerritories(): Territory[] {
       ],
       constructions: [],
       garrison: 3000,
-      basePopulation: 40000,
+      basePopulation: 80000,
     },
     {
       id: 'zhou-taiyuan',
@@ -457,8 +464,14 @@ function createSampleTerritories(): Territory[] {
       parentId: 'dao-hedong',
       childIds: [],
       dejureControllerId: 'char-likeyong',
-      actualControllerId: 'char-likeyong',
-      centralization: 3,
+      posts: [
+        { id: 'post-fangyu-taiyuan', templateId: 'pos-fangyu-shi', territoryId: 'zhou-taiyuan', holderId: 'char-likeyong', appointedBy: 'char-yizong', appointedDate: { year: 869, month: 1 } },
+        { id: 'post-sima-taiyuan', templateId: 'pos-sima', territoryId: 'zhou-taiyuan', holderId: null },
+        { id: 'post-zhangshi-taiyuan', templateId: 'pos-zhangshi', territoryId: 'zhou-taiyuan', holderId: null },
+        { id: 'post-lushibcanjun-taiyuan', templateId: 'pos-lushibcanjun', territoryId: 'zhou-taiyuan', holderId: null },
+      ],
+      moneyRatio: 2,
+      grainRatio: 5,
       control: 90,
       development: 60,
       populace: 70,
@@ -470,7 +483,7 @@ function createSampleTerritories(): Territory[] {
       ],
       constructions: [],
       garrison: 8000,
-      basePopulation: 30000,
+      basePopulation: 60000,
     },
     {
       id: 'zhou-chengdu',
@@ -479,10 +492,16 @@ function createSampleTerritories(): Territory[] {
       territoryType: 'civil',
       childIds: [],
       dejureControllerId: 'char-yizong',
-      actualControllerId: 'char-yizong',
-      centralization: 2,
-      control: 65,
-      development: 75,
+      posts: [
+        { id: 'post-cishi-chengdu', templateId: 'pos-cishi', territoryId: 'zhou-chengdu', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 870, month: 1 } },
+        { id: 'post-sima-chengdu', templateId: 'pos-sima', territoryId: 'zhou-chengdu', holderId: null },
+        { id: 'post-zhangshi-chengdu', templateId: 'pos-zhangshi', territoryId: 'zhou-chengdu', holderId: null },
+        { id: 'post-lushibcanjun-chengdu', templateId: 'pos-lushibcanjun', territoryId: 'zhou-chengdu', holderId: null },
+      ],
+      moneyRatio: 4,
+      grainRatio: 5,
+      control: 70,
+      development: 80,
       populace: 65,
       buildings: [
         { buildingId: 'building-farm', level: 2 },
@@ -492,7 +511,7 @@ function createSampleTerritories(): Territory[] {
       ],
       constructions: [],
       garrison: 2000,
-      basePopulation: 35000,
+      basePopulation: 100000,
     },
     {
       id: 'zhou-yangzhou',
@@ -501,8 +520,14 @@ function createSampleTerritories(): Territory[] {
       territoryType: 'civil',
       childIds: [],
       dejureControllerId: 'char-yizong',
-      actualControllerId: 'char-gaopian',
-      centralization: 2,
+      posts: [
+        { id: 'post-cishi-yangzhou', templateId: 'pos-cishi', territoryId: 'zhou-yangzhou', holderId: 'char-gaopian', appointedBy: 'char-yizong', appointedDate: { year: 865, month: 3 } },
+        { id: 'post-sima-yangzhou', templateId: 'pos-sima', territoryId: 'zhou-yangzhou', holderId: null },
+        { id: 'post-zhangshi-yangzhou', templateId: 'pos-zhangshi', territoryId: 'zhou-yangzhou', holderId: null },
+        { id: 'post-lushibcanjun-yangzhou', templateId: 'pos-lushibcanjun', territoryId: 'zhou-yangzhou', holderId: null },
+      ],
+      moneyRatio: 5,
+      grainRatio: 6.2,
       control: 75,
       development: 85,
       populace: 50,
@@ -514,7 +539,7 @@ function createSampleTerritories(): Territory[] {
       ],
       constructions: [],
       garrison: 4000,
-      basePopulation: 45000,
+      basePopulation: 150000,
     },
 
     // ===== 道 =====
@@ -525,8 +550,11 @@ function createSampleTerritories(): Territory[] {
       territoryType: 'civil',
       childIds: ['zhou-changan', 'zhou-luoyang'],
       dejureControllerId: 'char-yizong',
-      actualControllerId: 'char-yizong',
-      centralization: 2,
+      posts: [
+        { id: 'post-guancha-guannei', templateId: 'pos-guancha-shi', territoryId: 'dao-guannei', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 870, month: 1 } },
+      ],
+      moneyRatio: 0,
+      grainRatio: 0,
       control: 0,
       development: 0,
       populace: 0,
@@ -542,8 +570,18 @@ function createSampleTerritories(): Territory[] {
       territoryType: 'military',
       childIds: ['zhou-taiyuan'],
       dejureControllerId: 'char-likeyong',
-      actualControllerId: 'char-likeyong',
-      centralization: 3,
+      posts: [
+        { id: 'post-jiedushi-hedong', templateId: 'pos-jiedushi', territoryId: 'dao-hedong', holderId: 'char-likeyong', appointedBy: 'char-yizong', appointedDate: { year: 869, month: 1 } },
+        { id: 'post-panguan-hedong', templateId: 'pos-panguan', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-tuiguan-hedong', templateId: 'pos-tuiguan', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-zhangshiji-hedong', templateId: 'pos-zhangshiji', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-duyuhou-hedong', templateId: 'pos-duyuhou', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-bingmashi-hedong', templateId: 'pos-bingmashi', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-duzhibingmashi-hedong', templateId: 'pos-duzhibingmashi', territoryId: 'dao-hedong', holderId: null },
+        { id: 'post-xunguan-hedong', templateId: 'pos-xunguan', territoryId: 'dao-hedong', holderId: null },
+      ],
+      moneyRatio: 0,
+      grainRatio: 0,
       control: 0,
       development: 0,
       populace: 0,
@@ -557,54 +595,66 @@ function createSampleTerritories(): Territory[] {
 
 /**
  * 加载完整示例数据到 Stores 和旧版 Registries。
- * 在应用启动时调用一次。
  */
 export function loadSampleData(): void {
   const characters = createSampleCharacters();
   const territories = createSampleTerritories();
+  const centralPosts = createCentralPosts();
 
-  // 自动判定文武散官：军事为最高属性→武散官，否则→文散官
+  // 自动判定文武散官
   for (const c of characters) {
     if (c.official) {
       c.official.isCivil = isCivilByAbilities(c.abilities);
     }
   }
 
-  // 州级绑定：为所有直辖州的控制者自动补全刺史职位
-  const charMap = new Map(characters.map((c) => [c.id, c]));
-  for (const t of territories) {
-    if (t.tier !== 'zhou') continue;
-    const controller = charMap.get(t.actualControllerId);
-    if (!controller?.official) continue;
-    // 检查是否已持有该州的刺史
-    const hasCishi = controller.official.positions.some(
-      (p) => p.positionId === 'pos-cishi' && p.territoryId === t.id,
-    );
-    if (!hasCishi) {
-      controller.official.positions.push({
-        positionId: 'pos-cishi',
-        appointedBy: controller.overlordId ?? 'system',
-        appointedDate: { year: 870, month: 1 },
-        territoryId: t.id,
-      });
-    }
-  }
-
-  // 初始化新的 Zustand stores
+  // 初始化 Stores
   useCharacterStore.getState().initCharacters(characters);
   useCharacterStore.getState().setPlayerId('char-yizong');
   useTerritoryStore.getState().initTerritories(territories);
+  useTerritoryStore.getState().initCentralPosts(centralPosts);
 
-  // 向后兼容旧的 registries（GameMap 等组件仍使用）
+  // 初始化集权和回拨好感
+  const charStore = useCharacterStore.getState();
+  const CENTRALIZATION_OPINION: Record<number, number> = { 1: 10, 2: 0, 3: -10, 4: -20 };
   for (const c of characters) {
-    characterRegistry.register(c.id, { id: c.id, name: c.name, title: c.title });
+    if (c.overlordId) {
+      const level = c.centralization ?? 2;
+      const opinion = CENTRALIZATION_OPINION[level] ?? 0;
+      if (opinion !== 0) {
+        charStore.setOpinion(c.id, c.overlordId, {
+          reason: '集权等级',
+          value: opinion,
+          decayable: false,
+        });
+      }
+    }
   }
-  for (const t of territories) {
-    territoryRegistry.register(t.id, {
-      id: t.id,
-      name: t.name,
-      type: t.tier,
-      controllerId: t.actualControllerId,
-    });
+  // 回拨好感：以60%为基准，每10%偏移±5
+  for (const c of characters) {
+    if (c.redistributionRate !== undefined) {
+      const opinion = Math.floor((c.redistributionRate - 60) / 10) * 5;
+      if (opinion !== 0) {
+        const vassals = characters.filter(v => v.overlordId === c.id);
+        for (const v of vassals) {
+          charStore.setOpinion(v.id, c.id, {
+            reason: '回拨率',
+            value: opinion,
+            decayable: false,
+          });
+        }
+      }
+    }
+  }
+
+  // 初始化玩家 ledger，使 ResourceBar 从一开始就显示完整收支
+  const player = useCharacterStore.getState().getPlayer();
+  if (player) {
+    const ledger = calculateMonthlyLedger(
+      player,
+      useTerritoryStore.getState().territories,
+      useCharacterStore.getState().characters,
+    );
+    useLedgerStore.getState().updatePlayerLedger(ledger);
   }
 }

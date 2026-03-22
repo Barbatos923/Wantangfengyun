@@ -148,6 +148,12 @@ export function calculateBaseOpinion(a: Character, b: Character): number {
     opinion += t.globalOpinionModifier;
   }
 
+  // 外交能力加成：B的外交能力让A更喜欢B，超过10点的部分每点+1
+  const bEffAbilities = getEffectiveAbilities(b);
+  if (bEffAbilities.diplomacy > 10) {
+    opinion += bEffAbilities.diplomacy - 10;
+  }
+
   // 亲属加成
   if (a.family.fatherId === b.id || a.family.motherId === b.id ||
       b.family.fatherId === a.id || b.family.motherId === a.id) {
@@ -213,6 +219,12 @@ export function getOpinionBreakdown(a: Character, b: Character): OpinionBreakdow
     if (t.globalOpinionModifier !== 0) {
       entries.push({ label: `性格：${t.name}`, value: t.globalOpinionModifier });
     }
+  }
+
+  // 外交能力加成：B的外交让A更喜欢B
+  const bEffAbilities = getEffectiveAbilities(b);
+  if (bEffAbilities.diplomacy > 10) {
+    entries.push({ label: '外交能力', value: bEffAbilities.diplomacy - 10 });
   }
 
   // 亲属加成

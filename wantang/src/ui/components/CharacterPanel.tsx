@@ -9,12 +9,14 @@ import { traitMap } from '@data/traits';
 import { usePanelStore } from '@ui/stores/panelStore';
 import type { Character } from '@engine/character/types';
 import OpinionPopup from './OpinionPopup';
-import { getRankTitle, getSubordinates, calculateSalary, getDirectControlLimit, getDynamicTitle } from '@engine/official/officialUtils';
+import { getRankTitle, getSubordinates, getDirectControlLimit, getDynamicTitle, getHeldPosts, getActualController } from '@engine/official/officialUtils';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
+import type { Post } from '@engine/territory/types';
 import InteractionMenu from './InteractionMenu';
 import AppointFlow from './AppointFlow';
 import DismissFlow from './DismissFlow';
+import CentralizationFlow from './CentralizationFlow';
 
 // ── Constants ──────────────────────────────────────
 
@@ -99,7 +101,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const firstChild = character.family.childrenIds.length > 0 ? characters.get(character.family.childrenIds[0]) : undefined;
 
   // Controlled territories
-  const controlledTerritories = Array.from(territories.values()).filter((t) => t.actualControllerId === characterId);
+  const controlledTerritories = Array.from(territories.values()).filter((t) => getActualController(t) === characterId);
 
   return (
     <div className="flex flex-col h-full">
@@ -291,7 +293,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
         {/* Official Position */}
         {character.official && (() => {
-          const isEmperor = character.official.positions.some((p) => p.positionId === 'pos-emperor');
+          const heldPosts = getHeldPosts(character.id);
+          const isEmperor = heldPosts.some((p) => p.templateId === 'pos-emperor');
           return (
             <div>
               <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">官职</h3>
@@ -304,20 +307,20 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                   </span>
                 </div>
                 {/* Positions */}
-                {character.official!.positions.map((ph) => {
-                  const posDef = positionMap.get(ph.positionId);
-                  const terrName = ph.territoryId ? territories.get(ph.territoryId)?.name : undefined;
+                {heldPosts.map((post) => {
+                  const posDef = positionMap.get(post.templateId);
+                  const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
                   return (
-                    <div key={ph.positionId} className="flex justify-between">
+                    <div key={post.id} className="flex justify-between">
                       <span className="text-[var(--color-text-muted)]">职位</span>
                       <span className="text-[var(--color-text)]">
-                        {posDef?.name ?? ph.positionId}
+                        {posDef?.name ?? post.templateId}
                         {terrName && <span className="text-[var(--color-text-muted)] ml-1">({terrName})</span>}
                       </span>
                     </div>
                   );
                 })}
-                {character.official!.positions.length === 0 && (
+                {heldPosts.length === 0 && (
                   <div className="flex justify-between">
                     <span className="text-[var(--color-text-muted)]">职位</span>
                     <span className="text-[var(--color-text-muted)]">无</span>
@@ -469,6 +472,13 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           onClose={() => setActiveInteraction(null)}
         />
       )}
+
+      {activeInteraction === 'centralization' && (
+        <CentralizationFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
     </div>
   );
 };
@@ -558,14 +568,9 @@ const RelationsTab: React.FC<TabProps> = ({ character, characters, onClickChar }
 };
 
 const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion }) => {
-  // 廷臣 = 效忠于你（overlordId）但没有由你任命职位的人
-  const subordinateIds = new Set<string>();
-  for (const c of characters.values()) {
-    if (!c.alive || !c.official) continue;
-    if (c.official.positions.some((p) => p.appointedBy === character.id)) {
-      subordinateIds.add(c.id);
-    }
-  }
+  // 廷臣 = 效忠于你（overlordId）但没有由你任命岗位的人
+  const subordinates = getSubordinates(character.id, characters);
+  const subordinateIds = new Set(subordinates.map(s => s.id));
 
   const courtiers: Character[] = [];
   for (const c of characters.values()) {
@@ -620,10 +625,11 @@ const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, 
   return (
     <div className="space-y-1">
       {subs.map((sub) => {
-        const posNames = sub.official?.positions
-          .filter((ph) => ph.appointedBy === character.id)
-          .map((ph) => positionMap.get(ph.positionId)?.name ?? ph.positionId)
-          .join('、') ?? '';
+        const subPosts = getHeldPosts(sub.id);
+        const posNames = subPosts
+          .filter((post) => post.appointedBy === character.id)
+          .map((post) => positionMap.get(post.templateId)?.name ?? post.templateId)
+          .join('、');
         const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar) : null;
         return (
           <button

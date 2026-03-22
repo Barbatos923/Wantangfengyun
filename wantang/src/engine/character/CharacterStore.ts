@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Character, OpinionEntry } from './types';
-import type { OfficialData, PositionHolding } from '../official/types';
+import type { OfficialData } from '../official/types';
 import { isCivilByAbilities } from '../official/officialUtils';
 
 interface CharacterStoreState {
@@ -22,15 +22,13 @@ interface CharacterStoreState {
   removeTrait: (charId: string, traitId: string) => void;
   addResources: (charId: string, resources: Partial<Character['resources']>) => void;
   addOpinion: (charId: string, targetId: string, entry: OpinionEntry) => void;
+  setOpinion: (charId: string, targetId: string, entry: OpinionEntry) => void;
   killCharacter: (id: string, deathYear: number) => void;
 
-  // Phase 2: 官职系统
+  // Phase 2: 官职系统（精简版）
   setOfficialData: (charId: string, data: OfficialData) => void;
   addVirtue: (charId: string, amount: number) => void;
   setRank: (charId: string, level: number) => void;
-  appointPosition: (charId: string, holding: PositionHolding) => void;
-  removePosition: (charId: string, positionId: string) => void;
-  removePositionByTerritory: (charId: string, positionId: string, territoryId: string) => void;
 }
 
 export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
@@ -124,6 +122,26 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
     });
   },
 
+  // 按 reason 替换已有条目（用于状态型好感如集权/回拨），value=0 时移除
+  setOpinion: (charId, targetId, entry) => {
+    set((state) => {
+      const chars = new Map(state.characters);
+      const c = chars.get(charId);
+      if (!c) return state;
+      const rels = [...c.relationships];
+      const existing = rels.find((r) => r.targetId === targetId);
+      if (existing) {
+        const filtered = existing.opinions.filter((op) => op.reason !== entry.reason);
+        if (entry.value !== 0) filtered.push(entry);
+        existing.opinions = filtered;
+      } else if (entry.value !== 0) {
+        rels.push({ targetId, opinions: [entry] });
+      }
+      chars.set(charId, { ...c, relationships: rels });
+      return { characters: chars };
+    });
+  },
+
   killCharacter: (id, deathYear) => {
     set((state) => {
       const chars = new Map(state.characters);
@@ -140,7 +158,6 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       const chars = new Map(state.characters);
       const c = chars.get(charId);
       if (!c) return state;
-      // 踏上仕途时根据当前能力一次性确定文武
       const official = { ...data, isCivil: isCivilByAbilities(c.abilities) };
       chars.set(charId, { ...c, official });
       return { characters: chars };
@@ -168,56 +185,6 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       chars.set(charId, {
         ...c,
         official: { ...c.official, rankLevel: level },
-      });
-      return { characters: chars };
-    });
-  },
-
-  appointPosition: (charId, holding) => {
-    set((state) => {
-      const chars = new Map(state.characters);
-      const c = chars.get(charId);
-      if (!c || !c.official) return state;
-      chars.set(charId, {
-        ...c,
-        official: {
-          ...c.official,
-          positions: [...c.official.positions, holding],
-        },
-      });
-      return { characters: chars };
-    });
-  },
-
-  removePosition: (charId, positionId) => {
-    set((state) => {
-      const chars = new Map(state.characters);
-      const c = chars.get(charId);
-      if (!c || !c.official) return state;
-      chars.set(charId, {
-        ...c,
-        official: {
-          ...c.official,
-          positions: c.official.positions.filter((p) => p.positionId !== positionId),
-        },
-      });
-      return { characters: chars };
-    });
-  },
-
-  removePositionByTerritory: (charId, positionId, territoryId) => {
-    set((state) => {
-      const chars = new Map(state.characters);
-      const c = chars.get(charId);
-      if (!c || !c.official) return state;
-      chars.set(charId, {
-        ...c,
-        official: {
-          ...c.official,
-          positions: c.official.positions.filter(
-            (p) => !(p.positionId === positionId && p.territoryId === territoryId),
-          ),
-        },
       });
       return { characters: chars };
     });

@@ -1,6 +1,6 @@
 // ===== 官职系统类型定义 =====
 
-import type { GameDate } from '../types';
+import type { TerritoryTier, TerritoryType } from '../territory/types';
 
 /** 品位等级，1=从九品下, 29=从一品 */
 export type RankLevel = number;
@@ -25,32 +25,27 @@ export type Institution =
 /** 职位作用域 */
 export type PositionScope = 'central' | 'local';
 
-/** 职位定义 */
-export interface PositionDef {
+/** 职位模板 — 职位的"种类定义" */
+export interface PositionTemplate {
   id: string;
   name: string;
   institution: Institution;
   scope: PositionScope;
+  tier?: TerritoryTier;        // local 职位绑定的领地层级
+  territoryType?: TerritoryType; // 有地职位的领地类型标记
   minRank: RankLevel;
   salary: { money: number; grain: number };
   description: string;
-  superiorPositionId?: string;
-  canAppoint: string[];
+  grantsControl: boolean;      // 任命此职位时是否转移领地控制权
 }
 
-/** 角色持有的职位实例 */
-export interface PositionHolding {
-  positionId: string;
-  appointedBy: string;
-  appointedDate: { year: number; month: number };
-  territoryId?: string;
-}
+// Post 定义在 territory/types 以避免循环依赖，此处 re-export
+export type { Post } from '../territory/types';
 
 /** 角色官职数据 */
 export interface OfficialData {
   rankLevel: RankLevel;
   virtue: number;
-  positions: PositionHolding[];
   isCivil: boolean;
 }
 
@@ -59,6 +54,8 @@ export interface MonthlyLedger {
   territoryIncome: { money: number; grain: number };
   positionSalary: { money: number; grain: number };
   vassalTribute: { money: number; grain: number };
+  redistributionReceived: { money: number; grain: number };
+  redistributionPaid: { money: number; grain: number };
   totalIncome: { money: number; grain: number };
 
   subordinateSalaries: { money: number; grain: number };

@@ -62,8 +62,8 @@ export type {
   RankDef,
   Institution,
   PositionScope,
-  PositionDef,
-  PositionHolding,
+  PositionTemplate,
+  Post,
   OfficialData,
   MonthlyLedger,
 } from './official/types';

@@ -4,6 +4,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
+import { getActualController } from '@engine/official/officialUtils';
 
 function formatValue(value: number): string {
   if (value >= 10000) return `${(value / 10000).toFixed(1)}万`;
@@ -53,7 +54,7 @@ const ResourceBar: React.FC = () => {
 
     // Always calculate territory count and troops from territory data
     territories.forEach((t) => {
-      if (t.actualControllerId === player.id && t.tier === 'zhou') {
+      if (getActualController(t) === player.id && t.tier === 'zhou') {
         const income = calculateMonthlyIncome(t, abilities);
         monthlyTroops += income.troops;
         territoryCount++;
@@ -66,7 +67,7 @@ const ResourceBar: React.FC = () => {
     } else {
       // Fallback: territory income calculation
       territories.forEach((t) => {
-        if (t.actualControllerId === player.id && t.tier === 'zhou') {
+        if (getActualController(t) === player.id && t.tier === 'zhou') {
           const income = calculateMonthlyIncome(t, abilities);
           monthlyMoney += income.money;
           monthlyGrain += income.grain;
@@ -75,15 +76,15 @@ const ResourceBar: React.FC = () => {
     }
 
     const moneyTitle = playerLedger
-      ? `领地产出: ${playerLedger.territoryIncome.money}\n职位俸禄: ${playerLedger.positionSalary.money}\n属下上缴: ${playerLedger.vassalTribute.money}\n属下俸禄: -${playerLedger.subordinateSalaries.money}\n上缴领主: -${playerLedger.overlordTribute.money}`
+      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.money)}\n职位俸禄: ${Math.floor(playerLedger.positionSalary.money)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.money)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.money)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.money)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.money)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.money)}`
       : undefined;
     const grainTitle = playerLedger
-      ? `领地产出: ${playerLedger.territoryIncome.grain}\n职位俸禄: ${playerLedger.positionSalary.grain}\n属下上缴: ${playerLedger.vassalTribute.grain}\n属下俸禄: -${playerLedger.subordinateSalaries.grain}\n上缴领主: -${playerLedger.overlordTribute.grain}`
+      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.grain)}\n职位俸禄: ${Math.floor(playerLedger.positionSalary.grain)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.grain)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.grain)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.grain)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.grain)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.grain)}`
       : undefined;
 
     return [
-      { label: '钱', icon: '💰', value: player.resources.money, change: monthlyMoney, title: moneyTitle },
-      { label: '粮', icon: '🌾', value: player.resources.grain, change: monthlyGrain, title: grainTitle },
+      { label: '钱(贯)', icon: '💰', value: player.resources.money, change: monthlyMoney, title: moneyTitle },
+      { label: '粮(斛)', icon: '🌾', value: player.resources.grain, change: monthlyGrain, title: grainTitle },
       { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
       { label: '合法性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
       { label: '兵力', icon: '⚔', value: monthlyTroops, change: 0 },

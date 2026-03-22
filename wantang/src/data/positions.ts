@@ -1,28 +1,10 @@
-// ===== 职位/差遣定义 =====
+// ===== 职位模板定义 =====
 
-export type Institution =
-  | '中书门下' | '翰林院' | '枢密院' | '神策军'
-  | '三司' | '中书省' | '门下省' | '尚书省'
-  | '御史台' | '秘书省' | '三公'
-  | '藩镇' | '州府' | '皇室';
-
-export type PositionScope = 'central' | 'local';
-
-export interface PositionDef {
-  id: string;
-  name: string;
-  institution: Institution;
-  scope: PositionScope;
-  minRank: number;          // minimum RankLevel (1-29) to hold this position
-  salary: { money: number; grain: number };  // additional position salary
-  description: string;
-  superiorPositionId?: string;
-  canAppoint: string[];     // position IDs this position can appoint to
-}
+import type { PositionTemplate } from '@engine/official/types';
 
 // ===== 特殊职位 =====
 
-const specialPositions: PositionDef[] = [
+const specialPositions: PositionTemplate[] = [
   {
     id: 'pos-emperor',
     name: '皇帝',
@@ -31,17 +13,13 @@ const specialPositions: PositionDef[] = [
     minRank: 29,
     salary: { money: 0, grain: 0 },
     description: '天子，至高无上',
-    canAppoint: [
-      'pos-zaixiang', 'pos-hanlin', 'pos-shumi', 'pos-shence',
-      'pos-sansi-shi', 'pos-yushi-dafu', 'pos-yushi-zhongcheng',
-      'pos-jiedushi', 'pos-cishi',
-    ],
+    grantsControl: false,
   },
 ];
 
 // ===== 中央职位 =====
 
-const centralPositions: PositionDef[] = [
+const centralPositions: PositionTemplate[] = [
   {
     id: 'pos-zaixiang',
     name: '同中书门下平章事/宰相',
@@ -50,10 +28,7 @@ const centralPositions: PositionDef[] = [
     minRank: 25,
     salary: { money: 120, grain: 90 },
     description: '宰相，总揽朝政',
-    canAppoint: [
-      'pos-zhizhigao', 'pos-zhongshu-sheren',
-      'pos-liubu-langzhong', 'pos-liubu-yuanwailang',
-    ],
+    grantsControl: false,
   },
   {
     id: 'pos-hanlin',
@@ -63,7 +38,7 @@ const centralPositions: PositionDef[] = [
     minRank: 18,
     salary: { money: 80, grain: 60 },
     description: '内相，草拟机密诏书',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-shumi',
@@ -73,7 +48,7 @@ const centralPositions: PositionDef[] = [
     minRank: 22,
     salary: { money: 100, grain: 75 },
     description: '掌机要，传诏旨',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-shence',
@@ -83,7 +58,7 @@ const centralPositions: PositionDef[] = [
     minRank: 20,
     salary: { money: 90, grain: 70 },
     description: '统领禁军，废立天子之权',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-sansi-shi',
@@ -93,7 +68,7 @@ const centralPositions: PositionDef[] = [
     minRank: 18,
     salary: { money: 85, grain: 65 },
     description: '掌盐铁、户部、度支三司财政',
-    canAppoint: ['pos-sansi-panguan', 'pos-sansi-tuiguan', 'pos-sansi-xunguan'],
+    grantsControl: false,
   },
   {
     id: 'pos-sansi-panguan',
@@ -103,7 +78,7 @@ const centralPositions: PositionDef[] = [
     minRank: 13,
     salary: { money: 40, grain: 30 },
     description: '三司实际运作核心',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-sansi-tuiguan',
@@ -113,7 +88,7 @@ const centralPositions: PositionDef[] = [
     minRank: 7,
     salary: { money: 20, grain: 15 },
     description: '三司基层税务法务',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-sansi-xunguan',
@@ -123,7 +98,7 @@ const centralPositions: PositionDef[] = [
     minRank: 7,
     salary: { money: 18, grain: 13 },
     description: '巡查地方账目',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhongshuling',
@@ -133,7 +108,7 @@ const centralPositions: PositionDef[] = [
     minRank: 28,
     salary: { money: 0, grain: 0 },
     description: '虚衔，极少实授',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhizhigao',
@@ -143,7 +118,7 @@ const centralPositions: PositionDef[] = [
     minRank: 19,
     salary: { money: 60, grain: 45 },
     description: '草拟常规诏书',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhongshu-sheren',
@@ -153,7 +128,7 @@ const centralPositions: PositionDef[] = [
     minRank: 20,
     salary: { money: 55, grain: 42 },
     description: '传达诏令',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-you-buque',
@@ -163,7 +138,7 @@ const centralPositions: PositionDef[] = [
     minRank: 10,
     salary: { money: 25, grain: 18 },
     description: '谏官，常为进士起家官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-you-shiyi',
@@ -173,7 +148,7 @@ const centralPositions: PositionDef[] = [
     minRank: 6,
     salary: { money: 18, grain: 13 },
     description: '谏官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-shizhong',
@@ -183,7 +158,7 @@ const centralPositions: PositionDef[] = [
     minRank: 28,
     salary: { money: 0, grain: 0 },
     description: '虚衔',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zuo-buque',
@@ -193,7 +168,7 @@ const centralPositions: PositionDef[] = [
     minRank: 10,
     salary: { money: 25, grain: 18 },
     description: '门下谏官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zuo-shiyi',
@@ -203,7 +178,7 @@ const centralPositions: PositionDef[] = [
     minRank: 6,
     salary: { money: 18, grain: 13 },
     description: '门下谏官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-shangshuling',
@@ -213,7 +188,7 @@ const centralPositions: PositionDef[] = [
     minRank: 28,
     salary: { money: 0, grain: 0 },
     description: '虚衔',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-liubu-langzhong',
@@ -223,7 +198,7 @@ const centralPositions: PositionDef[] = [
     minRank: 20,
     salary: { money: 50, grain: 38 },
     description: '六部实际长官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-liubu-yuanwailang',
@@ -233,7 +208,7 @@ const centralPositions: PositionDef[] = [
     minRank: 14,
     salary: { money: 35, grain: 26 },
     description: '六部副官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-yushi-dafu',
@@ -243,10 +218,7 @@ const centralPositions: PositionDef[] = [
     minRank: 25,
     salary: { money: 70, grain: 52 },
     description: '御史台名义长官',
-    canAppoint: [
-      'pos-yushi-zhongcheng', 'pos-shi-yushi',
-      'pos-dianzhong-yushi', 'pos-jiancha-yushi',
-    ],
+    grantsControl: false,
   },
   {
     id: 'pos-yushi-zhongcheng',
@@ -256,7 +228,7 @@ const centralPositions: PositionDef[] = [
     minRank: 20,
     salary: { money: 60, grain: 45 },
     description: '御史台实际长官，掌弹劾',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-shi-yushi',
@@ -266,7 +238,7 @@ const centralPositions: PositionDef[] = [
     minRank: 13,
     salary: { money: 32, grain: 24 },
     description: '主要调查官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-dianzhong-yushi',
@@ -276,7 +248,7 @@ const centralPositions: PositionDef[] = [
     minRank: 10,
     salary: { money: 25, grain: 18 },
     description: '维持朝仪',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-jiancha-yushi',
@@ -286,7 +258,7 @@ const centralPositions: PositionDef[] = [
     minRank: 8,
     salary: { money: 20, grain: 15 },
     description: '品低权重，巡查地方弹劾官员',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-jiaoshu-lang',
@@ -296,7 +268,7 @@ const centralPositions: PositionDef[] = [
     minRank: 4,
     salary: { money: 10, grain: 7 },
     description: '进士初授常见官',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhengzi',
@@ -306,7 +278,7 @@ const centralPositions: PositionDef[] = [
     minRank: 3,
     salary: { money: 8, grain: 6 },
     description: '秘书省校对',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-taishi',
@@ -316,7 +288,7 @@ const centralPositions: PositionDef[] = [
     minRank: 29,
     salary: { money: 0, grain: 0 },
     description: '最高荣衔，无实权',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-taifu',
@@ -326,7 +298,7 @@ const centralPositions: PositionDef[] = [
     minRank: 29,
     salary: { money: 0, grain: 0 },
     description: '荣衔',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-taibao',
@@ -336,169 +308,208 @@ const centralPositions: PositionDef[] = [
     minRank: 29,
     salary: { money: 0, grain: 0 },
     description: '荣衔',
-    canAppoint: [],
+    grantsControl: false,
   },
 ];
 
 // ===== 地方职位 =====
 
-const localPositions: PositionDef[] = [
+const localPositions: PositionTemplate[] = [
   {
     id: 'pos-jiedushi',
     name: '节度使',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
+    territoryType: 'military',
     minRank: 17,
     salary: { money: 150, grain: 120 },
     description: '一方军政大权',
-    canAppoint: [
-      'pos-panguan', 'pos-tuiguan', 'pos-zhangshiji',
-      'pos-xunguan', 'pos-duyuhou', 'pos-bingmashi',
-      'pos-duzhibingmashi', 'pos-cishi',
-    ],
+    grantsControl: true,
+  },
+  {
+    id: 'pos-guancha-shi',
+    name: '观察使',
+    institution: '州府',
+    scope: 'local',
+    tier: 'dao',
+    territoryType: 'civil',
+    minRank: 17,
+    salary: { money: 150, grain: 120 },
+    description: '道级民事长官，监察地方',
+    grantsControl: true,
   },
   {
     id: 'pos-cishi',
     name: '刺史',
     institution: '州府',
     scope: 'local',
+    tier: 'zhou',
+    territoryType: 'civil',
     minRank: 12,
     salary: { money: 60, grain: 45 },
     description: '州级行政长官',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: ['pos-sima', 'pos-zhangshi', 'pos-lushibcanjun'],
+    grantsControl: true,
+  },
+  {
+    id: 'pos-fangyu-shi',
+    name: '防御使',
+    institution: '州府',
+    scope: 'local',
+    tier: 'zhou',
+    territoryType: 'military',
+    minRank: 12,
+    salary: { money: 60, grain: 45 },
+    description: '州级军事长官',
+    grantsControl: true,
   },
   {
     id: 'pos-sima',
     name: '司马',
     institution: '州府',
     scope: 'local',
+    tier: 'zhou',
     minRank: 9,
     salary: { money: 22, grain: 16 },
     description: '州级副手，晚唐多为贬官闲职',
-    superiorPositionId: 'pos-cishi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhangshi',
     name: '长史',
     institution: '州府',
     scope: 'local',
+    tier: 'zhou',
     minRank: 9,
     salary: { money: 22, grain: 16 },
     description: '州级副手',
-    superiorPositionId: 'pos-cishi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-lushibcanjun',
     name: '录事参军',
     institution: '州府',
     scope: 'local',
+    tier: 'zhou',
     minRank: 11,
     salary: { money: 22, grain: 16 },
     description: '州府实际行政核心',
-    superiorPositionId: 'pos-cishi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-panguan',
     name: '节度判官',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 9,
     salary: { money: 45, grain: 34 },
     description: '幕府首席行政官，实际二把手',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-tuiguan',
     name: '节度推官',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 5,
     salary: { money: 22, grain: 16 },
     description: '幕府司法调查',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-zhangshiji',
     name: '掌书记',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 7,
     salary: { money: 35, grain: 26 },
-    description: '节度使最信任的文官副手，不与道关联，每个节度使仅一人',
-    canAppoint: [],
+    description: '节度使最信任的文官副手',
+    grantsControl: false,
   },
   {
     id: 'pos-xunguan',
     name: '节度巡官',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 5,
     salary: { money: 20, grain: 15 },
     description: '巡查辖区',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-duyuhou',
     name: '都虞候',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 10,
     salary: { money: 50, grain: 38 },
     description: '军法纪检长官',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-bingmashi',
     name: '兵马使',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 10,
     salary: { money: 55, grain: 42 },
     description: '统领具体军事单位',
-    superiorPositionId: 'pos-jiedushi',
-    canAppoint: [],
+    grantsControl: false,
   },
   {
     id: 'pos-duzhibingmashi',
     name: '都知兵马使',
     institution: '藩镇',
     scope: 'local',
+    tier: 'dao',
     minRank: 14,
     salary: { money: 70, grain: 55 },
-    description: '节度使最信任的武官副手，不与道关联，每个节度使仅一人',
-    canAppoint: [],
+    description: '节度使最信任的武官副手',
+    grantsControl: false,
   },
   {
     id: 'pos-wang',
     name: '王',
     institution: '藩镇',
     scope: 'local',
+    tier: 'guo',
+    territoryType: 'military',
     minRank: 25,
     salary: { money: 200, grain: 160 },
     description: '割据称王',
-    canAppoint: ['pos-jiedushi'],
+    grantsControl: true,
+  },
+  {
+    id: 'pos-xingtai-shangshu',
+    name: '行台尚书令',
+    institution: '皇室',
+    scope: 'local',
+    tier: 'guo',
+    territoryType: 'civil',
+    minRank: 25,
+    salary: { money: 200, grain: 160 },
+    description: '国级民事长官',
+    grantsControl: true,
   },
 ];
 
 // ===== 汇总导出 =====
 
-/** 所有职位列表 */
-export const ALL_POSITIONS: PositionDef[] = [
+/** 所有职位模板列表 */
+export const ALL_POSITIONS: PositionTemplate[] = [
   ...specialPositions,
   ...centralPositions,
   ...localPositions,
 ];
 
-/** 职位查找表 */
-export const positionMap = new Map<string, PositionDef>();
+/** 职位模板查找表 */
+export const positionMap = new Map<string, PositionTemplate>();
 for (const p of ALL_POSITIONS) {
   positionMap.set(p.id, p);
 }

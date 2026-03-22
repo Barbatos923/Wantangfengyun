@@ -6,7 +6,8 @@ export { registerInteraction, getAvailableInteractions } from './registry';
 // 导入交互定义以触发注册
 import './appointAction';
 import './dismissAction';
+import './centralizationAction';
 
 // 导出执行函数
-export { getAppointablePositions, executeAppoint } from './appointAction';
-export { getDismissablePositions, executeDismiss } from './dismissAction';
+export { getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
+export { getDismissablePosts, executeDismiss } from './dismissAction';

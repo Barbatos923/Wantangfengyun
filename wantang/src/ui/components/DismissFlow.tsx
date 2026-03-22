@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { getDismissablePositions, executeDismiss } from '@engine/interaction';
+import { getDismissablePosts, executeDismiss } from '@engine/interaction';
 import { positionMap } from '@data/positions';
+import type { Post } from '@engine/territory/types';
 
 interface DismissFlowProps {
   targetId: string;
@@ -15,27 +16,26 @@ export default function DismissFlow({ targetId, onClose }: DismissFlowProps) {
   const target = useCharacterStore((s) => s.characters.get(targetId));
   const territories = useTerritoryStore((s) => s.territories);
 
-  const [selected, setSelected] = useState<{ positionId: string; territoryId?: string } | null>(null);
+  const [selected, setSelected] = useState<Post | null>(null);
 
   if (!player || !target) return null;
 
-  const dismissable = getDismissablePositions(player, target);
+  const dismissable = getDismissablePosts(player, target);
   if (dismissable.length === 0) return null;
 
   const isSingle = dismissable.length === 1;
 
-  function handleDismiss(entry: { positionId: string; territoryId?: string }) {
-    executeDismiss(player!.id, targetId, entry.positionId, entry.territoryId);
+  function handleDismiss(post: Post) {
+    executeDismiss(post.id, player!.id);
     onClose();
   }
 
-  function renderPositionLabel(entry: { positionId: string; territoryId?: string }) {
-    const posName = positionMap.get(entry.positionId)?.name ?? entry.positionId;
-    const terrName = entry.territoryId ? territories.get(entry.territoryId)?.name : undefined;
+  function renderPostLabel(post: Post) {
+    const posName = positionMap.get(post.templateId)?.name ?? post.templateId;
+    const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
     return (
       <span className="text-sm text-[var(--color-text)]">
-        {posName}
-        {terrName && <span className="text-[var(--color-text-muted)] ml-1">· {terrName}</span>}
+        {terrName ? `${terrName}${posName}` : posName}
       </span>
     );
   }
@@ -62,7 +62,7 @@ export default function DismissFlow({ targetId, onClose }: DismissFlowProps) {
           {isSingle ? (
             <>
               <p className="text-sm text-[var(--color-text-muted)]">确认罢免以下职位？</p>
-              {renderPositionLabel(dismissable[0])}
+              {renderPostLabel(dismissable[0])}
               <button
                 className="mt-2 rounded px-4 py-2 font-bold text-sm bg-[var(--color-accent-red)] text-white hover:opacity-90"
                 onClick={() => handleDismiss(dismissable[0])}
@@ -73,15 +73,15 @@ export default function DismissFlow({ targetId, onClose }: DismissFlowProps) {
           ) : selected === null ? (
             <>
               <p className="text-sm text-[var(--color-text-muted)]">请选择要罢免的职位：</p>
-              {dismissable.map((entry) => (
+              {dismissable.map((post) => (
                 <div
-                  key={entry.positionId + (entry.territoryId ?? '')}
+                  key={post.id}
                   className="flex items-center justify-between rounded px-3 py-2 bg-[var(--color-bg)] border border-[var(--color-border)]"
                 >
-                  {renderPositionLabel(entry)}
+                  {renderPostLabel(post)}
                   <button
                     className="ml-3 rounded px-3 py-1 text-sm font-bold bg-[var(--color-accent-red)] text-white hover:opacity-90 shrink-0"
-                    onClick={() => setSelected(entry)}
+                    onClick={() => setSelected(post)}
                   >
                     选择
                   </button>
@@ -91,7 +91,7 @@ export default function DismissFlow({ targetId, onClose }: DismissFlowProps) {
           ) : (
             <>
               <p className="text-sm text-[var(--color-text-muted)]">确认罢免以下职位？</p>
-              {renderPositionLabel(selected)}
+              {renderPostLabel(selected)}
               <div className="flex gap-2 mt-2">
                 <button
                   className="flex-1 rounded px-4 py-2 text-sm font-bold border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"

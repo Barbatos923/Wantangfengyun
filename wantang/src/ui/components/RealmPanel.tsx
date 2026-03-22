@@ -5,7 +5,24 @@ import { usePanelStore } from '@ui/stores/panelStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
-import { calculateMonthlyLedger, getVassals, getDynamicTitle } from '@engine/official/officialUtils';
+import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getControlledZhou } from '@engine/official/officialUtils';
+import { refreshPlayerLedger } from '@engine/interaction';
+
+/** 根据回拨率对所有附庸设置好感（不衰减）。回拨越高好感越低，以60%为零点。 */
+function applyRedistributionOpinion(playerId: string, newRate: number) {
+  const charStore = useCharacterStore.getState();
+  const characters = charStore.characters;
+  const vassals = getVassals(playerId, characters);
+  // 以 60% 为基准 0，回拨越高好感越高，每 10% 偏移 → +5 好感
+  const opinion = Math.floor((newRate - 60) / 10) * 5;
+  for (const v of vassals) {
+    charStore.setOpinion(v.id, playerId, {
+      reason: '回拨率',
+      value: opinion,
+      decayable: false,
+    });
+  }
+}
 
 interface RealmPanelProps {
   onClose: () => void;
@@ -48,7 +65,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
   const playerLedger = cachedLedger ?? (player ? calculateMonthlyLedger(player, territories, characters) : null);
 
   const playerZhouTerritories = Array.from(territories.values()).filter(
-    (t) => t.actualControllerId === playerId && t.tier === 'zhou',
+    (t) => getActualController(t) === playerId && t.tier === 'zhou',
   );
 
   // 臣属领地：效忠于玩家的角色所持有的州
@@ -56,23 +73,13 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
   if (player) {
     const vassals = getVassals(player.id, characters);
     for (const v of vassals) {
-      for (const tid of v.controlledTerritoryIds) {
-        const t = territories.get(tid);
-        if (t && t.tier === 'zhou') {
-          vassalTerritories.push({ territory: t, holder: v.name });
-        }
+      for (const t of getControlledZhou(v.id, territories)) {
+        vassalTerritories.push({ territory: t, holder: v.name });
       }
     }
   }
 
-  const playerTerritories = Array.from(territories.values()).filter(
-    (t) => t.actualControllerId === playerId,
-  );
-  const highestTier =
-    playerTerritories.find((t) => t.tier === 'guo') ||
-    playerTerritories.find((t) => t.tier === 'dao') ||
-    playerTerritories[0];
-  const centralization = highestTier?.centralization ?? 1;
+  const redistributionRate = player?.redistributionRate ?? 0;
 
   return (
     <div
@@ -212,6 +219,10 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                         <span className="text-[var(--color-text-muted)]">属下上缴</span>
                         <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.vassalTribute.money)} 粮{Math.floor(playerLedger.vassalTribute.grain)}</span>
                       </div>
+                      <div className="flex justify-between px-3 py-2 text-sm">
+                        <span className="text-[var(--color-text-muted)]">回拨收入</span>
+                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionReceived.money)} 粮{Math.floor(playerLedger.redistributionReceived.grain)}</span>
+                      </div>
                       <div className="flex justify-between px-3 py-2 text-sm font-bold">
                         <span className="text-[var(--color-accent-green,#27ae60)]">收入合计</span>
                         <span className="text-[var(--color-accent-green,#27ae60)]">钱{Math.floor(playerLedger.totalIncome.money)} 粮{Math.floor(playerLedger.totalIncome.grain)}</span>
@@ -232,6 +243,10 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                       <div className="flex justify-between px-3 py-2 text-sm">
                         <span className="text-[var(--color-text-muted)]">军事维持</span>
                         <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.militaryMaintenance.money)} 粮{Math.floor(playerLedger.militaryMaintenance.grain)}</span>
+                      </div>
+                      <div className="flex justify-between px-3 py-2 text-sm">
+                        <span className="text-[var(--color-text-muted)]">回拨支出</span>
+                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionPaid.money)} 粮{Math.floor(playerLedger.redistributionPaid.grain)}</span>
                       </div>
                       <div className="flex justify-between px-3 py-2 text-sm">
                         <span className="text-[var(--color-text-muted)]">上缴领主</span>
@@ -271,42 +286,83 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
           {/* Tab 3: 体制 */}
           {activeTab === 'system' && (
             <div className="space-y-4">
-              {/* Centralization levels */}
+              {/* 回拨率 */}
               <div>
-                <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">集权等级</h3>
-                <div className="space-y-1.5">
-                  {CENTRALIZATION_DESCRIPTIONS.map(({ level, desc }) => {
-                    const isActive = level === centralization;
-                    return (
-                      <div
-                        key={level}
-                        className={`flex items-start gap-3 px-3 py-2 rounded border transition-colors ${
-                          isActive
-                            ? 'border-[var(--color-accent-gold)] bg-[var(--color-bg-surface)]/40'
-                            : 'border-[var(--color-border)]'
-                        }`}
-                      >
-                        <span
-                          className={`text-sm font-bold shrink-0 ${
-                            isActive
-                              ? 'text-[var(--color-accent-gold)]'
-                              : 'text-[var(--color-text-muted)]'
-                          }`}
-                        >
-                          {level}级
-                        </span>
-                        <span
-                          className={`text-sm ${
-                            isActive ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'
-                          }`}
-                        >
-                          {desc}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">回拨率</h3>
+                <div className="px-3 py-2 rounded border border-[var(--color-border)]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--color-text-muted)]">当前回拨率</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="w-6 h-6 rounded border border-[var(--color-border)] text-sm font-bold text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        disabled={redistributionRate <= 0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (playerId) {
+                            const newRate = Math.max(0, redistributionRate - 10);
+                            useCharacterStore.getState().updateCharacter(playerId, {
+                              redistributionRate: newRate,
+                            });
+                            applyRedistributionOpinion(playerId, newRate);
+                            refreshPlayerLedger();
+                          }
+                        }}
+                      >−</button>
+                      <span className="text-sm font-bold text-[var(--color-accent-gold)] w-10 text-center">{redistributionRate}%</span>
+                      <button
+                        className="w-6 h-6 rounded border border-[var(--color-border)] text-sm font-bold text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        disabled={redistributionRate >= 100}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (playerId) {
+                            const newRate = Math.min(100, redistributionRate + 10);
+                            useCharacterStore.getState().updateCharacter(playerId, {
+                              redistributionRate: newRate,
+                            });
+                            applyRedistributionOpinion(playerId, newRate);
+                            refreshPlayerLedger();
+                          }
+                        }}
+                      >+</button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[var(--color-text-muted)] mt-1">将收到的属下贡赋按此比例自动退还给属下</p>
                 </div>
               </div>
+
+              {/* 对下属的集权等级 */}
+              {player && (() => {
+                const vassals = getVassals(player.id, characters);
+                if (vassals.length === 0) return null;
+                return (
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">属下集权</h3>
+                    <div className="space-y-1.5">
+                      {vassals.map((v) => (
+                        <button
+                          key={v.id}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)] hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors text-left cursor-pointer"
+                          onClick={() => {
+                            usePanelStore.getState().pushCharacter(v.id);
+                            onClose();
+                          }}
+                        >
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-bold text-[var(--color-text)]">{v.name}</span>
+                            <span className="text-xs text-[var(--color-text-muted)]">{getDynamicTitle(v, territories)}</span>
+                          </div>
+                          <span className="text-sm font-bold text-[var(--color-accent-gold)]">{v.centralization ?? 2}级</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-2 space-y-0.5">
+                      {CENTRALIZATION_DESCRIPTIONS.map(({ level, desc }) => (
+                        <p key={level} className="text-xs text-[var(--color-text-muted)]">{level}级: {desc}</p>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Placeholder systems */}
               <div>

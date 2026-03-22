@@ -1,5 +1,7 @@
 // ===== 领地完整类型定义 =====
 
+import type { GameDate } from '../types';
+
 /** 领地等级 */
 export type TerritoryTier = 'zhou' | 'dao' | 'guo';
 
@@ -11,8 +13,8 @@ export type CentralizationLevel = 1 | 2 | 3 | 4;
 
 /** 建筑槽位 */
 export interface BuildingSlot {
-  buildingId: string | null;  // null = 空槽
-  level: number;              // 0 = 空
+  buildingId: string | null;
+  level: number;
 }
 
 /** 施工进度 */
@@ -21,6 +23,19 @@ export interface Construction {
   buildingId: string;
   targetLevel: number;
   remainingMonths: number;
+}
+
+/** 岗位 — 职位模板 + 具体挂载位置，"一个萝卜一个坑"中的坑
+ *  内联定义于此以避免与 official/types 的循环依赖；
+ *  official/types 会从此处 re-export Post。
+ */
+export interface Post {
+  id: string;
+  templateId: string;          // 引用 PositionTemplate.id
+  territoryId?: string;        // local 岗位绑定的领地 ID
+  holderId: string | null;     // 当前在任者 ID，null = 空缺
+  appointedBy?: string;        // 谁任命的
+  appointedDate?: GameDate;
 }
 
 /** 领地完整数据 */
@@ -35,17 +50,18 @@ export interface Territory {
   parentId?: string;
   childIds: string[];
 
-  // 归属
-  dejureControllerId: string;   // 法理控制人
-  actualControllerId: string;   // 实际控制人
-  centralization: CentralizationLevel;
+  // 法理归属
+  dejureControllerId: string;
+
+  // 岗位列表
+  posts: Post[];
 
   // 属性
-  control: number;      // 控制度 0-100
-  development: number;  // 发展度 0-100
-  populace: number;     // 民心 0-100
+  control: number;
+  development: number;
+  populace: number;
 
-  // 建筑 (4个槽位, 发展度>80扩展为6个)
+  // 建筑
   buildings: BuildingSlot[];
 
   // 施工队列
@@ -56,4 +72,7 @@ export interface Territory {
 
   // 基础人口
   basePopulation: number;
+
+  moneyRatio: number;
+  grainRatio: number;
 }

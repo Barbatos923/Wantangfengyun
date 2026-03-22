@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { getHeldPosts } from '@engine/official/officialUtils';
 import { ALL_POSITIONS } from '@data/positions';
 import { rankMap } from '@data/ranks';
 import { usePanelStore } from '@ui/stores/panelStore';
@@ -29,9 +30,9 @@ const GovernmentPanel: React.FC<GovernmentPanelProps> = ({ onClose }) => {
   const positionHolders = new Map<string, { charId: string; charName: string }>();
   for (const c of characters.values()) {
     if (!c.alive || !c.official) continue;
-    for (const h of c.official.positions) {
-      if (!positionHolders.has(h.positionId)) {
-        positionHolders.set(h.positionId, { charId: c.id, charName: c.name });
+    for (const h of getHeldPosts(c.id)) {
+      if (!positionHolders.has(h.templateId)) {
+        positionHolders.set(h.templateId, { charId: c.id, charName: c.name });
       }
     }
   }
