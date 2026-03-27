@@ -52,16 +52,8 @@ export function executeDismiss(
       appointedBy: 'system',
       appointedDate: { year: date.year, month: date.month },
     });
-    // 驻扎在该领地的军队随领地易手
-    if (post.territoryId) {
-      const terr = terrStore.getTerritory(post.territoryId);
-      if (terr) {
-        const zhouIds = terr.tier === 'zhou' ? [terr.id] : terr.childIds;
-        for (const zhouId of zhouIds) {
-          useMilitaryStore.getState().transferArmiesAtTerritory(zhouId, dismisserId);
-        }
-      }
-    }
+    // 该岗位绑定的军队随岗位易手
+    useMilitaryStore.getState().syncArmyOwnersByPost(postId, dismisserId);
   } else {
     // 普通岗位：清空
     terrStore.updatePost(postId, {

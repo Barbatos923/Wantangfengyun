@@ -32,10 +32,11 @@ export interface Battalion {
 export interface Army {
   id: string;
   name: string;
-  ownerId: string;          // 所属角色（统治者）
-  commanderId: string | null;  // 兵马使（将领ID）
-  locationId: string;       // 驻扎地（州ID）
-  battalionIds: string[];   // 下辖营ID列表
+  postId: string | null;      // 绑定岗位ID（头衔兵），null = 私兵/无主
+  ownerId: string;            // 所属角色（缓存，由 postId→Post.holderId 派生）
+  commanderId: string | null; // 兵马使（将领ID）
+  locationId: string;         // 驻扎地（州ID）
+  battalionIds: string[];     // 下辖营ID列表
 }
 
 /** 营的最大编制人数 */

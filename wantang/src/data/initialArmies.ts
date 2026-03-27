@@ -6,6 +6,7 @@ const ARMIES: Army[] = [
   {
     id: "army-shence",
     name: "神策军",
+    postId: null,
     ownerId: "char-yizong",
     commanderId: "char-zhangzhifang",
     locationId: "zhou-changan",
@@ -14,6 +15,7 @@ const ARMIES: Army[] = [
   {
     id: "army-hedong",
     name: "河东军",
+    postId: "post-jiedushi-hedong",
     ownerId: "char-zhengcongdang",
     commanderId: null,
     locationId: "zhou-taiyuan",
@@ -22,6 +24,7 @@ const ARMIES: Army[] = [
   {
     id: "army-lulong",
     name: "卢龙军",
+    postId: "post-jiedushi-youzhou",
     ownerId: "char-zhangyunshen",
     commanderId: null,
     locationId: "zhou-youzhou",
@@ -30,6 +33,7 @@ const ARMIES: Army[] = [
   {
     id: "army-chengde",
     name: "成德军",
+    postId: "post-jiedushi-chengde",
     ownerId: "char-wangjingchong",
     commanderId: null,
     locationId: "zhou-zhenzhou",
@@ -38,6 +42,7 @@ const ARMIES: Army[] = [
   {
     id: "army-weibo",
     name: "魏博军",
+    postId: "post-jiedushi-weibo",
     ownerId: "char-hanyunzhong",
     commanderId: null,
     locationId: "zhou-weizhou",
@@ -46,6 +51,7 @@ const ARMIES: Army[] = [
   {
     id: "army-shatuo",
     name: "沙陀骑",
+    postId: null,
     ownerId: "char-liguochang",
     commanderId: null,
     locationId: "zhou-yunzhou",
@@ -54,6 +60,7 @@ const ARMIES: Army[] = [
   {
     id: "army-huainan",
     name: "淮南军",
+    postId: "post-guancha-huainan",
     ownerId: "char-cuiyanzeng",
     commanderId: null,
     locationId: "zhou-yangzhou",
@@ -62,6 +69,7 @@ const ARMIES: Army[] = [
   {
     id: "army-xichuan",
     name: "西川军",
+    postId: "post-guancha-jiannan",
     ownerId: "char-liutong",
     commanderId: null,
     locationId: "zhou-chengdu",
@@ -70,6 +78,7 @@ const ARMIES: Army[] = [
   {
     id: "army-annan",
     name: "安南军",
+    postId: "post-fangyu-jiaozhou",
     ownerId: "char-gaopian",
     commanderId: null,
     locationId: "zhou-jiaozhou",
@@ -78,6 +87,7 @@ const ARMIES: Army[] = [
   {
     id: "army-dingnan",
     name: "定难军",
+    postId: "post-fangyu-xiazhou",
     ownerId: "char-tuobasigong",
     commanderId: null,
     locationId: "zhou-xiazhou",
@@ -86,6 +96,7 @@ const ARMIES: Army[] = [
   {
     id: "army-shuofang",
     name: "朔方军",
+    postId: "post-fangyu-lingzhou",
     ownerId: "char-lupan",
     commanderId: null,
     locationId: "zhou-lingzhou",
@@ -94,6 +105,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-w",
     name: "武宁军",
+    postId: "post-fangyu-xuzhou",
     ownerId: "char-npc-w",
     commanderId: null,
     locationId: "u",
@@ -102,6 +114,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-z",
     name: "武宁军",
+    postId: "post-fangyu-xuzhou",
     ownerId: "char-npc-z",
     commanderId: null,
     locationId: "h",
@@ -110,6 +123,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhongwu",
     name: "忠武军",
+    postId: "post-fangyu-xuchang",
     ownerId: "char-npc-zhongwu",
     commanderId: null,
     locationId: "zhou-xuchang",
@@ -118,6 +132,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-yicheng",
     name: "义成军",
+    postId: "post-fangyu-huazhou",
     ownerId: "char-npc-yicheng",
     commanderId: null,
     locationId: "zhou-huazhou",
@@ -126,6 +141,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-tianping",
     name: "天平军",
+    postId: "post-fangyu-yunzhou-sd",
     ownerId: "char-npc-tianping",
     commanderId: null,
     locationId: "zhou-yunzhou-sd",
@@ -134,6 +150,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-taining",
     name: "泰宁军",
+    postId: "post-fangyu-yanzhou",
     ownerId: "char-npc-taining",
     commanderId: null,
     locationId: "zhou-yanzhou",
@@ -142,6 +159,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhenhai",
     name: "镇海军",
+    postId: "post-guancha-jiangnan-e",
     ownerId: "char-npc-zhenhai",
     commanderId: null,
     locationId: "zhou-runzhou",
@@ -150,6 +168,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-wuchang",
     name: "武昌军",
+    postId: "post-fangyu-ezhou",
     ownerId: "char-npc-wuchang",
     commanderId: null,
     locationId: "zhou-ezhou",
@@ -158,6 +177,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-shannan-e",
     name: "山南东道军",
+    postId: "post-guancha-shannan-e",
     ownerId: "char-npc-shannan-e",
     commanderId: null,
     locationId: "zhou-xiangyang",
@@ -166,6 +186,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-binning",
     name: "邠宁军",
+    postId: "post-jiedushi-guannei",
     ownerId: "char-npc-binning",
     commanderId: null,
     locationId: "zhou-binzhou",
@@ -174,6 +195,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhenguo",
     name: "同华军",
+    postId: "post-fangyu-tongzhou",
     ownerId: "char-npc-zhenguo",
     commanderId: null,
     locationId: "zhou-tongzhou",
@@ -182,6 +204,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-shanzhou",
     name: "陕虢军",
+    postId: "post-fangyu-shanzhou",
     ownerId: "char-npc-shanzhou",
     commanderId: null,
     locationId: "zhou-shanzhou",
@@ -190,6 +213,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhaoyi",
     name: "昭义军",
+    postId: "post-fangyu-luzhou",
     ownerId: "char-npc-zhaoyi",
     commanderId: null,
     locationId: "zhou-luzhou",
@@ -198,6 +222,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-yiwu",
     name: "义武军",
+    postId: "post-fangyu-dingzhou",
     ownerId: "char-npc-yiwu",
     commanderId: null,
     locationId: "zhou-dingzhou",
@@ -206,6 +231,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-fengguo",
     name: "奉国军",
+    postId: "post-fangyu-caizhou",
     ownerId: "char-npc-fengguo",
     commanderId: null,
     locationId: "zhou-caizhou",
@@ -214,6 +240,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-jingnan",
     name: "荆南军",
+    postId: "post-cishi-jiangling",
     ownerId: "char-npc-jingnan",
     commanderId: null,
     locationId: "zhou-jiangling",
@@ -222,6 +249,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhendong",
     name: "镇东军",
+    postId: "post-cishi-yuezhou",
     ownerId: "char-npc-zhendong",
     commanderId: null,
     locationId: "zhou-yuezhou",
@@ -230,6 +258,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-weiwu",
     name: "威武军",
+    postId: "post-cishi-fuzhou",
     ownerId: "char-npc-weiwu",
     commanderId: null,
     locationId: "zhou-fuzhou",
@@ -238,6 +267,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-xuanshe",
     name: "宣歙军",
+    postId: "post-cishi-xuanzhou",
     ownerId: "char-npc-xuanshe",
     commanderId: null,
     locationId: "zhou-xuanzhou",
@@ -246,6 +276,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-zhennan",
     name: "镇南军",
+    postId: "post-cishi-hongzhou",
     ownerId: "char-npc-zhennan",
     commanderId: null,
     locationId: "zhou-hongzhou",
@@ -254,6 +285,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-hunan",
     name: "湖南军",
+    postId: "post-cishi-tanzhou",
     ownerId: "char-npc-hunan",
     commanderId: null,
     locationId: "zhou-tanzhou",
@@ -262,6 +294,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-dongchuan",
     name: "东川军",
+    postId: "post-fangyu-zizhou",
     ownerId: "char-npc-dongchuan",
     commanderId: null,
     locationId: "zhou-zizhou",
@@ -270,6 +303,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-qinghai",
     name: "清海军",
+    postId: "post-guancha-lingnan",
     ownerId: "char-npc-qinghai",
     commanderId: null,
     locationId: "zhou-guangzhou",
@@ -278,6 +312,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-lingnan-w",
     name: "岭南西道军",
+    postId: "post-fangyu-yongzhou",
     ownerId: "char-npc-lingnan-w",
     commanderId: null,
     locationId: "zhou-yongzhou",
@@ -286,6 +321,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-jingjiang",
     name: "静江军",
+    postId: "post-cishi-guizhou",
     ownerId: "char-npc-jingjiang",
     commanderId: null,
     locationId: "zhou-guizhou",
@@ -294,6 +330,7 @@ const ARMIES: Army[] = [
   {
     id: "army-npc-tianshui",
     name: "天水军",
+    postId: "post-fangyu-qinzhou",
     ownerId: "char-npc-tianshui",
     commanderId: null,
     locationId: "zhou-qinzhou",
@@ -302,6 +339,7 @@ const ARMIES: Army[] = [
   {
     id: "army-fengxiang",
     name: "凤翔军",
+    postId: "post-fangyu-fengxiang",
     ownerId: "char-ducong",
     commanderId: null,
     locationId: "zhou-fengxiang",
@@ -310,6 +348,7 @@ const ARMIES: Army[] = [
   {
     id: "army-xingyuan",
     name: "兴元军",
+    postId: "post-jiedushi-shannan-w",
     ownerId: "char-xiaoye",
     commanderId: null,
     locationId: "zhou-xingyuan",
@@ -318,6 +357,7 @@ const ARMIES: Army[] = [
   {
     id: "army-suizhou",
     name: "遂州军",
+    postId: "post-fangyu-suizhou",
     ownerId: "char-sundang",
     commanderId: null,
     locationId: "zhou-suizhou",
@@ -326,6 +366,7 @@ const ARMIES: Army[] = [
   {
     id: "army-jingyuan",
     name: "泾原军",
+    postId: "post-jiedushi-longyou",
     ownerId: "char-lihongfu",
     commanderId: null,
     locationId: "zhou-jingzhou-ly",
@@ -334,6 +375,7 @@ const ARMIES: Army[] = [
   {
     id: "army-guiyi",
     name: "归义军",
+    postId: "post-jiedushi-hexi",
     ownerId: "char-zhanghuaishen",
     commanderId: null,
     locationId: "zhou-shazhou",
@@ -342,6 +384,7 @@ const ARMIES: Army[] = [
   {
     id: "army-fangzhou",
     name: "坊州军",
+    postId: "post-fangyu-fangzhou",
     ownerId: "char-jiaweiqing",
     commanderId: null,
     locationId: "zhou-fangzhou",

@@ -48,6 +48,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   const [showCreateArmy, setShowCreateArmy] = useState(false);
   const [newArmyName, setNewArmyName] = useState('');
   const [newArmyLocationId, setNewArmyLocationId] = useState('');
+  const [newArmyPostId, setNewArmyPostId] = useState('');
   // Tab1: 调拨 state
   const [transferringBatId, setTransferringBatId] = useState<string | null>(null);
 
@@ -90,6 +91,17 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
         return postHolder === playerId;
       }),
   );
+
+  // 玩家持有的 grantsControl 岗位（用于绑定军队）
+  const playerControlPosts = playerId
+    ? Array.from(territories.values()).flatMap((t) =>
+        t.posts.filter((p) => {
+          if (p.holderId !== playerId) return false;
+          const tpl = positionMap.get(p.templateId);
+          return tpl?.grantsControl === true;
+        }).map((p) => ({ ...p, territoryName: t.name, postName: positionMap.get(p.templateId)?.name ?? p.templateId }))
+      )
+    : [];
 
   // 生成默认营名
   function genDefaultName(armyId: string, unitType: UnitType): string {
@@ -248,9 +260,21 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       ))}
                     </select>
                   </div>
+                  <div>
+                    <select
+                      className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-surface)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
+                      value={newArmyPostId}
+                      onChange={(e) => setNewArmyPostId(e.target.value)}
+                    >
+                      <option value="">-- 无岗位绑定（私兵）--</option>
+                      {playerControlPosts.map((p) => (
+                        <option key={p.id} value={p.id}>{p.postName}（{p.territoryName}）</option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="flex gap-2 justify-end">
                     <button
-                      onClick={() => { setShowCreateArmy(false); setNewArmyName(''); setNewArmyLocationId(''); }}
+                      onClick={() => { setShowCreateArmy(false); setNewArmyName(''); setNewArmyLocationId(''); setNewArmyPostId(''); }}
                       className="px-3 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
                     >
                       取消
@@ -259,10 +283,11 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       disabled={!newArmyName.trim() || !newArmyLocationId}
                       onClick={() => {
                         if (playerId && newArmyName.trim() && newArmyLocationId) {
-                          useMilitaryStore.getState().createArmy(newArmyName.trim(), playerId, newArmyLocationId);
+                          useMilitaryStore.getState().createArmy(newArmyName.trim(), playerId, newArmyLocationId, undefined, newArmyPostId || null);
                           setShowCreateArmy(false);
                           setNewArmyName('');
                           setNewArmyLocationId('');
+                          setNewArmyPostId('');
                         }
                       }}
                       className="px-3 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-bg-surface)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -300,6 +325,10 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           <span className="text-sm font-bold text-[var(--color-accent-gold)]">{army.name}</span>
                           <span className="text-xs text-[var(--color-text-muted)]">
                             {commander ? commander.name : '无将领'} · {locationTerritory ? locationTerritory.name : army.locationId}
+                            {army.postId ? (() => {
+                              const tpl = (() => { for (const t of territories.values()) { const p = t.posts.find(pp => pp.id === army.postId); if (p) return { postName: positionMap.get(p.templateId)?.name ?? '', terrName: t.name }; } return null; })();
+                              return tpl ? ` · ${tpl.postName}（${tpl.terrName}）` : '';
+                            })() : ' · 私兵'}
                           </span>
                         </div>
                         <div className="flex gap-3 text-xs text-[var(--color-text-muted)] shrink-0">

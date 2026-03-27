@@ -9,6 +9,7 @@ import { calcPersonality } from '@engine/character/personalityUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import type { PersonalityKey } from '@data/traits';
 import { PERSONALITY_KEYS } from '@data/traits';
+import { random } from '@engine/random.ts';
 
 // ── 阶段属性权重 ──
 
@@ -110,7 +111,7 @@ export function drawStrategies(
 
   for (let i = 0; i < Math.min(3, remaining.length); i++) {
     const totalW = remaining.reduce((sum, r) => sum + r.w, 0);
-    let roll = Math.random() * totalW;
+    let roll = random() * totalW;
     let picked = 0;
     for (let j = 0; j < remaining.length; j++) {
       roll -= remaining[j].w;

@@ -1,8 +1,9 @@
 import { openDB } from 'idb';
 import type { IDBPDatabase } from 'idb';
+import type { GameEvent } from '@engine/types.ts';
 
 const DB_NAME = 'wantang-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 type WantangDB = IDBPDatabase;
 
@@ -12,12 +13,14 @@ let dbPromise: Promise<WantangDB> | null = null;
 export function initDB(): Promise<WantangDB> {
   if (!dbPromise) {
     dbPromise = openDB(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains('saves')) {
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
           db.createObjectStore('saves', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('chronicles')) {
           db.createObjectStore('chronicles', { keyPath: 'year' });
+        }
+        if (oldVersion < 2) {
+          const eventStore = db.createObjectStore('events', { keyPath: 'id' });
+          eventStore.createIndex('by-year', 'year', { unique: false });
         }
       },
     });
@@ -65,4 +68,29 @@ export async function loadChronicle(year: number): Promise<string | undefined> {
   const db = await initDB();
   const record = await db.get('chronicles', year);
   return record?.text;
+}
+
+// ===== Event 归档 =====
+
+/** 将事件批量写入 IndexedDB（幂等，使用 put）。 */
+export async function archiveEvents(events: GameEvent[]): Promise<void> {
+  const db = await initDB();
+  const tx = db.transaction('events', 'readwrite');
+  for (const e of events) {
+    await tx.store.put({ ...e, year: e.date.year, month: e.date.month });
+  }
+  await tx.done;
+}
+
+/** 从 IndexedDB 加载指定年份的归档事件。 */
+export async function loadArchivedEvents(year: number): Promise<GameEvent[]> {
+  const db = await initDB();
+  return db.getAllFromIndex('events', 'by-year', year);
+}
+
+/** 从 IndexedDB 加载指定年份范围的归档事件。 */
+export async function loadArchivedEventsByRange(startYear: number, endYear: number): Promise<GameEvent[]> {
+  const db = await initDB();
+  const range = IDBKeyRange.bound(startYear, endYear);
+  return db.getAllFromIndex('events', 'by-year', range);
 }

@@ -98,22 +98,11 @@ export function executeAppoint(
   // 2. 确保效忠关系
   charStore.updateCharacter(appointeeId, { overlordId: appointerId });
 
-  // 3. 如果是 grantsControl 岗位，驻扎在该领地的军队随领地易手
-  const post = terrStore.findPost(postId);
-  if (post) {
-    const tpl = positionMap.get(post.templateId);
-    if (tpl?.grantsControl && post.territoryId) {
-      const terr = terrStore.getTerritory(post.territoryId);
-      if (terr) {
-        const zhouIds = terr.tier === 'zhou' ? [terr.id] : terr.childIds;
-        for (const zhouId of zhouIds) {
-          useMilitaryStore.getState().transferArmiesAtTerritory(zhouId, appointeeId);
-        }
-      }
-    }
-  }
+  // 3. 该岗位绑定的军队随岗位转移给被任命者
+  useMilitaryStore.getState().syncArmyOwnersByPost(postId, appointeeId);
 
   // 4. 好感修正：被任命者对任命者好感增加（按品级，可衰减）
+  const post = terrStore.findPost(postId);
   if (post) {
     const tpl = positionMap.get(post.templateId);
     if (tpl) {

@@ -2,16 +2,13 @@
 
 import type { Abilities, Character } from './types';
 import { traitMap, getTraitsByCategory, type TraitDef } from '@data/traits';
+import { randInt, random, shuffle } from '@engine/random.ts';
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-/** 简易随机整数 [min, max] */
-function randInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 // ===== 能力值生成 =====
 
@@ -59,7 +56,7 @@ export function assignPersonalityTraits(existingTraitIds: string[]): string[] {
     }
   }
 
-  const shuffled = [...personalityTraits].sort(() => Math.random() - 0.5);
+  const shuffled = shuffle([...personalityTraits]);
 
   for (const trait of shuffled) {
     if (selected.length >= count) break;
@@ -87,7 +84,7 @@ export function assignEducationTrait(abilities: Abilities): string {
   ];
 
   // 按值降序，打乱同值的
-  entries.sort((a, b) => b.value - a.value || (Math.random() - 0.5));
+  entries.sort((a, b) => b.value - a.value || (random() - 0.5));
   const best = entries[0];
 
   // 根据能力值确定等级

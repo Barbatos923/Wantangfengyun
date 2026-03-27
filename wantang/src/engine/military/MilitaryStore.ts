@@ -20,11 +20,12 @@ interface MilitaryState {
   getArmy: (id: string) => Army | undefined;
   getBattalion: (id: string) => Battalion | undefined;
   getArmiesByOwner: (ownerId: string) => Army[];
+  getArmiesByPost: (postId: string) => Army[];
   getArmiesAtLocation: (territoryId: string) => Army[];
   getBattalionsByArmy: (armyId: string) => Battalion[];
 
   // 创建
-  createArmy: (name: string, ownerId: string, locationId: string, commanderId?: string) => Army;
+  createArmy: (name: string, ownerId: string, locationId: string, commanderId?: string, postId?: string | null) => Army;
   recruitBattalion: (armyId: string, territoryId: string, unitType: UnitType, name: string) => Battalion;
 
   // 解散
@@ -40,7 +41,10 @@ interface MilitaryState {
   updateArmy: (id: string, patch: Partial<Army>) => void;
   batchMutateBattalions: (mutator: (battalions: Map<string, Battalion>) => void) => void;
 
-  // 领地易手时转移驻军
+  // 岗位绑定的军队 ownerId 同步
+  syncArmyOwnersByPost: (postId: string, newOwnerId: string) => void;
+
+  // 领地易手时转移驻军（仅用于战争场景）
   transferArmiesAtTerritory: (territoryId: string, newOwnerId: string) => void;
 }
 
@@ -110,6 +114,14 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
     return result;
   },
 
+  getArmiesByPost: (postId) => {
+    const result: Army[] = [];
+    for (const army of get().armies.values()) {
+      if (army.postId === postId) result.push(army);
+    }
+    return result;
+  },
+
   getArmiesAtLocation: (territoryId) => {
     const { locationArmyIndex, armies } = get();
     const armyIds = locationArmyIndex.get(territoryId);
@@ -134,11 +146,12 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
     return result;
   },
 
-  createArmy: (name, ownerId, locationId, commanderId) => {
+  createArmy: (name, ownerId, locationId, commanderId, postId) => {
     const id = `army-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const army: Army = {
       id,
       name,
+      postId: postId ?? null,
       ownerId,
       locationId,
       commanderId: commanderId ?? null,
@@ -508,6 +521,40 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
       }
 
       return { battalions, armyBattalionIndex };
+    });
+  },
+
+  syncArmyOwnersByPost: (postId, newOwnerId) => {
+    set((state) => {
+      const armies = new Map(state.armies);
+      const ownerArmyIndex = new Map(state.ownerArmyIndex);
+      let changed = false;
+
+      for (const army of armies.values()) {
+        if (army.postId === postId && army.ownerId !== newOwnerId) {
+          const oldOwnerId = army.ownerId;
+          armies.set(army.id, { ...army, ownerId: newOwnerId, commanderId: null });
+          changed = true;
+
+          // 从旧 owner 索引移除
+          const oldSet = ownerArmyIndex.get(oldOwnerId);
+          if (oldSet) {
+            const newSet = new Set(oldSet);
+            newSet.delete(army.id);
+            ownerArmyIndex.set(oldOwnerId, newSet);
+          }
+
+          // 加入新 owner 索引
+          const existingSet = ownerArmyIndex.get(newOwnerId);
+          if (existingSet) {
+            ownerArmyIndex.set(newOwnerId, new Set([...existingSet, army.id]));
+          } else {
+            ownerArmyIndex.set(newOwnerId, new Set([army.id]));
+          }
+        }
+      }
+
+      return changed ? { armies, ownerArmyIndex } : state;
     });
   },
 
