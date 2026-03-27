@@ -8,6 +8,9 @@ import { positionMap } from '@data/positions';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { getControlledZhou, getHeldPosts, getSubordinates, getVassals } from './postQueries';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { getTotalMilitaryMaintenance } from '@engine/military/militaryCalc';
+import { unitTypeMap } from '@data/unitTypes';
 
 // ===== 内部辅助 =====
 
@@ -241,7 +244,8 @@ export function calculateMonthlyLedger(
     subordinateSalaries = sumMG(subordinateSalaries, calculateSalary(sub, territories, centralPosts));
   }
 
-  const militaryMaintenance = { ...zero };
+  const { armies, battalions } = useMilitaryStore.getState();
+  const militaryMaintenance = getTotalMilitaryMaintenance(char.id, armies, battalions, unitTypeMap);
   const constructionCost = { ...zero };
 
   // ── 支出：向上级缴纳的贡奉 ──

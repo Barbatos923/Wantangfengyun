@@ -3,7 +3,7 @@
 import type { GameDate } from '../types';
 
 /** 领地等级 */
-export type TerritoryTier = 'zhou' | 'dao' | 'guo';
+export type TerritoryTier = 'zhou' | 'dao' | 'guo' | 'tianxia';
 
 /** 领地类型 */
 export type TerritoryType = 'civil' | 'military';
@@ -61,17 +61,20 @@ export interface Territory {
   development: number;
   populace: number;
 
+  // 战时占领（非永久，战争结束后结算）
+  occupiedBy?: string; // 占领者角色ID，undefined=未被占领
+
   // 建筑
   buildings: BuildingSlot[];
 
   // 施工队列
   constructions: Construction[];
 
-  // 驻军
-  garrison: number;
-
-  // 基础人口
+  // 基础人口（户数）
   basePopulation: number;
+
+  // 兵役人口（当前可征兵数，每月恢复 上限/12）
+  conscriptionPool: number;
 
   moneyRatio: number;
   grainRatio: number;

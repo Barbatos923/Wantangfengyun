@@ -3,7 +3,8 @@
 export type { Interaction, InteractionParamType } from './types';
 export { registerInteraction, getAvailableInteractions } from './registry';
 
-// 导入交互定义以触发注册
+// 导入交互定义以触发注册（宣战优先显示）
+import './declareWarAction';
 import './appointAction';
 import './dismissAction';
 import './centralizationAction';

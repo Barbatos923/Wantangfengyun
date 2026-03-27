@@ -451,17 +451,7 @@ const localPositions: PositionTemplate[] = [
     description: '军法纪检长官',
     grantsControl: false,
   },
-  {
-    id: 'pos-bingmashi',
-    name: '兵马使',
-    institution: '藩镇',
-    scope: 'local',
-    tier: 'dao',
-    minRank: 10,
-    salary: { money: 55, grain: 42 },
-    description: '统领具体军事单位',
-    grantsControl: false,
-  },
+  // 兵马使已移至军事系统（Army.commanderId），不再作为岗位
   {
     id: 'pos-duzhibingmashi',
     name: '都知兵马使',

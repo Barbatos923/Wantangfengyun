@@ -7,6 +7,7 @@ import { positionMap } from '@data/positions';
 function buildIndexes(territories: Map<string, Territory>, centralPosts: Post[]) {
   const postIndex = new Map<string, Post>();
   const holderIndex = new Map<string, string[]>();
+  const controllerIndex = new Map<string, Set<string>>();
 
   function indexPost(post: Post) {
     postIndex.set(post.id, post);
@@ -23,13 +24,25 @@ function buildIndexes(territories: Map<string, Territory>, centralPosts: Post[])
   for (const t of territories.values()) {
     for (const p of t.posts) {
       indexPost(p);
+      if (
+        positionMap.get(p.templateId)?.grantsControl === true &&
+        p.holderId &&
+        p.territoryId
+      ) {
+        const set = controllerIndex.get(p.holderId);
+        if (set) {
+          set.add(p.territoryId);
+        } else {
+          controllerIndex.set(p.holderId, new Set([p.territoryId]));
+        }
+      }
     }
   }
   for (const p of centralPosts) {
     indexPost(p);
   }
 
-  return { postIndex, holderIndex };
+  return { postIndex, holderIndex, controllerIndex };
 }
 
 // ===== Store =====
@@ -39,8 +52,9 @@ interface TerritoryStoreState {
   centralPosts: Post[];
 
   // 索引
-  postIndex: Map<string, Post>;        // postId → Post (O(1) 查找)
-  holderIndex: Map<string, string[]>;   // holderId → postId[] (O(1) 查找)
+  postIndex: Map<string, Post>;              // postId → Post (O(1) 查找)
+  holderIndex: Map<string, string[]>;        // holderId → postId[] (O(1) 查找)
+  controllerIndex: Map<string, Set<string>>; // controllerId → Set<territoryId>
 
   // 初始化
   initTerritories: (terrs: Territory[]) => void;
@@ -68,6 +82,7 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
   centralPosts: [],
   postIndex: new Map(),
   holderIndex: new Map(),
+  controllerIndex: new Map(),
 
   initTerritories: (terrs) => {
     const map = new Map<string, Territory>();
@@ -86,14 +101,14 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
   getTerritory: (id) => get().territories.get(id),
 
   getTerritoriesByController: (controllerId) => {
+    const { controllerIndex, territories } = get();
+    const terrIds = controllerIndex.get(controllerId);
+    if (!terrIds) return [];
     const result: Territory[] = [];
-    get().territories.forEach((t) => {
-      const mainPost = t.posts.find(p => {
-        const tpl = positionMap.get(p.templateId);
-        return tpl?.grantsControl === true;
-      });
-      if (mainPost?.holderId === controllerId) result.push(t);
-    });
+    for (const tid of terrIds) {
+      const t = territories.get(tid);
+      if (t) result.push(t);
+    }
     return result;
   },
 
@@ -175,12 +190,47 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
         }
       }
 
+      // 更新 controllerIndex（如果 holderId 变了，且是授权控制岗位，且有 territoryId）
+      let newControllerIndex = state.controllerIndex;
+      if (
+        patch.holderId !== undefined &&
+        patch.holderId !== oldPost.holderId &&
+        positionMap.get(oldPost.templateId)?.grantsControl === true &&
+        oldPost.territoryId
+      ) {
+        newControllerIndex = new Map(state.controllerIndex);
+        // 从旧 holder 移除
+        if (oldPost.holderId) {
+          const oldSet = newControllerIndex.get(oldPost.holderId);
+          if (oldSet) {
+            const newSet = new Set(oldSet);
+            newSet.delete(oldPost.territoryId);
+            if (newSet.size > 0) {
+              newControllerIndex.set(oldPost.holderId, newSet);
+            } else {
+              newControllerIndex.delete(oldPost.holderId);
+            }
+          }
+        }
+        // 添加到新 holder
+        if (newPost.holderId) {
+          const existingSet = newControllerIndex.get(newPost.holderId);
+          if (existingSet) {
+            const newSet = new Set(existingSet);
+            newSet.add(oldPost.territoryId);
+            newControllerIndex.set(newPost.holderId, newSet);
+          } else {
+            newControllerIndex.set(newPost.holderId, new Set([oldPost.territoryId]));
+          }
+        }
+      }
+
       // 更新实际存储（centralPosts 或 territory.posts）
       const centralIdx = state.centralPosts.findIndex(p => p.id === postId);
       if (centralIdx !== -1) {
         const newCentralPosts = [...state.centralPosts];
         newCentralPosts[centralIdx] = newPost;
-        return { centralPosts: newCentralPosts, postIndex: newPostIndex, holderIndex: newHolderIndex };
+        return { centralPosts: newCentralPosts, postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
       }
 
       const terrs = new Map(state.territories);
@@ -190,7 +240,7 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
           const newPosts = [...t.posts];
           newPosts[postIdx] = newPost;
           terrs.set(tid, { ...t, posts: newPosts });
-          return { territories: terrs, postIndex: newPostIndex, holderIndex: newHolderIndex };
+          return { territories: terrs, postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
         }
       }
 

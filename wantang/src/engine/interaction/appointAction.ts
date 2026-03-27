@@ -9,6 +9,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { getActualController, getHeldPosts, canAppointToPost, calculateMonthlyLedger } from '@engine/official/officialUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
 /** 注册任命交互 */
 registerInteraction({
@@ -97,8 +98,22 @@ export function executeAppoint(
   // 2. 确保效忠关系
   charStore.updateCharacter(appointeeId, { overlordId: appointerId });
 
-  // 3. 好感修正：被任命者对任命者好感增加（按品级，可衰减）
+  // 3. 如果是 grantsControl 岗位，驻扎在该领地的军队随领地易手
   const post = terrStore.findPost(postId);
+  if (post) {
+    const tpl = positionMap.get(post.templateId);
+    if (tpl?.grantsControl && post.territoryId) {
+      const terr = terrStore.getTerritory(post.territoryId);
+      if (terr) {
+        const zhouIds = terr.tier === 'zhou' ? [terr.id] : terr.childIds;
+        for (const zhouId of zhouIds) {
+          useMilitaryStore.getState().transferArmiesAtTerritory(zhouId, appointeeId);
+        }
+      }
+    }
+  }
+
+  // 4. 好感修正：被任命者对任命者好感增加（按品级，可衰减）
   if (post) {
     const tpl = positionMap.get(post.templateId);
     if (tpl) {

@@ -5,6 +5,7 @@ import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { getActualController } from '@engine/official/officialUtils';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
 function formatValue(value: number): string {
   if (value >= 10000) return `${(value / 10000).toFixed(1)}万`;
@@ -32,6 +33,7 @@ const ResourceBar: React.FC = () => {
   });
   const territories = useTerritoryStore((s) => s.territories);
   const playerLedger = useLedgerStore((s) => s.playerLedger);
+  const { armies: milArmies, battalions: milBattalions } = useMilitaryStore();
 
   const resources: ResourceItem[] = useMemo(() => {
     if (!player) {
@@ -48,18 +50,26 @@ const ResourceBar: React.FC = () => {
     // 计算每月总产出
     let monthlyMoney = 0;
     let monthlyGrain = 0;
-    let monthlyTroops = 0;
     let territoryCount = 0;
     const abilities = getEffectiveAbilities(player);
 
-    // Always calculate territory count and troops from territory data
+    // 领地计数
     territories.forEach((t) => {
       if (getActualController(t) === player.id && t.tier === 'zhou') {
-        const income = calculateMonthlyIncome(t, abilities);
-        monthlyTroops += income.troops;
         territoryCount++;
       }
     });
+
+    // 从 MilitaryStore 计算玩家总兵力
+    let totalTroops = 0;
+    for (const army of milArmies.values()) {
+      if (army.ownerId === player.id) {
+        for (const batId of army.battalionIds) {
+          const bat = milBattalions.get(batId);
+          if (bat) totalTroops += bat.currentStrength;
+        }
+      }
+    }
 
     if (playerLedger) {
       monthlyMoney = playerLedger.net.money;
@@ -87,10 +97,10 @@ const ResourceBar: React.FC = () => {
       { label: '粮(斛)', icon: '🌾', value: player.resources.grain, change: monthlyGrain, title: grainTitle },
       { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
       { label: '合法性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
-      { label: '兵力', icon: '⚔', value: monthlyTroops, change: 0 },
+      { label: '兵力', icon: '⚔', value: totalTroops, change: 0 },
       { label: '领地', icon: '🏯', value: territoryCount, change: 0 },
     ];
-  }, [player, territories, playerLedger]);
+  }, [player, territories, playerLedger, milArmies, milBattalions]);
 
   return (
     <div className="flex items-center justify-evenly bg-[var(--color-bg-panel)] border-b border-[var(--color-border)] px-4 py-2 shrink-0">

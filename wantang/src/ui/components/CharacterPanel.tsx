@@ -13,10 +13,12 @@ import { getRankTitle, getSubordinates, getDirectControlLimit, getDynamicTitle, 
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import type { Post } from '@engine/territory/types';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import InteractionMenu from './InteractionMenu';
 import AppointFlow from './AppointFlow';
 import DismissFlow from './DismissFlow';
 import CentralizationFlow from './CentralizationFlow';
+import DeclareWarFlow from './DeclareWarFlow';
 
 // ── Constants ──────────────────────────────────────
 
@@ -276,12 +278,25 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
         {/* Resources */}
         <div>
           <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">资源</h3>
-          <div className="grid grid-cols-4 gap-1 text-center">
+          <div className="grid grid-cols-5 gap-1 text-center">
             {[
               { label: '钱', value: character.resources.money },
               { label: '粮', value: character.resources.grain },
               { label: '名望', value: character.resources.prestige },
               { label: '合法性', value: character.resources.legitimacy },
+              { label: '兵力', value: (() => {
+                const { armies, battalions } = useMilitaryStore.getState();
+                let total = 0;
+                for (const army of armies.values()) {
+                  if (army.ownerId === character.id) {
+                    for (const batId of army.battalionIds) {
+                      const bat = battalions.get(batId);
+                      if (bat) total += bat.currentStrength;
+                    }
+                  }
+                }
+                return total;
+              })() },
             ].map(({ label, value }) => (
               <div key={label}>
                 <div className="text-[10px] text-[var(--color-text-muted)]">{label}</div>
@@ -475,6 +490,13 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
       {activeInteraction === 'centralization' && (
         <CentralizationFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
+
+      {activeInteraction === 'declareWar' && (
+        <DeclareWarFlow
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />

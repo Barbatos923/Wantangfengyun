@@ -5,6 +5,9 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { buildingMap } from '@data/buildings';
 import BuildMenu from './BuildMenu';
 import { getActualController } from '@engine/official/officialUtils';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
+import { getArmyStrength } from '@engine/military/militaryCalc';
 
 interface TerritoryPanelProps {
   territory: Territory;
@@ -15,7 +18,15 @@ interface TerritoryPanelProps {
 const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onClickRuler }) => {
   const controllerId = getActualController(territory);
   const ruler = useCharacterStore((s) => controllerId ? s.characters.get(controllerId) : undefined);
-  const dejureRuler = useCharacterStore((s) => s.characters.get(territory.dejureControllerId));
+  const dejureRuler = useCharacterStore((s) => {
+    // dejureControllerId 指向父道ID，需要从道的主岗位找到法理控制者
+    const dao = useTerritoryStore.getState().territories.get(territory.dejureControllerId);
+    if (!dao) return undefined;
+    const mainPost = dao.posts.find((p) =>
+      p.templateId === 'pos-jiedushi' || p.templateId === 'pos-guancha-shi',
+    );
+    return mainPost?.holderId ? s.characters.get(mainPost.holderId) : undefined;
+  });
   const territories = useTerritoryStore((s) => s.territories);
   const characters = useCharacterStore((s) => s.characters);
   const [buildSlotIndex, setBuildSlotIndex] = useState<number | null>(null);
@@ -37,7 +48,7 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
               {' | '}
               {territory.territoryType === 'civil' ? '民政' : '军事'}
               {territory.tier === 'zhou' && (
-                <>{' | '}人口 {territory.basePopulation.toLocaleString()}</>
+                <>{' | '}户数 {territory.basePopulation.toLocaleString()}</>
               )}
             </p>
           </div>
@@ -66,7 +77,7 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
           </div>
         </div>
 
-        {/* Content: dao/guo shows child territories; zhou shows attributes/buildings/garrison */}
+        {/* Content: dao/guo shows child territories; zhou shows attributes/buildings/armies */}
         {territory.tier !== 'zhou' ? (
           <div className="mb-4">
             <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">下辖州 ({territory.childIds.length})</h3>
@@ -196,10 +207,72 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
               />
             )}
 
-            {/* Garrison */}
-            <div className="text-sm text-[var(--color-text-muted)]">
-              驻军: <span className="text-[var(--color-text)] font-bold">{territory.garrison.toLocaleString()}</span>
-            </div>
+            {/* 驻军 */}
+            {(() => {
+              const { armies: milArmies, battalions: milBattalions } = useMilitaryStore.getState();
+              const localArmies = Array.from(milArmies.values()).filter((a) => a.locationId === territory.id);
+              const totalTroops = localArmies.reduce((s, a) => s + getArmyStrength(a, milBattalions), 0);
+              return (
+                <div>
+                  <div className="text-sm text-[var(--color-text-muted)] mb-1">
+                    驻军: <span className="text-[var(--color-text)] font-bold">{totalTroops.toLocaleString()}人</span>
+                    {localArmies.length > 0 && <span>（{localArmies.length}军）</span>}
+                  </div>
+                  {localArmies.length > 0 && (
+                    <div className="space-y-0.5">
+                      {localArmies.map((a) => {
+                        const strength = getArmyStrength(a, milBattalions);
+                        const commander = a.commanderId ? useCharacterStore.getState().getCharacter(a.commanderId) : undefined;
+                        return (
+                          <div key={a.id} className="text-xs text-[var(--color-text-muted)] pl-2">
+                            {a.name} · {strength.toLocaleString()}人{commander ? ` · ${commander.name}` : ''}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* 占领状态 */}
+            {territory.occupiedBy && (() => {
+              const occupier = useCharacterStore.getState().getCharacter(territory.occupiedBy);
+              return (
+                <div className="mt-2 px-2 py-1.5 rounded border border-[var(--color-accent-red,#e74c3c)] bg-[var(--color-accent-red,#e74c3c)]/10">
+                  <div className="text-xs font-bold text-[var(--color-accent-red,#e74c3c)]">
+                    被占领
+                  </div>
+                  <div className="text-xs text-[var(--color-text-muted)]">
+                    占领者：{occupier?.name ?? '未知'}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* 围城状态 */}
+            {(() => {
+              const siege = Array.from(useWarStore.getState().sieges.values()).find((s) => s.territoryId === territory.id);
+              if (!siege) return null;
+              const campaign = useWarStore.getState().campaigns.get(siege.campaignId);
+              const attackerName = campaign ? useCharacterStore.getState().getCharacter(campaign.ownerId)?.name : '未知';
+              return (
+                <div className="mt-2 px-2 py-1.5 rounded border border-[var(--color-accent-red,#e74c3c)] bg-[var(--color-accent-red,#e74c3c)]/10">
+                  <div className="text-xs font-bold text-[var(--color-accent-red,#e74c3c)]">
+                    正在被围攻！
+                  </div>
+                  <div className="text-xs text-[var(--color-text-muted)]">
+                    攻方：{attackerName} · 进度 {Math.floor(siege.progress)}%
+                  </div>
+                  <div className="mt-1 h-1.5 rounded bg-[var(--color-bg-surface)] overflow-hidden">
+                    <div
+                      className="h-full bg-[var(--color-accent-red,#e74c3c)]"
+                      style={{ width: `${Math.floor(siege.progress)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
           </>
         )}
       </div>

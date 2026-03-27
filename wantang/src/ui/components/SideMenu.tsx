@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RealmPanel from './RealmPanel';
 import OfficialPanel from './OfficialPanel';
 import GovernmentPanel from './GovernmentPanel';
+import MilitaryPanel from './MilitaryPanel';
 
 interface MenuItem {
   label: string;
@@ -24,12 +25,15 @@ const SideMenu: React.FC = () => {
   const [showRealmPanel, setShowRealmPanel] = useState(false);
   const [showOfficialPanel, setShowOfficialPanel] = useState(false);
   const [showGovernmentPanel, setShowGovernmentPanel] = useState(false);
+  const [showMilitaryPanel, setShowMilitaryPanel] = useState(false);
 
   const handleClick = (label: string) => {
     if (label === '政体') {
       setShowGovernmentPanel(true);
     } else if (label === '领地') {
       setShowRealmPanel(true);
+    } else if (label === '军事') {
+      setShowMilitaryPanel(true);
     } else if (label === '官职') {
       setShowOfficialPanel(true);
     } else {
@@ -53,6 +57,7 @@ const SideMenu: React.FC = () => {
       {showGovernmentPanel && <GovernmentPanel onClose={() => setShowGovernmentPanel(false)} />}
       {showRealmPanel && <RealmPanel onClose={() => setShowRealmPanel(false)} />}
       {showOfficialPanel && <OfficialPanel onClose={() => setShowOfficialPanel(false)} />}
+      {showMilitaryPanel && <MilitaryPanel onClose={() => setShowMilitaryPanel(false)} />}
     </div>
   );
 };

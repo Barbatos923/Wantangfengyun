@@ -8,6 +8,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
 /** 注册罢免交互 */
 registerInteraction({
@@ -51,6 +52,16 @@ export function executeDismiss(
       appointedBy: 'system',
       appointedDate: { year: date.year, month: date.month },
     });
+    // 驻扎在该领地的军队随领地易手
+    if (post.territoryId) {
+      const terr = terrStore.getTerritory(post.territoryId);
+      if (terr) {
+        const zhouIds = terr.tier === 'zhou' ? [terr.id] : terr.childIds;
+        for (const zhouId of zhouIds) {
+          useMilitaryStore.getState().transferArmiesAtTerritory(zhouId, dismisserId);
+        }
+      }
+    }
   } else {
     // 普通岗位：清空
     terrStore.updatePost(postId, {

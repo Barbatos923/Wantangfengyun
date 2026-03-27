@@ -86,7 +86,8 @@ export function getDirectControlPenalty(
 }
 
 /**
- * 返回所有由指定角色任命的、仍存活的下属角色列表。
+ * 返回效忠于指定角色且持有岗位的存活下属角色列表。
+ * 判定依据：overlordId === charId + 持有至少一个岗位。
  */
 export function getSubordinates(
   charId: string,
@@ -94,25 +95,27 @@ export function getSubordinates(
   territories: Map<string, Territory>,
   centralPosts: Post[],
 ): Character[] {
-  const subordinateIds = new Set<string>();
-
+  // 收集所有持有岗位的角色ID
+  const postHolderIds = new Set<string>();
   for (const t of territories.values()) {
     for (const post of t.posts) {
-      if (post.appointedBy === charId && post.holderId && post.holderId !== charId) {
-        subordinateIds.add(post.holderId);
+      if (post.holderId && post.holderId !== charId) {
+        postHolderIds.add(post.holderId);
       }
     }
   }
   for (const post of centralPosts) {
-    if (post.appointedBy === charId && post.holderId && post.holderId !== charId) {
-      subordinateIds.add(post.holderId);
+    if (post.holderId && post.holderId !== charId) {
+      postHolderIds.add(post.holderId);
     }
   }
 
+  // 臣属 = 效忠于我 + 持有岗位
   const result: Character[] = [];
-  for (const sid of subordinateIds) {
-    const c = characters.get(sid);
-    if (c?.alive) result.push(c);
+  for (const c of characters.values()) {
+    if (c.alive && c.overlordId === charId && postHolderIds.has(c.id)) {
+      result.push(c);
+    }
   }
   return result;
 }

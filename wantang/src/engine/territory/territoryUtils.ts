@@ -107,30 +107,28 @@ export interface AttributeDrift {
 export function calculateAttributeDrift(
   territory: Territory,
   rulerTraitIds: string[],
+  rulerAbilities?: Abilities,
 ): AttributeDrift {
   if (territory.tier !== 'zhou') return { control: 0, development: 0, populace: 0 };
   const bonuses = getBuildingBonuses(territory);
+  const military = rulerAbilities?.military ?? 10;
+  const administration = rulerAbilities?.administration ?? 10;
 
-  // 控制度：向目标值漂移，每月最多±2
-  const dejureMatch = territory.dejureControllerId === getActualControllerLocal(territory);
-  const controlTarget = dejureMatch ? 80 : 40;
-  let controlDrift = 0;
-  if (territory.control < controlTarget) {
-    controlDrift = Math.min(2, controlTarget - territory.control);
-  } else if (territory.control > controlTarget) {
-    controlDrift = Math.max(-2, controlTarget - territory.control);
-  }
+  // 控制度：向目标值收敛，目标 = military × 5（封顶100）
+  const controlTarget = Math.min(100, military * 5);
+  let controlDrift = (controlTarget - territory.control) * 0.08;
   controlDrift += bonuses.controlPerMonth;
 
-  // 发展度
-  let devDrift = territory.control > 50 ? 0.2 : -0.1;
+  // 发展度：向目标值收敛，目标 = administration × 5（封顶100）
+  const devTarget = Math.min(100, administration * 5);
+  let devDrift = (devTarget - territory.development) * 0.08;
   devDrift += bonuses.developmentPerMonth;
 
-  // 民心
-  let populaceDrift = -0.5; // 基础衰减
-  // 公正特质 +0.5
+  // 民心：由控制度和发展度驱动
+  // 均值100→+1/月，均值20→-1/月，均值60→0
+  const avg = (territory.control + territory.development) / 2;
+  let populaceDrift = (avg - 60) / 40;
   if (rulerTraitIds.includes('trait-just')) populaceDrift += 0.5;
-  // 残暴特质 -1.0
   if (rulerTraitIds.includes('trait-cruel')) populaceDrift -= 1.0;
   populaceDrift += bonuses.populacePerMonth;
 
@@ -141,8 +139,8 @@ export function calculateAttributeDrift(
 export function applyAttributeDrift(territory: Territory, drift: AttributeDrift): Partial<Territory> {
   if (territory.tier !== 'zhou') return {};
   return {
-    control: clamp(territory.control + drift.control, 0, 100),
-    development: clamp(territory.development + drift.development, 0, 100),
+    control: clamp(territory.control + drift.control, 20, 100),
+    development: clamp(territory.development + drift.development, 20, 100),
     populace: clamp(territory.populace + drift.populace, 0, 100),
   };
 }
