@@ -2,7 +2,7 @@
 
 import type { Character } from '@engine/character/types';
 import type { Army, Battalion } from './types';
-import type { BattlePhase, StrategyDef, PursuitStrategyDef } from '@data/strategies';
+import type { BattlePhase, StrategyDef } from '@data/strategies';
 import { ALL_STRATEGIES, PURSUIT_STRATEGIES } from '@data/strategies';
 import { unitTypeMap } from '@data/unitTypes';
 import { calcPersonality } from '@engine/character/personalityUtils';

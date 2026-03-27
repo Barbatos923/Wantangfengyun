@@ -172,7 +172,7 @@ export function createAllTerritories(): Territory[] {
       }],
       control: 0, development: 0, populace: 0,
       buildings: [], constructions: [],
-      garrison: 0, basePopulation: 0, conscriptionPool: 0,
+      basePopulation: 0, conscriptionPool: 0,
       moneyRatio: 0, grainRatio: 0,
     },
 
@@ -185,7 +185,7 @@ export function createAllTerritories(): Territory[] {
       childIds: ['dao-jingji', 'dao-guannei', 'dao-duji', 'dao-longyou', 'dao-hexi'],
       dejureControllerId: 'tianxia',
       posts: [], control: 0, development: 0, populace: 0,
-      buildings: [], constructions: [], garrison: 0,
+      buildings: [], constructions: [],
       basePopulation: 0, conscriptionPool: 0, moneyRatio: 0, grainRatio: 0,
     },
     {
@@ -194,7 +194,7 @@ export function createAllTerritories(): Territory[] {
       childIds: ['dao-hedong', 'dao-youzhou', 'dao-chengde', 'dao-weibo'],
       dejureControllerId: 'tianxia',
       posts: [], control: 0, development: 0, populace: 0,
-      buildings: [], constructions: [], garrison: 0,
+      buildings: [], constructions: [],
       basePopulation: 0, conscriptionPool: 0, moneyRatio: 0, grainRatio: 0,
     },
     {
@@ -203,7 +203,7 @@ export function createAllTerritories(): Territory[] {
       childIds: ['dao-henan', 'dao-shannan-e', 'dao-huainan'],
       dejureControllerId: 'tianxia',
       posts: [], control: 0, development: 0, populace: 0,
-      buildings: [], constructions: [], garrison: 0,
+      buildings: [], constructions: [],
       basePopulation: 0, conscriptionPool: 0, moneyRatio: 0, grainRatio: 0,
     },
     {
@@ -212,7 +212,7 @@ export function createAllTerritories(): Territory[] {
       childIds: ['dao-jiannan', 'dao-shannan-w'],
       dejureControllerId: 'tianxia',
       posts: [], control: 0, development: 0, populace: 0,
-      buildings: [], constructions: [], garrison: 0,
+      buildings: [], constructions: [],
       basePopulation: 0, conscriptionPool: 0, moneyRatio: 0, grainRatio: 0,
     },
     {
@@ -221,7 +221,7 @@ export function createAllTerritories(): Territory[] {
       childIds: ['dao-jiangnan-e', 'dao-jiangnan-w', 'dao-lingnan'],
       dejureControllerId: 'tianxia',
       posts: [], control: 0, development: 0, populace: 0,
-      buildings: [], constructions: [], garrison: 0,
+      buildings: [], constructions: [],
       basePopulation: 0, conscriptionPool: 0, moneyRatio: 0, grainRatio: 0,
     },
 

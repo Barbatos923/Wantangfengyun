@@ -12,7 +12,6 @@ import OpinionPopup from './OpinionPopup';
 import { getRankTitle, getSubordinates, getDirectControlLimit, getDynamicTitle, getHeldPosts, getActualController } from '@engine/official/officialUtils';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
-import type { Post } from '@engine/territory/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import InteractionMenu from './InteractionMenu';
 import AppointFlow from './AppointFlow';

@@ -7,7 +7,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
-import { getActualController, getHeldPosts, canAppointToPost, calculateMonthlyLedger } from '@engine/official/officialUtils';
+import { getActualController, getHeldPosts, calculateMonthlyLedger } from '@engine/official/officialUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 

@@ -49,21 +49,6 @@ interface WarState {
   updateSiege(id: string, patch: Partial<Siege>): void;
 }
 
-let _warIdCounter = 1;
-let _campaignIdCounter = 1;
-let _siegeIdCounter = 1;
-
-function nextWarId(): string {
-  return `war_${_warIdCounter++}`;
-}
-
-function nextCampaignId(): string {
-  return `campaign_${_campaignIdCounter++}`;
-}
-
-function nextSiegeId(): string {
-  return `siege_${_siegeIdCounter++}`;
-}
 
 export const useWarStore = create<WarState>()((set, get) => ({
   wars: new Map(),
@@ -74,7 +59,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
 
   declareWar(attackerId, defenderId, casusBelli, targetTerritoryIds, date) {
     const war: War = {
-      id: nextWarId(),
+      id: crypto.randomUUID(),
       attackerId,
       defenderId,
       casusBelli,
@@ -124,7 +109,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
 
   createCampaign(warId, ownerId, commanderId, armyIds, locationId) {
     const campaign: Campaign = {
-      id: nextCampaignId(),
+      id: crypto.randomUUID(),
       warId,
       ownerId,
       commanderId,
@@ -190,7 +175,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
 
   startSiege(warId, campaignId, territoryId, date) {
     const siege: Siege = {
-      id: nextSiegeId(),
+      id: crypto.randomUUID(),
       warId,
       campaignId,
       territoryId,

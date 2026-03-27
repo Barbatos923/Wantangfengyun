@@ -14,6 +14,7 @@ import type { RankLevel } from './types';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
 // ── 从拆分模块 re-export 纯函数 ─────────────────────────
 
@@ -110,7 +111,8 @@ export function calculateMonthlyLedger(
   characters: Map<string, Character>,
 ) {
   const { centralPosts } = useTerritoryStore.getState();
-  return _calculateMonthlyLedgerPure(char, territories, characters, centralPosts);
+  const { armies, battalions } = useMilitaryStore.getState();
+  return _calculateMonthlyLedgerPure(char, territories, characters, centralPosts, armies, battalions);
 }
 
 /** 角色领地类型判定（便捷版） */

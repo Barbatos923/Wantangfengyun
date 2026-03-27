@@ -8,7 +8,7 @@ import { positionMap } from '@data/positions';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { getControlledZhou, getHeldPosts, getSubordinates, getVassals } from './postQueries';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import type { Army, Battalion } from '@engine/military/types';
 import { getTotalMilitaryMaintenance } from '@engine/military/militaryCalc';
 import { unitTypeMap } from '@data/unitTypes';
 
@@ -130,6 +130,8 @@ export function calculateMonthlyLedger(
   territories: Map<string, Territory>,
   characters: Map<string, Character>,
   centralPosts: Post[],
+  armies: Map<string, Army>,
+  battalions: Map<string, Battalion>,
 ): MonthlyLedger {
   const zero = { money: 0, grain: 0 };
 
@@ -244,7 +246,6 @@ export function calculateMonthlyLedger(
     subordinateSalaries = sumMG(subordinateSalaries, calculateSalary(sub, territories, centralPosts));
   }
 
-  const { armies, battalions } = useMilitaryStore.getState();
   const militaryMaintenance = getTotalMilitaryMaintenance(char.id, armies, battalions, unitTypeMap);
   const constructionCost = { ...zero };
 

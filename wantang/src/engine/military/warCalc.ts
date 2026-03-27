@@ -12,7 +12,7 @@ import { positionMap } from '@data/positions';
 export function getAvailableCasusBelli(
   attackerId: string,
   defenderId: string,
-  era: Era,
+  _era: Era,
   territories: Map<string, Territory>,
 ): CasusBelli[] {
   const result: CasusBelli[] = [];

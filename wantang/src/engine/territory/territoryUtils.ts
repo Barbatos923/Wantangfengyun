@@ -3,19 +3,6 @@
 import type { Territory } from './types';
 import type { Abilities } from '@engine/character/types';
 import { buildingMap } from '@data/buildings';
-import { positionMap } from '@data/positions';
-
-/**
- * 内联版 getActualController：避免循环依赖（territoryUtils ↔ officialUtils）。
- * 返回领地主岗位（grantsControl === true）的持有人 ID，无则 null。
- */
-function getActualControllerLocal(territory: Territory): string | null {
-  const mainPost = territory.posts.find(p => {
-    const tpl = positionMap.get(p.templateId);
-    return tpl?.grantsControl === true;
-  });
-  return mainPost?.holderId ?? null;
-}
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {

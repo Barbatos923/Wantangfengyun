@@ -152,6 +152,7 @@ function generateTerritories(count: number, lordCount: number): Territory[] {
       ],
       constructions: [],
       basePopulation: randInt(50000, 300000),
+      conscriptionPool: 0,
       moneyRatio: 0.3 + Math.random() * 0.4,
       grainRatio: 0.3 + Math.random() * 0.4,
     };

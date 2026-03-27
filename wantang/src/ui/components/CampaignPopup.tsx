@@ -10,7 +10,7 @@ import { getArmyStrength } from '@engine/military/militaryCalc';
 import { findPath, getMusteringTime } from '@engine/military/marchCalc';
 import { drawStrategies } from '@engine/military/battleEngine';
 import { positionMap } from '@data/positions';
-import { ALL_STRATEGIES, PURSUIT_STRATEGIES } from '@data/strategies';
+import { PURSUIT_STRATEGIES } from '@data/strategies';
 import type { BattlePhase, StrategyDef } from '@data/strategies';
 
 interface CampaignPopupProps {

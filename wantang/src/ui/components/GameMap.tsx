@@ -135,18 +135,19 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign }
 
 
   const controllerColorMap = useMemo(() => {
-    const ids = new Set<string>();
+    const map = new Map<string, string>();
     territories.forEach((t) => {
       if (t.tier === 'zhou') {
         const cid = getActualController(t);
-        if (cid) ids.add(cid);
+        if (cid && !map.has(cid)) {
+          // 用 ID 字符串的哈希确定性映射到调色板，避免因迭代顺序变化导致颜色漂移
+          let hash = 0;
+          for (let i = 0; i < cid.length; i++) {
+            hash = ((hash << 5) - hash + cid.charCodeAt(i)) | 0;
+          }
+          map.set(cid, CONTROLLER_PALETTE[((hash % CONTROLLER_PALETTE.length) + CONTROLLER_PALETTE.length) % CONTROLLER_PALETTE.length]);
+        }
       }
-    });
-    const map = new Map<string, string>();
-    let idx = 0;
-    ids.forEach((cid) => {
-      map.set(cid, CONTROLLER_PALETTE[idx % CONTROLLER_PALETTE.length]);
-      idx++;
     });
     return map;
   }, [territories]);

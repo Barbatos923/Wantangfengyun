@@ -104,7 +104,7 @@ export function applyDefenderAttrition(
   defenderId: string,
   attritionRate: number,
   armies: Map<string, Army>,
-  battalions: Map<string, Battalion>,
+  _battalions: Map<string, Battalion>,
   mutateBattalions: (mutator: (bats: Map<string, Battalion>) => void) => void,
 ): void {
   const batIdsToAttrit: string[] = [];

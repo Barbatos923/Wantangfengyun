@@ -18,6 +18,7 @@ import {
   getAvailableRecruits,
 } from '@engine/military/militaryCalc';
 import { getVassals } from '@engine/official/postQueries';
+import type { Territory, Post } from '@engine/territory/types';
 
 interface MilitaryPanelProps {
   onClose: () => void;
@@ -578,7 +579,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                         const deficit = MAX_BATTALION_STRENGTH - bat.currentStrength;
                         const canReplenish = available >= deficit && deficit > 0;
                         // 检查籍贯地是否属于玩家
-                        const homeController = homeTerr?.posts.find((p) => {
+                        const homeController = homeTerr?.posts.find((p: Post) => {
                           const tpl = positionMap.get(p.templateId);
                           return tpl?.grantsControl === true;
                         })?.holderId;
