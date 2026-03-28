@@ -43,7 +43,8 @@ export interface PhaseResult {
   attackerLosses: number;
   defenderLosses: number;
   result: 'attackerWin' | 'defenderWin' | 'draw';
-  narrative: string;
+  attackerNarrative: string;
+  defenderNarrative: string;
 }
 
 export interface BattleResult {
@@ -255,7 +256,8 @@ function resolvePhase(
     defenderLosses = Math.floor(baseCasualties * 0.5);
   }
 
-  const narrative = result === 'attackerWin' ? attackerStrategy.narratives.win : attackerStrategy.narratives.lose;
+  const attackerNarrative = result === 'attackerWin' ? attackerStrategy.narratives.win : attackerStrategy.narratives.lose;
+  const defenderNarrative = result === 'defenderWin' ? defenderStrategy.narratives.win : defenderStrategy.narratives.lose;
 
   return {
     phase,
@@ -270,7 +272,8 @@ function resolvePhase(
     attackerLosses,
     defenderLosses,
     result,
-    narrative,
+    attackerNarrative,
+    defenderNarrative,
   };
 }
 
@@ -438,7 +441,8 @@ export function resolveBattle(
     attackerLosses: overallResult === 'attackerWin' ? 0 : pursuitLosses,
     defenderLosses: overallResult === 'attackerWin' ? pursuitLosses : 0,
     result: overallResult === 'attackerWin' ? 'attackerWin' : 'defenderWin',
-    narrative: winnerPursuit.narrative,
+    attackerNarrative: overallResult === 'attackerWin' ? winnerPursuit.narrative : loserPursuit.narrative,
+    defenderNarrative: overallResult === 'attackerWin' ? loserPursuit.narrative : winnerPursuit.narrative,
   });
 
   // 战争分数

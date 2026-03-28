@@ -268,6 +268,13 @@ export function runWarSystem(date: GameDate): void {
       territories: [campaign.locationId],
       description: `${terrName}之战！${winnerName ?? ''}获胜。攻方损失${result.totalAttackerLosses}，守方损失${result.totalDefenderLosses}`,
       priority: EventPriority.Major,
+      payload: {
+        battleResult: result,
+        attackerCommanderId: campaign.commanderId,
+        defenderCommanderId: enemyCampaign.commanderId,
+        attackerArmyIds: campaign.armyIds,
+        defenderArmyIds: enemyCampaign.armyIds,
+      },
     });
   }
 
@@ -352,14 +359,22 @@ export function runWarSystem(date: GameDate): void {
         }
 
         // e. 检查是否所有目标领地都已被占领 → 直接100分
-        const allTargetsTaken = warForScore.targetTerritoryIds.every((tid) => {
-          const t = useTerritoryStore.getState().territories.get(tid);
-          return t?.occupiedBy === campaign.ownerId;
-        });
-        if (allTargetsTaken) {
-          if (campaign.ownerId === warForScore.attackerId) {
+        const isAttacker = campaign.ownerId === warForScore.attackerId;
+        if (isAttacker) {
+          // 进攻方：宣战目标领地是否全部被占领
+          const allTargetsTaken = warForScore.targetTerritoryIds.every((tid) => {
+            const t = useTerritoryStore.getState().territories.get(tid);
+            return t?.occupiedBy === campaign.ownerId;
+          });
+          if (allTargetsTaken) {
             useWarStore.getState().updateWar(warForScore.id, { attackerWarScore: 100 });
-          } else {
+          }
+        } else {
+          // 防守方：进攻方所有州是否全部被占领
+          const enemyTerritories = useTerritoryStore.getState().getTerritoriesByController(warForScore.attackerId)
+            .filter((t) => t.tier === 'zhou');
+          const allEnemyOccupied = enemyTerritories.length > 0 && enemyTerritories.every((t) => t.occupiedBy === campaign.ownerId);
+          if (allEnemyOccupied) {
             useWarStore.getState().updateWar(warForScore.id, { defenderWarScore: 100 });
           }
         }

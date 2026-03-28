@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useWarStore } from '@engine/military/WarStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import type { Campaign } from '@engine/military/types';
 import { getArmyStrength } from '@engine/military/militaryCalc';
@@ -400,7 +401,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
           if (playerId) {
             const player = characters.get(playerId);
             if (player) {
-              candidates.push({ id: playerId, name: player.name + '（亲征）', military: player.abilities.military });
+              candidates.push({ id: playerId, name: player.name + '（亲征）', military: getEffectiveAbilities(player).military });
               seen.add(playerId);
             }
           }
@@ -410,7 +411,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
             if (army?.commanderId && !seen.has(army.commanderId)) {
               const cmd = characters.get(army.commanderId);
               if (cmd) {
-                candidates.push({ id: cmd.id, name: cmd.name, military: cmd.abilities.military });
+                candidates.push({ id: cmd.id, name: cmd.name, military: getEffectiveAbilities(cmd).military });
                 seen.add(cmd.id);
               }
             }

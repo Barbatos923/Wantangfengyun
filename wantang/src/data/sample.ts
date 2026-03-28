@@ -7,24 +7,38 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { calculateMonthlyLedger } from '@engine/official/officialUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { ALL_POSITIONS } from './positions';
 import { createAllTerritories } from './territories';
 import { createAllCharacters } from './characters';
 import { createAllArmies, createAllBattalions } from './initialArmies';
 
-/** 中央岗位初始数据 */
+/** 有人在任的中央岗位 */
+const FILLED_CENTRAL_POSTS: Post[] = [
+  { id: 'post-emperor', templateId: 'pos-emperor', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 859, month: 1 } },
+  { id: 'post-sansi-shi', templateId: 'pos-sansi-shi', holderId: 'char-luyan', appointedBy: 'char-yizong', appointedDate: { year: 866, month: 3 } },
+  { id: 'post-sansi-tuiguan', templateId: 'pos-sansi-tuiguan', holderId: 'char-chenjingxuan', appointedBy: 'char-luyan', appointedDate: { year: 868, month: 6 } },
+];
+
+/** 为所有中央/特殊职位模板生成 Post 岗位实例 */
 function createCentralPosts(): Post[] {
-  return [
-    { id: 'post-emperor', templateId: 'pos-emperor', holderId: 'char-yizong', appointedBy: 'system', appointedDate: { year: 859, month: 1 } },
-    { id: 'post-sansi-shi', templateId: 'pos-sansi-shi', holderId: 'char-luyan', appointedBy: 'char-yizong', appointedDate: { year: 866, month: 3 } },
-    { id: 'post-sansi-tuiguan', templateId: 'pos-sansi-tuiguan', holderId: 'char-chenjingxuan', appointedBy: 'char-luyan', appointedDate: { year: 868, month: 6 } },
-    // 空缺中央岗位
-    { id: 'post-zaixiang', templateId: 'pos-zaixiang', holderId: null },
-    { id: 'post-hanlin', templateId: 'pos-hanlin', holderId: null },
-    { id: 'post-shumi', templateId: 'pos-shumi', holderId: null },
-    { id: 'post-shence', templateId: 'pos-shence', holderId: null },
-    { id: 'post-yushi-dafu', templateId: 'pos-yushi-dafu', holderId: null },
-    { id: 'post-yushi-zhongcheng', templateId: 'pos-yushi-zhongcheng', holderId: null },
-  ];
+  const filledMap = new Map(FILLED_CENTRAL_POSTS.map(p => [p.templateId, p]));
+  const posts: Post[] = [];
+
+  for (const tpl of ALL_POSITIONS) {
+    if (tpl.scope !== 'central') continue;
+    const existing = filledMap.get(tpl.id);
+    if (existing) {
+      posts.push(existing);
+    } else {
+      posts.push({
+        id: `post-${tpl.id.slice(4)}`,   // pos-xxx → post-xxx
+        templateId: tpl.id,
+        holderId: null,
+      });
+    }
+  }
+
+  return posts;
 }
 
 /**

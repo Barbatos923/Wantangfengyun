@@ -53,6 +53,7 @@ export interface GameEvent {
   territories: string[];
   description: string;
   priority: EventPriority;
+  payload?: Record<string, unknown>;
 }
 
 /** 人物简要引用（Phase 0） */

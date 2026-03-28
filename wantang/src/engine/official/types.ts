@@ -19,6 +19,7 @@ export interface RankDef {
 export type Institution =
   | '中书门下' | '翰林院' | '枢密院' | '神策军'
   | '三司' | '中书省' | '门下省' | '尚书省'
+  | '吏部' | '户部' | '礼部' | '兵部' | '刑部' | '工部'
   | '御史台' | '秘书省' | '三公'
   | '藩镇' | '州府' | '皇室';
 
@@ -29,7 +30,7 @@ export type PositionScope = 'central' | 'local';
 export interface PositionTemplate {
   id: string;
   name: string;
-  institution: Institution;
+  institution?: Institution;
   scope: PositionScope;
   tier?: TerritoryTier;        // local 职位绑定的领地层级
   territoryType?: TerritoryType; // 有地职位的领地类型标记
