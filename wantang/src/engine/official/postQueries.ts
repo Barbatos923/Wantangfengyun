@@ -6,6 +6,25 @@ import { positionMap } from '@data/positions';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 
 /**
+ * 查找当前皇帝角色 ID。
+ * 优先从 centralPosts 查，fallback 到 territories 中的 tianxia 级领地。
+ */
+export function findEmperorId(
+  territories: Map<string, Territory>,
+  centralPosts: Post[],
+): string | null {
+  const fromCentral = centralPosts.find(p => p.templateId === 'pos-emperor')?.holderId;
+  if (fromCentral) return fromCentral;
+  for (const t of territories.values()) {
+    if (t.tier === 'tianxia') {
+      const ep = t.posts.find(p => p.templateId === 'pos-emperor');
+      if (ep?.holderId) return ep.holderId;
+    }
+  }
+  return null;
+}
+
+/**
  * 获取领地的实际控制人 = 主岗位(grantsControl)的 holderId
  */
 export function getActualController(territory: Territory): string | null {

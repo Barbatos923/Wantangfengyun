@@ -3,15 +3,48 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import type { Character } from '@engine/character/types';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getRankTitle, calculateSalary, getDynamicTitle, getHeldPosts, getControlledZhou } from '@engine/official/officialUtils';
+import { isVassalOf } from '@engine/character/successionUtils';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import { usePanelStore } from '@ui/stores/panelStore';
+import { useTurnManager } from '@engine/TurnManager';
+import type { Post } from '@engine/territory/types';
 
 interface OfficialPanelProps {
   onClose: () => void;
 }
 
 type TabKey = 'status' | 'roster';
+
+/** 获取指定继承人的候选人列表（子嗣 + 同族附庸） */
+function getHeirCandidates(
+  playerId: string,
+  characters: Map<string, Character>,
+): { char: Character; label: string }[] {
+  const player = characters.get(playerId);
+  if (!player) return [];
+  const result: { char: Character; label: string }[] = [];
+
+  // 1. 子嗣
+  for (const cid of player.family.childrenIds) {
+    const c = characters.get(cid);
+    if (c?.alive) result.push({ char: c, label: '子嗣' });
+  }
+
+  // 2. 同族附庸（排除已加入的子嗣）
+  const childSet = new Set(player.family.childrenIds);
+  for (const c of characters.values()) {
+    if (!c.alive || c.id === playerId || childSet.has(c.id)) continue;
+    if (c.clan !== player.clan) continue;
+    if (isVassalOf(c.id, playerId, characters)) {
+      result.push({ char: c, label: '族人' });
+    }
+  }
+
+  // 按年龄降序（birthYear 升序 = 最年长优先）
+  result.sort((a, b) => a.char.birthYear - b.char.birthYear);
+  return result;
+}
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'status', label: '我的官职' },
@@ -20,6 +53,7 @@ const TABS: { key: TabKey; label: string }[] = [
 
 const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('status');
+  const [heirPickerPost, setHeirPickerPost] = useState<Post | null>(null);
 
   const playerId = useCharacterStore((s) => s.playerId);
   const player = useCharacterStore((s) => (playerId ? s.characters.get(playerId) : undefined));
@@ -149,20 +183,72 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                           const territoryName = post.territoryId
                             ? territories.get(post.territoryId)?.name
                             : undefined;
+                          const isClan = post.successionLaw === 'clan';
+                          const heirChar = post.designatedHeirId ? characters.get(post.designatedHeirId) : undefined;
+                          const heirAlive = heirChar?.alive;
+                          // 治所州主岗：由道级联动，继承人只读
+                          const isCapitalZhou = !!(post.territoryId && posDef.grantsControl
+                            && Array.from(territories.values()).some(t => t.tier === 'dao' && t.capitalZhouId === post.territoryId));
+                          // 道级岗位：找到其治所州主岗 ID，用于联动
+                          const daoTerr = post.territoryId ? territories.get(post.territoryId) : undefined;
+                          const capitalPostId = (daoTerr?.tier === 'dao' && daoTerr.capitalZhouId && posDef.grantsControl)
+                            ? territories.get(daoTerr.capitalZhouId)?.posts.find(p => positionMap.get(p.templateId)?.grantsControl)?.id
+                            : undefined;
                           return (
                             <div
                               key={idx}
-                              className="flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)]"
+                              className="px-3 py-2 rounded border border-[var(--color-border)]"
                             >
-                              <div className="flex flex-col min-w-0">
-                                <span className="text-sm font-bold text-[var(--color-text)] truncate">
-                                  {posDef.name}
-                                </span>
-                                <span className="text-xs text-[var(--color-text-muted)]">
-                                  {posDef.institution}
-                                  {territoryName && ` · ${territoryName}`}
-                                </span>
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-sm font-bold text-[var(--color-text)] truncate">
+                                    {posDef.name}
+                                  </span>
+                                  <span className="text-xs text-[var(--color-text-muted)]">
+                                    {posDef.institution}
+                                    {territoryName && ` · ${territoryName}`}
+                                  </span>
+                                </div>
+                                {isClan && isCapitalZhou && heirAlive && (
+                                  <span className="text-xs px-2 py-0.5 rounded border shrink-0 ml-2 text-[var(--color-text-muted)] border-[var(--color-border)]">
+                                    继承人: {heirChar!.name}（随道级）
+                                  </span>
+                                )}
+                                {isClan && !isCapitalZhou && (
+                                  <button
+                                    className={`text-xs px-2 py-0.5 rounded border shrink-0 ml-2 transition-colors ${
+                                      heirAlive
+                                        ? 'text-[var(--color-accent-gold)] border-[var(--color-accent-gold)]/40 hover:bg-[var(--color-accent-gold)]/10'
+                                        : 'text-[var(--color-text-muted)] border-[var(--color-border)] hover:text-[var(--color-text)]'
+                                    }`}
+                                    onClick={() => setHeirPickerPost(heirPickerPost?.id === post.id ? null : post)}
+                                  >
+                                    {heirAlive ? `继承人: ${heirChar!.name}` : '指定继承人'}
+                                  </button>
+                                )}
                               </div>
+                              {/* 继承人选人面板 */}
+                              {heirPickerPost?.id === post.id && player && (
+                                <HeirPicker
+                                  post={post}
+                                  playerId={player.id}
+                                  characters={characters}
+                                  currentDate={undefined}
+                                  onSelect={(charId) => {
+                                    const ts = useTerritoryStore.getState();
+                                    ts.updatePost(post.id, { designatedHeirId: charId });
+                                    if (capitalPostId) ts.updatePost(capitalPostId, { designatedHeirId: charId });
+                                    setHeirPickerPost(null);
+                                  }}
+                                  onClear={() => {
+                                    const ts = useTerritoryStore.getState();
+                                    ts.updatePost(post.id, { designatedHeirId: null });
+                                    if (capitalPostId) ts.updatePost(capitalPostId, { designatedHeirId: null });
+                                    setHeirPickerPost(null);
+                                  }}
+                                  onClose={() => setHeirPickerPost(null)}
+                                />
+                              )}
                             </div>
                           );
                         })}
@@ -246,6 +332,66 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
           )}
 
         </div>
+      </div>
+    </div>
+  );
+};
+
+/** 继承人选人内联面板 */
+const HeirPicker: React.FC<{
+  post: Post;
+  playerId: string;
+  characters: Map<string, Character>;
+  currentDate: undefined;
+  onSelect: (charId: string) => void;
+  onClear: () => void;
+  onClose: () => void;
+}> = ({ post, playerId, characters, onSelect, onClear, onClose }) => {
+  const candidates = getHeirCandidates(playerId, characters);
+  const currentYear = useTurnManager((s) => s.currentDate.year);
+
+  return (
+    <div className="mt-2 pt-2 border-t border-[var(--color-border)]">
+      {candidates.length === 0 ? (
+        <div className="text-xs text-[var(--color-text-muted)] text-center py-2">无可立之人</div>
+      ) : (
+        <div className="space-y-1 max-h-40 overflow-y-auto">
+          {candidates.map(({ char, label }) => (
+            <button
+              key={char.id}
+              className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-left transition-colors text-xs ${
+                post.designatedHeirId === char.id
+                  ? 'bg-[var(--color-accent-gold)]/10 border border-[var(--color-accent-gold)]/40'
+                  : 'hover:bg-[var(--color-bg)] border border-transparent'
+              }`}
+              onClick={() => onSelect(char.id)}
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-[var(--color-text)]">{char.name}</span>
+                <span className="text-[var(--color-text-muted)]">{label}</span>
+              </div>
+              <span className="text-[var(--color-text-muted)]">
+                {currentYear - char.birthYear}岁
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2 mt-2">
+        {post.designatedHeirId && (
+          <button
+            className="flex-1 text-xs py-1 rounded border border-[var(--color-accent-red)]/40 text-[var(--color-accent-red)] hover:bg-[var(--color-accent-red)]/10 transition-colors"
+            onClick={onClear}
+          >
+            取消指定
+          </button>
+        )}
+        <button
+          className="flex-1 text-xs py-1 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          onClick={onClose}
+        >
+          关闭
+        </button>
       </div>
     </div>
   );

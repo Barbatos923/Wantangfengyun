@@ -1,6 +1,7 @@
 // ===== 角色系统：健康/死亡/压力/成长 =====
 
 import type { GameDate } from '@engine/types.ts';
+import { EventPriority } from '@engine/types.ts';
 import { useCharacterStore } from '@engine/character/CharacterStore.ts';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore.ts';
 import {
@@ -12,6 +13,10 @@ import {
 } from '@engine/character/characterUtils.ts';
 import { clamp } from '@engine/utils.ts';
 import { randInt } from '@engine/random.ts';
+import { resolveHeir, findParentAuthority } from '@engine/character/successionUtils';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { positionMap } from '@data/positions';
+import { useTurnManager } from '@engine/TurnManager';
 
 export function runCharacterSystem(date: GameDate): void {
   const charStore = useCharacterStore.getState();
@@ -34,12 +39,233 @@ export function runCharacterSystem(date: GameDate): void {
     }
   });
 
-  // 死亡角色：清空岗位、转移军队
+  // ===== 死亡角色：岗位自治继承 =====
   if (deadIds.length > 0) {
+    const territories = terrStore.territories;
+    const milStore = useMilitaryStore.getState();
+    const turnMgr = useTurnManager.getState();
+    const TIER_ORDER: Record<string, number> = { tianxia: 4, guo: 3, dao: 2, zhou: 1 };
+
     for (const deadId of deadIds) {
-      const posts = terrStore.getPostsByHolder(deadId);
-      for (const post of posts) {
-        terrStore.updatePost(post.id, { holderId: null, appointedBy: undefined, appointedDate: undefined });
+      const deadChar = charStore.getCharacter(deadId);
+      if (!deadChar) continue;
+
+      const allPosts = terrStore.getPostsByHolder(deadId);
+
+      // 按 tier 降序排列（高层级 clan 岗位先处理，确定 primaryHeir）
+      const sorted = [...allPosts].sort((a, b) => {
+        const ta = a.territoryId ? territories.get(a.territoryId) : undefined;
+        const tb = b.territoryId ? territories.get(b.territoryId) : undefined;
+        return (TIER_ORDER[tb?.tier ?? ''] ?? 0) - (TIER_ORDER[ta?.tier ?? ''] ?? 0);
+      });
+
+      // 收集治所州 ID → 治所主岗由道级联动处理，不独立继承
+      const capitalZhouIds = new Set<string>();
+      for (const t of territories.values()) {
+        if (t.tier === 'dao' && t.capitalZhouId) capitalZhouIds.add(t.capitalZhouId);
+      }
+
+      // 一、每个岗位根据自身 successionLaw 独立处理
+      let primaryHeir: string | null = null;
+      let hadClanPost = false;
+      const vacantPostNames: string[] = [];
+
+      for (const post of sorted) {
+        // 治所州 grantsControl 主岗跳过（由道级联动处理）
+        if (post.territoryId && capitalZhouIds.has(post.territoryId)) {
+          const tpl = positionMap.get(post.templateId);
+          if (tpl?.grantsControl) continue;
+        }
+        if (post.successionLaw === 'clan') {
+          // 宗法：resolveHeir → 继承 / 绝嗣上交 / 空缺
+          const heir = resolveHeir(deadId, post, charStore.characters);
+          const receiver = heir ?? findParentAuthority(post, territories);
+
+          if (receiver) {
+            terrStore.updatePost(post.id, {
+              holderId: receiver,
+              appointedBy: heir ? 'succession' : 'escheat',
+              appointedDate: { year: date.year, month: date.month },
+            });
+            milStore.syncArmyOwnersByPost(post.id, receiver);
+
+            // 治所联动：道级岗位继承时，治所一并转给继承人
+            if (post.territoryId) {
+              const dao = territories.get(post.territoryId);
+              if (dao?.capitalZhouId) {
+                const capZhou = territories.get(dao.capitalZhouId);
+                const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+                if (capPost && capPost.holderId === deadId) {
+                  terrStore.updatePost(capPost.id, {
+                    holderId: receiver,
+                    appointedBy: heir ? 'succession' : 'escheat',
+                    appointedDate: { year: date.year, month: date.month },
+                  });
+                  milStore.syncArmyOwnersByPost(capPost.id, receiver);
+                }
+              }
+            }
+          } else {
+            terrStore.updatePost(post.id, {
+              holderId: null, appointedBy: undefined, appointedDate: undefined,
+            });
+
+            // 治所联动：道级岗位无人继承时，治所也空缺
+            if (post.territoryId) {
+              const dao = territories.get(post.territoryId);
+              if (dao?.capitalZhouId) {
+                const capZhou = territories.get(dao.capitalZhouId);
+                const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+                if (capPost && capPost.holderId === deadId) {
+                  terrStore.updatePost(capPost.id, {
+                    holderId: null, appointedBy: undefined, appointedDate: undefined,
+                  });
+                }
+              }
+            }
+          }
+
+          if (!primaryHeir && heir) primaryHeir = heir;
+          hadClanPost = true;
+
+        } else {
+          // 流官 / 副岗：一律空缺
+          terrStore.updatePost(post.id, {
+            holderId: null, appointedBy: undefined, appointedDate: undefined,
+          });
+
+          // 治所联动：道级流官空缺时，治所也空缺
+          if (positionMap.get(post.templateId)?.grantsControl && post.territoryId) {
+            const dao = territories.get(post.territoryId);
+            if (dao?.capitalZhouId) {
+              const capZhou = territories.get(dao.capitalZhouId);
+              const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+              if (capPost && capPost.holderId === deadId) {
+                terrStore.updatePost(capPost.id, {
+                  holderId: null, appointedBy: undefined, appointedDate: undefined,
+                });
+              }
+            }
+          }
+
+          // grantsControl 主岗位记录名称，稍后汇总发事件
+          if (positionMap.get(post.templateId)?.grantsControl) {
+            const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
+            const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
+            vacantPostNames.push(terrName ? `${terrName}${tplName}` : tplName);
+          }
+        }
+      }
+
+      // 发事件：每位死者最多一条继位/绝嗣事件 + 一条空缺汇总事件
+      if (hadClanPost) {
+        turnMgr.addEvent({
+          id: crypto.randomUUID(),
+          date: { year: date.year, month: date.month },
+          type: primaryHeir ? '继位' : '绝嗣',
+          actors: primaryHeir ? [deadId, primaryHeir] : [deadId],
+          territories: [],
+          description: primaryHeir
+            ? `${deadChar.name}薨，${charStore.getCharacter(primaryHeir)?.name ?? '?'}继位`
+            : `${deadChar.name}薨，无人继承`,
+          priority: EventPriority.Major,
+        });
+      }
+
+      if (vacantPostNames.length > 0) {
+        turnMgr.addEvent({
+          id: crypto.randomUUID(),
+          date: { year: date.year, month: date.month },
+          type: '岗位空缺',
+          actors: [deadId],
+          territories: [],
+          description: `${deadChar.name}薨，${vacantPostNames.join('、')}出缺`,
+          priority: EventPriority.Normal,
+        });
+      }
+
+      // 二、附庸转移（一次性，给 primaryHeir；无 heir 则给 overlord）
+      const vassalReceiver = primaryHeir ?? deadChar.overlordId ?? null;
+      if (vassalReceiver) {
+        charStore.batchMutate(chars => {
+          for (const [id, c] of chars) {
+            if (id === primaryHeir) continue; // 继承人自身不转移，单独处理
+            if (c.overlordId === deadId && c.alive) {
+              chars.set(id, { ...c, overlordId: vassalReceiver });
+            }
+          }
+        });
+      }
+
+      // 继承人的 overlordId 继承死者的效忠关系（皇帝→undefined，节度使→皇帝）
+      if (primaryHeir) {
+        charStore.updateCharacter(primaryHeir, { overlordId: deadChar.overlordId });
+      }
+
+      // 三、好感继承：对死者的好感 × 0.5 转为对继承人的初始好感
+      if (primaryHeir) {
+        charStore.batchMutate(chars => {
+          for (const [id, c] of chars) {
+            if (!c.alive || id === deadId || id === primaryHeir) continue;
+            const rel = c.relationships.find(r => r.targetId === deadId);
+            if (!rel || rel.opinions.length === 0) continue;
+
+            const totalOpinion = rel.opinions.reduce((sum, o) => sum + o.value, 0);
+            if (totalOpinion === 0) continue;
+
+            const inheritedValue = Math.round(totalOpinion * 0.5);
+            const newEntry = { reason: '先辈余泽', value: inheritedValue, decayable: true };
+            const existingRel = c.relationships.find(r => r.targetId === primaryHeir);
+
+            if (existingRel) {
+              const newRelationships = c.relationships.map(r =>
+                r.targetId === primaryHeir
+                  ? { ...r, opinions: [...r.opinions, newEntry] }
+                  : r
+              );
+              chars.set(id, { ...c, relationships: newRelationships });
+            } else {
+              chars.set(id, {
+                ...c,
+                relationships: [...c.relationships, { targetId: primaryHeir!, opinions: [newEntry] }],
+              });
+            }
+          }
+        });
+      }
+
+      // 四、资源继承（仅给 primaryHeir，绝嗣不继承）
+      if (primaryHeir) {
+        const heirChar = charStore.getCharacter(primaryHeir);
+        if (heirChar) {
+          charStore.updateCharacter(primaryHeir, {
+            resources: {
+              money: heirChar.resources.money + deadChar.resources.money,
+              grain: heirChar.resources.grain + deadChar.resources.grain,
+              prestige: heirChar.resources.prestige,
+              legitimacy: heirChar.resources.legitimacy,
+            },
+          });
+        }
+      }
+
+      // 五、玩家死亡处理
+      if (deadChar.isPlayer) {
+        if (primaryHeir) {
+          charStore.setPlayerId(primaryHeir);
+          charStore.updateCharacter(primaryHeir, { isPlayer: true });
+          charStore.updateCharacter(deadId, { isPlayer: false });
+        } else {
+          turnMgr.addEvent({
+            id: crypto.randomUUID(),
+            date: { year: date.year, month: date.month },
+            type: '王朝覆灭',
+            actors: [deadId],
+            territories: [],
+            description: `${deadChar.name}薨，后继无人，${deadChar.clan}一脉断绝`,
+            priority: EventPriority.Major,
+          });
+        }
       }
     }
   }
@@ -105,3 +331,4 @@ export function runCharacterSystem(date: GameDate): void {
     });
   }
 }
+

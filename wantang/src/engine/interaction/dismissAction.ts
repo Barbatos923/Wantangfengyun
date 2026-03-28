@@ -74,6 +74,36 @@ export function executeDismiss(
     });
   }
 
+  // 更新被罢免者 overlordId：回归罢免者人才池
+  if (previousHolderId) {
+    const charStore = useCharacterStore.getState();
+    charStore.updateCharacter(previousHolderId, { overlordId: dismisserId });
+  }
+
+  // 治所联动：罢免道级 grantsControl 岗位时，一并罢免同人的治所刺史
+  if (previousHolderId && tpl?.grantsControl && post.territoryId) {
+    const terrStoreNow = useTerritoryStore.getState();
+    const dao = terrStoreNow.territories.get(post.territoryId);
+    if (dao?.capitalZhouId) {
+      const capitalZhou = terrStoreNow.territories.get(dao.capitalZhouId);
+      if (capitalZhou) {
+        const capitalPost = capitalZhou.posts.find(p => {
+          const t = positionMap.get(p.templateId);
+          return t?.grantsControl === true;
+        });
+        if (capitalPost && capitalPost.holderId === previousHolderId) {
+          // 罢免者接管治所（与道级同逻辑）
+          terrStoreNow.updatePost(capitalPost.id, {
+            holderId: dismisserId,
+            appointedBy: 'system',
+            appointedDate: { year: date.year, month: date.month },
+          });
+          useMilitaryStore.getState().syncArmyOwnersByPost(capitalPost.id, dismisserId);
+        }
+      }
+    }
+  }
+
   // 立即重算玩家 ledger
   refreshPlayerLedger();
 }

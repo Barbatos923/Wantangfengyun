@@ -120,11 +120,19 @@ const GovernmentPanel: React.FC<GovernmentPanelProps> = ({ onClose }) => {
             <span className="text-xs text-[var(--color-text-muted)] italic">暂缺</span>
           )}
         </div>
-        <span className="text-xs text-[var(--color-text-muted)] shrink-0">
-          {holderChar?.official
-            ? (rankMap.get(holderChar.official.rankLevel)?.name ?? '')
-            : `需 ${rankMap.get(tpl.minRank)?.name ?? ''}`}
-        </span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="text-xs text-[var(--color-text-muted)]">
+            {holderChar?.official
+              ? (rankMap.get(holderChar.official.rankLevel)?.name ?? '')
+              : `需 ${rankMap.get(tpl.minRank)?.name ?? ''}`}
+          </span>
+          {post.successionLaw === 'clan' && (
+            <span className="text-[10px] px-1 py-0.5 rounded border text-amber-400 border-amber-400/40">世袭</span>
+          )}
+          {post.hasAppointRight && (
+            <span className="text-[10px] px-1 py-0.5 rounded border text-purple-400 border-purple-400/40">辟署</span>
+          )}
+        </div>
       </button>
     );
   }

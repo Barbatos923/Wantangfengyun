@@ -133,6 +133,7 @@ export function getDynamicTitle(
   char: Character,
   territories?: Map<string, Territory>,
 ): string {
+  if (!char.alive) return char.title || '已故';
   if (!char.official) return '庶人';
 
   const heldPosts = getHeldPosts(char.id);

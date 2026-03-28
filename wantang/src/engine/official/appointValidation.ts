@@ -4,13 +4,16 @@ import type { Character } from '@engine/character/types';
 import type { Territory, Post } from '@engine/territory/types';
 import { positionMap } from '@data/positions';
 import { getActualController, getHeldPosts, getDirectControlledZhou } from './postQueries';
+import { findAppointRightHolder } from '@engine/character/successionUtils';
+import { getEffectiveMinRank } from './selectionCalc';
 
 /**
  * 检验是否有权将 appointee 任命至指定岗位。
- * v2 任命权基于层级：
- * - 中央岗位：只有皇帝能任命
- * - 地方主岗位(grantsControl)：当前持有者可转让，皇帝/父级领地控制者可任命空缺
- * - 地方副岗位：该领地主岗位持有者可任命
+ *
+ * 权限模型（辟署权优先）：
+ * 1. 辟署权防火墙：若岗位在辟署权领地内，只有辟署权持有人可任命
+ * 2. 朝廷直辖：中央岗位皇帝任命，地方岗位按控制者层级判定
+ * 3. 自己持有的 grantsControl 岗位可转让
  */
 export function canAppointToPost(
   appointer: Character,
@@ -25,12 +28,13 @@ export function canAppointToPost(
   // 基本校验
   if (!appointee.alive) return { ok: false, reason: '目标已死亡' };
   if (!appointee.official) return { ok: false, reason: '目标无官职资格' };
-  if (appointee.official.rankLevel < tpl.minRank) return { ok: false, reason: '品位不足' };
+  const effectiveMinRank = getEffectiveMinRank(post);
+  if (appointee.official.rankLevel < effectiveMinRank) return { ok: false, reason: '品位不足' };
 
-  // 占用校验：grantsControl 岗位允许任命者转让自己持有的岗位
-  if (post.holderId !== null && !(tpl.grantsControl && post.holderId === appointer.id)) {
-    return { ok: false, reason: '已有人在任' };
-  }
+  // 不能任命自己到岗位
+  if (appointee.id === appointer.id) return { ok: false, reason: '不能任命自己' };
+  // 不能把已在这个岗位上的人再次任命
+  if (post.holderId === appointee.id) return { ok: false, reason: '已在此岗' };
 
   // grantsControl 岗位的转让需要保底检查（至少保留一个直辖州）
   if (tpl.grantsControl && post.holderId === appointer.id && post.territoryId) {
@@ -41,42 +45,42 @@ export function canAppointToPost(
     }
   }
 
-  // 任命权校验
+  // ── 任命权校验（辟署权优先）──
+
+  // 自己持有的 grantsControl 岗位 → 可转让，无需进一步校验
+  if (tpl.grantsControl && post.holderId === appointer.id) {
+    return { ok: true };
+  }
+
+  // 辟署权防火墙
+  if (post.territoryId) {
+    const rightHolder = findAppointRightHolder(post.territoryId, territories);
+    if (rightHolder) {
+      // 该领地受辟署权保护，只有辟署权持有人可任命
+      if (rightHolder !== appointer.id) {
+        return { ok: false, reason: '受辟署权保护' };
+      }
+      // appointer 是辟署权持有人 → 允许
+      return { ok: true };
+    }
+  }
+
+  // 朝廷直辖（无辟署权保护）
   const isEmperor = getHeldPosts(appointer.id, territories, centralPosts).some(p => p.templateId === 'pos-emperor');
 
   if (tpl.scope === 'central') {
+    // 中央岗位：只有皇帝可任命
     if (!isEmperor) return { ok: false, reason: '只有皇帝可任命中央职位' };
-  } else if (tpl.grantsControl) {
-    if (post.holderId === appointer.id) {
-      // 自己持有的，可以转让
-    } else if (isEmperor) {
-      // 皇帝可以任命任何空缺主岗位
-    } else if (post.territoryId) {
-      const territory = territories.get(post.territoryId);
-      if (territory?.parentId) {
-        const parentTerritory = territories.get(territory.parentId);
-        if (parentTerritory) {
-          const parentController = getActualController(parentTerritory);
-          if (parentController !== appointer.id) {
-            return { ok: false, reason: '无权任命此岗位' };
-          }
-        } else {
-          return { ok: false, reason: '无权任命此岗位' };
-        }
-      } else {
-        return { ok: false, reason: '无权任命此岗位' };
-      }
-    } else {
-      return { ok: false, reason: '无权任命此岗位' };
-    }
+  } else if (isEmperor) {
+    // 皇帝在朝廷直辖区可任命任何岗位（特旨）
   } else {
-    // 地方副岗位：该领地主岗位持有者可任命
+    // 非皇帝在朝廷直辖区：只能任命自己控制的领地内的岗位
     if (post.territoryId) {
       const territory = territories.get(post.territoryId);
       if (territory) {
         const controller = getActualController(territory);
         if (controller !== appointer.id) {
-          return { ok: false, reason: '非该领地控制人' };
+          return { ok: false, reason: '无权任命此岗位' };
         }
       }
     }

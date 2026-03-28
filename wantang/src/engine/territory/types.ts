@@ -36,6 +36,29 @@ export interface Post {
   holderId: string | null;     // 当前在任者 ID，null = 空缺
   appointedBy?: string;        // 谁任命的
   appointedDate?: GameDate;
+
+  // ===== 继承法（Phase 4a）=====
+  /** 继承法类型：'clan' = 宗法继承，'bureaucratic' = 流官继承 */
+  successionLaw: 'clan' | 'bureaucratic';
+  /** 辟署权：该岗位持有人对其辖区内所有岗位拥有绝对任命权 */
+  hasAppointRight: boolean;
+  /** 留后：预先指定的宗法继承人（仅 successionLaw==='clan' 时有效） */
+  designatedHeirId?: string | null;
+  /** 权知标记：true 表示当前持有人为降格代理任命 */
+  isActing?: boolean;
+  /** 品级覆盖：若存在，覆盖模板中的 minRank */
+  minRankOverride?: number;
+
+  // ===== 考课（三年一考）=====
+  /** 上次考课时记录的基线值，用于计算三年增长 */
+  reviewBaseline?: {
+    population: number;
+    virtue: number;
+    /** 基线设置时间（任命时或上次考课时） */
+    date: import('@engine/types').GameDate;
+  };
+  /** 上次考课获得的加成（上等 +20，中等 0） */
+  reviewBonus?: number;
 }
 
 /** 领地完整数据 */
@@ -49,6 +72,9 @@ export interface Territory {
   // 层级
   parentId?: string;
   childIds: string[];
+
+  // 道级治所（仅 tier==='dao'）
+  capitalZhouId?: string;
 
   // 法理归属
   dejureControllerId: string;

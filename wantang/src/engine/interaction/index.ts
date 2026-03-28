@@ -8,7 +8,13 @@ import './declareWarAction';
 import './appointAction';
 import './dismissAction';
 import './centralizationAction';
+import './demandFealtyAction';
+import './transferVassalAction';
 
 // 导出执行函数
-export { getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
+export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
 export { getDismissablePosts, executeDismiss } from './dismissAction';
+export { executeDemandFealty, previewDemandFealty, calcFealtyChance } from './demandFealtyAction';
+export type { DemandFealtyResult, FealtyChanceResult } from './demandFealtyAction';
+export { getTransferCandidates, executeTransferVassal } from './transferVassalAction';
+export type { TransferCandidate } from './transferVassalAction';

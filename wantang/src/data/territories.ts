@@ -10,6 +10,7 @@ function makeDaoPosts(
   type: 'military' | 'civil',
   holderId: string,
   appointedBy: string = 'char-yizong',
+  hasAppointRight: boolean = false,
 ): Territory['posts'] {
   const prefix = daoId.replace('dao-', '');
   const mainTemplateId = type === 'military' ? 'pos-jiedushi' : 'pos-guancha-shi';
@@ -22,18 +23,24 @@ function makeDaoPosts(
       holderId,
       appointedBy,
       appointedDate: { year: 867, month: 1 },
+      successionLaw: 'clan' as const,
+      hasAppointRight,
     },
     {
       id: `post-panguan-${prefix}`,
       templateId: 'pos-panguan',
       territoryId: daoId,
       holderId: null,
+      successionLaw: 'bureaucratic' as const,
+      hasAppointRight: false,
     },
     {
-      id: `post-tuiguan-${prefix}`,
-      templateId: 'pos-tuiguan',
+      id: `post-duzhibingmashi-${prefix}`,
+      templateId: 'pos-duzhibingmashi',
       territoryId: daoId,
       holderId: null,
+      successionLaw: 'bureaucratic' as const,
+      hasAppointRight: false,
     },
   ];
 }
@@ -44,6 +51,7 @@ function makeZhouPosts(
   type: 'military' | 'civil',
   holderId: string,
   appointedBy: string = 'char-yizong',
+  mainSuccessionLaw: 'clan' | 'bureaucratic' = 'bureaucratic',
 ): Territory['posts'] {
   const prefix = zhouId.replace('zhou-', '');
   const mainTemplateId = type === 'military' ? 'pos-fangyu-shi' : 'pos-cishi';
@@ -56,24 +64,16 @@ function makeZhouPosts(
       holderId,
       appointedBy,
       appointedDate: { year: 867, month: 1 },
-    },
-    {
-      id: `post-sima-${prefix}`,
-      templateId: 'pos-sima',
-      territoryId: zhouId,
-      holderId: null,
-    },
-    {
-      id: `post-zhangshi-${prefix}`,
-      templateId: 'pos-zhangshi',
-      territoryId: zhouId,
-      holderId: null,
+      successionLaw: mainSuccessionLaw,
+      hasAppointRight: false,
     },
     {
       id: `post-lushibcanjun-${prefix}`,
       templateId: 'pos-lushibcanjun',
       territoryId: zhouId,
       holderId: null,
+      successionLaw: 'bureaucratic' as const,
+      hasAppointRight: false,
     },
   ];
 }
@@ -86,6 +86,8 @@ function daoBase(
   childIds: string[],
   holderId: string,
   parentGuo: string,
+  capitalZhouId: string,
+  hasAppointRight: boolean = false,
 ): Territory {
   return {
     id,
@@ -94,8 +96,9 @@ function daoBase(
     territoryType: type,
     parentId: parentGuo,
     childIds,
+    capitalZhouId,
     dejureControllerId: parentGuo, // 法理归属所在国
-    posts: makeDaoPosts(id, type, holderId),
+    posts: makeDaoPosts(id, type, holderId, 'char-yizong', hasAppointRight),
     control: 0,
     development: 0,
     populace: 0,
@@ -121,6 +124,7 @@ function zhou(
   populace: number,
   moneyRatio: number,
   grainRatio: number,
+  mainSuccessionLaw: 'clan' | 'bureaucratic' = 'bureaucratic',
 ): Territory {
   const conscriptionPool =
     type === 'military'
@@ -134,7 +138,7 @@ function zhou(
     parentId,
     childIds: [],
     dejureControllerId: '', // 后处理填充
-    posts: makeZhouPosts(id, type, holderId),
+    posts: makeZhouPosts(id, type, holderId, 'char-yizong', mainSuccessionLaw),
     control,
     development,
     populace,
@@ -169,6 +173,8 @@ export function createAllTerritories(): Territory[] {
         holderId: 'char-yizong',
         appointedBy: 'system',
         appointedDate: { year: 859, month: 1 },
+        successionLaw: 'clan' as const,
+        hasAppointRight: true,
       }],
       control: 0, development: 0, populace: 0,
       buildings: [], constructions: [],
@@ -235,6 +241,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-changan', 'zhou-fengxiang'],
       'char-yizong',
       'guo-guanlong',
+      'zhou-changan',
     ),
     zhou(
       'zhou-changan', '长安', 'dao-jingji',
@@ -242,6 +249,7 @@ export function createAllTerritories(): Territory[] {
       'char-yizong',
       40, 60, 65,
       3, 4,
+      'clan',
     ),
     zhou(
       'zhou-fengxiang', '凤翔', 'dao-jingji',
@@ -261,6 +269,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-binzhou', 'zhou-fangzhou', 'zhou-tongzhou', 'zhou-lingzhou', 'zhou-xiazhou'],
       'char-npc-binning',
       'guo-guanlong',
+      'zhou-binzhou',
     ),
     zhou(
       'zhou-binzhou', '邠州', 'dao-guannei',
@@ -308,6 +317,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-luoyang', 'zhou-shanzhou'],
       'char-yizong',
       'guo-guanlong',
+      'zhou-luoyang',
     ),
     zhou(
       'zhou-luoyang', '洛阳', 'dao-duji',
@@ -315,6 +325,7 @@ export function createAllTerritories(): Territory[] {
       'char-yizong',
       40, 60, 60,
       2, 3,
+      'clan',
     ),
     zhou(
       'zhou-shanzhou', '陕州', 'dao-duji',
@@ -334,6 +345,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-taiyuan', 'zhou-luzhou', 'zhou-hezhong', 'zhou-yunzhou'],
       'char-zhengcongdang',
       'guo-hebei',
+      'zhou-taiyuan',
     ),
     zhou(
       'zhou-taiyuan', '太原', 'dao-hedong',
@@ -374,6 +386,8 @@ export function createAllTerritories(): Territory[] {
       ['zhou-youzhou', 'zhou-yingzhou', 'zhou-dingzhou'],
       'char-zhangyunshen',
       'guo-hebei',
+      'zhou-youzhou',
+      true,                // ← 辟署权
     ),
     zhou(
       'zhou-youzhou', '幽州', 'dao-youzhou',
@@ -381,6 +395,7 @@ export function createAllTerritories(): Territory[] {
       'char-zhangyunshen',
       80, 60, 58,
       2, 4,
+      'clan',
     ),
     zhou(
       'zhou-yingzhou', '瀛州', 'dao-youzhou',
@@ -388,6 +403,7 @@ export function createAllTerritories(): Territory[] {
       'char-zhangyunshen',
       80, 60, 50,
       2, 4,
+      'clan',
     ),
     zhou(
       'zhou-dingzhou', '定州', 'dao-youzhou',
@@ -407,6 +423,8 @@ export function createAllTerritories(): Territory[] {
       ['zhou-zhenzhou', 'zhou-jizhou'],
       'char-wangjingchong',
       'guo-hebei',
+      'zhou-zhenzhou',
+      true,                // ← 辟署权
     ),
     zhou(
       'zhou-zhenzhou', '镇州', 'dao-chengde',
@@ -414,6 +432,7 @@ export function createAllTerritories(): Territory[] {
       'char-wangjingchong',
       70, 50, 58,
       2, 4,
+      'clan',
     ),
     zhou(
       'zhou-jizhou', '冀州', 'dao-chengde',
@@ -421,6 +440,7 @@ export function createAllTerritories(): Territory[] {
       'char-wangjingchong',
       70, 50, 50,
       2, 4,
+      'clan',
     ),
 
     // ══════════════════════════════════════════════
@@ -433,6 +453,8 @@ export function createAllTerritories(): Territory[] {
       ['zhou-weizhou', 'zhou-xiangzhou'],
       'char-hanyunzhong',
       'guo-hebei',
+      'zhou-weizhou',
+      true,                // ← 辟署权
     ),
     zhou(
       'zhou-weizhou', '魏州', 'dao-weibo',
@@ -440,6 +462,7 @@ export function createAllTerritories(): Territory[] {
       'char-hanyunzhong',
       80, 40, 58,
       2, 4,
+      'clan',
     ),
     zhou(
       'zhou-xiangzhou', '相州', 'dao-weibo',
@@ -447,6 +470,7 @@ export function createAllTerritories(): Territory[] {
       'char-hanyunzhong',
       80, 40, 52,
       2, 4,
+      'clan',
     ),
 
     // ══════════════════════════════════════════════
@@ -463,6 +487,7 @@ export function createAllTerritories(): Territory[] {
       ],
       'char-npc-xuanwu',
       'guo-zhongyuan',
+      'zhou-bianzhou',
     ),
     zhou(
       'zhou-bianzhou', '汴州', 'dao-henan',
@@ -531,6 +556,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-xiangyang', 'zhou-jiangling', 'zhou-ezhou'],
       'char-npc-shannan-e',
       'guo-zhongyuan',
+      'zhou-xiangyang',
     ),
     zhou(
       'zhou-xiangyang', '襄州', 'dao-shannan-e',
@@ -564,6 +590,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-xingyuan', 'zhou-suizhou'],
       'char-xiaoye',
       'guo-bashu',
+      'zhou-xingyuan',
     ),
     zhou(
       'zhou-xingyuan', '兴元', 'dao-shannan-w',
@@ -590,6 +617,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-yangzhou'],
       'char-cuiyanzeng',
       'guo-zhongyuan',
+      'zhou-yangzhou',
     ),
     zhou(
       'zhou-yangzhou', '扬州', 'dao-huainan',
@@ -609,6 +637,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-runzhou', 'zhou-yuezhou', 'zhou-fuzhou', 'zhou-xuanzhou'],
       'char-npc-zhenhai',
       'guo-dongnan',
+      'zhou-runzhou',
     ),
     zhou(
       'zhou-runzhou', '润州', 'dao-jiangnan-e',
@@ -649,6 +678,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-hongzhou', 'zhou-tanzhou'],
       'char-npc-zhennan',
       'guo-dongnan',
+      'zhou-hongzhou',
     ),
     zhou(
       'zhou-hongzhou', '洪州', 'dao-jiangnan-w',
@@ -675,6 +705,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-chengdu', 'zhou-zizhou'],
       'char-liutong',
       'guo-bashu',
+      'zhou-chengdu',
     ),
     zhou(
       'zhou-chengdu', '成都', 'dao-jiannan',
@@ -701,6 +732,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-guangzhou', 'zhou-yongzhou', 'zhou-guizhou', 'zhou-jiaozhou'],
       'char-npc-qinghai',
       'guo-dongnan',
+      'zhou-guangzhou',
     ),
     zhou(
       'zhou-guangzhou', '广州', 'dao-lingnan',
@@ -741,6 +773,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-jingzhou-ly', 'zhou-qinzhou'],
       'char-lihongfu',
       'guo-guanlong',
+      'zhou-jingzhou-ly',
     ),
     zhou(
       'zhou-jingzhou-ly', '泾州', 'dao-longyou',
@@ -767,6 +800,7 @@ export function createAllTerritories(): Territory[] {
       ['zhou-shazhou'],
       'char-zhanghuaishen',
       'guo-guanlong',
+      'zhou-shazhou',
     ),
     zhou(
       'zhou-shazhou', '沙州', 'dao-hexi',

@@ -42,7 +42,18 @@
       "Bash(grep -E \"\\\\.ts$\")",
       "Bash(grep -r \"createArmy\\\\|disbandArmy\" D:桌面CCwantang/src/engine --include=*.ts)",
       "Bash(grep -rn \"set.*era\\\\|setEra\\\\|era.*=\" D:桌面CCwantang/src/engine --include=*.ts)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(find D:桌面CCwantangsrcdata -name *trait* -type f)",
+      "Bash(pnpm exec:*)",
+      "Bash(ls -lh /d/桌面/CC/wantang/src/ui/components/*.tsx)",
+      "Bash(find D:/桌面/CC/wantang/src -name *qual* -o -name *exam* -o -name *select*)",
+      "Bash(xargs ls:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(python3:*)",
+      "Bash(ls *.ts)",
+      "Bash(ls *.tsx)"
     ]
   }
 }

@@ -257,23 +257,38 @@ export function calculateMonthlyHealthChange(character: Character, currentYear: 
   const age = currentYear - character.birthYear;
   let change = 0;
 
-  // 年龄惩罚：50岁后每5年额外-1/月
-  if (age > 50) {
-    change -= Math.floor((age - 50) / 5) + 1;
+  // ── 概率制年龄衰退 ──
+  // 55 岁起开始有概率扣血，年龄越大概率越高
+  // 55 岁: ~5%/月，65 岁: ~15%/月，75 岁: ~25%/月
+  // 80 岁以上额外加速，避免极端长寿
+  if (age >= 55) {
+    let decayChance = 0.01 * (age - 50); // 55→5%, 65→15%, 75→25%
+    if (age >= 80) {
+      decayChance += 0.05 * (age - 80); // 80→25%+0%, 85→25%+25%, 90→25%+50%
+    }
+    decayChance = Math.min(decayChance, 1);
+    if (random() < decayChance) {
+      change -= randInt(2, 5);
+    }
   }
 
-  // 压力惩罚
-  if (character.stress >= 75) change -= 2;
-  else if (character.stress >= 50) change -= 1;
+  // ── 概率制压力惩罚 ──
+  // 高压力增加健康恶化概率，而非每月固定扣
+  if (character.stress >= 75) {
+    if (random() < 0.25) change -= randInt(2, 4);
+  } else if (character.stress >= 50) {
+    if (random() < 0.10) change -= randInt(1, 3);
+  }
 
-  // 特质加成
+  // ── 特质加成（确定性，伤病/残疾等） ──
   for (const tid of character.traitIds) {
     const trait = traitMap.get(tid);
     if (trait) change += trait.monthlyHealth;
   }
 
-  // 恢复
-  if (character.health < 100 && character.stress < 25 && age < 50) {
+  // ── 恢复 ──
+  // 55 岁以下且压力 < 50 可恢复
+  if (character.health < 100 && character.stress < 50 && age < 55) {
     change += 1;
   }
 
@@ -286,12 +301,7 @@ export function calculateMonthlyHealthChange(character: Character, currentYear: 
 export function calculateMonthlyStressChange(character: Character): number {
   let change = 0;
 
-  // 野心惩罚
-  if (character.traitIds.includes('trait-ambitious') && !character.isRuler) {
-    change += 2;
-  }
-
-  // 特质加成
+  // 事件特质加成（性格特质已全部归零，仅事件特质如忧虑/嗜酒生效）
   for (const tid of character.traitIds) {
     const trait = traitMap.get(tid);
     if (trait) change += trait.monthlyStress;

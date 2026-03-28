@@ -18,6 +18,9 @@ import AppointFlow from './AppointFlow';
 import DismissFlow from './DismissFlow';
 import CentralizationFlow from './CentralizationFlow';
 import DeclareWarFlow from './DeclareWarFlow';
+import TransferVassalFlow from './TransferVassalFlow';
+import { executeDemandFealty, previewDemandFealty } from '@engine/interaction';
+import type { DemandFealtyResult, FealtyChanceResult } from '@engine/interaction';
 
 // ── Constants ──────────────────────────────────────
 
@@ -45,8 +48,8 @@ interface AvatarProps {
 
 const Avatar: React.FC<AvatarProps> = ({ char, mainChar, label, size, onClick }) => {
   if (!char) return null;
-  // mainChar here is the player character — show opinion toward player
-  const opinion = mainChar && char.id !== mainChar.id ? calculateBaseOpinion(char, mainChar) : null;
+  // mainChar here is the player character — show opinion toward player (hide for dead)
+  const opinion = mainChar && char.id !== mainChar.id && char.alive ? calculateBaseOpinion(char, mainChar) : null;
   const sizeClass = size === 'lg' ? 'w-14 h-14 text-lg' : 'w-10 h-10 text-sm';
 
   return (
@@ -79,6 +82,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const [opinionPopup, setOpinionPopup] = useState<{ from: Character; toward: Character } | null>(null);
   const [showInteractionMenu, setShowInteractionMenu] = useState(false);
   const [activeInteraction, setActiveInteraction] = useState<string | null>(null);
+  const [fealtyPreview, setFealtyPreview] = useState<FealtyChanceResult | null>(null);
+  const [fealtyResult, setFealtyResult] = useState<DemandFealtyResult | null>(null);
 
   const character = useCharacterStore((s) => s.characters.get(characterId));
   const playerId = useCharacterStore((s) => s.playerId);
@@ -171,7 +176,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               {character.name[0]}
             </div>
             <div className="text-[10px] text-[var(--color-text-muted)] leading-tight">本人</div>
-            {playerChar && character.id !== playerId && (() => {
+            {playerChar && character.id !== playerId && character.alive && (() => {
               const op = calculateBaseOpinion(character, playerChar);
               return (
                 <button
@@ -274,7 +279,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           </div>
         </div>
 
-        {/* Resources */}
+        {/* Resources — 死者不显示 */}
+        {character.alive && (
         <div>
           <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">资源</h3>
           <div className="grid grid-cols-5 gap-1 text-center">
@@ -304,9 +310,10 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
             ))}
           </div>
         </div>
+        )}
 
-        {/* Official Position */}
-        {character.official && (() => {
+        {/* Official Position — 死者不显示 */}
+        {character.alive && character.official && (() => {
           const heldPosts = getHeldPosts(character.id);
           const isEmperor = heldPosts.some((p) => p.templateId === 'pos-emperor');
           return (
@@ -468,6 +475,10 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           onClose={() => setShowInteractionMenu(false)}
           onSelect={(id) => {
             setShowInteractionMenu(false);
+            if (id === 'demandFealty' && playerId) {
+              setFealtyPreview(previewDemandFealty(playerId, characterId));
+              return;
+            }
             setActiveInteraction(id);
           }}
         />
@@ -499,6 +510,77 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />
+      )}
+
+      {activeInteraction === 'transferVassal' && (
+        <TransferVassalFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
+
+      {fealtyPreview && !fealtyResult && (
+        <div className="fixed inset-0 z-50" onClick={() => setFealtyPreview(null)}>
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
+              要求效忠 — {character?.name ?? ''}
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)] space-y-1">
+              <div>成功率：<span className="text-[var(--color-text)] font-bold">{fealtyPreview.chance}%</span></div>
+              <div className="border-t border-[var(--color-border)] pt-1 mt-1">
+                <div>基础：{fealtyPreview.breakdown.base}</div>
+                <div>好感：{fealtyPreview.breakdown.opinion >= 0 ? '+' : ''}{fealtyPreview.breakdown.opinion}</div>
+                <div>兵力：{fealtyPreview.breakdown.power >= 0 ? '+' : ''}{fealtyPreview.breakdown.power}</div>
+                <div>性格：{fealtyPreview.breakdown.personality >= 0 ? '+' : ''}{fealtyPreview.breakdown.personality}</div>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button
+                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
+                onClick={() => setFealtyPreview(null)}
+              >
+                取消
+              </button>
+              <button
+                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] font-bold hover:opacity-80 transition-opacity"
+                onClick={() => {
+                  if (!playerId) return;
+                  const result = executeDemandFealty(playerId, characterId);
+                  setFealtyResult(result);
+                }}
+              >
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {fealtyResult && (
+        <div className="fixed inset-0 z-50" onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`text-sm font-bold mb-1 ${fealtyResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
+              {fealtyResult.success ? '效忠成功' : '要求被拒'}
+            </div>
+            <div className="text-sm text-[var(--color-text)] mb-2">
+              {fealtyResult.success
+                ? `${character?.name ?? ''}宣誓效忠于${playerChar?.name ?? '我'}`
+                : `${character?.name ?? ''}对此无动于衷`}
+            </div>
+            <button
+              className="mt-2 w-full px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
+              onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}
+            >
+              确定
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -541,7 +623,7 @@ const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, pla
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] text-[var(--color-text-muted)]">{getDynamicTitle(char!)}</span>
-            {playerChar && char!.id !== playerChar.id && (
+            {playerChar && char!.id !== playerChar.id && char!.alive && (
               <button
                 className="text-[10px] font-bold cursor-pointer hover:underline"
                 style={{ color: calculateBaseOpinion(char!, playerChar) >= 0 ? 'var(--color-accent-green)' : 'var(--color-accent-red)' }}
@@ -637,6 +719,7 @@ const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, pl
 };
 
 const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion }) => {
+  const territories = useTerritoryStore((s) => s.territories);
   const subs = getSubordinates(character.id, characters);
 
   if (subs.length === 0) {
@@ -648,8 +731,11 @@ const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, 
       {subs.map((sub) => {
         const subPosts = getHeldPosts(sub.id);
         const posNames = subPosts
-          .filter((post) => post.appointedBy === character.id)
-          .map((post) => positionMap.get(post.templateId)?.name ?? post.templateId)
+          .map((post) => {
+            const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
+            const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
+            return terrName ? `${terrName}${tplName}` : tplName;
+          })
           .join('、');
         const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar) : null;
         return (

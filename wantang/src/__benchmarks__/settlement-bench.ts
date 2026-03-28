@@ -112,24 +112,32 @@ function generateTerritories(count: number, lordCount: number): Territory[] {
         territoryId: id,
         holderId: controllerId,
         appointedBy: controllerId,
+        successionLaw: 'bureaucratic',
+        hasAppointRight: false,
       },
       {
         id: `bench-post-${i}-1`,
         templateId: 'pos-sima',
         territoryId: id,
         holderId: Math.random() > 0.3 ? `bench-char-${randInt(0, lordCount - 1)}` : null,
+        successionLaw: 'bureaucratic',
+        hasAppointRight: false,
       },
       {
         id: `bench-post-${i}-2`,
         templateId: 'pos-canjun',
         territoryId: id,
         holderId: Math.random() > 0.5 ? `bench-char-${randInt(0, lordCount - 1)}` : null,
+        successionLaw: 'bureaucratic',
+        hasAppointRight: false,
       },
       {
         id: `bench-post-${i}-3`,
         templateId: 'pos-panguan',
         territoryId: id,
         holderId: Math.random() > 0.5 ? `bench-char-${randInt(0, lordCount - 1)}` : null,
+        successionLaw: 'bureaucratic',
+        hasAppointRight: false,
       },
     ];
 

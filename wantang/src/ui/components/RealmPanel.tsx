@@ -5,7 +5,8 @@ import { usePanelStore } from '@ui/stores/panelStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
-import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getControlledZhou } from '@engine/official/officialUtils';
+import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getControlledZhou, getHeldPosts } from '@engine/official/officialUtils';
+import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from '@engine/interaction';
 
 /** 根据回拨率对所有附庸设置好感（不衰减）。回拨越高好感越低，以60%为零点。 */
@@ -36,15 +37,9 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'system', label: '体制' },
 ];
 
-const CENTRALIZATION_DESCRIPTIONS: { level: number; desc: string }[] = [
-  { level: 1, desc: '常规收入，下属可自由宣战扩张' },
-  { level: 2, desc: '可剥夺下属头衔，可更改继承法' },
-  { level: 3, desc: '下属无牵制则不可内部宣战' },
-  { level: 4, desc: '下属禁止一切战争，可指定继承人' },
-];
+const TAX_LEVEL_LABELS: Record<number, string> = { 1: '放任', 2: '一般', 3: '严控', 4: '压榨' };
 
 const PLACEHOLDER_SYSTEMS = [
-  '继承体制',
   '边境战争体制',
   '致仕年龄',
   '部队体制',
@@ -336,7 +331,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                 if (vassals.length === 0) return null;
                 return (
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">属下集权</h3>
+                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">属下赋税</h3>
                     <div className="space-y-1.5">
                       {vassals.map((v) => (
                         <button
@@ -351,14 +346,52 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                             <span className="text-sm font-bold text-[var(--color-text)]">{v.name}</span>
                             <span className="text-xs text-[var(--color-text-muted)]">{getDynamicTitle(v, territories)}</span>
                           </div>
-                          <span className="text-sm font-bold text-[var(--color-accent-gold)]">{v.centralization ?? 2}级</span>
+                          <span className="text-sm font-bold text-[var(--color-accent-gold)]">{v.centralization ?? 2}级 {TAX_LEVEL_LABELS[v.centralization ?? 2] ?? ''}</span>
                         </button>
                       ))}
                     </div>
-                    <div className="mt-2 space-y-0.5">
-                      {CENTRALIZATION_DESCRIPTIONS.map(({ level, desc }) => (
-                        <p key={level} className="text-xs text-[var(--color-text-muted)]">{level}级: {desc}</p>
-                      ))}
+                  </div>
+                );
+              })()}
+
+              {/* 岗位继承法与辟署权 */}
+              {player && (() => {
+                const playerPosts = getHeldPosts(player.id).filter(p => positionMap.get(p.templateId)?.grantsControl);
+                if (playerPosts.length === 0) return null;
+                return (
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">继承体制</h3>
+                    <div className="space-y-1">
+                      {playerPosts.map((post) => {
+                        const tpl = positionMap.get(post.templateId);
+                        const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
+                        return (
+                          <div
+                            key={post.id}
+                            className="flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)]"
+                          >
+                            <div className="min-w-0">
+                              <span className="text-sm text-[var(--color-text)]">
+                                {terrName ? `${terrName} ` : ''}{tpl?.name ?? ''}
+                              </span>
+                            </div>
+                            <div className="flex gap-1.5 shrink-0">
+                              <span className={`text-xs px-1.5 py-0.5 rounded border ${
+                                post.successionLaw === 'clan'
+                                  ? 'text-amber-400 border-amber-400/40'
+                                  : 'text-cyan-400 border-cyan-400/40'
+                              }`}>
+                                {post.successionLaw === 'clan' ? '世袭' : '流官'}
+                              </span>
+                              {post.hasAppointRight && (
+                                <span className="text-xs px-1.5 py-0.5 rounded border text-purple-400 border-purple-400/40">
+                                  辟署权
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
