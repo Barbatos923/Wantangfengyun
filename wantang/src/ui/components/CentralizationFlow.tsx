@@ -2,7 +2,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { refreshPlayerLedger } from '@engine/interaction';
 import { positionMap } from '@data/positions';
-import { findAppointRightHolder } from '@engine/character/successionUtils';
+
 import type { CentralizationLevel } from '@engine/territory/types';
 import type { Post } from '@engine/territory/types';
 

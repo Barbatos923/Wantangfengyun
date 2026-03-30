@@ -53,7 +53,12 @@
       "Bash(grep:*)",
       "Bash(python3:*)",
       "Bash(ls *.ts)",
-      "Bash(ls *.tsx)"
+      "Bash(ls *.tsx)",
+      "Bash(pnpm add:*)",
+      "Bash(npx tsx -e \":*)",
+      "Bash(node -e \":*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

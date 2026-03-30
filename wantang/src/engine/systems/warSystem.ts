@@ -290,9 +290,9 @@ export function runWarSystem(date: GameDate): void {
     const terr = useTerritoryStore.getState().territories.get(campaign.locationId);
     if (!terr) continue;
     const controller = siegeUtils.getTerritoryController(terr);
-    // 行营在敌方领地 → 开始围城
+    // 行营在敌方领地 → 开始围城（已占领的领地不再围城）
     const enemyId = war.attackerId === campaign.ownerId ? war.defenderId : war.attackerId;
-    if (controller === enemyId && !useWarStore.getState().getSiegeAtTerritory(campaign.locationId)) {
+    if (controller === enemyId && terr.occupiedBy !== campaign.ownerId && !useWarStore.getState().getSiegeAtTerritory(campaign.locationId)) {
       useWarStore.getState().startSiege(war.id, campaign.id, campaign.locationId, date);
       useWarStore.getState().updateCampaign(campaign.id, { status: 'sieging' });
     }

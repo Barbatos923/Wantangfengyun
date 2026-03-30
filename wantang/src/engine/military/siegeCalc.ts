@@ -3,7 +3,6 @@
 import type { Territory } from '@engine/territory/types';
 import type { Battalion, Army } from './types';
 import type { UnitTypeDef } from './types';
-import { ALL_PASSES } from '@data/mapTopology';
 import { unitTypeMap } from '@data/unitTypes';
 import { positionMap } from '@data/positions';
 
@@ -20,11 +19,11 @@ export function calcMonthlyProgress(
   territory: Territory,
   defenderTroops: number,
 ): number {
-  const pass = ALL_PASSES.find((p) => p.territoryId === territory.id);
+  const passLevel = territory.passLevel ?? 0;
 
-  if (pass) {
+  if (passLevel > 0) {
     // 关隘围城：靠攻城属性 + 守军增加难度
-    return totalSiegeValue / (pass.level * 2 + defenderTroops / 500);
+    return totalSiegeValue / (passLevel * 2 + defenderTroops / 500);
   }
 
   // 非关隘：大军压境，守军增加阻力

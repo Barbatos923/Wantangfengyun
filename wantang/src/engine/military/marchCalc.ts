@@ -1,7 +1,7 @@
 // ===== 行军计算（纯函数） =====
 
 import type { Territory } from '@engine/territory/types';
-import { ALL_EDGES, ALL_PASSES } from '@data/mapTopology';
+import { ALL_EDGES } from '@data/mapTopology';
 import { positionMap } from '@data/positions';
 
 // ── 路径寻找 ──
@@ -15,10 +15,9 @@ function getController(territory: Territory): string | null {
   return mainPost?.holderId ?? null;
 }
 
-/** 获取州是否有关隘 */
-function getPassLevel(territoryId: string): number {
-  const pass = ALL_PASSES.find((p) => p.territoryId === territoryId);
-  return pass?.level ?? 0;
+/** 获取州的关隘等级（0 = 无关隘） */
+function getPassLevel(territory: Territory): number {
+  return territory.passLevel ?? 0;
 }
 
 /** 构建邻接表 */
@@ -68,7 +67,7 @@ export function findPath(
         const terr = territories.get(next);
         if (terr) {
           const controller = getController(terr);
-          const passLevel = getPassLevel(next);
+          const passLevel = getPassLevel(terr);
           // 有关隘 + 非己方控制 → 不可穿越
           if (passLevel > 0 && controller !== ownerId) {
             continue;

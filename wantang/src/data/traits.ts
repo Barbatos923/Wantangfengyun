@@ -805,12 +805,3 @@ for (const t of ALL_TRAITS) {
   traitMap.set(t.id, t);
 }
 
-/** 按类别获取特质 */
-export function getTraitsByCategory(category: TraitCategory): TraitDef[] {
-  return ALL_TRAITS.filter((t) => t.category === category);
-}
-
-/** 获取对应能力的教育特质（给定等级） */
-export function getEducationTrait(ability: keyof Abilities, level: number): TraitDef | undefined {
-  return traitMap.get(`trait-edu-${ability}-${level}`);
-}

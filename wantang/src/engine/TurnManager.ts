@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { GameDate, GameEvent } from './types';
 import { GameSpeed, Era, EventPriority } from './types';
 import { initRng } from './random.ts';
-import { archiveEvents, loadArchivedEvents as loadArchivedEventsFromDB } from '@data/storage.ts';
+import { archiveEvents, loadArchivedEvents as loadArchivedEventsFromDB } from '@engine/storage.ts';
 
 // ===== 月度回调 =====
 

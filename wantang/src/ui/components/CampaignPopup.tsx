@@ -8,11 +8,12 @@ import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import type { Campaign } from '@engine/military/types';
 import { getArmyStrength } from '@engine/military/militaryCalc';
-import { findPath, getMusteringTime } from '@engine/military/marchCalc';
+import { findPath } from '@engine/military/marchCalc';
 import { drawStrategies } from '@engine/military/battleEngine';
 import { positionMap } from '@data/positions';
 import { PURSUIT_STRATEGIES } from '@data/strategies';
 import type { BattlePhase, StrategyDef } from '@data/strategies';
+import { executeSetCampaignTarget, executeAddArmyToCampaign, executeRemoveArmyFromCampaign, executeDisbandCampaign, executeSetStrategy, executeSetCampaignCommander } from '@engine/interaction/campaignAction';
 
 interface CampaignPopupProps {
   campaignId: string;
@@ -87,32 +88,20 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
       setPathError('无法到达该目标（可能被关隘阻挡）');
       return;
     }
-    useWarStore.getState().setCampaignTarget(campaignId, marchTarget, path);
+    executeSetCampaignTarget(campaignId, marchTarget, path);
     onClose();
   };
 
   const handleAddArmy = (armyId: string) => {
-    const army = armies.get(armyId);
-    if (!army) return;
-    const turnsLeft = getMusteringTime(army.locationId, campaign.locationId, territories);
-    if (turnsLeft === 0) {
-      // 同道，立即加入
-      const updated = [...campaign.armyIds, armyId];
-      useWarStore.getState().updateCampaign(campaignId, { armyIds: updated });
-    } else {
-      // 需要时间赶来
-      const updatedIncoming = [...campaign.incomingArmies, { armyId, turnsLeft }];
-      useWarStore.getState().updateCampaign(campaignId, { incomingArmies: updatedIncoming });
-    }
+    executeAddArmyToCampaign(campaignId, armyId);
   };
 
   const handleRemoveArmy = (armyId: string) => {
-    const updated = campaign.armyIds.filter((id) => id !== armyId);
-    useWarStore.getState().updateCampaign(campaignId, { armyIds: updated });
+    executeRemoveArmyFromCampaign(campaignId, armyId);
   };
 
   const handleDisband = () => {
-    useWarStore.getState().disbandCampaign(campaignId);
+    executeDisbandCampaign(campaignId);
     onClose();
   };
 
@@ -331,8 +320,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
                     <div className="space-y-1">
                       <button
                         onClick={() => {
-                          const updated = { ...campaign.phaseStrategies, [key]: undefined };
-                          useWarStore.getState().updateCampaign(campaignId, { phaseStrategies: updated });
+                          executeSetStrategy(campaignId, key, undefined);
                         }}
                         className={`w-full px-2 py-1 rounded border text-xs text-left transition-colors ${
                           !currentId
@@ -346,8 +334,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
                         <button
                           key={s.id}
                           onClick={() => {
-                            const updated = { ...campaign.phaseStrategies, [key]: s.id };
-                            useWarStore.getState().updateCampaign(campaignId, { phaseStrategies: updated });
+                            executeSetStrategy(campaignId, key, s.id);
                           }}
                           className={`w-full px-2 py-1 rounded border text-xs text-left transition-colors ${
                             currentId === s.id
@@ -372,8 +359,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
                     <button
                       key={s.id}
                       onClick={() => {
-                        const updated = { ...campaign.phaseStrategies, pursuit: s.id };
-                        useWarStore.getState().updateCampaign(campaignId, { phaseStrategies: updated });
+                        executeSetStrategy(campaignId, 'pursuit', s.id);
                       }}
                       className={`w-full px-2 py-1 rounded border text-xs text-left transition-colors ${
                         campaign.phaseStrategies.pursuit === s.id
@@ -423,7 +409,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
                 <button
                   key={c.id}
                   onClick={() => {
-                    useWarStore.getState().updateCampaign(campaignId, { commanderId: c.id });
+                    executeSetCampaignCommander(campaignId, c.id);
                     setMode('main');
                   }}
                   className={`w-full px-3 py-1.5 rounded border text-xs text-left transition-colors ${

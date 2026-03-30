@@ -19,16 +19,6 @@ export default function ReviewPlanFlow({ onClose }: ReviewPlanFlowProps) {
 
   if (!plan || plan.entries.length === 0) return null;
 
-  function getPostLabel(postId: string): string {
-    const terrStore = useTerritoryStore.getState();
-    const post = terrStore.findPost(postId);
-    if (!post) return postId;
-    const tpl = positionMap.get(post.templateId);
-    if (!tpl) return postId;
-    const terrName = post.territoryId ? territories.get(post.territoryId)?.name : undefined;
-    return terrName ? `${terrName}${tpl.name}` : tpl.name;
-  }
-
   function getCharLabel(charId: string): string {
     const c = characters.get(charId);
     if (!c) return charId;

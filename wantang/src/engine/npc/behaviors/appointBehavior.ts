@@ -8,7 +8,7 @@ import {
   resolveAppointAuthority,
   resolveLegalAppointer,
 } from '@engine/official/selectionUtils';
-import { positionMap } from '@data/positions';
+
 
 /**
  * 为指定经办人拟定一轮完整的调动方案（含连锁）。

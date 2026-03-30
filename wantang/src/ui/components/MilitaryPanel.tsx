@@ -4,12 +4,14 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { settleWar } from '@engine/military/warSettlement';
+import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish } from '@engine/interaction/militaryAction';
+import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import type { Army, Battalion, UnitType } from '@engine/military/types';
 import type { War, Campaign } from '@engine/military/types';
 import { MAX_BATTALION_STRENGTH, CASUS_BELLI_NAMES } from '@engine/military/types';
 import { unitTypeMap, ALL_UNIT_TYPES } from '@data/unitTypes';
 import { positionMap } from '@data/positions';
-import { findPath, getMusteringTime } from '@engine/military/marchCalc';
+import { findPath } from '@engine/military/marchCalc';
 import {
   getArmyStrength,
   getArmyMorale,
@@ -148,17 +150,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   function handleRecruit() {
     if (!canRecruit || !recruitArmyId || !recruitTerritoryId) return;
     const name = recruitName.trim() || genDefaultName(recruitArmyId, recruitUnitType);
-    useMilitaryStore.getState().recruitBattalion(recruitArmyId, recruitTerritoryId, recruitUnitType, name);
-    // 征兵减少领地户数：1营=1000人，1户=5人，扣减200户
-    const householdsLost = Math.floor(MAX_BATTALION_STRENGTH / 5);
-    const territory = useTerritoryStore.getState().territories.get(recruitTerritoryId);
-    if (territory) {
-      useTerritoryStore.getState().updateTerritory(recruitTerritoryId, {
-        basePopulation: Math.max(0, territory.basePopulation - householdsLost),
-        populace: Math.max(0, territory.populace - 1),
-        conscriptionPool: Math.max(0, territory.conscriptionPool - MAX_BATTALION_STRENGTH),
-      });
-    }
+    executeRecruit(recruitArmyId, recruitTerritoryId, recruitUnitType, name);
     setRecruitName(genDefaultName(recruitArmyId, recruitUnitType));
   }
 
@@ -175,18 +167,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   function handleReward() {
     if (!canReward || !playerId || !rewardArmy) return;
     const moraleGain = rewardMoraleGain;
-    useCharacterStore.getState().addResources(playerId, { money: -rewardAmount });
-    useMilitaryStore.getState().batchMutateBattalions((batsMap) => {
-      for (const batId of rewardArmy.battalionIds) {
-        const bat = batsMap.get(batId);
-        if (bat) {
-          batsMap.set(batId, {
-            ...bat,
-            morale: Math.min(100, bat.morale + moraleGain),
-          });
-        }
-      }
-    });
+    executeReward(playerId, rewardArmy.id, rewardAmount, moraleGain);
   }
 
   return (
@@ -284,7 +265,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       disabled={!newArmyName.trim() || !newArmyLocationId}
                       onClick={() => {
                         if (playerId && newArmyName.trim() && newArmyLocationId) {
-                          useMilitaryStore.getState().createArmy(newArmyName.trim(), playerId, newArmyLocationId, undefined, newArmyPostId || null);
+                          executeCreateArmy(newArmyName.trim(), playerId, newArmyLocationId, newArmyPostId || null);
                           setShowCreateArmy(false);
                           setNewArmyName('');
                           setNewArmyLocationId('');
@@ -352,7 +333,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                               value={army.commanderId ?? ''}
                               onChange={(e) => {
                                 const val = e.target.value || null;
-                                useMilitaryStore.getState().updateArmy(army.id, { commanderId: val });
+                                executeSetCommander(army.id, val);
                               }}
                             >
                               <option value="">无将领</option>
@@ -415,7 +396,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                         value=""
                                         onChange={(e) => {
                                           if (e.target.value) {
-                                            useMilitaryStore.getState().transferBattalion(bat.id, e.target.value);
+                                            executeTransferBattalion(bat.id, e.target.value);
                                             setTransferringBatId(null);
                                           }
                                         }}
@@ -439,7 +420,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                     <button
                                       className="text-xs text-[var(--color-accent-red,#e74c3c)] hover:opacity-75 transition-opacity"
                                       onClick={() => {
-                                        useMilitaryStore.getState().disbandBattalion(bat.id);
+                                        executeDisbandBattalion(bat.id);
                                       }}
                                     >
                                       解散
@@ -595,13 +576,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                               disabled={!canReplenish || !ownsHome}
                               onClick={() => {
                                 if (!homeTerr || !canReplenish || !ownsHome) return;
-                                useMilitaryStore.getState().updateBattalion(bat.id, { currentStrength: MAX_BATTALION_STRENGTH });
-                                const householdsLost = Math.floor(deficit / 5);
-                                useTerritoryStore.getState().updateTerritory(homeTerr.id, {
-                                  basePopulation: Math.max(0, homeTerr.basePopulation - householdsLost),
-                                  populace: Math.max(0, homeTerr.populace - Math.ceil(deficit / 1000)),
-                                  conscriptionPool: Math.max(0, homeTerr.conscriptionPool - deficit),
-                                });
+                                executeReplenish(bat.id, homeTerr.id, deficit);
                               }}
                               className="shrink-0 px-2 py-0.5 rounded border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-bg-surface)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             >
@@ -1025,55 +1000,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                 onClick={() => {
                                   if (!playerId || selectedCampaignArmies.length === 0 || !campaignLocationId) return;
 
-                                  // 选中军队中军事最高的作为都统
-                                  const selectedArmyObjs = selectedCampaignArmies
-                                    .map((id) => armies.get(id))
-                                    .filter((a): a is Army => !!a);
-                                  let bestCommander = '';
-                                  let bestMilitary = -1;
-                                  for (const army of selectedArmyObjs) {
-                                    if (army.commanderId) {
-                                      const commander = characters.get(army.commanderId);
-                                      if (
-                                        commander &&
-                                        commander.abilities.military > bestMilitary
-                                      ) {
-                                        bestMilitary = commander.abilities.military;
-                                        bestCommander = army.commanderId;
-                                      }
-                                    }
-                                  }
-
-                                  // 计算最大集结时间
-                                  let maxMustering = 0;
-                                  for (const armyId of selectedCampaignArmies) {
-                                    const army = armies.get(armyId);
-                                    if (army) {
-                                      const time = getMusteringTime(
-                                        army.locationId,
-                                        campaignLocationId,
-                                        territories,
-                                      );
-                                      if (time > maxMustering) maxMustering = time;
-                                    }
-                                  }
-
-                                  const newCampaign = useWarStore
-                                    .getState()
-                                    .createCampaign(
-                                      war.id,
-                                      playerId,
-                                      bestCommander || playerId,
-                                      selectedCampaignArmies,
-                                      campaignLocationId,
-                                    );
-
-                                  if (maxMustering > 0) {
-                                    useWarStore.getState().updateCampaign(newCampaign.id, {
-                                      status: 'mustering',
-                                      musteringTurnsLeft: maxMustering,
-                                    });
-                                  }
+                                  executeCreateCampaign(war.id, playerId, selectedCampaignArmies, campaignLocationId);
 
                                   setCreateCampaignWarId(null);
                                   setSelectedCampaignArmies([]);
@@ -1175,10 +1102,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             disabled={peaceCampaignArmies.length === 0 || !peaceCampaignLocationId}
                             onClick={() => {
                               if (!playerId || peaceCampaignArmies.length === 0 || !peaceCampaignLocationId) return;
-                              const selObjs = peaceCampaignArmies.map((id) => armies.get(id)).filter((a): a is Army => !!a);
-                              let bestCmd = ''; let bestMil = -1;
-                              for (const a of selObjs) { if (a.commanderId) { const c = characters.get(a.commanderId); if (c && c.abilities.military > bestMil) { bestMil = c.abilities.military; bestCmd = a.commanderId; } } }
-                              useWarStore.getState().createCampaign('', playerId, bestCmd || playerId, peaceCampaignArmies, peaceCampaignLocationId);
+                              executeCreateCampaign('', playerId, peaceCampaignArmies, peaceCampaignLocationId);
                               setShowCreatePeaceCampaign(false); setPeaceCampaignArmies([]); setPeaceCampaignLocationId('');
                             }}
                             className="px-3 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] disabled:opacity-40 disabled:cursor-not-allowed"

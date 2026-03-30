@@ -1,7 +1,7 @@
 // ===== 角色工具函数 =====
 
 import type { Abilities, Character } from './types';
-import { traitMap, getTraitsByCategory, type TraitDef } from '@data/traits';
+import { ALL_TRAITS, traitMap, type TraitDef, type TraitCategory } from '@data/traits';
 import { randInt, random, shuffle } from '@engine/random.ts';
 
 /** 限制值在min~max之间 */
@@ -9,6 +9,36 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+
+// ===== 层级查询 =====
+
+/** 沿 overlordId 链上溯，找到顶级领主（无 overlord 的角色） */
+export function findTopLord(
+  charId: string,
+  characters: Map<string, Character>,
+): string {
+  let current = charId;
+  const visited = new Set<string>();
+  while (true) {
+    if (visited.has(current)) return current;
+    visited.add(current);
+    const char = characters.get(current);
+    if (!char?.overlordId) return current;
+    current = char.overlordId;
+  }
+}
+
+// ===== 特质查询 =====
+
+/** 按类别获取特质 */
+export function getTraitsByCategory(category: TraitCategory): TraitDef[] {
+  return ALL_TRAITS.filter((t) => t.category === category);
+}
+
+/** 获取对应能力的教育特质（给定等级） */
+export function getEducationTrait(ability: keyof Abilities, level: number): TraitDef | undefined {
+  return traitMap.get(`trait-edu-${ability}-${level}`);
+}
 
 // ===== 能力值生成 =====
 

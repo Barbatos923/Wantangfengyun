@@ -104,4 +104,8 @@ export interface Territory {
 
   moneyRatio: number;
   grainRatio: number;
+
+  // 关隘（可选，一州多关隘时取最高等级）
+  passName?: string;   // 关隘名称，如 "潼关"
+  passLevel?: number;  // 关隘等级 1-5（影响围城时长与通行限制）
 }

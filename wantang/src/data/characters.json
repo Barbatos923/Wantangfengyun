@@ -1,0 +1,7164 @@
+[
+  {
+    "id": "char-yizong",
+    "name": "唐懿宗",
+    "courtesy": "温",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "李",
+    "family": {
+      "childrenIds": [
+        "char-li-xuan"
+      ]
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 14,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-just",
+      "trait-edu-administration-2"
+    ],
+    "health": 55,
+    "stress": 40,
+    "alive": true,
+    "resources": {
+      "money": 200000,
+      "grain": 500000,
+      "prestige": 80,
+      "legitimacy": 85
+    },
+    "relationships": [],
+    "centralization": 2,
+    "redistributionRate": 60,
+    "isPlayer": true,
+    "isRuler": true,
+    "title": "大唐天子",
+    "official": {
+      "rankLevel": 29,
+      "virtue": 1000,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-luyan",
+    "name": "路岩",
+    "courtesy": "鲁瞻",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "路",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 18,
+      "strategy": 14,
+      "diplomacy": 16,
+      "scholarship": 20
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-administration-3"
+    ],
+    "health": 70,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 50000,
+      "grain": 80000,
+      "prestige": 40,
+      "legitimacy": 30
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 3,
+    "redistributionRate": 0,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "宰相",
+    "official": {
+      "rankLevel": 25,
+      "virtue": 850,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-weibaohen",
+    "name": "韦保衡",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "韦",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 20,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-diplomacy-3"
+    ],
+    "health": 72,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 40000,
+      "grain": 60000,
+      "prestige": 30,
+      "legitimacy": 25
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 3,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "宰相",
+    "official": {
+      "rankLevel": 25,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-liwei",
+    "name": "李蔚",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 18,
+      "strategy": 12,
+      "diplomacy": 14,
+      "scholarship": 22
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-content",
+      "trait-edu-scholarship-3"
+    ],
+    "health": 60,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 50000,
+      "prestige": 35,
+      "legitimacy": 30
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "吏部尚书",
+    "official": {
+      "rankLevel": 22,
+      "virtue": 900,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-zhangzhifang",
+    "name": "张直方",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "张",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 20,
+      "administration": 10,
+      "strategy": 16,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-wrathful",
+      "trait-edu-military-3"
+    ],
+    "health": 80,
+    "stress": 15,
+    "alive": true,
+    "resources": {
+      "money": 20000,
+      "grain": 40000,
+      "prestige": 20,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 750,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-chenjingxuan",
+    "name": "陈敬瑄",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 842,
+    "clan": "陈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 10,
+      "strategy": 8,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-2"
+    ],
+    "health": 78,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 20000,
+      "prestige": 10,
+      "legitimacy": 8
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "三司判官",
+    "official": {
+      "rankLevel": 13,
+      "virtue": 600,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-yushe",
+    "name": "于琮",
+    "courtesy": "礼用",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "于",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 16,
+      "strategy": 14,
+      "diplomacy": 18,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-diligent",
+      "trait-edu-diplomacy-3"
+    ],
+    "health": 58,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 25000,
+      "grain": 40000,
+      "prestige": 30,
+      "legitimacy": 25
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 22,
+      "virtue": 880,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-peizhao",
+    "name": "裴璩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "裴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 20,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-calm",
+      "trait-content",
+      "trait-edu-administration-3"
+    ],
+    "health": 55,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 20000,
+      "grain": 35000,
+      "prestige": 25,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 900,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-xiaochu",
+    "name": "萧仿",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 812,
+    "clan": "萧",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 18,
+      "strategy": 16,
+      "diplomacy": 14,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-honest",
+      "trait-diligent",
+      "trait-edu-administration-2"
+    ],
+    "health": 50,
+    "stress": 35,
+    "alive": true,
+    "resources": {
+      "money": 18000,
+      "grain": 30000,
+      "prestige": 28,
+      "legitimacy": 22
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 870,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-liuzhan",
+    "name": "刘瞻",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 18,
+      "diplomacy": 16,
+      "scholarship": 20
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-clever",
+      "trait-edu-scholarship-3"
+    ],
+    "health": 62,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 22000,
+      "grain": 35000,
+      "prestige": 32,
+      "legitimacy": 28
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 920,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-zhengqi",
+    "name": "郑畋",
+    "courtesy": "台文",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 16,
+      "strategy": 20,
+      "diplomacy": 12,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-ambitious",
+      "trait-edu-strategy-3"
+    ],
+    "health": 68,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 20000,
+      "grain": 30000,
+      "prestige": 25,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 860,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-wangning",
+    "name": "王凝",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-honest",
+      "trait-edu-scholarship-2"
+    ],
+    "health": 65,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 15000,
+      "prestige": 12,
+      "legitimacy": 10
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 780,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-cuiyin",
+    "name": "崔胤",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 16,
+      "strategy": 12,
+      "diplomacy": 14,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-administration-2"
+    ],
+    "health": 72,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 18000,
+      "prestige": 15,
+      "legitimacy": 12
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 750,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-sunwei",
+    "name": "孙威",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "孙",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-2"
+    ],
+    "health": 78,
+    "stress": 12,
+    "alive": true,
+    "resources": {
+      "money": 6000,
+      "grain": 12000,
+      "prestige": 8,
+      "legitimacy": 6
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 12,
+      "virtue": 700,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-zhaoyi",
+    "name": "赵义",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "赵",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 12,
+      "strategy": 8,
+      "diplomacy": 10,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-administration-1"
+    ],
+    "health": 70,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 5000,
+      "grain": 10000,
+      "prestige": 6,
+      "legitimacy": 5
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 680,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-lizheng",
+    "name": "李正",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 842,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 8,
+      "scholarship": 12
+    },
+    "traitIds": [
+      "trait-calm",
+      "trait-edu-administration-2"
+    ],
+    "health": 74,
+    "stress": 15,
+    "alive": true,
+    "resources": {
+      "money": 7000,
+      "grain": 12000,
+      "prestige": 8,
+      "legitimacy": 7
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 12,
+      "virtue": 720,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-qianfu",
+    "name": "钱复",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "钱",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 10,
+      "strategy": 14,
+      "diplomacy": 16,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-social",
+      "trait-edu-diplomacy-2"
+    ],
+    "health": 68,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 14000,
+      "prestige": 10,
+      "legitimacy": 8
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 700,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-zhoubao",
+    "name": "周宝",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "周",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 18,
+      "administration": 10,
+      "strategy": 12,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-wrathful",
+      "trait-edu-military-2"
+    ],
+    "health": 60,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 9000,
+      "grain": 16000,
+      "prestige": 12,
+      "legitimacy": 10
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 740,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-lufang",
+    "name": "卢芳",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "卢",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 12,
+      "strategy": 8,
+      "diplomacy": 10,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-diligent",
+      "trait-edu-scholarship-2"
+    ],
+    "health": 72,
+    "stress": 16,
+    "alive": true,
+    "resources": {
+      "money": 6000,
+      "grain": 10000,
+      "prestige": 7,
+      "legitimacy": 6
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 690,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-heqian",
+    "name": "何迁",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 844,
+    "clan": "何",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 10,
+      "strategy": 16,
+      "diplomacy": 6,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-suspicious",
+      "trait-edu-strategy-2"
+    ],
+    "health": 76,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 5000,
+      "grain": 8000,
+      "prestige": 5,
+      "legitimacy": 4
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 8,
+      "virtue": 650,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-fangxuan",
+    "name": "房宣",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 846,
+    "clan": "房",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 16,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-administration-1"
+    ],
+    "health": 74,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 4000,
+      "grain": 8000,
+      "prestige": 4,
+      "legitimacy": 3
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "廷臣",
+    "official": {
+      "rankLevel": 8,
+      "virtue": 640,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ducong",
+    "name": "杜悰",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 794,
+    "clan": "杜",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 16,
+      "strategy": 12,
+      "diplomacy": 18,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-administration-2"
+    ],
+    "health": 50,
+    "stress": 35,
+    "alive": true,
+    "resources": {
+      "money": 80000,
+      "grain": 150000,
+      "prestige": 35,
+      "legitimacy": 30
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "凤翔节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 850,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-zhengcongdang",
+    "name": "郑从谠",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 813,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 18,
+      "strategy": 16,
+      "diplomacy": 14,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-edu-administration-3"
+    ],
+    "health": 62,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 100000,
+      "grain": 200000,
+      "prestige": 45,
+      "legitimacy": 40
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "河东节度使",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 900,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-zhangyunshen",
+    "name": "张允伸",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 808,
+    "clan": "张",
+    "family": {
+      "childrenIds": [
+        "char-zhang-jian"
+      ]
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 12,
+      "strategy": 14,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-suspicious",
+      "trait-edu-military-2"
+    ],
+    "health": 55,
+    "stress": 40,
+    "alive": true,
+    "resources": {
+      "money": 90000,
+      "grain": 180000,
+      "prestige": 40,
+      "legitimacy": 30
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "卢龙节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-wangjingchong",
+    "name": "王景崇",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 10,
+      "strategy": 12,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-military-2"
+    ],
+    "health": 72,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 80000,
+      "grain": 160000,
+      "prestige": 35,
+      "legitimacy": 25
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "成德节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 780,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-hanyunzhong",
+    "name": "韩允中",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "韩",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-cruel",
+      "trait-edu-military-2"
+    ],
+    "health": 75,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 90000,
+      "grain": 180000,
+      "prestige": 40,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "魏博节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 750,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-tuobasigong",
+    "name": "拓跋思恭",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "拓跋",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 18,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 8,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-ambitious",
+      "trait-edu-military-2"
+    ],
+    "health": 78,
+    "stress": 15,
+    "alive": true,
+    "resources": {
+      "money": 40000,
+      "grain": 80000,
+      "prestige": 25,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "定难节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 720,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-cuiyanzeng",
+    "name": "崔彦曾",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 14,
+      "strategy": 12,
+      "diplomacy": 16,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-edu-administration-2"
+    ],
+    "health": 62,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 100000,
+      "grain": 200000,
+      "prestige": 40,
+      "legitimacy": 35
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "淮南节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 850,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-liutong",
+    "name": "刘潼",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 16,
+      "strategy": 14,
+      "diplomacy": 12,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-administration-2"
+    ],
+    "health": 68,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 70000,
+      "grain": 140000,
+      "prestige": 30,
+      "legitimacy": 28
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "西川节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 820,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-xiaoye",
+    "name": "萧邺",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 810,
+    "clan": "萧",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 18,
+      "strategy": 12,
+      "diplomacy": 16,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-content",
+      "trait-edu-scholarship-3"
+    ],
+    "health": 58,
+    "stress": 35,
+    "alive": true,
+    "resources": {
+      "money": 50000,
+      "grain": 100000,
+      "prestige": 30,
+      "legitimacy": 28
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "山南西道节度使",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 880,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-lupan",
+    "name": "卢潘",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "卢",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 10,
+      "strategy": 12,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-2"
+    ],
+    "health": 65,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 40000,
+      "grain": 80000,
+      "prestige": 25,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "朔方节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 760,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-lihongfu",
+    "name": "李弘甫",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 8,
+      "strategy": 12,
+      "diplomacy": 6,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 35000,
+      "grain": 70000,
+      "prestige": 22,
+      "legitimacy": 18
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "泾原节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 750,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-zhanghuaishen",
+    "name": "张淮深",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "张",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 10,
+      "strategy": 14,
+      "diplomacy": 8,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-ambitious",
+      "trait-edu-military-2"
+    ],
+    "health": 74,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "归义军节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 760,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-jiaweiqing",
+    "name": "贾惟庆",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "贾",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 8,
+      "strategy": 10,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 68,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 25000,
+      "grain": 50000,
+      "prestige": 15,
+      "legitimacy": 12
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "鄜坊节度使",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 700,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-sundang",
+    "name": "孙谠",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "孙",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 66,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 25000,
+      "grain": 50000,
+      "prestige": 15,
+      "legitimacy": 12
+    },
+    "relationships": [],
+    "overlordId": "char-xiaoye",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "武信军节度使",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 720,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gaopian",
+    "name": "高骈",
+    "courtesy": "千里",
+    "gender": "男",
+    "birthYear": 821,
+    "clan": "高",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 22,
+      "administration": 14,
+      "strategy": 18,
+      "diplomacy": 10,
+      "scholarship": 12
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-ambitious",
+      "trait-suspicious",
+      "trait-edu-military-3"
+    ],
+    "health": 72,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 120000,
+      "grain": 300000,
+      "prestige": 60,
+      "legitimacy": 40
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "静海军节度使",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 820,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-liguochang",
+    "name": "李国昌",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "李",
+    "family": {
+      "childrenIds": [
+        "char-likeyong"
+      ]
+    },
+    "abilities": {
+      "military": 18,
+      "administration": 8,
+      "strategy": 12,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-wrathful",
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 50000,
+      "grain": 100000,
+      "prestige": 30,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "centralization": 1,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "大同军节度使",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 720,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-likeyong",
+    "name": "李克用",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 856,
+    "clan": "李",
+    "family": {
+      "fatherId": "char-liguochang",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 6,
+      "strategy": 8,
+      "diplomacy": 4,
+      "scholarship": 2
+    },
+    "traitIds": [
+      "trait-brave"
+    ],
+    "health": 90,
+    "stress": 5,
+    "alive": true,
+    "resources": {
+      "money": 1000,
+      "grain": 2000,
+      "prestige": 5,
+      "legitimacy": 2
+    },
+    "relationships": [],
+    "overlordId": "char-liguochang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "少年"
+  },
+  {
+    "id": "char-zhuwen",
+    "name": "朱温",
+    "courtesy": "全忠",
+    "gender": "男",
+    "birthYear": 852,
+    "clan": "朱",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 8,
+      "strategy": 10,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-cruel"
+    ],
+    "health": 88,
+    "stress": 8,
+    "alive": true,
+    "resources": {
+      "money": 500,
+      "grain": 1000,
+      "prestige": 2,
+      "legitimacy": 1
+    },
+    "relationships": [],
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "平民"
+  },
+  {
+    "id": "char-wangxianzhi",
+    "name": "王仙芝",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 6,
+      "strategy": 12,
+      "diplomacy": 8,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-cruel",
+      "trait-edu-military-2"
+    ],
+    "health": 80,
+    "stress": 15,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 20000,
+      "prestige": 10,
+      "legitimacy": 2
+    },
+    "relationships": [],
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "草军首领"
+  },
+  {
+    "id": "char-npc-binning",
+    "name": "邠宁使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 11,
+      "strategy": 10,
+      "diplomacy": 11,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "邠宁节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-zhenguo",
+    "name": "同华使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 823,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 13,
+      "strategy": 11,
+      "diplomacy": 10,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "同华节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-shanzhou",
+    "name": "陕虢使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "张",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 12,
+      "strategy": 12,
+      "diplomacy": 11,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "陕虢观察使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-zhaoyi",
+    "name": "昭义使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 11,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "昭义节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-yiwu",
+    "name": "义武使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "赵",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 10,
+      "strategy": 11,
+      "diplomacy": 12,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "义武节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-xuanwu",
+    "name": "宣武使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "韩",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 11,
+      "strategy": 13,
+      "diplomacy": 10,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "宣武节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-yicheng",
+    "name": "义成使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "陈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 11,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "义成节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-tianping",
+    "name": "天平使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "孟",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 14,
+      "strategy": 11,
+      "diplomacy": 12,
+      "scholarship": 11
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "天平节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-taining",
+    "name": "泰宁使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 831,
+    "clan": "曹",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 11,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "泰宁节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-wuning",
+    "name": "武宁使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "薛",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 10,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "武宁节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-pinglu",
+    "name": "平卢使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 827,
+    "clan": "侯",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 12,
+      "strategy": 11,
+      "diplomacy": 11,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "平卢节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-zhongwu",
+    "name": "忠武使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 13,
+      "strategy": 11,
+      "diplomacy": 12,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "忠武节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-fengguo",
+    "name": "奉国使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "魏",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 11,
+      "strategy": 10,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "奉国节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-shannan-e",
+    "name": "山南东使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 821,
+    "clan": "裴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 13,
+      "strategy": 11,
+      "diplomacy": 12,
+      "scholarship": 11
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "山南东道节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-jingnan",
+    "name": "荆南使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "周",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 13,
+      "scholarship": 12
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shannan-e",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "荆南节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-wuchang",
+    "name": "武昌使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "马",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 11,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shannan-e",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "武昌节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-zhenhai",
+    "name": "镇海使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "杨",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 13,
+      "strategy": 11,
+      "diplomacy": 11,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "镇海节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-zhendong",
+    "name": "镇东使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "朱",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 12,
+      "strategy": 11,
+      "diplomacy": 12,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "镇东节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-weiwu",
+    "name": "威武使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "林",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 10,
+      "strategy": 10,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "威武节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-xuanshe",
+    "name": "宣歙使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 13,
+      "scholarship": 12
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "宣歙观察使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-zhennan",
+    "name": "镇南使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "韦",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 11,
+      "strategy": 11,
+      "diplomacy": 10,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "镇南节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-hunan",
+    "name": "湖南使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 827,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 13,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 11
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhennan",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "湖南观察使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-npc-dongchuan",
+    "name": "东川使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 12,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 10
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-liutong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "东川节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-qinghai",
+    "name": "清海使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 823,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 11,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "清海节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-lingnan-w",
+    "name": "岭南西使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "段",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 10,
+      "strategy": 11,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "岭南西道节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-jingjiang",
+    "name": "静江使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "吴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 11,
+      "strategy": 10,
+      "diplomacy": 11,
+      "scholarship": 9
+    },
+    "traitIds": [
+      "trait-edu-administration-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "静江节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-npc-tianshui",
+    "name": "天水使",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "赵",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 10,
+      "strategy": 12,
+      "diplomacy": 9,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-edu-military-2"
+    ],
+    "health": 70,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 30000,
+      "grain": 60000,
+      "prestige": 20,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-lihongfu",
+    "centralization": 2,
+    "isPlayer": false,
+    "isRuler": true,
+    "title": "天水节度使",
+    "official": {
+      "rankLevel": 16,
+      "virtue": 800,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-li-xuan",
+    "name": "李儇",
+    "courtesy": "儇",
+    "gender": "男",
+    "birthYear": 851,
+    "clan": "李",
+    "family": {
+      "fatherId": "char-yizong",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 10,
+      "strategy": 8,
+      "diplomacy": 12,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-administration-1"
+    ],
+    "health": 90,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 5000,
+      "grain": 10000,
+      "prestige": 30,
+      "legitimacy": 60
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "普王",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 200,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-zhang-jian",
+    "name": "张简会",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 847,
+    "clan": "张",
+    "family": {
+      "fatherId": "char-zhangyunshen",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 8,
+      "strategy": 12,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-1"
+    ],
+    "health": 85,
+    "stress": 15,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 20000,
+      "prestige": 15,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 12,
+      "virtue": 150,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-weizhaodu",
+    "name": "韦昭度",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "韦",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 16,
+      "strategy": 10,
+      "diplomacy": 14,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-content",
+      "trait-edu-scholarship-2"
+    ],
+    "health": 72,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 15000,
+      "grain": 25000,
+      "prestige": 20,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "翰林学士",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 820,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-liuye",
+    "name": "刘邺",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 12,
+      "diplomacy": 16,
+      "scholarship": 20
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-scholarship-3"
+    ],
+    "health": 58,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 20000,
+      "grain": 35000,
+      "prestige": 25,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "礼部尚书兼翰林学士",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 800,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-zhengwei",
+    "name": "郑薰",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-diligent",
+      "trait-edu-scholarship-2"
+    ],
+    "health": 65,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 12000,
+      "grain": 20000,
+      "prestige": 18,
+      "legitimacy": 12
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "翰林学士",
+    "official": {
+      "rankLevel": 18,
+      "virtue": 830,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-yangfugong",
+    "name": "杨复恭",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "杨",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 12,
+      "strategy": 16,
+      "diplomacy": 10,
+      "scholarship": 8
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-edu-strategy-2"
+    ],
+    "health": 70,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 40000,
+      "grain": 60000,
+      "prestige": 30,
+      "legitimacy": 20
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "枢密使",
+    "official": {
+      "rankLevel": 22,
+      "virtue": 500,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-tianlingzi",
+    "name": "田令孜",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "田",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 10,
+      "strategy": 18,
+      "diplomacy": 14,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-ambitious",
+      "trait-greedy",
+      "trait-edu-strategy-3"
+    ],
+    "health": 75,
+    "stress": 20,
+    "alive": true,
+    "resources": {
+      "money": 80000,
+      "grain": 100000,
+      "prestige": 35,
+      "legitimacy": 10
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "左神策军中尉",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 400,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-ximentaishen",
+    "name": "西门思恭",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "西门",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 8,
+      "strategy": 12,
+      "diplomacy": 10,
+      "scholarship": 6
+    },
+    "traitIds": [
+      "trait-calm",
+      "trait-edu-military-2"
+    ],
+    "health": 68,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 50000,
+      "grain": 70000,
+      "prestige": 25,
+      "legitimacy": 15
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "右神策军中尉",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 550,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-ct-peitan",
+    "name": "裴坦",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 810,
+    "clan": "裴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 18,
+      "strategy": 10,
+      "diplomacy": 14,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-honest",
+      "trait-diligent",
+      "trait-edu-administration-2"
+    ],
+    "health": 52,
+    "stress": 30,
+    "alive": true,
+    "resources": {
+      "money": 18000,
+      "grain": 30000,
+      "prestige": 22,
+      "legitimacy": 18
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "户部尚书",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 890,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-cuiyanchao",
+    "name": "崔彦昭",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 16,
+      "strategy": 14,
+      "diplomacy": 18,
+      "scholarship": 16
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-edu-diplomacy-2"
+    ],
+    "health": 55,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 20000,
+      "grain": 35000,
+      "prestige": 28,
+      "legitimacy": 22
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "御史大夫",
+    "official": {
+      "rankLevel": 25,
+      "virtue": 880,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-zhengyanxiu",
+    "name": "郑延休",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 12,
+      "diplomacy": 16,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-honest",
+      "trait-edu-administration-2"
+    ],
+    "health": 62,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 15000,
+      "grain": 25000,
+      "prestige": 20,
+      "legitimacy": 16
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "御史中丞",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 850,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-ct-cuihan",
+    "name": "崔沆",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 4,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 14,
+      "scholarship": 18
+    },
+    "traitIds": [
+      "trait-diligent",
+      "trait-edu-scholarship-2"
+    ],
+    "health": 64,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 12000,
+      "grain": 20000,
+      "prestige": 18,
+      "legitimacy": 14
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "中书舍人",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 840,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-0",
+    "name": "李远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 817,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 13,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 98,
+    "stress": 4,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 553,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-1",
+    "name": "王远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 816,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 13,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 4,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 678,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-2",
+    "name": "张远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "张",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 13,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 4,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-3",
+    "name": "刘远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 13,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 4,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-ducong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-4",
+    "name": "陈远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 839,
+    "clan": "陈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 13,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 4,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 553,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-5",
+    "name": "杨远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "杨",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 12,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 678,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-6",
+    "name": "赵远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "赵",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 12,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-binning",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-7",
+    "name": "周远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "周",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 12,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-jiaweiqing",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-8",
+    "name": "吴远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "吴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 12,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenguo",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-9",
+    "name": "郑远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 834,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 12,
+      "strategy": 15,
+      "diplomacy": 17,
+      "scholarship": 14
+    },
+    "traitIds": [],
+    "health": 89,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-lupan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 603,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-10",
+    "name": "孙远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "孙",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-tuobasigong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-11",
+    "name": "韩远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "韩",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-12",
+    "name": "朱远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "朱",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-13",
+    "name": "马远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 827,
+    "clan": "马",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-14",
+    "name": "胡远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "胡",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 24,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shanzhou",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-15",
+    "name": "林远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "林",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-16",
+    "name": "何远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "何",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 98,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-17",
+    "name": "高远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 831,
+    "clan": "高",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 99,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-18",
+    "name": "罗远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "罗",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 100,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhaoyi",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-19",
+    "name": "郭远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "郭",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 80,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-20",
+    "name": "梁远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "梁",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 81,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-liguochang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-21",
+    "name": "宋远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "宋",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 82,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-22",
+    "name": "唐远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 831,
+    "clan": "唐",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 83,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-23",
+    "name": "许远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "许",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 84,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-24",
+    "name": "邓远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "邓",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 85,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhangyunshen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-25",
+    "name": "冯远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 834,
+    "clan": "冯",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 86,
+    "stress": 28,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-yiwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-26",
+    "name": "曹远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "曹",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 87,
+    "stress": 29,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-wangjingchong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-27",
+    "name": "彭远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "彭",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 88,
+    "stress": 29,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-wangjingchong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-28",
+    "name": "曾远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "曾",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 89,
+    "stress": 29,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-wangjingchong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-29",
+    "name": "田远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "田",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 9,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 29,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-wangjingchong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-30",
+    "name": "袁远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 834,
+    "clan": "袁",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-hanyunzhong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-31",
+    "name": "蒋远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "蒋",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-hanyunzhong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-32",
+    "name": "范远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "范",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-hanyunzhong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-33",
+    "name": "石远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "石",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-hanyunzhong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-34",
+    "name": "姚远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "姚",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-35",
+    "name": "崔远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 839,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-36",
+    "name": "董远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "董",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 2,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-37",
+    "name": "程远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "程",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 98,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-yicheng",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-38",
+    "name": "沈远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 816,
+    "clan": "沈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 99,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-tianping",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-39",
+    "name": "卢远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 817,
+    "clan": "卢",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 11,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 100,
+    "stress": 3,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-taining",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-40",
+    "name": "魏远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 839,
+    "clan": "魏",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 80,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-wuning",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-41",
+    "name": "蔡远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "蔡",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 81,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-pinglu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-42",
+    "name": "贾远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "贾",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 82,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhongwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-43",
+    "name": "丁远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 816,
+    "clan": "丁",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 83,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-fengguo",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-44",
+    "name": "薛远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 817,
+    "clan": "薛",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 84,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shannan-e",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-45",
+    "name": "叶远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "叶",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 85,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shannan-e",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-46",
+    "name": "阎远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 819,
+    "clan": "阎",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 86,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-shannan-e",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-47",
+    "name": "余远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "余",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 87,
+    "stress": 6,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-jingnan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-48",
+    "name": "潘远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 821,
+    "clan": "潘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 88,
+    "stress": 7,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-wuchang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-49",
+    "name": "杜远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "杜",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 13,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 89,
+    "stress": 7,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-xiaoye",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-50",
+    "name": "戴远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "戴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 14,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 9,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-xiaoye",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-51",
+    "name": "夏远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 819,
+    "clan": "夏",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-xiaoye",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-52",
+    "name": "钟远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "钟",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-sundang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-53",
+    "name": "汪远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 821,
+    "clan": "汪",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-cuiyanzeng",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-54",
+    "name": "施远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 822,
+    "clan": "施",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-cuiyanzeng",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-55",
+    "name": "裴远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 823,
+    "clan": "裴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-cuiyanzeng",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-56",
+    "name": "萧远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "萧",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-57",
+    "name": "段远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "段",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-58",
+    "name": "温远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "温",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 98,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhenhai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-59",
+    "name": "严远恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 827,
+    "clan": "严",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 15,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 99,
+    "stress": 11,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhendong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-60",
+    "name": "李承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 823,
+    "clan": "李",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 16,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 100,
+    "stress": 13,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-weiwu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-61",
+    "name": "王承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 824,
+    "clan": "王",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 16,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 80,
+    "stress": 13,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-xuanshe",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-62",
+    "name": "张承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 825,
+    "clan": "张",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 81,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhennan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-63",
+    "name": "刘承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 826,
+    "clan": "刘",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 82,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhennan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-64",
+    "name": "陈承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 827,
+    "clan": "陈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 83,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-zhennan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-65",
+    "name": "杨承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "杨",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 84,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-hunan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-66",
+    "name": "赵承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "赵",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 85,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-liutong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-67",
+    "name": "周承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "周",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 86,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-liutong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-68",
+    "name": "吴承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 831,
+    "clan": "吴",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 87,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-liutong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-69",
+    "name": "郑承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "郑",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 17,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 88,
+    "stress": 14,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-dongchuan",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-70",
+    "name": "孙承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 828,
+    "clan": "孙",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 5,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 89,
+    "stress": 17,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-71",
+    "name": "韩承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 829,
+    "clan": "韩",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 5,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 17,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-72",
+    "name": "朱承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 830,
+    "clan": "朱",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 5,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 17,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-qinghai",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-73",
+    "name": "马承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 831,
+    "clan": "马",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-lingnan-w",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-74",
+    "name": "胡承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 832,
+    "clan": "胡",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-jingjiang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-75",
+    "name": "林承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "林",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-gaopian",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-76",
+    "name": "何承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 834,
+    "clan": "何",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-lihongfu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-77",
+    "name": "高承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "高",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-lihongfu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-78",
+    "name": "罗承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "罗",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-lihongfu",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-79",
+    "name": "郭承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "郭",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 6,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 98,
+    "stress": 18,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-npc-tianshui",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-80",
+    "name": "梁承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 833,
+    "clan": "梁",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 99,
+    "stress": 21,
+    "alive": true,
+    "resources": {
+      "money": 5500,
+      "grain": 9200,
+      "prestige": 9,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhanghuaishen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 9,
+      "virtue": 620,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-81",
+    "name": "宋承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 834,
+    "clan": "宋",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 100,
+    "stress": 21,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhanghuaishen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-82",
+    "name": "唐承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 835,
+    "clan": "唐",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 80,
+    "stress": 21,
+    "alive": true,
+    "resources": {
+      "money": 6500,
+      "grain": 10800,
+      "prestige": 11,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-zhanghuaishen",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 11,
+      "virtue": 670,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-83",
+    "name": "许承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "许",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 7,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 81,
+    "stress": 21,
+    "alive": true,
+    "resources": {
+      "money": 4500,
+      "grain": 7600,
+      "prestige": 7,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 7,
+      "virtue": 570,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-84",
+    "name": "邓承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "邓",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 82,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 4500,
+      "grain": 7600,
+      "prestige": 7,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 7,
+      "virtue": 570,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-85",
+    "name": "冯承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "冯",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 83,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-86",
+    "name": "曹承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 839,
+    "clan": "曹",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 84,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-87",
+    "name": "彭承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "彭",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 85,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-88",
+    "name": "曾承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "曾",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 86,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-89",
+    "name": "田承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 816,
+    "clan": "田",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 8,
+      "strategy": 14,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 87,
+    "stress": 22,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-90",
+    "name": "袁承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 838,
+    "clan": "袁",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 15,
+      "administration": 9,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 88,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-91",
+    "name": "蒋承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 839,
+    "clan": "蒋",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 16,
+      "administration": 9,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 89,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-92",
+    "name": "范承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "范",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 17,
+      "administration": 9,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-93",
+    "name": "石承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 815,
+    "clan": "石",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 5,
+      "administration": 9,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-94",
+    "name": "姚承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 816,
+    "clan": "姚",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 6,
+      "administration": 9,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 92,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-95",
+    "name": "崔承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 817,
+    "clan": "崔",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 7,
+      "administration": 10,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 93,
+    "stress": 26,
+    "alive": true,
+    "resources": {
+      "money": 11000,
+      "grain": 18000,
+      "prestige": 20,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 20,
+      "virtue": 895,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-96",
+    "name": "董承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 818,
+    "clan": "董",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 10,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 94,
+    "stress": 26,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 13200,
+      "prestige": 14,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 14,
+      "virtue": 745,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-97",
+    "name": "程承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 819,
+    "clan": "程",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 9,
+      "administration": 10,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 95,
+    "stress": 26,
+    "alive": true,
+    "resources": {
+      "money": 7500,
+      "grain": 12400,
+      "prestige": 13,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 13,
+      "virtue": 720,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-98",
+    "name": "沈承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 820,
+    "clan": "沈",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 10,
+      "administration": 10,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 96,
+    "stress": 26,
+    "alive": true,
+    "resources": {
+      "money": 6000,
+      "grain": 10000,
+      "prestige": 10,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 645,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-99",
+    "name": "卢承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 821,
+    "clan": "卢",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 11,
+      "administration": 10,
+      "strategy": 15,
+      "diplomacy": 14,
+      "scholarship": 9
+    },
+    "traitIds": [],
+    "health": 97,
+    "stress": 26,
+    "alive": true,
+    "resources": {
+      "money": 5000,
+      "grain": 8400,
+      "prestige": 8,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 8,
+      "virtue": 595,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-100",
+    "name": "魏承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 836,
+    "clan": "魏",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 13,
+      "administration": 12,
+      "strategy": 5,
+      "diplomacy": 6,
+      "scholarship": 8
+    },
+    "traitIds": [],
+    "health": 90,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 3000,
+      "grain": 5200,
+      "prestige": 4,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 4,
+      "virtue": 593,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-gen-101",
+    "name": "蔡承恩",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 837,
+    "clan": "蔡",
+    "family": {
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 12,
+      "strategy": 5,
+      "diplomacy": 6,
+      "scholarship": 8
+    },
+    "traitIds": [],
+    "health": 91,
+    "stress": 25,
+    "alive": true,
+    "resources": {
+      "money": 2500,
+      "grain": 4400,
+      "prestige": 3,
+      "legitimacy": 0
+    },
+    "relationships": [],
+    "overlordId": "char-yizong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 3,
+      "virtue": 568,
+      "isCivil": true
+    }
+  }
+]

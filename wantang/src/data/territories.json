@@ -1,0 +1,5338 @@
+[
+  {
+    "id": "tianxia",
+    "name": "天下",
+    "tier": "tianxia",
+    "territoryType": "civil",
+    "childIds": [
+      "guo-guanlong",
+      "guo-hebei",
+      "guo-zhongyuan",
+      "guo-bashu",
+      "guo-dongnan"
+    ],
+    "dejureControllerId": "char-yizong",
+    "posts": [
+      {
+        "id": "post-tianxia",
+        "templateId": "pos-emperor",
+        "territoryId": "tianxia",
+        "holderId": "char-yizong",
+        "appointedBy": "system",
+        "appointedDate": {
+          "year": 859,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": true
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "guo-guanlong",
+    "name": "关陇",
+    "tier": "guo",
+    "territoryType": "civil",
+    "parentId": "tianxia",
+    "childIds": [
+      "dao-jingji",
+      "dao-guannei",
+      "dao-duji",
+      "dao-longyou",
+      "dao-hexi"
+    ],
+    "dejureControllerId": "tianxia",
+    "posts": [],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "guo-hebei",
+    "name": "河北",
+    "tier": "guo",
+    "territoryType": "military",
+    "parentId": "tianxia",
+    "childIds": [
+      "dao-hedong",
+      "dao-youzhou",
+      "dao-chengde",
+      "dao-weibo"
+    ],
+    "dejureControllerId": "tianxia",
+    "posts": [],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "guo-zhongyuan",
+    "name": "中原",
+    "tier": "guo",
+    "territoryType": "civil",
+    "parentId": "tianxia",
+    "childIds": [
+      "dao-henan",
+      "dao-shannan-e",
+      "dao-huainan"
+    ],
+    "dejureControllerId": "tianxia",
+    "posts": [],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "guo-bashu",
+    "name": "巴蜀",
+    "tier": "guo",
+    "territoryType": "civil",
+    "parentId": "tianxia",
+    "childIds": [
+      "dao-jiannan",
+      "dao-shannan-w"
+    ],
+    "dejureControllerId": "tianxia",
+    "posts": [],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "guo-dongnan",
+    "name": "东南",
+    "tier": "guo",
+    "territoryType": "civil",
+    "parentId": "tianxia",
+    "childIds": [
+      "dao-jiangnan-e",
+      "dao-jiangnan-w",
+      "dao-lingnan"
+    ],
+    "dejureControllerId": "tianxia",
+    "posts": [],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "dao-jingji",
+    "name": "京畿道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-guanlong",
+    "childIds": [
+      "zhou-changan",
+      "zhou-fengxiang"
+    ],
+    "capitalZhouId": "zhou-changan",
+    "dejureControllerId": "guo-guanlong",
+    "posts": [
+      {
+        "id": "post-guancha-jingji",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-jingji",
+        "holderId": "char-yizong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-jingji",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-jingji",
+        "holderId": "char-gen-0",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 553,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-jingji",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-jingji",
+        "holderId": "char-gen-1",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 678,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-changan",
+    "name": "长安",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jingji",
+    "childIds": [],
+    "dejureControllerId": "dao-jingji",
+    "posts": [
+      {
+        "id": "post-cishi-changan",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-changan",
+        "holderId": "char-yizong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-changan",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-changan",
+        "holderId": "char-gen-2",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 192000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 40,
+    "development": 60,
+    "populace": 65,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 192000,
+    "conscriptionPool": 2400,
+    "moneyRatio": 3,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-fengxiang",
+    "name": "凤翔",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-jingji",
+    "childIds": [],
+    "dejureControllerId": "dao-jingji",
+    "posts": [
+      {
+        "id": "post-fangyu-fengxiang",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-fengxiang",
+        "holderId": "char-ducong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 850,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-fengxiang",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-fengxiang",
+        "holderId": "char-gen-3",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-ducong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 80,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "大散关",
+    "passLevel": 4
+  },
+  {
+    "id": "dao-guannei",
+    "name": "关内道",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-guanlong",
+    "childIds": [
+      "zhou-binzhou",
+      "zhou-fangzhou",
+      "zhou-tongzhou",
+      "zhou-lingzhou",
+      "zhou-xiazhou"
+    ],
+    "capitalZhouId": "zhou-binzhou",
+    "dejureControllerId": "guo-guanlong",
+    "posts": [
+      {
+        "id": "post-jiedushi-guannei",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-guannei",
+        "holderId": "char-npc-binning",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-guannei",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-guannei",
+        "holderId": "char-gen-4",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-binning",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 553,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-guannei",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-guannei",
+        "holderId": "char-gen-5",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-binning",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 678,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-binzhou",
+    "name": "邠州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-guannei",
+    "childIds": [],
+    "dejureControllerId": "dao-guannei",
+    "posts": [
+      {
+        "id": "post-fangyu-binzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-binzhou",
+        "holderId": "char-npc-binning",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 48000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-binzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-binzhou",
+        "holderId": "char-gen-6",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-binning",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 48000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 55,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 48000,
+    "conscriptionPool": 2400,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-fangzhou",
+    "name": "坊州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-guannei",
+    "childIds": [],
+    "dejureControllerId": "dao-guannei",
+    "posts": [
+      {
+        "id": "post-fangyu-fangzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-fangzhou",
+        "holderId": "char-jiaweiqing",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 40000,
+          "virtue": 700,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-fangzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-fangzhou",
+        "holderId": "char-gen-7",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-jiaweiqing",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 40000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 40,
+    "populace": 45,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 40000,
+    "conscriptionPool": 2000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-tongzhou",
+    "name": "同州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-guannei",
+    "childIds": [],
+    "dejureControllerId": "dao-guannei",
+    "posts": [
+      {
+        "id": "post-fangyu-tongzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-tongzhou",
+        "holderId": "char-npc-zhenguo",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 64000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-tongzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-tongzhou",
+        "holderId": "char-gen-8",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhenguo",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 64000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 65,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 64000,
+    "conscriptionPool": 3200,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-lingzhou",
+    "name": "灵州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-guannei",
+    "childIds": [],
+    "dejureControllerId": "dao-guannei",
+    "posts": [
+      {
+        "id": "post-fangyu-lingzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-lingzhou",
+        "holderId": "char-lupan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 760,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-lingzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-lingzhou",
+        "holderId": "char-gen-9",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-lupan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 603,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 50,
+    "populace": 45,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-xiazhou",
+    "name": "夏州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-guannei",
+    "childIds": [],
+    "dejureControllerId": "dao-guannei",
+    "posts": [
+      {
+        "id": "post-fangyu-xiazhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-xiazhou",
+        "holderId": "char-tuobasigong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 720,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xiazhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xiazhou",
+        "holderId": "char-gen-10",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-tuobasigong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 90,
+    "development": 30,
+    "populace": 40,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-duji",
+    "name": "都畿道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-guanlong",
+    "childIds": [
+      "zhou-luoyang",
+      "zhou-shanzhou"
+    ],
+    "capitalZhouId": "zhou-luoyang",
+    "dejureControllerId": "guo-guanlong",
+    "posts": [
+      {
+        "id": "post-guancha-duji",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-duji",
+        "holderId": "char-yizong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-duji",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-duji",
+        "holderId": "char-gen-11",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-duji",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-duji",
+        "holderId": "char-gen-12",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-luoyang",
+    "name": "洛阳",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-duji",
+    "childIds": [],
+    "dejureControllerId": "dao-duji",
+    "posts": [
+      {
+        "id": "post-cishi-luoyang",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-luoyang",
+        "holderId": "char-yizong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-luoyang",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-luoyang",
+        "holderId": "char-gen-13",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 128000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 40,
+    "development": 60,
+    "populace": 60,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 128000,
+    "conscriptionPool": 1600,
+    "moneyRatio": 2,
+    "grainRatio": 3,
+    "passName": "虎牢关",
+    "passLevel": 4
+  },
+  {
+    "id": "zhou-shanzhou",
+    "name": "陕州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-duji",
+    "childIds": [],
+    "dejureControllerId": "dao-duji",
+    "posts": [
+      {
+        "id": "post-fangyu-shanzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-shanzhou",
+        "holderId": "char-npc-shanzhou",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 56000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-shanzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-shanzhou",
+        "holderId": "char-gen-14",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-shanzhou",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 56000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 60,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 56000,
+    "conscriptionPool": 2800,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "潼关",
+    "passLevel": 5
+  },
+  {
+    "id": "dao-hedong",
+    "name": "河东道",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-hebei",
+    "childIds": [
+      "zhou-taiyuan",
+      "zhou-luzhou",
+      "zhou-hezhong",
+      "zhou-yunzhou"
+    ],
+    "capitalZhouId": "zhou-taiyuan",
+    "dejureControllerId": "guo-hebei",
+    "posts": [
+      {
+        "id": "post-jiedushi-hedong",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-hedong",
+        "holderId": "char-zhengcongdang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-hedong",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-hedong",
+        "holderId": "char-gen-15",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhengcongdang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-hedong",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-hedong",
+        "holderId": "char-gen-16",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhengcongdang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-taiyuan",
+    "name": "太原",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-hedong",
+    "childIds": [],
+    "dejureControllerId": "dao-hedong",
+    "posts": [
+      {
+        "id": "post-fangyu-taiyuan",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-taiyuan",
+        "holderId": "char-zhengcongdang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 156000,
+          "virtue": 900,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-taiyuan",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-taiyuan",
+        "holderId": "char-gen-17",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhengcongdang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 156000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 90,
+    "populace": 60,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 156000,
+    "conscriptionPool": 7800,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "雁门关",
+    "passLevel": 4
+  },
+  {
+    "id": "zhou-luzhou",
+    "name": "潞州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-hedong",
+    "childIds": [],
+    "dejureControllerId": "dao-hedong",
+    "posts": [
+      {
+        "id": "post-fangyu-luzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-luzhou",
+        "holderId": "char-npc-zhaoyi",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 104000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-luzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-luzhou",
+        "holderId": "char-gen-18",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhaoyi",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 104000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 65,
+    "development": 55,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 104000,
+    "conscriptionPool": 5200,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-hezhong",
+    "name": "河中",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-hedong",
+    "childIds": [],
+    "dejureControllerId": "dao-hedong",
+    "posts": [
+      {
+        "id": "post-fangyu-hezhong",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-hezhong",
+        "holderId": "char-zhengcongdang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 117000,
+          "virtue": 900,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-hezhong",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-hezhong",
+        "holderId": "char-gen-19",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhengcongdang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 117000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 90,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 117000,
+    "conscriptionPool": 5850,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "蒲津关",
+    "passLevel": 4
+  },
+  {
+    "id": "zhou-yunzhou",
+    "name": "云州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-hedong",
+    "childIds": [],
+    "dejureControllerId": "dao-hedong",
+    "posts": [
+      {
+        "id": "post-fangyu-yunzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-yunzhou",
+        "holderId": "char-liguochang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 100000,
+          "virtue": 720,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yunzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yunzhou",
+        "holderId": "char-gen-20",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-liguochang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 100000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 90,
+    "development": 40,
+    "populace": 45,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 100000,
+    "conscriptionPool": 5000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-youzhou",
+    "name": "河北道·幽州",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-hebei",
+    "childIds": [
+      "zhou-youzhou",
+      "zhou-yingzhou",
+      "zhou-dingzhou"
+    ],
+    "capitalZhouId": "zhou-youzhou",
+    "dejureControllerId": "guo-hebei",
+    "posts": [
+      {
+        "id": "post-jiedushi-youzhou",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-youzhou",
+        "holderId": "char-zhangyunshen",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": true
+      },
+      {
+        "id": "post-panguan-youzhou",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-youzhou",
+        "holderId": "char-gen-21",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhangyunshen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-youzhou",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-youzhou",
+        "holderId": "char-gen-22",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhangyunshen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-youzhou",
+    "name": "幽州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-youzhou",
+    "childIds": [],
+    "dejureControllerId": "dao-youzhou",
+    "posts": [
+      {
+        "id": "post-fangyu-youzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-youzhou",
+        "holderId": "char-zhangyunshen",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-youzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-youzhou",
+        "holderId": "char-gen-23",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhangyunshen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 143000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 80,
+    "development": 60,
+    "populace": 58,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 143000,
+    "conscriptionPool": 7150,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "居庸关",
+    "passLevel": 4
+  },
+  {
+    "id": "zhou-yingzhou",
+    "name": "瀛州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-youzhou",
+    "childIds": [],
+    "dejureControllerId": "dao-youzhou",
+    "posts": [
+      {
+        "id": "post-fangyu-yingzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-yingzhou",
+        "holderId": "char-zhangyunshen",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-yingzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yingzhou",
+        "holderId": "char-gen-24",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhangyunshen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 65000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 80,
+    "development": 60,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 65000,
+    "conscriptionPool": 3250,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-dingzhou",
+    "name": "定州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-youzhou",
+    "childIds": [],
+    "dejureControllerId": "dao-youzhou",
+    "posts": [
+      {
+        "id": "post-fangyu-dingzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-dingzhou",
+        "holderId": "char-npc-yiwu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 78000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-dingzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-dingzhou",
+        "holderId": "char-gen-25",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-yiwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 78000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 50,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 78000,
+    "conscriptionPool": 3900,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-chengde",
+    "name": "河北道·成德",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-hebei",
+    "childIds": [
+      "zhou-zhenzhou",
+      "zhou-jizhou"
+    ],
+    "capitalZhouId": "zhou-zhenzhou",
+    "dejureControllerId": "guo-hebei",
+    "posts": [
+      {
+        "id": "post-jiedushi-chengde",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-chengde",
+        "holderId": "char-wangjingchong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": true
+      },
+      {
+        "id": "post-panguan-chengde",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-chengde",
+        "holderId": "char-gen-26",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-wangjingchong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-chengde",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-chengde",
+        "holderId": "char-gen-27",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-wangjingchong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-zhenzhou",
+    "name": "镇州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-chengde",
+    "childIds": [],
+    "dejureControllerId": "dao-chengde",
+    "posts": [
+      {
+        "id": "post-fangyu-zhenzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-zhenzhou",
+        "holderId": "char-wangjingchong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-zhenzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-zhenzhou",
+        "holderId": "char-gen-28",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-wangjingchong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 130000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 50,
+    "populace": 58,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 130000,
+    "conscriptionPool": 6500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-jizhou",
+    "name": "冀州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-chengde",
+    "childIds": [],
+    "dejureControllerId": "dao-chengde",
+    "posts": [
+      {
+        "id": "post-fangyu-jizhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-jizhou",
+        "holderId": "char-wangjingchong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-jizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-jizhou",
+        "holderId": "char-gen-29",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-wangjingchong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 78000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 50,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 78000,
+    "conscriptionPool": 3900,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-weibo",
+    "name": "河北道·魏博",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-hebei",
+    "childIds": [
+      "zhou-weizhou",
+      "zhou-xiangzhou"
+    ],
+    "capitalZhouId": "zhou-weizhou",
+    "dejureControllerId": "guo-hebei",
+    "posts": [
+      {
+        "id": "post-jiedushi-weibo",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-weibo",
+        "holderId": "char-hanyunzhong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": true
+      },
+      {
+        "id": "post-panguan-weibo",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-weibo",
+        "holderId": "char-gen-30",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-hanyunzhong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-weibo",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-weibo",
+        "holderId": "char-gen-31",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-hanyunzhong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-weizhou",
+    "name": "魏州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-weibo",
+    "childIds": [],
+    "dejureControllerId": "dao-weibo",
+    "posts": [
+      {
+        "id": "post-fangyu-weizhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-weizhou",
+        "holderId": "char-hanyunzhong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-weizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-weizhou",
+        "holderId": "char-gen-32",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-hanyunzhong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 156000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 80,
+    "development": 40,
+    "populace": 58,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 156000,
+    "conscriptionPool": 7800,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-xiangzhou",
+    "name": "相州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-weibo",
+    "childIds": [],
+    "dejureControllerId": "dao-weibo",
+    "posts": [
+      {
+        "id": "post-fangyu-xiangzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-xiangzhou",
+        "holderId": "char-hanyunzhong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-lushibcanjun-xiangzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xiangzhou",
+        "holderId": "char-gen-33",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-hanyunzhong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 91000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 80,
+    "development": 40,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 91000,
+    "conscriptionPool": 4550,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-henan",
+    "name": "河南道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-zhongyuan",
+    "childIds": [
+      "zhou-bianzhou",
+      "zhou-huazhou",
+      "zhou-yunzhou-sd",
+      "zhou-yanzhou",
+      "zhou-xuzhou",
+      "zhou-qingzhou",
+      "zhou-xuchang",
+      "zhou-caizhou"
+    ],
+    "capitalZhouId": "zhou-bianzhou",
+    "dejureControllerId": "guo-zhongyuan",
+    "posts": [
+      {
+        "id": "post-guancha-henan",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-henan",
+        "holderId": "char-npc-xuanwu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-henan",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-henan",
+        "holderId": "char-gen-34",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-xuanwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-henan",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-henan",
+        "holderId": "char-gen-35",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-xuanwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-bianzhou",
+    "name": "汴州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-cishi-bianzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-bianzhou",
+        "holderId": "char-npc-xuanwu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 160000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-bianzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-bianzhou",
+        "holderId": "char-gen-36",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-xuanwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 160000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 55,
+    "populace": 58,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 160000,
+    "conscriptionPool": 2000,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-huazhou",
+    "name": "滑州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-huazhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-huazhou",
+        "holderId": "char-npc-yicheng",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-huazhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-huazhou",
+        "holderId": "char-gen-37",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-yicheng",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 60,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 60000,
+    "conscriptionPool": 3000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-yunzhou-sd",
+    "name": "郓州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-yunzhou-sd",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-yunzhou-sd",
+        "holderId": "char-npc-tianping",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yunzhou-sd",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yunzhou-sd",
+        "holderId": "char-gen-38",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-tianping",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 70,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-yanzhou",
+    "name": "兖州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-yanzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-yanzhou",
+        "holderId": "char-npc-taining",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 70000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yanzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yanzhou",
+        "holderId": "char-gen-39",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-taining",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 70000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 55,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 70000,
+    "conscriptionPool": 3500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-xuzhou",
+    "name": "徐州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-xuzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-xuzhou",
+        "holderId": "char-npc-wuning",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 90000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xuzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xuzhou",
+        "holderId": "char-gen-40",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-wuning",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 90000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 65,
+    "development": 50,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 90000,
+    "conscriptionPool": 4500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-qingzhou",
+    "name": "青州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-qingzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-qingzhou",
+        "holderId": "char-npc-pinglu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 100000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-qingzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-qingzhou",
+        "holderId": "char-gen-41",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-pinglu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 100000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 60,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 100000,
+    "conscriptionPool": 5000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-xuchang",
+    "name": "许州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-xuchang",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-xuchang",
+        "holderId": "char-npc-zhongwu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xuchang",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xuchang",
+        "holderId": "char-gen-42",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhongwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 65,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-caizhou",
+    "name": "蔡州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-henan",
+    "childIds": [],
+    "dejureControllerId": "dao-henan",
+    "posts": [
+      {
+        "id": "post-fangyu-caizhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-caizhou",
+        "holderId": "char-npc-fengguo",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-caizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-caizhou",
+        "holderId": "char-gen-43",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-fengguo",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 55,
+    "populace": 48,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 60000,
+    "conscriptionPool": 3000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-shannan-e",
+    "name": "山南东道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-zhongyuan",
+    "childIds": [
+      "zhou-xiangyang",
+      "zhou-jiangling",
+      "zhou-ezhou"
+    ],
+    "capitalZhouId": "zhou-xiangyang",
+    "dejureControllerId": "guo-zhongyuan",
+    "posts": [
+      {
+        "id": "post-guancha-shannan-e",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-shannan-e",
+        "holderId": "char-npc-shannan-e",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-shannan-e",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-shannan-e",
+        "holderId": "char-gen-44",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-shannan-e",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-shannan-e",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-shannan-e",
+        "holderId": "char-gen-45",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-shannan-e",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-xiangyang",
+    "name": "襄州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-shannan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-shannan-e",
+    "posts": [
+      {
+        "id": "post-cishi-xiangyang",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-xiangyang",
+        "holderId": "char-npc-shannan-e",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 110000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xiangyang",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xiangyang",
+        "holderId": "char-gen-46",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-shannan-e",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 110000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 65,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 110000,
+    "conscriptionPool": 1375,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-jiangling",
+    "name": "江陵",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-shannan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-shannan-e",
+    "posts": [
+      {
+        "id": "post-cishi-jiangling",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-jiangling",
+        "holderId": "char-npc-jingnan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 90000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-jiangling",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-jiangling",
+        "holderId": "char-gen-47",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-jingnan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 90000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 60,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 90000,
+    "conscriptionPool": 1125,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-ezhou",
+    "name": "鄂州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-shannan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-shannan-e",
+    "posts": [
+      {
+        "id": "post-fangyu-ezhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-ezhou",
+        "holderId": "char-npc-wuchang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-ezhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-ezhou",
+        "holderId": "char-gen-48",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-wuchang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 55,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-shannan-w",
+    "name": "山南西道",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-bashu",
+    "childIds": [
+      "zhou-xingyuan",
+      "zhou-suizhou"
+    ],
+    "capitalZhouId": "zhou-xingyuan",
+    "dejureControllerId": "guo-bashu",
+    "posts": [
+      {
+        "id": "post-jiedushi-shannan-w",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-shannan-w",
+        "holderId": "char-xiaoye",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-shannan-w",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-shannan-w",
+        "holderId": "char-gen-49",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-xiaoye",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-shannan-w",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-shannan-w",
+        "holderId": "char-gen-50",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-xiaoye",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-xingyuan",
+    "name": "兴元",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-shannan-w",
+    "childIds": [],
+    "dejureControllerId": "dao-shannan-w",
+    "posts": [
+      {
+        "id": "post-fangyu-xingyuan",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-xingyuan",
+        "holderId": "char-xiaoye",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 880,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xingyuan",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xingyuan",
+        "holderId": "char-gen-51",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-xiaoye",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 40,
+    "development": 90,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-suizhou",
+    "name": "遂州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-shannan-w",
+    "childIds": [],
+    "dejureControllerId": "dao-shannan-w",
+    "posts": [
+      {
+        "id": "post-fangyu-suizhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-suizhou",
+        "holderId": "char-sundang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 720,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-suizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-suizhou",
+        "holderId": "char-gen-52",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-sundang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 60000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 60,
+    "populace": 48,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 60000,
+    "conscriptionPool": 3000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-huainan",
+    "name": "淮南道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-zhongyuan",
+    "childIds": [
+      "zhou-yangzhou"
+    ],
+    "capitalZhouId": "zhou-yangzhou",
+    "dejureControllerId": "guo-zhongyuan",
+    "posts": [
+      {
+        "id": "post-guancha-huainan",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-huainan",
+        "holderId": "char-cuiyanzeng",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-huainan",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-huainan",
+        "holderId": "char-gen-53",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-cuiyanzeng",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-huainan",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-huainan",
+        "holderId": "char-gen-54",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-cuiyanzeng",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-yangzhou",
+    "name": "扬州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-huainan",
+    "childIds": [],
+    "dejureControllerId": "dao-huainan",
+    "posts": [
+      {
+        "id": "post-cishi-yangzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-yangzhou",
+        "holderId": "char-cuiyanzeng",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 300000,
+          "virtue": 850,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yangzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yangzhou",
+        "holderId": "char-gen-55",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-cuiyanzeng",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 300000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 70,
+    "populace": 62,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 300000,
+    "conscriptionPool": 3750,
+    "moneyRatio": 5,
+    "grainRatio": 6.2
+  },
+  {
+    "id": "dao-jiangnan-e",
+    "name": "江南东道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-dongnan",
+    "childIds": [
+      "zhou-runzhou",
+      "zhou-yuezhou",
+      "zhou-fuzhou",
+      "zhou-xuanzhou"
+    ],
+    "capitalZhouId": "zhou-runzhou",
+    "dejureControllerId": "guo-dongnan",
+    "posts": [
+      {
+        "id": "post-guancha-jiangnan-e",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-jiangnan-e",
+        "holderId": "char-npc-zhenhai",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-jiangnan-e",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-jiangnan-e",
+        "holderId": "char-gen-56",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhenhai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-jiangnan-e",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-jiangnan-e",
+        "holderId": "char-gen-57",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhenhai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-runzhou",
+    "name": "润州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-e",
+    "posts": [
+      {
+        "id": "post-cishi-runzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-runzhou",
+        "holderId": "char-npc-zhenhai",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 200000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-runzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-runzhou",
+        "holderId": "char-gen-58",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhenhai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 200000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 65,
+    "populace": 58,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 200000,
+    "conscriptionPool": 2500,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-yuezhou",
+    "name": "越州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-e",
+    "posts": [
+      {
+        "id": "post-cishi-yuezhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-yuezhou",
+        "holderId": "char-npc-zhendong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yuezhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yuezhou",
+        "holderId": "char-gen-59",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhendong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 60,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 150000,
+    "conscriptionPool": 1875,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-fuzhou",
+    "name": "福州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-e",
+    "posts": [
+      {
+        "id": "post-cishi-fuzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-fuzhou",
+        "holderId": "char-npc-weiwu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 125000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-fuzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-fuzhou",
+        "holderId": "char-gen-60",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-weiwu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 125000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 50,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 125000,
+    "conscriptionPool": 1563,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-xuanzhou",
+    "name": "宣州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-e",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-e",
+    "posts": [
+      {
+        "id": "post-cishi-xuanzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-xuanzhou",
+        "holderId": "char-npc-xuanshe",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 113000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-xuanzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-xuanzhou",
+        "holderId": "char-gen-61",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-xuanshe",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 113000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 70,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 113000,
+    "conscriptionPool": 1413,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "dao-jiangnan-w",
+    "name": "江南西道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-dongnan",
+    "childIds": [
+      "zhou-hongzhou",
+      "zhou-tanzhou"
+    ],
+    "capitalZhouId": "zhou-hongzhou",
+    "dejureControllerId": "guo-dongnan",
+    "posts": [
+      {
+        "id": "post-guancha-jiangnan-w",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-jiangnan-w",
+        "holderId": "char-npc-zhennan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-jiangnan-w",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-jiangnan-w",
+        "holderId": "char-gen-62",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhennan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-jiangnan-w",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-jiangnan-w",
+        "holderId": "char-gen-63",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhennan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-hongzhou",
+    "name": "洪州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-w",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-w",
+    "posts": [
+      {
+        "id": "post-cishi-hongzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-hongzhou",
+        "holderId": "char-npc-zhennan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 138000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-hongzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-hongzhou",
+        "holderId": "char-gen-64",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-zhennan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 138000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 55,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 138000,
+    "conscriptionPool": 1725,
+    "moneyRatio": 3,
+    "grainRatio": 3,
+    "passName": "梅岭",
+    "passLevel": 3
+  },
+  {
+    "id": "zhou-tanzhou",
+    "name": "潭州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiangnan-w",
+    "childIds": [],
+    "dejureControllerId": "dao-jiangnan-w",
+    "posts": [
+      {
+        "id": "post-cishi-tanzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-tanzhou",
+        "holderId": "char-npc-hunan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 113000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-tanzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-tanzhou",
+        "holderId": "char-gen-65",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-hunan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 113000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 65,
+    "populace": 52,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 113000,
+    "conscriptionPool": 1413,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "dao-jiannan",
+    "name": "剑南道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-bashu",
+    "childIds": [
+      "zhou-chengdu",
+      "zhou-zizhou"
+    ],
+    "capitalZhouId": "zhou-chengdu",
+    "dejureControllerId": "guo-bashu",
+    "posts": [
+      {
+        "id": "post-guancha-jiannan",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-jiannan",
+        "holderId": "char-liutong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-jiannan",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-jiannan",
+        "holderId": "char-gen-66",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-liutong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-jiannan",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-jiannan",
+        "holderId": "char-gen-67",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-liutong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-chengdu",
+    "name": "成都",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-jiannan",
+    "childIds": [],
+    "dejureControllerId": "dao-jiannan",
+    "posts": [
+      {
+        "id": "post-cishi-chengdu",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-chengdu",
+        "holderId": "char-liutong",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 200000,
+          "virtue": 820,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-chengdu",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-chengdu",
+        "holderId": "char-gen-68",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-liutong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 200000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 80,
+    "populace": 62,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 200000,
+    "conscriptionPool": 2500,
+    "moneyRatio": 4,
+    "grainRatio": 5
+  },
+  {
+    "id": "zhou-zizhou",
+    "name": "梓州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-jiannan",
+    "childIds": [],
+    "dejureControllerId": "dao-jiannan",
+    "posts": [
+      {
+        "id": "post-fangyu-zizhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-zizhou",
+        "holderId": "char-npc-dongchuan",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-zizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-zizhou",
+        "holderId": "char-gen-69",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-dongchuan",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 80000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 60,
+    "populace": 50,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 80000,
+    "conscriptionPool": 4000,
+    "moneyRatio": 2,
+    "grainRatio": 4,
+    "passName": "剑门关",
+    "passLevel": 5
+  },
+  {
+    "id": "dao-lingnan",
+    "name": "岭南道",
+    "tier": "dao",
+    "territoryType": "civil",
+    "parentId": "guo-dongnan",
+    "childIds": [
+      "zhou-guangzhou",
+      "zhou-yongzhou",
+      "zhou-guizhou",
+      "zhou-jiaozhou"
+    ],
+    "capitalZhouId": "zhou-guangzhou",
+    "dejureControllerId": "guo-dongnan",
+    "posts": [
+      {
+        "id": "post-guancha-lingnan",
+        "templateId": "pos-guancha-shi",
+        "territoryId": "dao-lingnan",
+        "holderId": "char-npc-qinghai",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-lingnan",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-lingnan",
+        "holderId": "char-gen-70",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-qinghai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-lingnan",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-lingnan",
+        "holderId": "char-gen-71",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-qinghai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-guangzhou",
+    "name": "广州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-lingnan",
+    "childIds": [],
+    "dejureControllerId": "dao-lingnan",
+    "posts": [
+      {
+        "id": "post-cishi-guangzhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-guangzhou",
+        "holderId": "char-npc-qinghai",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-guangzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-guangzhou",
+        "holderId": "char-gen-72",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-qinghai",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 55,
+    "development": 60,
+    "populace": 55,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 150000,
+    "conscriptionPool": 1875,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-yongzhou",
+    "name": "邕州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-lingnan",
+    "childIds": [],
+    "dejureControllerId": "dao-lingnan",
+    "posts": [
+      {
+        "id": "post-fangyu-yongzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-yongzhou",
+        "holderId": "char-npc-lingnan-w",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 50000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-yongzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-yongzhou",
+        "holderId": "char-gen-73",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-lingnan-w",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 50000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 60,
+    "development": 50,
+    "populace": 42,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 50000,
+    "conscriptionPool": 2500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-guizhou",
+    "name": "桂州",
+    "tier": "zhou",
+    "territoryType": "civil",
+    "parentId": "dao-lingnan",
+    "childIds": [],
+    "dejureControllerId": "dao-lingnan",
+    "posts": [
+      {
+        "id": "post-cishi-guizhou",
+        "templateId": "pos-cishi",
+        "territoryId": "zhou-guizhou",
+        "holderId": "char-npc-jingjiang",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 63000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-guizhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-guizhou",
+        "holderId": "char-gen-74",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-jingjiang",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 63000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 50,
+    "development": 55,
+    "populace": 45,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 63000,
+    "conscriptionPool": 788,
+    "moneyRatio": 3,
+    "grainRatio": 3
+  },
+  {
+    "id": "zhou-jiaozhou",
+    "name": "交州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-lingnan",
+    "childIds": [],
+    "dejureControllerId": "dao-lingnan",
+    "posts": [
+      {
+        "id": "post-fangyu-jiaozhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-jiaozhou",
+        "holderId": "char-gaopian",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 820,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-jiaozhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-jiaozhou",
+        "holderId": "char-gen-75",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-gaopian",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 150000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 100,
+    "development": 70,
+    "populace": 48,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 150000,
+    "conscriptionPool": 7500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-longyou",
+    "name": "陇右道",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-guanlong",
+    "childIds": [
+      "zhou-jingzhou-ly",
+      "zhou-qinzhou"
+    ],
+    "capitalZhouId": "zhou-jingzhou-ly",
+    "dejureControllerId": "guo-guanlong",
+    "posts": [
+      {
+        "id": "post-jiedushi-longyou",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-longyou",
+        "holderId": "char-lihongfu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-longyou",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-longyou",
+        "holderId": "char-gen-76",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-lihongfu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-longyou",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-longyou",
+        "holderId": "char-gen-77",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-lihongfu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-jingzhou-ly",
+    "name": "泾州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-longyou",
+    "childIds": [],
+    "dejureControllerId": "dao-longyou",
+    "posts": [
+      {
+        "id": "post-fangyu-jingzhou-ly",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-jingzhou-ly",
+        "holderId": "char-lihongfu",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 48000,
+          "virtue": 750,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-jingzhou-ly",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-jingzhou-ly",
+        "holderId": "char-gen-78",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-lihongfu",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 48000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 70,
+    "development": 40,
+    "populace": 48,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 48000,
+    "conscriptionPool": 2400,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "zhou-qinzhou",
+    "name": "秦州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-longyou",
+    "childIds": [],
+    "dejureControllerId": "dao-longyou",
+    "posts": [
+      {
+        "id": "post-fangyu-qinzhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-qinzhou",
+        "holderId": "char-npc-tianshui",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 40000,
+          "virtue": 800,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-qinzhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-qinzhou",
+        "holderId": "char-gen-79",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-npc-tianshui",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 40000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 65,
+    "development": 50,
+    "populace": 45,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 40000,
+    "conscriptionPool": 2000,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  },
+  {
+    "id": "dao-hexi",
+    "name": "河西道",
+    "tier": "dao",
+    "territoryType": "military",
+    "parentId": "guo-guanlong",
+    "childIds": [
+      "zhou-shazhou"
+    ],
+    "capitalZhouId": "zhou-shazhou",
+    "dejureControllerId": "guo-guanlong",
+    "posts": [
+      {
+        "id": "post-jiedushi-hexi",
+        "templateId": "pos-jiedushi",
+        "territoryId": "dao-hexi",
+        "holderId": "char-zhanghuaishen",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "clan",
+        "hasAppointRight": false
+      },
+      {
+        "id": "post-panguan-hexi",
+        "templateId": "pos-panguan",
+        "territoryId": "dao-hexi",
+        "holderId": "char-gen-80",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhanghuaishen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 620,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-duzhibingmashi-hexi",
+        "templateId": "pos-duzhibingmashi",
+        "territoryId": "dao-hexi",
+        "holderId": "char-gen-81",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhanghuaishen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 0,
+          "virtue": 745,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 0,
+    "development": 0,
+    "populace": 0,
+    "buildings": [],
+    "constructions": [],
+    "basePopulation": 0,
+    "conscriptionPool": 0,
+    "moneyRatio": 0,
+    "grainRatio": 0
+  },
+  {
+    "id": "zhou-shazhou",
+    "name": "沙州",
+    "tier": "zhou",
+    "territoryType": "military",
+    "parentId": "dao-hexi",
+    "childIds": [],
+    "dejureControllerId": "dao-hexi",
+    "posts": [
+      {
+        "id": "post-fangyu-shazhou",
+        "templateId": "pos-fangyu-shi",
+        "territoryId": "zhou-shazhou",
+        "holderId": "char-zhanghuaishen",
+        "appointedBy": "char-yizong",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "reviewBaseline": {
+          "population": 50000,
+          "virtue": 760,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      },
+      {
+        "id": "post-lushibcanjun-shazhou",
+        "templateId": "pos-lushibcanjun",
+        "territoryId": "zhou-shazhou",
+        "holderId": "char-gen-82",
+        "successionLaw": "bureaucratic",
+        "hasAppointRight": false,
+        "appointedBy": "char-zhanghuaishen",
+        "appointedDate": {
+          "year": 867,
+          "month": 1
+        },
+        "reviewBaseline": {
+          "population": 50000,
+          "virtue": 670,
+          "date": {
+            "year": 867,
+            "month": 1
+          }
+        }
+      }
+    ],
+    "control": 80,
+    "development": 50,
+    "populace": 40,
+    "buildings": [
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      },
+      {
+        "buildingId": null,
+        "level": 0
+      }
+    ],
+    "constructions": [],
+    "basePopulation": 50000,
+    "conscriptionPool": 2500,
+    "moneyRatio": 2,
+    "grainRatio": 4
+  }
+]

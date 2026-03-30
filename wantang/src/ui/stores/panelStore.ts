@@ -9,6 +9,8 @@ interface PanelState {
   pinned: boolean;
   /** Currently open territory modal (null = closed) */
   territoryModalId: string | null;
+  /** 地图聚焦的角色 ID（顶级领主），null = 默认视图 */
+  mapFocusCharId: string | null;
 
   pushCharacter: (id: string) => void;
   goBack: () => void;
@@ -17,12 +19,14 @@ interface PanelState {
   togglePin: () => void;
   openTerritoryModal: (id: string) => void;
   closeTerritoryModal: () => void;
+  setMapFocus: (charId: string | null) => void;
 }
 
 export const usePanelStore = create<PanelState>((set, get) => ({
   stack: [],
   pinned: false,
   territoryModalId: null,
+  mapFocusCharId: null,
 
   pushCharacter: (id) => {
     const { stack } = get();
@@ -52,6 +56,7 @@ export const usePanelStore = create<PanelState>((set, get) => ({
 
   openTerritoryModal: (id) => set({ territoryModalId: id }),
   closeTerritoryModal: () => set({ territoryModalId: null }),
+  setMapFocus: (charId) => set({ mapFocusCharId: charId }),
 }));
 
 /** Get top character ID (current panel display) */

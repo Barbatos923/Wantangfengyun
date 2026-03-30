@@ -1,0 +1,804 @@
+[
+  {
+    "id": "post-zaixiang-1",
+    "templateId": "pos-zaixiang",
+    "holderId": "char-weibaohen",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 800,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-zaixiang-2",
+    "templateId": "pos-zaixiang",
+    "holderId": "char-luyan",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 3
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 850,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hanlin-1",
+    "templateId": "pos-hanlin",
+    "holderId": "char-ct-weizhaodu",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 865,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 820,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hanlin-2",
+    "templateId": "pos-hanlin",
+    "holderId": "char-ct-liuye",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 864,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 800,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hanlin-3",
+    "templateId": "pos-hanlin",
+    "holderId": "char-ct-zhengwei",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 830,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-shumi",
+    "templateId": "pos-shumi",
+    "holderId": "char-ct-yangfugong",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 500,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-shence-left",
+    "templateId": "pos-shence-left",
+    "holderId": "char-ct-tianlingzi",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 400,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-shence-right",
+    "templateId": "pos-shence-right",
+    "holderId": "char-ct-ximentaishen",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 865,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 550,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-sansi-shi",
+    "templateId": "pos-sansi-shi",
+    "holderId": "char-ct-peizhao",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 3
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 900,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-sansi-panguan",
+    "templateId": "pos-sansi-panguan",
+    "holderId": "char-chenjingxuan",
+    "appointedBy": "char-ct-peizhao",
+    "appointedDate": {
+      "year": 868,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 600,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-guanlibu-shangshu",
+    "templateId": "pos-guanlibu-shangshu",
+    "holderId": "char-liwei",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 865,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 900,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hubu-shangshu",
+    "templateId": "pos-hubu-shangshu",
+    "holderId": "char-ct-peitan",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 890,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-liyibu-shangshu",
+    "templateId": "pos-liyibu-shangshu",
+    "holderId": "char-ct-liuye",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 863,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 800,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-bingbu-shangshu",
+    "templateId": "pos-bingbu-shangshu",
+    "holderId": "char-ct-xiaochu",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 870,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-xingbu-shangshu",
+    "templateId": "pos-xingbu-shangshu",
+    "holderId": "char-ct-wangning",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 865,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 780,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-gongbu-shangshu",
+    "templateId": "pos-gongbu-shangshu",
+    "holderId": "char-ct-zhengqi",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 864,
+      "month": 6
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 860,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-yushi-dafu",
+    "templateId": "pos-yushi-dafu",
+    "holderId": "char-ct-cuiyanchao",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 865,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 880,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-yushi-zhongcheng",
+    "templateId": "pos-yushi-zhongcheng",
+    "holderId": "char-ct-zhengyanxiu",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 1
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 850,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-zhongshu-sheren",
+    "templateId": "pos-zhongshu-sheren",
+    "holderId": "char-ct-cuihan",
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 866,
+      "month": 3
+    },
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 840,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-sansi-tuiguan",
+    "templateId": "pos-sansi-tuiguan",
+    "holderId": "char-gen-83",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 570,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-sansi-xunguan",
+    "templateId": "pos-sansi-xunguan",
+    "holderId": "char-gen-84",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 570,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-zhongshuling",
+    "templateId": "pos-zhongshuling",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  },
+  {
+    "id": "post-shizhong",
+    "templateId": "pos-shizhong",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  },
+  {
+    "id": "post-shangshuling",
+    "templateId": "pos-shangshuling",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  },
+  {
+    "id": "post-guanlibu-langzhong",
+    "templateId": "pos-guanlibu-langzhong",
+    "holderId": "char-gen-85",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-guanlibu-yuanwailang",
+    "templateId": "pos-guanlibu-yuanwailang",
+    "holderId": "char-gen-86",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hubu-langzhong",
+    "templateId": "pos-hubu-langzhong",
+    "holderId": "char-gen-87",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-hubu-yuanwailang",
+    "templateId": "pos-hubu-yuanwailang",
+    "holderId": "char-gen-88",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-liyibu-langzhong",
+    "templateId": "pos-liyibu-langzhong",
+    "holderId": "char-gen-89",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-liyibu-yuanwailang",
+    "templateId": "pos-liyibu-yuanwailang",
+    "holderId": "char-gen-90",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-bingbu-langzhong",
+    "templateId": "pos-bingbu-langzhong",
+    "holderId": "char-gen-91",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-bingbu-yuanwailang",
+    "templateId": "pos-bingbu-yuanwailang",
+    "holderId": "char-gen-92",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-xingbu-langzhong",
+    "templateId": "pos-xingbu-langzhong",
+    "holderId": "char-gen-93",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-xingbu-yuanwailang",
+    "templateId": "pos-xingbu-yuanwailang",
+    "holderId": "char-gen-94",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-gongbu-langzhong",
+    "templateId": "pos-gongbu-langzhong",
+    "holderId": "char-gen-95",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 895,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-gongbu-yuanwailang",
+    "templateId": "pos-gongbu-yuanwailang",
+    "holderId": "char-gen-96",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 745,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-shi-yushi",
+    "templateId": "pos-shi-yushi",
+    "holderId": "char-gen-97",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 720,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-dianzhong-yushi",
+    "templateId": "pos-dianzhong-yushi",
+    "holderId": "char-gen-98",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 645,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-jiancha-yushi",
+    "templateId": "pos-jiancha-yushi",
+    "holderId": "char-gen-99",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 595,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-jiaoshu-lang",
+    "templateId": "pos-jiaoshu-lang",
+    "holderId": "char-gen-100",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 593,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-zhengzi",
+    "templateId": "pos-zhengzi",
+    "holderId": "char-gen-101",
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false,
+    "appointedBy": "char-yizong",
+    "appointedDate": {
+      "year": 867,
+      "month": 1
+    },
+    "reviewBaseline": {
+      "population": 0,
+      "virtue": 568,
+      "date": {
+        "year": 867,
+        "month": 1
+      }
+    }
+  },
+  {
+    "id": "post-taishi",
+    "templateId": "pos-taishi",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  },
+  {
+    "id": "post-taifu",
+    "templateId": "pos-taifu",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  },
+  {
+    "id": "post-taibao",
+    "templateId": "pos-taibao",
+    "holderId": null,
+    "successionLaw": "bureaucratic",
+    "hasAppointRight": false
+  }
+]
