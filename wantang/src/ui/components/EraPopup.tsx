@@ -6,7 +6,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { Era } from '@engine/types';
 import { findEmperorId } from '@engine/official/postQueries';
-import { getLegitimacyOpinion } from '@engine/official/officialUtils';
+import { calcLegitimacyOpinion } from '@engine/official/legitimacyCalc';
 
 interface EraPopupProps {
   onClose: () => void;
@@ -76,7 +76,8 @@ const EraPopup: React.FC<EraPopupProps> = ({ onClose }) => {
   if (emperorId) {
     const emperor = useCharacterStore.getState().getCharacter(emperorId);
     if (emperor) {
-      const legResult = getLegitimacyOpinion(emperor);
+      const expectedLeg = terrStore.expectedLegitimacy.get(emperorId) ?? null;
+      const legResult = calcLegitimacyOpinion(emperor.resources.legitimacy, expectedLeg);
       if (legResult && legResult.gapValue < 0) {
         emperorBelowExpectation = true;
       }

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Character } from '@engine/character/types';
 import { getOpinionBreakdown, calculateBaseOpinion } from '@engine/character/characterUtils';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 
 interface OpinionPopupProps {
   from: Character;    // who holds the opinion
@@ -9,8 +10,9 @@ interface OpinionPopupProps {
 }
 
 const OpinionPopup: React.FC<OpinionPopupProps> = ({ from, toward, onClose }) => {
-  const entries = getOpinionBreakdown(from, toward);
-  const total = calculateBaseOpinion(from, toward);
+  const expectedLeg = useTerritoryStore(s => s.expectedLegitimacy.get(toward.id) ?? null);
+  const entries = getOpinionBreakdown(from, toward, expectedLeg);
+  const total = calculateBaseOpinion(from, toward, expectedLeg);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>

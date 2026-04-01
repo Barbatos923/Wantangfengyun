@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { Territory, Construction, Post } from './types';
 import { positionMap } from '@data/positions';
+import { getHeldPosts } from '@engine/official/postQueries';
+import { getBaseLegitimacy, getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
 
 // ===== 索引构建辅助 =====
 
@@ -55,6 +57,7 @@ interface TerritoryStoreState {
   postIndex: Map<string, Post>;              // postId → Post (O(1) 查找)
   holderIndex: Map<string, string[]>;        // holderId → postId[] (O(1) 查找)
   controllerIndex: Map<string, Set<string>>; // controllerId → Set<territoryId>
+  expectedLegitimacy: Map<string, number>;   // charId → 最高岗位 baseLegitimacy
 
   // 初始化
   initTerritories: (terrs: Territory[]) => void;
@@ -70,6 +73,10 @@ interface TerritoryStoreState {
   getPostsByHolder: (holderId: string) => Post[];
   getActualController: (territoryId: string) => string | null;
 
+  // 正统性预期缓存
+  refreshExpectedLegitimacy: () => void;
+  updateExpectedLegitimacy: (charId: string) => void;
+
   // 修改
   updateTerritory: (id: string, patch: Partial<Territory>) => void;
   updatePost: (postId: string, patch: Partial<Post>) => void;
@@ -83,6 +90,7 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
   postIndex: new Map(),
   holderIndex: new Map(),
   controllerIndex: new Map(),
+  expectedLegitimacy: new Map(),
 
   initTerritories: (terrs) => {
     const map = new Map<string, Territory>();
@@ -91,11 +99,13 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
     }
     const indexes = buildIndexes(map, get().centralPosts);
     set({ territories: map, ...indexes });
+    get().refreshExpectedLegitimacy();
   },
 
   initCentralPosts: (posts) => {
     const indexes = buildIndexes(get().territories, posts);
     set({ centralPosts: posts, ...indexes });
+    get().refreshExpectedLegitimacy();
   },
 
   getTerritory: (id) => get().territories.get(id),
@@ -139,6 +149,39 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
       return tpl?.grantsControl === true;
     });
     return mainPost?.holderId ?? null;
+  },
+
+  // 全量重建 expectedLegitimacy 缓存（单次遍历）
+  refreshExpectedLegitimacy: () => {
+    const { territories, centralPosts } = get();
+    const map = new Map<string, number>();
+    function processPost(p: Post) {
+      if (!p.holderId) return;
+      const base = getBaseLegitimacy(p.templateId);
+      const existing = map.get(p.holderId);
+      if (existing === undefined || base > existing) {
+        map.set(p.holderId, base);
+      }
+    }
+    for (const t of territories.values()) {
+      for (const p of t.posts) processPost(p);
+    }
+    for (const p of centralPosts) processPost(p);
+    set({ expectedLegitimacy: map });
+  },
+
+  // 单个角色更新（任命/罢免时用）
+  updateExpectedLegitimacy: (charId) => {
+    const { territories, centralPosts, expectedLegitimacy } = get();
+    const posts = getHeldPosts(charId, territories, centralPosts);
+    const highest = getHighestBaseLegitimacy(posts);
+    const newMap = new Map(expectedLegitimacy);
+    if (highest !== null) {
+      newMap.set(charId, highest);
+    } else {
+      newMap.delete(charId);
+    }
+    set({ expectedLegitimacy: newMap });
   },
 
   updateTerritory: (id, patch) => {

@@ -27,13 +27,34 @@ export function runMilitarySystem(date: GameDate): void {
   // ===== 军队士气月结 + 精锐度训练 =====
   const milStore = useMilitaryStore.getState();
   const milArmies = milStore.armies;
+  const territories = terrStore.territories;
   milStore.batchMutateBattalions((battalions) => {
     for (const bat of battalions.values()) {
-      let moraleDelta = -0.5; // 基础衰减
+      let moraleDelta = 0;
 
-      // 出籍贯地
-      if (bat.locationId !== bat.homeTerritory) {
-        moraleDelta -= 2;
+      if (bat.locationId === bat.homeTerritory) {
+        // 驻扎在家：仅基础衰减
+        moraleDelta = -0.5;
+      } else {
+        // 离开籍贯：根据距离衰减
+        moraleDelta = -0.5; // 同道内基础衰减
+        const homeTerr = territories.get(bat.homeTerritory);
+        const currTerr = territories.get(bat.locationId);
+        if (homeTerr && currTerr) {
+          const homeDao = homeTerr.parentId;
+          const currDao = currTerr.parentId;
+          if (homeDao !== currDao) {
+            const homeDaoTerr = homeDao ? territories.get(homeDao) : undefined;
+            const currDaoTerr = currDao ? territories.get(currDao) : undefined;
+            const homeGuo = homeDaoTerr?.parentId;
+            const currGuo = currDaoTerr?.parentId;
+            if (homeGuo !== currGuo) {
+              moraleDelta = -2.5; // 离开本国
+            } else {
+              moraleDelta = -1;   // 同国不同道
+            }
+          }
+        }
       }
 
       const newMorale = clamp(bat.morale + moraleDelta, 0, 100);

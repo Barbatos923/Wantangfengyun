@@ -3,7 +3,7 @@
 import type { Abilities, Character } from './types';
 import { ALL_TRAITS, traitMap, type TraitDef, type TraitCategory } from '@data/traits';
 import { randInt, random, shuffle } from '@engine/random.ts';
-import { getLegitimacyOpinion } from '@engine/official/officialUtils';
+import { calcLegitimacyOpinion } from '@engine/official/legitimacyCalc';
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {
@@ -151,7 +151,11 @@ export function getEffectiveAbilities(character: Character): Abilities {
 // ===== 好感度计算 =====
 
 /** 计算角色A对角色B的基础好感度 */
-export function calculateBaseOpinion(a: Character, b: Character): number {
+/**
+ * 计算角色A对角色B的基础好感度（纯函数）。
+ * @param bExpectedLeg B 的预期正统性（最高岗位 baseLegitimacy），null 表示无官职
+ */
+export function calculateBaseOpinion(a: Character, b: Character, bExpectedLeg: number | null): number {
   let opinion = 0;
 
   const aTraits = a.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as TraitDef[];
@@ -199,10 +203,12 @@ export function calculateBaseOpinion(a: Character, b: Character): number {
     opinion += 5;
   }
 
-  // 正统性好感（实时从 Store 推导，见 officialUtils.getLegitimacyOpinion）
-  const bLegitimacy = getLegitimacyOpinion(b);
-  if (bLegitimacy) {
-    opinion += bLegitimacy.gapValue + bLegitimacy.absoluteValue;
+  // 正统性好感（实时修正项，由调用方传入预期值）
+  if (bExpectedLeg !== null) {
+    const legOpinion = calcLegitimacyOpinion(b.resources.legitimacy, bExpectedLeg);
+    if (legOpinion) {
+      opinion += legOpinion.gapValue + legOpinion.absoluteValue;
+    }
   }
 
   // 事件累积好感度
@@ -222,8 +228,11 @@ export interface OpinionBreakdownEntry {
   value: number;
 }
 
-/** 计算角色A对角色B的好感度分项明细 */
-export function getOpinionBreakdown(a: Character, b: Character): OpinionBreakdownEntry[] {
+/**
+ * 计算角色A对角色B的好感度分项明细（纯函数）。
+ * @param bExpectedLeg B 的预期正统性，null 表示无官职
+ */
+export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: number | null): OpinionBreakdownEntry[] {
   const entries: OpinionBreakdownEntry[] = [];
 
   const aTraits = a.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as TraitDef[];
@@ -276,20 +285,22 @@ export function getOpinionBreakdown(a: Character, b: Character): OpinionBreakdow
     entries.push({ label: '同族', value: 5 });
   }
 
-  // 正统性好感（实时从 Store 推导）
-  const bLeg = getLegitimacyOpinion(b);
-  if (bLeg) {
-    if (bLeg.gapValue > 0) {
-      entries.push({ label: '正统性高于预期', value: bLeg.gapValue });
-    } else if (bLeg.gapValue >= -15) {
-      entries.push({ label: '正统性不及预期', value: bLeg.gapValue });
-    } else if (bLeg.gapValue < -15) {
-      entries.push({ label: '正统性严重不及预期', value: bLeg.gapValue });
-    }
-    if (bLeg.absoluteValue > 0) {
-      entries.push({ label: '天命所归', value: bLeg.absoluteValue });
-    } else if (bLeg.absoluteValue < 0) {
-      entries.push({ label: '名器尽失', value: bLeg.absoluteValue });
+  // 正统性好感（实时修正项）
+  if (bExpectedLeg !== null) {
+    const bLeg = calcLegitimacyOpinion(b.resources.legitimacy, bExpectedLeg);
+    if (bLeg) {
+      if (bLeg.gapValue > 0) {
+        entries.push({ label: '正统性高于预期', value: bLeg.gapValue });
+      } else if (bLeg.gapValue >= -15) {
+        entries.push({ label: '正统性不及预期', value: bLeg.gapValue });
+      } else if (bLeg.gapValue < -15) {
+        entries.push({ label: '正统性严重不及预期', value: bLeg.gapValue });
+      }
+      if (bLeg.absoluteValue > 0) {
+        entries.push({ label: '天命所归', value: bLeg.absoluteValue });
+      } else if (bLeg.absoluteValue < 0) {
+        entries.push({ label: '名器尽失', value: bLeg.absoluteValue });
+      }
     }
   }
 

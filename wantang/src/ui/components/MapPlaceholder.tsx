@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import GameMap from './GameMap';
 import TerritoryPanel from './TerritoryPanel';
 import CampaignPopup from './CampaignPopup';
@@ -8,6 +8,9 @@ import type { Character } from '@engine/character/types';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { getActualController } from '@engine/official/officialUtils';
 import { findTopLord } from '@engine/character/characterUtils';
+import { findPath } from '@engine/military/marchCalc';
+import { useWarStore } from '@engine/military/WarStore';
+import { executeSetCampaignTarget } from '@engine/interaction/campaignAction';
 
 /**
  * 沿 overlordId 链找到 controllerId 在 lordId 下的一级封臣。
@@ -40,7 +43,60 @@ const MapPlaceholder: React.FC = () => {
   const territoryForModal = territoryModalId ? territories.get(territoryModalId) : undefined;
   const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
 
+  // 行军模式
+  const [marchingCampaignId, setMarchingCampaignId] = useState<string | null>(null);
+  const [marchError, setMarchError] = useState<string | null>(null);
+
+  // ESC 取消行军模式
+  useEffect(() => {
+    if (!marchingCampaignId) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMarchingCampaignId(null);
+        setMarchError(null);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [marchingCampaignId]);
+
+  // 错误提示自动消失
+  useEffect(() => {
+    if (!marchError) return;
+    const timer = setTimeout(() => setMarchError(null), 2000);
+    return () => clearTimeout(timer);
+  }, [marchError]);
+
+  const handleStartMarch = useCallback((campaignId: string) => {
+    setSelectedCampaignId(null);
+    setMarchingCampaignId(campaignId);
+    setMarchError(null);
+  }, []);
+
+  const handleCancelMarch = useCallback(() => {
+    setMarchingCampaignId(null);
+    setMarchError(null);
+  }, []);
+
   const handleSelectTerritory = (id: string) => {
+    // 行军模式：点击 = 选择目的地
+    if (marchingCampaignId) {
+      const campaign = useWarStore.getState().campaigns.get(marchingCampaignId);
+      if (!campaign) { setMarchingCampaignId(null); return; }
+      if (id === campaign.locationId) return; // 点击当前位置忽略
+
+      const path = findPath(campaign.locationId, id, playerId, territories, characters);
+      if (!path) {
+        setMarchError('无法到达该目标（关隘阻挡）');
+        return;
+      }
+      executeSetCampaignTarget(marchingCampaignId, id, path);
+      setMarchingCampaignId(null);
+      setMarchError(null);
+      return;
+    }
+
+    // 正常模式：领地查看逻辑
     const t = territories.get(id);
     const controller = t ? getActualController(t) : null;
     if (!controller) return;
@@ -87,7 +143,31 @@ const MapPlaceholder: React.FC = () => {
       <GameMap
         onSelectTerritory={handleSelectTerritory}
         onSelectCampaign={(id) => setSelectedCampaignId(id)}
+        marchMode={!!marchingCampaignId}
+        onRightClick={handleCancelMarch}
       />
+
+      {/* 行军模式提示条 */}
+      {marchingCampaignId && (
+        <div
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-5 py-2 rounded-lg border text-sm font-bold shadow-lg"
+          style={{
+            background: 'rgba(26, 26, 46, 0.95)',
+            borderColor: 'var(--color-accent-gold)',
+            color: 'var(--color-accent-gold)',
+          }}
+        >
+          点击地图选择行军目的地
+          <span className="text-xs font-normal ml-3" style={{ color: 'var(--color-text-muted)' }}>
+            ESC / 右键取消
+          </span>
+          {marchError && (
+            <span className="text-xs ml-3" style={{ color: '#e74c3c' }}>
+              {marchError}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Territory modal popup */}
       {territoryForModal && (
@@ -106,6 +186,7 @@ const MapPlaceholder: React.FC = () => {
         <CampaignPopup
           campaignId={selectedCampaignId}
           onClose={() => setSelectedCampaignId(null)}
+          onStartMarch={handleStartMarch}
         />
       )}
     </div>

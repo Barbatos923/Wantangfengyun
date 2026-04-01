@@ -1,6 +1,7 @@
 // ===== "要求效忠"交互 =====
 
 import type { Character } from '@engine/character/types';
+import type { Post, Territory } from '@engine/territory/types';
 import type { Personality } from '@data/traits';
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
@@ -22,48 +23,68 @@ registerInteraction({
   paramType: 'none',
 });
 
-// ── canShow ──────────────────────────────────────────
+// ── canShow（便捷版：读 Store） ──────────────────────────
 
 function canDemandFealty(player: Character, target: Character): boolean {
+  const terrStore = useTerritoryStore.getState();
+  const targetPosts = terrStore.getPostsByHolder(target.id);
+  const playerPosts = terrStore.getPostsByHolder(player.id);
+  return canDemandFealtyPure(player, target, terrStore.territories, targetPosts, playerPosts);
+}
+
+// ── canDemandFealty 纯函数版（供 NPC Engine 使用） ────────
+
+/**
+ * 判断 player 能否对 target 要求效忠（纯函数，不读 Store）。
+ *
+ * 规则（类似 CK3 "要求附庸"）：
+ * - target 必须持有 grantsControl 主岗位（无领地者不可被要求）
+ * - player 必须是 target 某个主岗位的法理上级（沿领地树 parentId 向上，直接上一级领地由 player 控制）
+ * - target 当前未效忠 player
+ */
+export function canDemandFealtyPure(
+  player: Character,
+  target: Character,
+  territories: Map<string, Territory>,
+  targetPosts: Post[],
+  playerPosts?: Post[],
+): boolean {
   if (!target.alive) return false;
   if (target.overlordId === player.id) return false;
 
-  const terrStore = useTerritoryStore.getState();
-  const posts = terrStore.getPostsByHolder(target.id);
-
-  // 只看 grantsControl 岗位（副岗位不算）
-  const mainPosts = posts.filter(p => {
+  // target 必须有 grantsControl 主岗位（控制领地的统治者）
+  const mainPosts = targetPosts.filter(p => {
     const tpl = positionMap.get(p.templateId);
     return tpl?.grantsControl === true;
   });
+  if (mainPosts.length === 0) return false;
 
-  if (mainPosts.length === 0) {
-    // 无主岗位角色：无条件可要求
-    return true;
-  }
+  // 岗位品级检查：要求方最高岗位品级必须严格高于目标最高岗位品级
+  const pPosts = playerPosts ?? [];
+  const playerMaxRank = Math.max(0, ...pPosts.map(p => positionMap.get(p.templateId)?.minRank ?? 0));
+  const targetMaxRank = Math.max(0, ...mainPosts.map(p => positionMap.get(p.templateId)?.minRank ?? 0));
+  if (playerMaxRank <= targetMaxRank) return false;
 
-  // 有主岗位：检查法理管辖权
-  return hasJurisdictionOver(player.id, mainPosts, terrStore);
+  // player 必须是 target 某个领地的直接法理上级
+  return isDirectLiegeOf(player.id, mainPosts, territories);
 }
 
-/** 检查 player 是否对 target 的某个主岗位有法理管辖权 */
-function hasJurisdictionOver(
+/**
+ * 检查 player 是否是 target 某个主岗位领地的直接法理上级。
+ * "直接法理上级" = target 领地的 parentId 指向的领地由 player 控制。
+ */
+function isDirectLiegeOf(
   playerId: string,
   targetMainPosts: { territoryId?: string }[],
-  terrStore: ReturnType<typeof useTerritoryStore.getState>,
+  territories: Map<string, Territory>,
 ): boolean {
-  const territories = terrStore.territories;
-
   for (const post of targetMainPosts) {
     if (!post.territoryId) continue;
-    // 沿 parentId 向上查找，看是否有 player 控制的领地
-    let currentId: string | undefined = territories.get(post.territoryId)?.parentId;
-    while (currentId) {
-      const territory = territories.get(currentId);
-      if (!territory) break;
-      if (getActualController(territory) === playerId) return true;
-      currentId = territory.parentId;
-    }
+    const terr = territories.get(post.territoryId);
+    if (!terr?.parentId) continue;
+    const parent = territories.get(terr.parentId);
+    if (!parent) continue;
+    if (getActualController(parent) === playerId) return true;
   }
   return false;
 }
@@ -153,7 +174,8 @@ export function previewDemandFealty(
   const target = charStore.getCharacter(targetId);
   if (!player || !target) return { chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 } };
 
-  const opinion = calculateBaseOpinion(target, player);
+  const playerExpectedLeg = useTerritoryStore.getState().expectedLegitimacy.get(playerId) ?? null;
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);
@@ -170,7 +192,8 @@ export function executeDemandFealty(
   const target = charStore.getCharacter(targetId);
   if (!player || !target) return { success: false, chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 } };
 
-  const opinion = calculateBaseOpinion(target, player);
+  const playerExpectedLeg2 = useTerritoryStore.getState().expectedLegitimacy.get(playerId) ?? null;
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg2);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);

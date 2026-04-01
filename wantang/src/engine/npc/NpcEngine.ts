@@ -1,102 +1,31 @@
-// ===== NPC Engine 框架入口（两步铨选流程） =====
+// ===== NPC Engine 框架入口（统一决策循环） =====
 
 import type { GameDate } from '@engine/types';
-import type { TransferPlan } from './types';
+import type { TransferPlan, NpcBehavior, NpcContext } from './types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { positionMap } from '@data/positions';
 import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from './NpcStore';
-import { planAppointments } from './behaviors/appointBehavior';
 import { executeAppoint } from '@engine/interaction';
-import { resolveAppointAuthority, HONORARY_TEMPLATES } from '@engine/official/selectionCalc';
+import { buildNpcContext } from './NpcContext';
+import { getAllBehaviors } from './behaviors/index';
+import { calcMaxActions } from '@engine/character/personalityUtils';
+import { random } from '@engine/random';
 
-/** 中央岗位模板 ID → 需要自动行动的角色 */
-const NPC_ACTOR_TEMPLATES = ['pos-zaixiang', 'pos-guanlibu-shangshu'] as const;
+// 导入行为模块以触发注册
+import './behaviors/appointBehavior';
+import './behaviors/reviewBehavior';
+import './behaviors/declareWarBehavior';
+import './behaviors/demandFealtyBehavior';
+import './behaviors/mobilizeBehavior';
+import './behaviors/recruitBehavior';
+import './behaviors/rewardBehavior';
+import './behaviors/buildBehavior';
+import './behaviors/negotiateWarBehavior';
 
-// ── 角色判断工具 ────────────────────────────────────────────────────────────────
+// ── 公共工具（UI 使用） ────────────────────────────────────
 
-function getEmperorId(): string | null {
-  const { territories, centralPosts } = useTerritoryStore.getState();
-  return findEmperorId(territories, centralPosts);
-}
-
-function isPlayerEmperor(playerId: string | null): boolean {
-  return !!playerId && getEmperorId() === playerId;
-}
-
-/** 获取玩家作为铨选经办人能管辖的空缺岗位 ID 列表 */
-function getPlayerDraftablePostIds(playerId: string): string[] {
-  const { territories, centralPosts } = useTerritoryStore.getState();
-  const result: string[] = [];
-
-  // 收集所有空缺岗位
-  const allVacant: import('@engine/territory/types').Post[] = [];
-  for (const t of territories.values()) {
-    for (const p of t.posts) {
-      if (p.holderId === null && !HONORARY_TEMPLATES.has(p.templateId)) allVacant.push(p);
-    }
-  }
-  for (const p of centralPosts) {
-    if (p.holderId === null && !HONORARY_TEMPLATES.has(p.templateId)) allVacant.push(p);
-  }
-
-  // 只保留 resolveAppointAuthority 指向玩家的空缺
-  for (const post of allVacant) {
-    const authority = resolveAppointAuthority(post, territories, centralPosts);
-    if (authority === playerId) {
-      result.push(post.id);
-    }
-  }
-
-  return result;
-}
-
-/**
- * 获取需要自动行动的 NPC ID 列表（排除玩家）。
- * 当前只有宰相和吏部尚书 + 辟署权持有人。
- * 若吏部或宰相缺位，AI 皇帝补位充当经办人。
- */
-function getNpcActors(playerId: string | null): string[] {
-  const { centralPosts, territories } = useTerritoryStore.getState();
-  const ids: string[] = [];
-  let hasZaixiang = false;
-  let hasLibu = false;
-
-  for (const tplId of NPC_ACTOR_TEMPLATES) {
-    const post = centralPosts.find(p => p.templateId === tplId);
-    if (post?.holderId && post.holderId !== playerId) {
-      ids.push(post.holderId);
-      if (tplId === 'pos-zaixiang') hasZaixiang = true;
-      if (tplId === 'pos-guanlibu-shangshu') hasLibu = true;
-    }
-  }
-
-  // 吏部或宰相缺位 → AI 皇帝补位
-  if (!hasZaixiang || !hasLibu) {
-    const emperorId = getEmperorId();
-    if (emperorId && emperorId !== playerId && !ids.includes(emperorId)) {
-      ids.push(emperorId);
-    }
-  }
-
-  // 辟署权持有人
-  for (const terr of territories.values()) {
-    for (const post of terr.posts) {
-      if (!post.hasAppointRight || !post.holderId) continue;
-      const tpl = positionMap.get(post.templateId);
-      if (!tpl?.grantsControl) continue;
-      if (post.holderId === playerId || ids.includes(post.holderId)) continue;
-      ids.push(post.holderId);
-    }
-  }
-
-  return ids;
-}
-
-// ── 执行 ────────────────────────────────────────────────────────────────────────
-
-/** 批量执行调动方案 */
+/** 批量执行调动方案（TransferPlanFlow UI 调用） */
 export function executeTransferPlan(plan: TransferPlan): void {
   for (const entry of plan.entries) {
     executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
@@ -104,57 +33,176 @@ export function executeTransferPlan(plan: TransferPlan): void {
   useNpcStore.getState().setPendingPlan(null);
 }
 
-// ── 月结入口 ────────────────────────────────────────────────────────────────────
+// ── 前置步骤 ───────────────────────────────────────────────
 
-/**
- * NPC Engine 每月入口（两步流程）。
- *
- * 步骤 1：提交上月草稿 → 皇帝审批或自动执行
- * 步骤 2：检查空缺 → 拟定新草稿
- */
-export function runNpcEngine(date: GameDate): void {
-  const playerId = useCharacterStore.getState().playerId;
+/** 步骤 1：处理上月铨选草稿提交 */
+function handleDraftSubmission(): void {
   const npcStore = useNpcStore.getState();
+  const draft = npcStore.draftPlan;
+  if (!draft || draft.entries.length === 0) return;
 
-  // ── 步骤 1：提交上月草稿 ──
-  if (npcStore.draftPlan && npcStore.draftPlan.entries.length > 0) {
-    if (isPlayerEmperor(playerId)) {
-      // 玩家是皇帝 → 转为 pendingPlan 等待审批
-      npcStore.setPendingPlan(npcStore.draftPlan);
-    } else {
-      // NPC 皇帝自动批准 → 立即执行
-      for (const entry of npcStore.draftPlan.entries) {
-        executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+  const playerId = useCharacterStore.getState().playerId;
+  const { territories, centralPosts } = useTerritoryStore.getState();
+  const emperorId = findEmperorId(territories, centralPosts);
+
+  if (emperorId === playerId) {
+    // 玩家是皇帝 → 转为 pendingPlan 等待审批
+    npcStore.setPendingPlan(draft);
+  } else {
+    // NPC 皇帝自动批准 → 立即执行
+    for (const entry of draft.entries) {
+      executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+    }
+  }
+  npcStore.setDraftPlan(null);
+}
+
+/** 步骤 2：超时 PlayerTask 兜底执行 */
+function handleExpiredPlayerTasks(date: GameDate): void {
+  const npcStore = useNpcStore.getState();
+  const expired = npcStore.getExpiredTasks(date);
+
+  for (const task of expired) {
+    // 查找对应行为的 executeAsNpc 兜底
+    const behavior = getAllBehaviors().find(b => b.id === task.type);
+    if (behavior) {
+      const actor = useCharacterStore.getState().getCharacter(task.actorId);
+      if (actor) {
+        const ctx = buildNpcContext();
+        behavior.executeAsNpc(actor, task.data, ctx);
       }
     }
-    npcStore.setDraftPlan(null);
+    npcStore.removePlayerTask(task.id);
+  }
+}
+
+// ── 收集决策者 ─────────────────────────────────────────────
+
+/** 收集所有应进入决策循环的角色，按品级降序排列 */
+function collectActors(characters: Map<string, import('@engine/character/types').Character>, rankLevelCache: Map<string, number>): import('@engine/character/types').Character[] {
+  const actors: import('@engine/character/types').Character[] = [];
+
+  for (const char of characters.values()) {
+    if (!char.alive) continue;
+    if (!char.official) continue; // 无官职不参与决策
+    actors.push(char);
   }
 
-  // ── 步骤 2：拟定新草稿（如果有 pendingPlan 等待审批则跳过，避免重复拟定） ──
-  if (useNpcStore.getState().pendingPlan) return;
+  // 按品级降序（高品级优先决策）
+  actors.sort((a, b) => {
+    const ra = rankLevelCache.get(a.id) ?? 0;
+    const rb = rankLevelCache.get(b.id) ?? 0;
+    return rb - ra;
+  });
 
-  const npcActors = getNpcActors(playerId);
-  const sharedUsedIds = new Set<string>();
-  const npcEntries = npcActors.flatMap(npcId => planAppointments(npcId, sharedUsedIds));
+  return actors;
+}
 
-  // 检查玩家是否是某个经办人（吏部/宰相/辟署权），且不是皇帝
-  let playerDraftPostIds: string[] = [];
-  if (playerId && !isPlayerEmperor(playerId)) {
-    playerDraftPostIds = getPlayerDraftablePostIds(playerId);
+// ── 月结入口 ───────────────────────────────────────────────
+
+/** 执行单个任务（根据 playerMode 路由） */
+function executeTask(
+  actor: import('@engine/character/types').Character,
+  task: { behavior: NpcBehavior; data: unknown },
+  ctx: NpcContext,
+): void {
+  const isPlayer = actor.id === ctx.playerId;
+
+  if (isPlayer && task.behavior.playerMode === 'skip') return;
+
+  if (isPlayer && task.behavior.playerMode === 'push-task') {
+    const playerTask = task.behavior.generatePlayerTask?.(actor, task.data, ctx);
+    if (playerTask) {
+      useNpcStore.getState().addPlayerTask(playerTask);
+    }
+    return;
   }
 
-  // NPC 部分存入 draftPlan
-  if (npcEntries.length > 0) {
-    npcStore.setDraftPlan({
-      entries: npcEntries,
-      date: { ...date },
-    });
+  // NPC 执行 / auto-execute
+  task.behavior.executeAsNpc(actor, task.data, ctx);
+}
+
+/**
+ * NPC Engine 每月入口（统一决策循环）。
+ *
+ * 流程：
+ * 1. 前置：处理上月铨选草稿提交 + 超时兜底
+ * 2. 第一遍：forced 任务（考课等，会改变世界状态）
+ * 3. 重建快照（forced 任务可能产生空缺等变化）
+ * 4. 第二遍：normal 任务（铨选、宣战、要求效忠等）
+ */
+export function runNpcEngine(date: GameDate): void {
+  // ── 前置步骤 ──
+  handleDraftSubmission();
+  handleExpiredPlayerTasks(date);
+
+  // ── 第一遍：forced 任务（考课等，会改变世界状态） ──
+  {
+    const ctx1 = buildNpcContext();
+    const actors1 = collectActors(ctx1.characters, ctx1.rankLevelCache);
+    const behaviors1 = getAllBehaviors();
+
+    for (const actor of actors1) {
+      for (const behavior of behaviors1) {
+        const result = behavior.generateTask(actor, ctx1);
+        if (!result || !result.forced) continue;
+        executeTask(actor, { behavior, data: result.data }, ctx1);
+      }
+    }
   }
 
-  // 玩家需要拟定的部分 → 存入 playerDraftPostIds，等 UI 弹窗
-  if (playerDraftPostIds.length > 0) {
-    npcStore.setPlayerDraftPostIds(playerDraftPostIds);
-  } else {
-    npcStore.setPlayerDraftPostIds([]);
+  // ── 重建快照（forced 任务可能改变了世界状态） ──
+  const ctx = buildNpcContext();
+  const actors = collectActors(ctx.characters, ctx.rankLevelCache);
+  const behaviors = getAllBehaviors();
+
+  // ── 第二遍：normal 任务（铨选、宣战、要求效忠等） ──
+  for (const actor of actors) {
+    const personality = ctx.personalityCache.get(actor.id);
+    if (!personality) continue;
+
+    let maxActions = calcMaxActions(personality);
+    const rankLevel = ctx.rankLevelCache.get(actor.id) ?? 0;
+    if (rankLevel < 9) maxActions = Math.min(maxActions, 1);
+
+    // 收集 normal 任务，分为行政职责和自愿行为
+    const adminTasks: Array<{ behavior: NpcBehavior; data: unknown }> = [];
+    const voluntaryTasks: Array<{ behavior: NpcBehavior; data: unknown; weight: number }> = [];
+
+    for (const behavior of behaviors) {
+      // 有 pendingPlan 等待审批时跳过铨选（避免重复拟草）
+      if (behavior.id === 'appoint' && useNpcStore.getState().pendingPlan) continue;
+
+      const result = behavior.generateTask(actor, ctx);
+      if (!result || result.forced) continue;
+
+      if (behavior.playerMode === 'push-task') {
+        // 行政职责（铨选/考课等）：不受 maxActions 限制
+        adminTasks.push({ behavior, data: result.data });
+      } else {
+        // 自愿行为（宣战/效忠等）：受 maxActions 限制
+        voluntaryTasks.push({ behavior, data: result.data, weight: result.weight });
+      }
+    }
+
+    // 行政职责：无条件执行
+    for (const task of adminTasks) {
+      executeTask(actor, task, ctx);
+    }
+
+    // 自愿行为：按权重排序，每个 action slot 独立按概率判定
+    // weight 直接作为百分比概率（weight=10 → 10%，weight>=100 → 必定执行）
+    if (maxActions > 0 && voluntaryTasks.length > 0) {
+      voluntaryTasks.sort((a, b) => b.weight - a.weight);
+      let slotsUsed = 0;
+      for (const task of voluntaryTasks) {
+        if (slotsUsed >= maxActions) break;
+        const chance = Math.min(task.weight, 100) / 100;
+        if (random() < chance) {
+          executeTask(actor, task, ctx);
+          slotsUsed++;
+        }
+      }
+    }
   }
 }

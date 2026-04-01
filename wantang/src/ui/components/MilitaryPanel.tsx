@@ -6,7 +6,6 @@ import { useWarStore } from '@engine/military/WarStore';
 import { settleWar } from '@engine/military/warSettlement';
 import { calcPeaceAcceptance } from '@engine/military/warCalc';
 import { calcPersonality } from '@engine/character/personalityUtils';
-import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTurnManager } from '@engine/TurnManager';
 import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish } from '@engine/interaction/militaryAction';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
@@ -781,29 +780,19 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                         // 和谈判定
                         const enemyId = isAttacker ? war.defenderId : war.attackerId;
                         const enemy = characters.get(enemyId);
-                        const player = characters.get(playerId ?? '');
                         let peaceResult: import('@engine/military/types').PeaceResult | null = null;
-                        if (enemy && player && !canForce && !canSurrender) {
+                        if (enemy && !canForce && !canSurrender) {
                           const enemyPersonality = calcPersonality(enemy);
-                          const playerAbilities = getEffectiveAbilities(player);
-                          // 简单兵力统计
-                          let proposerMil = 0, targetMil = 0;
-                          for (const army of armies.values()) {
-                            for (const batId of army.battalionIds) {
-                              const bat = battalions.get(batId);
-                              if (!bat) continue;
-                              if (army.ownerId === playerId) proposerMil += bat.currentStrength;
-                              if (army.ownerId === enemyId) targetMil += bat.currentStrength;
-                            }
-                          }
+                          const proposerScore = isAttacker ? war.warScore : -war.warScore;
                           peaceResult = calcPeaceAcceptance({
-                            warScore: war.warScore,
-                            proposerIsAttacker: isAttacker,
-                            targetPersonality: { boldness: enemyPersonality.boldness, honor: enemyPersonality.honor, greed: enemyPersonality.greed },
-                            proposerDiplomacy: playerAbilities.diplomacy,
+                            proposerScore,
                             warDurationMonths: warMonths,
-                            proposerMilitary: proposerMil,
-                            targetMilitary: targetMil,
+                            targetPersonality: {
+                              compassion: enemyPersonality.compassion,
+                              boldness: enemyPersonality.boldness,
+                              honor: enemyPersonality.honor,
+                              greed: enemyPersonality.greed,
+                            },
                           });
                         }
                         const peaceTooltip = peaceResult
@@ -937,6 +926,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                             marchTargetId,
                                             playerId,
                                             territories,
+                                            characters,
                                           );
                                           if (!path) {
                                             alert('无法到达目标州');

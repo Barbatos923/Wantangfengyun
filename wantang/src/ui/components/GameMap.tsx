@@ -43,9 +43,11 @@ const CONTROLLER_PALETTE = [
 interface GameMapProps {
   onSelectTerritory?: (id: string) => void;
   onSelectCampaign?: (campaignId: string) => void;
+  marchMode?: boolean;
+  onRightClick?: () => void;
 }
 
-const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign }) => {
+const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, marchMode, onRightClick }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ lines: string[]; x: number; y: number } | null>(null);
@@ -216,12 +218,13 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign }
         overflow: 'hidden',
         background: 'var(--color-bg, #1a1a2e)',
         userSelect: 'none',
-        cursor: isPanning.current ? 'grabbing' : 'grab',
+        cursor: isPanning.current ? 'grabbing' : marchMode ? 'crosshair' : 'grab',
       }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onContextMenu={(e) => { if (marchMode && onRightClick) { e.preventDefault(); onRightClick(); } }}
     >
       <svg
         width="100%"
@@ -267,7 +270,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign }
                 fillOpacity={isHovered ? 0.92 : 0.75}
                 stroke={isSelected ? '#d4a843' : 'none'}
                 strokeWidth={isSelected ? 3 : 0}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: marchMode ? 'crosshair' : 'pointer' }}
                 onClick={(e) => handleZhouClick(pos.id, e)}
                 onMouseEnter={(e) => handleZhouEnter(pos.id, e)}
                 onMouseMove={handleZhouMove}
@@ -370,7 +373,56 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign }
             );
           })}
 
-          {/* 4. 行营兵棋 */}
+          {/* 4a. 行军路线 */}
+          {Array.from(campaignData.values())
+            .filter((c) => c.ownerId === playerId && c.route.length > 1)
+            .map((c) => {
+              const points = c.route
+                .map((id) => posById.get(id))
+                .filter((p): p is NonNullable<typeof p> => !!p);
+              if (points.length < 2) return null;
+              // 已走过的部分（暗色）+ 未走的部分（亮色）
+              const passedPts = points.slice(0, c.routeProgress + 1);
+              const futurePts = points.slice(c.routeProgress);
+              const toPolyline = (pts: typeof points) =>
+                pts.map((p) => `${p.x},${p.y}`).join(' ');
+              return (
+                <g key={`route-${c.id}`} pointerEvents="none">
+                  {passedPts.length >= 2 && (
+                    <polyline
+                      points={toPolyline(passedPts)}
+                      fill="none"
+                      stroke="#d4a843"
+                      strokeWidth={2}
+                      strokeDasharray="6 4"
+                      opacity={0.3}
+                    />
+                  )}
+                  {futurePts.length >= 2 && (
+                    <polyline
+                      points={toPolyline(futurePts)}
+                      fill="none"
+                      stroke="#d4a843"
+                      strokeWidth={2.5}
+                      strokeDasharray="6 4"
+                      opacity={0.8}
+                    />
+                  )}
+                  {/* 目的地标记 */}
+                  {futurePts.length > 0 && (() => {
+                    const dest = futurePts[futurePts.length - 1];
+                    return (
+                      <circle
+                        cx={dest.x} cy={dest.y} r={5}
+                        fill="none" stroke="#d4a843" strokeWidth={2} opacity={0.9}
+                      />
+                    );
+                  })()}
+                </g>
+              );
+            })}
+
+          {/* 4b. 行营兵棋 */}
           {Array.from(campaignsByLocation.entries()).map(([locId, camps]) => {
             const zhouPos = posById.get(locId);
             if (!zhouPos) return null;

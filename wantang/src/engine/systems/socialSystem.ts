@@ -25,6 +25,9 @@ export function runSocialSystem(_date: GameDate): void {
   const charStore = useCharacterStore.getState();
   const terrStore = useTerritoryStore.getState();
 
+  // ===== 正统性预期缓存兜底刷新 =====
+  terrStore.refreshExpectedLegitimacy();
+
   // ===== 好感度衰减（批量） =====
   charStore.batchMutate((chars) => {
     for (const char of chars.values()) {

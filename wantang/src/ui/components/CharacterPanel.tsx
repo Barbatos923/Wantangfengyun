@@ -49,7 +49,8 @@ interface AvatarProps {
 const Avatar: React.FC<AvatarProps> = ({ char, mainChar, label, size, onClick }) => {
   if (!char) return null;
   // mainChar here is the player character — show opinion toward player (hide for dead)
-  const opinion = mainChar && char.id !== mainChar.id && char.alive ? calculateBaseOpinion(char, mainChar) : null;
+  const bExpectedLeg = useTerritoryStore(s => s.expectedLegitimacy.get(mainChar?.id ?? '') ?? null);
+  const opinion = mainChar && char.id !== mainChar.id && char.alive ? calculateBaseOpinion(char, mainChar, bExpectedLeg) : null;
   const sizeClass = size === 'lg' ? 'w-14 h-14 text-lg' : 'w-10 h-10 text-sm';
 
   return (
@@ -90,6 +91,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const playerChar = useCharacterStore((s) => playerId ? s.characters.get(playerId) : undefined);
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
+  const expectedLegitimacy = useTerritoryStore((s) => s.expectedLegitimacy);
   const currentYear = useTurnManager((s) => s.currentDate.year);
   const { pushCharacter, openTerritoryModal, goBack, goToPlayer, close, togglePin } = usePanelStore();
   const pinned = usePanelStore((s) => s.pinned);
@@ -177,7 +179,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
             </div>
             <div className="text-[10px] text-[var(--color-text-muted)] leading-tight">本人</div>
             {playerChar && character.id !== playerId && character.alive && (() => {
-              const op = calculateBaseOpinion(character, playerChar);
+              const op = calculateBaseOpinion(character, playerChar, expectedLegitimacy.get(playerChar.id) ?? null);
               return (
                 <button
                   className={`text-[10px] font-bold hover:underline cursor-pointer ${op >= 0 ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}
@@ -429,6 +431,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               onClickChar={pushCharacter}
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
+              expectedLegMap={expectedLegitimacy}
             />
           )}
           {activeTab === 'relations' && (
@@ -438,6 +441,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               onClickChar={pushCharacter}
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
+              expectedLegMap={expectedLegitimacy}
             />
           )}
           {activeTab === 'retainers' && (
@@ -447,6 +451,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               onClickChar={pushCharacter}
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
+              expectedLegMap={expectedLegitimacy}
             />
           )}
           {activeTab === 'vassals' && (
@@ -456,6 +461,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               onClickChar={pushCharacter}
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
+              expectedLegMap={expectedLegitimacy}
             />
           )}
         </div>
@@ -594,9 +600,10 @@ interface TabProps {
   onClickChar: (id: string) => void;
   playerChar?: Character;
   onShowOpinion?: (from: Character, toward: Character) => void;
+  expectedLegMap: Map<string, number>;
 }
 
-const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion }) => {
+const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
   const entries: { label: string; char: Character | undefined }[] = [
     { label: '父', char: character.family.fatherId ? characters.get(character.family.fatherId) : undefined },
     { label: '母', char: character.family.motherId ? characters.get(character.family.motherId) : undefined },
@@ -626,13 +633,13 @@ const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, pla
             {playerChar && char!.id !== playerChar.id && char!.alive && (
               <button
                 className="text-[10px] font-bold cursor-pointer hover:underline"
-                style={{ color: calculateBaseOpinion(char!, playerChar) >= 0 ? 'var(--color-accent-green)' : 'var(--color-accent-red)' }}
+                style={{ color: calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null) >= 0 ? 'var(--color-accent-green)' : 'var(--color-accent-red)' }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onShowOpinion?.(char!, playerChar);
                 }}
               >
-                {calculateBaseOpinion(char!, playerChar) >= 0 ? '+' : ''}{calculateBaseOpinion(char!, playerChar)}
+                {calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null) >= 0 ? '+' : ''}{calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null)}
               </button>
             )}
           </div>
@@ -670,7 +677,7 @@ const RelationsTab: React.FC<TabProps> = ({ character, characters, onClickChar }
   );
 };
 
-const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion }) => {
+const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
   // 廷臣 = 效忠于你（overlordId）但没有由你任命岗位的人
   const subordinates = getSubordinates(character.id, characters);
   const subordinateIds = new Set(subordinates.map(s => s.id));
@@ -688,7 +695,7 @@ const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, pl
   return (
     <div className="space-y-1">
       {courtiers.map((courtier) => {
-        const opinion = playerChar && courtier.id !== playerChar.id ? calculateBaseOpinion(courtier, playerChar) : null;
+        const opinion = playerChar && courtier.id !== playerChar.id ? calculateBaseOpinion(courtier, playerChar, expectedLegMap.get(playerChar.id) ?? null) : null;
         return (
           <button
             key={courtier.id}
@@ -718,7 +725,7 @@ const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, pl
   );
 };
 
-const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion }) => {
+const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
   const territories = useTerritoryStore((s) => s.territories);
   const subs = getSubordinates(character.id, characters);
 
@@ -737,7 +744,7 @@ const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, 
             return terrName ? `${terrName}${tplName}` : tplName;
           })
           .join('、');
-        const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar) : null;
+        const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar, expectedLegMap.get(playerChar.id) ?? null) : null;
         return (
           <button
             key={sub.id}

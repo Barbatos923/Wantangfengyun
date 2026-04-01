@@ -14,7 +14,7 @@ import './transferVassalAction';
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
 export { getDismissablePosts, executeDismiss } from './dismissAction';
-export { executeDemandFealty, previewDemandFealty, calcFealtyChance } from './demandFealtyAction';
+export { executeDemandFealty, previewDemandFealty, calcFealtyChance, canDemandFealtyPure } from './demandFealtyAction';
 export type { DemandFealtyResult, FealtyChanceResult } from './demandFealtyAction';
 export { getTransferCandidates, executeTransferVassal } from './transferVassalAction';
 export type { TransferCandidate } from './transferVassalAction';

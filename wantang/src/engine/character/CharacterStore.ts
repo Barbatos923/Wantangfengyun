@@ -35,6 +35,9 @@ interface CharacterStoreState {
   setOfficialData: (charId: string, data: OfficialData) => void;
   addVirtue: (charId: string, amount: number) => void;
   setRank: (charId: string, level: number) => void;
+
+  // 刷新 isRuler（从岗位推导）
+  refreshIsRuler: (rulerIds: Set<string>) => void;
 }
 
 export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
@@ -302,6 +305,22 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         official: { ...c.official, rankLevel: level },
       });
       return { characters: chars };
+    });
+  },
+
+  refreshIsRuler: (rulerIds) => {
+    set((state) => {
+      const chars = new Map(state.characters);
+      let changed = false;
+      for (const [id, c] of chars) {
+        if (!c.alive) continue;
+        const shouldBeRuler = rulerIds.has(id);
+        if (c.isRuler !== shouldBeRuler) {
+          chars.set(id, { ...c, isRuler: shouldBeRuler });
+          changed = true;
+        }
+      }
+      return changed ? { characters: chars } : state;
     });
   },
 }));

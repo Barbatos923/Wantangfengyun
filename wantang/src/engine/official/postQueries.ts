@@ -36,6 +36,28 @@ export function getActualController(territory: Territory): string | null {
 }
 
 /**
+ * 收集所有持有 grantsControl 岗位的角色 ID（含皇帝）。
+ */
+export function collectRulerIds(territories: Map<string, Territory>): Set<string> {
+  const ids = new Set<string>();
+  for (const t of territories.values()) {
+    for (const p of t.posts) {
+      if (p.holderId && positionMap.get(p.templateId)?.grantsControl) {
+        ids.add(p.holderId);
+      }
+    }
+  }
+  // 皇帝也是 ruler（其岗位 grantsControl=false 但身份上是统治者）
+  for (const t of territories.values()) {
+    if (t.tier === 'tianxia') {
+      const ep = t.posts.find(p => p.templateId === 'pos-emperor');
+      if (ep?.holderId) ids.add(ep.holderId);
+    }
+  }
+  return ids;
+}
+
+/**
  * 获取角色持有的所有岗位（领地岗位 + 中央岗位）
  */
 export function getHeldPosts(

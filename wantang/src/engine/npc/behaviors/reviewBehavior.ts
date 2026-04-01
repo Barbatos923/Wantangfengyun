@@ -1,6 +1,8 @@
 // ===== NPC 考课行为 — 评分 + 罢免 =====
 
 import type { GameDate } from '@engine/types';
+import type { NpcBehavior, NpcContext, PlayerTask } from '../types';
+import type { Character } from '@engine/character/types';
 import type { ReviewEntry, ReviewPlan } from '@engine/systems/reviewSystem';
 import { calculateReviewScore, getReviewGrade } from '@engine/systems/reviewSystem';
 import { useCharacterStore } from '@engine/character/CharacterStore';
@@ -12,6 +14,10 @@ import {
   resolveAppointAuthority,
   resolveLegalAppointer,
 } from '@engine/official/selectionUtils';
+import { findEmperorId } from '@engine/official/postQueries';
+import { registerBehavior } from './index';
+
+// ── 内部实现：执行考课（保留原有逻辑） ─────────────────
 
 /**
  * 执行考课：评分所有 bureaucratic 岗位，罢免下等，更新基线。
@@ -97,6 +103,47 @@ export function runReview(date: GameDate): void {
   // 玩家审批
   if (playerEntries.length > 0) {
     const plan: ReviewPlan = { entries: playerEntries, date: { ...date } };
+    // TODO(phase6-cleanup): 兼容旧 UI
     useNpcStore.getState().setPendingReviewPlan(plan);
   }
 }
+
+// ── NpcBehavior 接口适配 ────────────────────────────────
+
+interface ReviewData {
+  year: number;
+}
+
+export const reviewBehaviorDef: NpcBehavior<ReviewData> = {
+  id: 'review',
+  playerMode: 'push-task',
+
+  generateTask(actor: Character, ctx: NpcContext) {
+    // CD 判定：三年一考，每三年正月触发
+    if (ctx.date.month !== 1 || ctx.date.year % 3 !== 0) return null;
+
+    // 只由皇帝触发（考课是朝廷级行为）
+    const emperorId = findEmperorId(ctx.territories, ctx.centralPosts);
+    if (actor.id !== emperorId) return null;
+
+    return {
+      data: { year: ctx.date.year },
+      weight: 100,
+      forced: true, // 强制执行，不受 maxActions 限制
+    };
+  },
+
+  executeAsNpc(_actor: Character, _data: ReviewData, ctx: NpcContext) {
+    runReview(ctx.date);
+  },
+
+  generatePlayerTask(_actor: Character, _data: ReviewData, ctx: NpcContext): PlayerTask | null {
+    // 执行考课逻辑（评分 + NPC自动罢免 + 玩家部分进 pendingReviewPlan）
+    runReview(ctx.date);
+    // TODO(phase6-cleanup): 旧 UI（ReviewPlanFlow）通过 pendingReviewPlan 处理审批，
+    // 不返回 PlayerTask，避免超时兜底重复执行
+    return null;
+  },
+};
+
+registerBehavior(reviewBehaviorDef);

@@ -8,26 +8,22 @@ import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import type { Campaign } from '@engine/military/types';
 import { getArmyStrength } from '@engine/military/militaryCalc';
-import { findPath } from '@engine/military/marchCalc';
 import { drawStrategies } from '@engine/military/battleEngine';
-import { positionMap } from '@data/positions';
 import { PURSUIT_STRATEGIES } from '@data/strategies';
 import type { BattlePhase, StrategyDef } from '@data/strategies';
-import { executeSetCampaignTarget, executeAddArmyToCampaign, executeRemoveArmyFromCampaign, executeDisbandCampaign, executeSetStrategy, executeSetCampaignCommander } from '@engine/interaction/campaignAction';
+import { executeAddArmyToCampaign, executeRemoveArmyFromCampaign, executeDisbandCampaign, executeSetStrategy, executeSetCampaignCommander } from '@engine/interaction/campaignAction';
 
 interface CampaignPopupProps {
   campaignId: string;
   onClose: () => void;
+  onStartMarch?: (campaignId: string) => void;
 }
 
-const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) => {
-  const [mode, setMode] = useState<'main' | 'march' | 'addArmy' | 'removeArmy' | 'tactics' | 'commander'>('main');
-  const [marchTarget, setMarchTarget] = useState('');
-  const [pathError, setPathError] = useState('');
+const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onStartMarch }) => {
+  const [mode, setMode] = useState<'main' | 'addArmy' | 'removeArmy' | 'tactics' | 'commander'>('main');
   const [tacticsCache, setTacticsCache] = useState<Map<string, StrategyDef[]> | null>(null);
 
   const campaign = useWarStore((s) => s.campaigns.get(campaignId));
-  const war = useWarStore((s) => campaign ? s.wars.get(campaign.warId) : undefined);
   const territories = useTerritoryStore((s) => s.territories);
   const armies = useMilitaryStore((s) => s.armies);
   const battalions = useMilitaryStore((s) => s.battalions);
@@ -47,28 +43,6 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
     if (army) totalTroops += getArmyStrength(army, battalions);
   }
 
-  // 行军目标候选：战时=敌方州，和平=所有州
-  const marchTargetZhou: { id: string; name: string }[] = [];
-  if (war) {
-    const enemyId = war.attackerId === playerId ? war.defenderId : war.attackerId;
-    for (const t of territories.values()) {
-      if (t.tier !== 'zhou') continue;
-      const mainPost = t.posts.find((p) => {
-        const tpl = positionMap.get(p.templateId);
-        return tpl?.grantsControl === true;
-      });
-      if (mainPost?.holderId === enemyId) {
-        marchTargetZhou.push({ id: t.id, name: t.name });
-      }
-    }
-  } else {
-    // 和平行营：可以移动到任何州
-    for (const t of territories.values()) {
-      if (t.tier !== 'zhou' && t.id !== campaign.locationId) continue;
-      if (t.tier === 'zhou') marchTargetZhou.push({ id: t.id, name: t.name });
-    }
-  }
-
   // 所有行营中已编入的军队ID
   const allCampaignArmyIds = new Set<string>();
   for (const c of useWarStore.getState().campaigns.values()) {
@@ -80,17 +54,6 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
   const availableArmies = Array.from(armies.values()).filter(
     (a) => a.ownerId === playerId && !allCampaignArmyIds.has(a.id),
   );
-
-  const handleMarch = () => {
-    if (!marchTarget) return;
-    const path = findPath(campaign.locationId, marchTarget, playerId, territories);
-    if (!path) {
-      setPathError('无法到达该目标（可能被关隘阻挡）');
-      return;
-    }
-    executeSetCampaignTarget(campaignId, marchTarget, path);
-    onClose();
-  };
 
   const handleAddArmy = (armyId: string) => {
     executeAddArmyToCampaign(campaignId, armyId);
@@ -173,12 +136,12 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
         )}
         {mode === 'main' && isOwner && (
           <div className="space-y-1.5">
-            {campaign.status === 'idle' && (
+            {campaign.status === 'idle' && onStartMarch && (
               <button
-                onClick={() => { setMode('march'); setMarchTarget(''); setPathError(''); }}
+                onClick={() => onStartMarch(campaignId)}
                 className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors"
               >
-                ⚔ 行军
+                ⚔ 行军（在地图上选择目的地）
               </button>
             )}
             <button
@@ -226,33 +189,6 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose }) =>
             >
               ✕ 解散行营
             </button>
-          </div>
-        )}
-
-        {/* 行军目标选择 */}
-        {mode === 'march' && (
-          <div className="space-y-2">
-            <select
-              className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
-              value={marchTarget}
-              onChange={(e) => { setMarchTarget(e.target.value); setPathError(''); }}
-            >
-              <option value="">-- 选择目标州 --</option>
-              {marchTargetZhou.map((z) => (
-                <option key={z.id} value={z.id}>{z.name}</option>
-              ))}
-            </select>
-            {pathError && <p className="text-xs text-[var(--color-accent-red,#e74c3c)]">{pathError}</p>}
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setMode('main')} className="px-3 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">返回</button>
-              <button
-                disabled={!marchTarget}
-                onClick={handleMarch}
-                className="px-3 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                出发
-              </button>
-            </div>
           </div>
         )}
 

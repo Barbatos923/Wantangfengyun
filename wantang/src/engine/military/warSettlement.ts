@@ -6,7 +6,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useMilitaryStore } from './MilitaryStore';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
-import { findEmperorId } from '@engine/official/postQueries';
+import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
 
 /**
@@ -76,6 +76,11 @@ function settleTerritorialWar(war: War, result: War['result']): void {
       charStore.updateCharacter(post.holderId, { overlordId: war.attackerId });
     }
   }
+
+  // 领地转手后刷新缓存
+  useTerritoryStore.getState().refreshExpectedLegitimacy();
+  const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
+  useCharacterStore.getState().refreshIsRuler(rulerIds);
 }
 
 // ── 独立战争结算 ────────────────────────────────────────────────────────
@@ -85,8 +90,7 @@ function settleIndependenceWar(war: War, result: War['result']): void {
 
   switch (result) {
     case 'attackerWin': {
-      // 攻方（原附庸）脱离效忠，成为独立统治者
-      charStore.updateCharacter(war.attackerId, { overlordId: undefined });
+      // 攻方已在宣战时脱离效忠，无需再次操作
       // 针对皇帝的独立战争胜利 → 崩溃进度 +10
       const terrStore = useTerritoryStore.getState();
       const emperorId = findEmperorId(terrStore.territories, terrStore.centralPosts);
@@ -96,7 +100,10 @@ function settleIndependenceWar(war: War, result: War['result']): void {
       break;
     }
     case 'defenderWin':
-      // 叛乱失败，防方（原领主）对攻方好感 -30
+      // 叛乱失败：恢复效忠关系 + 好感 -30
+      if (war.previousOverlordId) {
+        charStore.updateCharacter(war.attackerId, { overlordId: war.previousOverlordId });
+      }
       charStore.setOpinion(war.attackerId, war.defenderId, {
         reason: '叛乱失败',
         value: -30,
@@ -104,7 +111,7 @@ function settleIndependenceWar(war: War, result: War['result']): void {
       });
       break;
     case 'whitePeace':
-      // 和谈：无变化
+      // 和谈：独立成功（已在宣战时脱离，不恢复）
       break;
   }
 }
@@ -123,12 +130,44 @@ function clearOccupation(war: War): void {
   }
 }
 
-/** 解散该战争下的所有行营 */
+/** 解散该战争下的所有行营和围城，军队移回所有者领地 */
 function disbandCampaigns(warId: string): void {
   const warStore = useWarStore.getState();
-  for (const campaign of warStore.campaigns.values()) {
-    if (campaign.warId === warId) {
-      warStore.disbandCampaign(campaign.id);
+  const terrStore = useTerritoryStore.getState();
+  const milStore = useMilitaryStore.getState();
+
+  // 先结束所有该战争的围城
+  for (const siege of warStore.sieges.values()) {
+    if (siege.warId === warId) {
+      warStore.endSiege(siege.id);
     }
+  }
+
+  // 再解散所有该战争的行营，军队移回所有者领地
+  for (const campaign of useWarStore.getState().campaigns.values()) {
+    if (campaign.warId !== warId) continue;
+
+    // 找所有者的一个己方领地
+    let homeId: string | null = null;
+    for (const t of terrStore.territories.values()) {
+      if (t.tier !== 'zhou') continue;
+      const mainPost = t.posts.find(p => {
+        const tpl = positionMap.get(p.templateId);
+        return tpl?.grantsControl === true;
+      });
+      if (mainPost?.holderId === campaign.ownerId) {
+        homeId = t.id;
+        break;
+      }
+    }
+
+    // 移动军队回家
+    if (homeId) {
+      for (const armyId of campaign.armyIds) {
+        milStore.updateArmy(armyId, { locationId: homeId });
+      }
+    }
+
+    useWarStore.getState().disbandCampaign(campaign.id);
   }
 }

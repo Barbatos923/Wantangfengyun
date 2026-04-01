@@ -21,356 +21,148 @@
 | 测试命令 | `npx vitest run` |
 | 路径别名 | `@` → `src/`，`@engine` → `src/engine/`，`@data` → `src/data/`，`@ui` → `src/ui/` |
 | 工作目录 | CWD 为 `D:\桌面\CC`，项目代码在 `wantang/` 子目录 |
-| 文档 | `docs/` 目录：GDD-v2.0（权威设计案）、milestones.md（进度）、design/（活跃方案）、archive/（历史文档）、reference/（参考资料），详见 `docs/README.md` |
+| 文档 | `docs/` 目录：GDD-v2.0（权威设计案）、milestones.md（进度）、design/（活跃方案）、archive/（历史文档）、reference/（参考资料） |
 
 ---
 
-## 二、目录结构（子目录级）
+## 二、目录结构
 
 ```
 wantang/src/
-├── main.tsx / App.tsx / index.css     # 应用入口与全局样式
-│
 ├── engine/                            # 游戏引擎层（与 UI 完全解耦）
-│   ├── types.ts                       # 全局类型：GameDate, GameEvent, Resources, Era 等
-│   ├── random.ts                      # 确定性 RNG（initRng/random/randInt/shuffle）
-│   ├── utils.ts                       # 共享工具（clamp 等）
-│   ├── TurnManager.ts                 # 回合推进入口
-│   ├── settlement.ts                  # 月度结算管线（调度各 System + 三年一考触发）
-│   ├── storage.ts                     # IndexedDB 读写（saveGame/loadGame/archiveEvents 等）
-│   │
-│   ├── init/                          # 游戏初始化
-│   │   └── loadSampleData.ts          # 开局数据组装（从 JSON 加载 + 填充空缺 + Store 初始化）
-│   │
-│   ├── character/                     # 角色子系统
-│   │   ├── CharacterStore.ts          # 主 Store + 索引
-│   │   ├── characterUtils.ts          # 工具函数（findTopLord / getTraitsByCategory 等）
-│   │   ├── characterGen.ts            # 随机角色生成器（填充副岗用）
-│   │   ├── personalityUtils.ts        # 性格计算
-│   │   ├── successionUtils.ts         # 继承纯函数（resolveHeir / findParentAuthority）
-│   │   └── types.ts                   # Character 类型
-│   │
-│   ├── territory/                     # 领地子系统
-│   │   ├── TerritoryStore.ts          # 主 Store + 索引
-│   │   ├── territoryUtils.ts          # 工具函数
-│   │   └── types.ts                   # Territory / Post 类型
-│   │
-│   ├── official/                      # 官职子系统
-│   │   ├── LedgerStore.ts             # 玩家月度收支明细
-│   │   ├── mapDisplay.ts              # 地图着色计算纯函数（基于臣属关系分层着色）
-│   │   ├── economyCalc.ts             # 经济计算纯函数
-│   │   ├── selectionCalc.ts           # 铨选纯函数（候选人评分/分级）
-│   │   ├── selectionUtils.ts          # 铨选包装（resolveAppointAuthority / resolveLegalAppointer）
-│   │   ├── appointValidation.ts       # 任命校验
-│   │   ├── postQueries.ts             # 岗位查询（findEmperorId / getPendingVacancies）
-│   │   ├── officialUtils.ts           # 官职工具（便捷包装，允许读 Store）
-│   │   ├── legitimacyCalc.ts          # 正统性计算纯函数
-│   │   └── types.ts                   # PositionTemplate 等类型
-│   │
-│   ├── military/                      # 军事子系统
-│   │   ├── MilitaryStore.ts / WarStore.ts  # 军队 / 战争 Store
-│   │   ├── battleEngine.ts            # 战斗计算
-│   │   ├── marchCalc.ts / siegeCalc.ts / warCalc.ts / militaryCalc.ts  # 各类军事计算
-│   │   └── warSettlement.ts           # 战争结算
-│   │
-│   ├── interaction/                   # 玩家交互（Interaction 接口 + Action 实现 + registry）
-│   │   ├── types.ts                   # Interaction 接口定义
-│   │   ├── registry.ts                # 交互注册表
-│   │   ├── appointAction.ts           # 任命（含 executeAppoint 统一流程）
-│   │   ├── dismissAction.ts           # 罢免
-│   │   ├── centralizationAction.ts    # 集权调整（赋税/继承法/辟署权）
-│   │   ├── declareWarAction.ts        # 宣战
-│   │   ├── demandFealtyAction.ts      # 要求臣服
-│   │   └── transferVassalAction.ts    # 转封附庸
-│   │
-│   ├── npc/                           # NPC 引擎
-│   │   ├── NpcEngine.ts               # NPC 行为调度入口
-│   │   ├── NpcStore.ts                # NPC 状态（待审批方案等）
-│   │   └── behaviors/
-│   │       ├── appointBehavior.ts      # NPC 自动铨选（含辟署权域、皇帝缺位补位）
-│   │       └── reviewBehavior.ts       # NPC 考课（评分 + 罢免 + 玩家审批）
-│   │
-│   ├── systems/                       # 月结管线各 System
-│   │   ├── characterSystem.ts         # 健康/老化/死亡/继承管线
-│   │   ├── populationSystem.ts        # 年度人口变化
-│   │   ├── socialSystem.ts            # 好感衰减/领地漂移/人才/晋升
-│   │   ├── economySystem.ts           # 经济结算/破产检查
-│   │   ├── militarySystem.ts          # 征兵池/士气训练/兵变
-│   │   ├── warSystem.ts               # 行军/战斗/围城/战争分数
-│   │   ├── buildingSystem.ts          # 建筑施工完成
-│   │   ├── eraSystem.ts               # 时代进度推进/时代切换
-│   │   └── reviewSystem.ts            # 考课评分纯函数
-│   │
-│   └── utils/                         # 通用工具
-│       └── registries.ts              # Registry 通用注册表类
-│
-├── data/                              # 纯静态数据层（JSON + 定义表 + 索引）
-│   ├── characters.json                # 角色数据（79 个史实 + NPC）
-│   ├── characters.ts                  # 薄 wrapper：import JSON + 类型导出
-│   ├── territories.json               # 领地数据（72 个：天下/国/道/州）
-│   ├── territories.ts                 # 薄 wrapper
-│   ├── armies.json / battalions.json  # 军队/营数据
-│   ├── initialArmies.ts              # 薄 wrapper
-│   ├── institutions.ts                # 制度数据
-│   ├── mapTopology.ts                 # 州坐标（ZHOU_POSITIONS）+ 道路连接（ALL_EDGES）
-│   ├── mapVoronoi.ts                  # Voronoi 多边形预计算 + 疆域轮廓
-│   ├── positions.ts                   # 岗位模板（ALL_POSITIONS / positionMap）
-│   └── traits.ts / ranks.ts / buildings.ts / unitTypes.ts / strategies.ts  # 定义表
-│
-├── __tests__/                         # 单元测试
-│   └── phase1-refactor.test.ts        # 数据层重构契约测试
-│
-└── ui/                                # UI 层（React，只负责展示和触发交互）
-    ├── components/                    # React 组件（~27 个）
-    │   ├── GameMap.tsx                # Voronoi 多边形地图（分层着色 + 势力边界）
-    │   ├── MapPlaceholder.tsx         # 地图容器（领地点击分层逻辑）
-    │   ├── SelectionFlow.tsx          # 铨选审批弹窗
-    │   ├── TransferPlanFlow.tsx        # NPC 铨选方案审批（含特旨按钮）
-    │   ├── ReviewPlanFlow.tsx          # 考课审批弹窗
-    │   ├── CentralizationFlow.tsx      # 集权调整（赋税/继承法/辟署权切换）
-    │   ├── GovernmentPanel.tsx         # 百官图（岗位 + 继承法 + 辟署权标签）
-    │   ├── OfficialPanel.tsx           # 官署面板（含指定继承人交互）
-    │   └── ...                         # 其他 UI 组件
-    ├── layouts/                       # 布局组件（GameLayout）
-    ├── hooks/                         # React hooks
-    ├── panels/                        # 面板组件
-    └── stores/                        # UI 状态 Store（panelStore 等）
+│   ├── types.ts / random.ts / utils.ts / TurnManager.ts / settlement.ts / storage.ts
+│   ├── init/loadSampleData.ts         # 开局数据组装
+│   ├── character/                     # CharacterStore + 工具 + 生成器 + 继承
+│   ├── territory/                     # TerritoryStore + 工具
+│   ├── official/                      # 官职：经济/铨选/正统性/地图着色/岗位查询
+│   ├── military/                      # MilitaryStore/WarStore + 战斗/行军/围城/结算
+│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/集权等）
+│   ├── npc/                           # NPC Engine 框架 + 10 个行为模块
+│   └── systems/                       # 月结管线各 System（9 个）
+├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
+├── ui/                                # React UI 层（只读 Store + 调用 interaction）
+│   ├── components/                    # GameMap / CampaignPopup / MapPlaceholder 等 ~27 个
+│   ├── layouts/ / hooks/ / panels/ / stores/
+└── __tests__/                         # vitest 单元测试
 ```
 
 ---
 
-## 三、数据层架构
-
-### 原则：data/ 只存纯数据，不含逻辑
-- **JSON 文件**存放实体数据（角色、领地、军队），可用任意编辑器修改
-- **TS 定义表**存放游戏规则常量（特质、品级、建筑、兵种），含简单的 Map 索引
-- **薄 wrapper**（`characters.ts` 等）仅做 `import JSON + 类型导出`
-- **逻辑文件**（初始化、存储、生成器）已移至 `engine/`
-
-### 修改数据的方式
-- 角色数据：直接编辑 `data/characters.json`
-- 领地数据：直接编辑 `data/territories.json`
-- 军队数据：直接编辑 `data/armies.json` / `data/battalions.json`
-- 定义表：编辑对应的 `.ts` 文件
-
----
-
-## 四、核心 Store 与索引
+## 三、核心 Store 与索引
 
 各 Store **维护预计算索引**以支持 O(1) 查询，**查询时必须优先使用索引，禁止全量遍历**。
 
-### CharacterStore（`engine/character/CharacterStore.ts`）
-- `characters: Map<id, Character>` — 主数据
-- `vassalIndex: Map<overlordId, Set<vassalId>>` — 附庸查询
-- `aliveSet: Set<id>` — 存活角色
-- 关键方法：`getCharacter()`, `getPlayer()`, `getVassalsByOverlord()`, `batchMutate(mutator)`, `killCharacter()`
-
-### TerritoryStore（`engine/territory/TerritoryStore.ts`）
-- `territories: Map<id, Territory>` — 主数据
-- `postIndex: Map<postId, Post>` — 岗位查询
-- `holderIndex: Map<holderId, postId[]>` — 按持有者查岗位
-- `controllerIndex: Map<controllerId, Set<territoryId>>` — 按控制者查领地
-- `centralPosts: Post[]` — 中央职位（注意：皇帝岗位不在此数组中，见下方说明）
-
-### MilitaryStore（`engine/military/MilitaryStore.ts`）
-- `armies: Map<id, Army>`, `battalions: Map<id, Battalion>` — 主数据
-- `armyBattalionIndex: Map<armyId, Set<battalionId>>`
-- `ownerArmyIndex: Map<ownerId, Set<armyId>>`
-- `locationArmyIndex: Map<territoryId, Set<armyId>>`
-- 关键方法：`syncArmyOwnersByPost()`, `batchMutateBattalions(mutator)`
-
-### WarStore（`engine/military/WarStore.ts`）
-- `wars / campaigns / sieges` 三个 Map
-- **已知问题**：使用模块级自增计数器生成 ID（`_warIdCounter` 等），读档后会 ID 冲突，待替换为 `crypto.randomUUID()`
-
-### LedgerStore（`engine/official/LedgerStore.ts`）
-- 存储玩家每月财务收支明细，供 UI 展示
-
-### NpcStore（`engine/npc/NpcStore.ts`）
-- 存储待审批的铨选方案（`pendingTransferPlan`）和考课方案（`pendingReviewPlan`）
+- **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `refreshIsRuler()`
+- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存
+- **MilitaryStore**：`armies` / `battalions` Map + `ownerArmyIndex` + `locationArmyIndex` + `syncArmyOwnersByPost()`
+- **WarStore**：`wars` / `campaigns` / `sieges` 三个 Map
+- **NpcStore**：`playerTasks` 队列 + 旧字段（`TODO(phase6-cleanup)`）
 
 ---
 
-## 五、地图系统
+## 四、月度结算管线
 
-### Voronoi 多边形地图
-- 州坐标定义在 `data/mapTopology.ts`（`ZHOU_POSITIONS`），道路连接在 `ALL_EDGES`
-- `data/mapVoronoi.ts` 用 d3-delaunay 从坐标生成 Voronoi 多边形，SVG `<clipPath>` 裁剪到疆域轮廓
-- 关隘数据存在 Territory 上（`passName` / `passLevel`），不再是独立实体
-- 调整地图：修改 `ZHOU_POSITIONS` 坐标或 `REALM_OUTLINE_CW` 轮廓点即可
+入口：`TurnManager.ts` → `settlement.ts`，**严格顺序**：
 
-### 分层着色（CK3 风格）
-- `engine/official/mapDisplay.ts` 的 `computeMapDisplay()` 计算每个州的着色角色
-- 玩家势力默认按一级封臣（节度使）着色
-- 点击某封臣领地 → 展开该封臣内部（直辖 vs 下级封臣各自着色）
-- 颜色基于角色 ID 哈希 + 相邻碰撞检测，确保稳定且可区分
-- 边界分级：玩家金色 > 势力间粗线 > 同势力不同封臣中线 > 同控制者细线
+1. `characterSystem` — 健康/死亡/继承（必须最先）
+2. `NpcEngine` — NPC 决策（两遍：forced→重建快照→normal+概率掷骰）
+3. `populationSystem` — 年度人口
+4. `socialSystem` — 好感/领地漂移/晋升
+5. `economySystem` — 经济/破产
+6. `militarySystem` — 征兵池/士气/兵变
+7. `warSystem` — 行军/战斗/围城/战争分数
+8. `eraSystem` — 时代进度
+9. `buildingSystem` — 建筑施工
 
----
-
-## 六、月度结算管线
-
-入口：`TurnManager.ts` → `settlement.ts`，按以下**严格顺序**执行：
-
-| 顺序 | System 文件 | 职责 |
-|------|-------------|------|
-| 1 | `characterSystem.ts` | 健康/老化/死亡/继承管线（必须最先，死亡影响后续所有系统） |
-| 2 | `NpcEngine.ts` | NPC 决策（铨选拟案等） |
-| 3 | `populationSystem.ts` | 年度人口变化 |
-| 4 | `socialSystem.ts` | 好感衰减/领地漂移/贤能/晋升/正统性衰减+品位Cap |
-| 5 | `economySystem.ts` | 经济结算/破产检查 |
-| 6 | `militarySystem.ts` | 征兵池/士气训练/兵变 |
-| 7 | `warSystem.ts` | 行军/战斗/围城/战争分数 |
-| 8 | `eraSystem.ts` | 时代进度推进/时代切换 |
-| 9 | `buildingSystem.ts` | 建筑施工完成 |
-
-结算后额外触发：
-- **三年一考**：`year % 3 === 0 && month === 1` 时触发 `runReview(date)`
-
-**规则**：不要在 `settlement.ts` 中直接写业务逻辑，应当新建 System 文件。
+**规则**：不要在 `settlement.ts` 中直接写业务逻辑，应当新建 System 或 NpcBehavior。
 
 ---
 
-## 七、交互系统
+## 五、关键架构约定（必须遵守）
 
-- 定义在 `engine/interaction/`，每个行为实现 `Interaction` 接口：
-  ```typescript
-  interface Interaction {
-    id: string; name: string; icon: string;
-    canShow: (player: Character, target: Character) => boolean;
-    paramType: 'none' | 'appoint' | 'dismiss' | 'centralization' | 'declareWar' | 'transferVassal';
-  }
-  ```
-- 所有行为在 `registry.ts` 注册，UI 层通过 `InteractionMenu` 统一渲染
-- **`canShow()` 必须是廉价纯布尔判断**，禁止调用 `getState()` 或数组遍历（NPC Engine 会高频调用）
-- 交互操作从**角色入口触发**（点角色 → 弹出交互菜单）
+### 岗位变动三连
+所有修改 `grantsControl` 岗位 `holderId` 的地方，**必须配套**：
+1. `syncArmyOwnersByPost(postId, newHolderId)` — 军队跟随岗位转移
+2. `refreshIsRuler(collectRulerIds(territories))` — 刷新统治者标记
+3. （如适用）`refreshExpectedLegitimacy()` — 正统性缓存
 
----
+当前已在 4 处配套：`appointAction` / `dismissAction` / `characterSystem`（继承）/ `warSettlement`
 
-## 八、官职与铨选系统
-
-### 岗位模型（Post）
-- 每个岗位预创建在领地上，`holderId` 即真相。任命 = 设 `holderId`，罢免 = 清 `holderId`
-- Post 关键字段：`successionLaw`（clan/bureaucratic）、`hasAppointRight`、`reviewBaseline`
-- **职位必须用 Post 岗位模型，不能用模板 + 运行时绑定**
-
-### 军队绑定
-- `Army.postId` 是真相源，`ownerId` 是缓存
-- 岗位变动调用 `syncArmyOwnersByPost(postId, newHolderId)`
-- **领地控制权是从岗位推导的**（`getActualController` 查主岗 holderId），改岗位 → 领地自动变，无需额外操作
-- **军队不会自动跟随岗位转移**。所有修改 `grantsControl` 岗位 `holderId` 的地方，都必须手动配套调用 `syncArmyOwnersByPost(postId, newHolderId)`
-- 当前已在 4 处配套：`appointAction` / `dismissAction` / `characterSystem`（继承）/ `warSettlement`（战争结算）
+### 私兵继承
+- `postId: null` 的军队不受 `syncArmyOwnersByPost` 管理
+- owner 死亡时：有继承人 → 转给 primaryHeir；绝嗣 → disbandArmy 解散
 
 ### 皇帝查找
-- 皇帝岗位在 `tianxia` 领地的 posts 中，**不在 `centralPosts` 数组里**
-- 查找皇帝必须用 `findEmperorId(territories, centralPosts)`（`engine/official/postQueries.ts`）
-- 禁止用 `centralPosts.find(p => p.templateId === 'pos-emperor')`
+- 皇帝岗位在 `tianxia` 领地上，**不在 `centralPosts` 数组里**
+- 必须用 `findEmperorId(territories, centralPosts)`
 
-### 铨选流程
-- `resolveAppointAuthority(post)` → 经办人（吏部/判官/皇帝/辟署权持有人）
-- `resolveLegalAppointer(authority, post)` → 法理主体（皇帝/辟署权持有人）
+### 铨选语义
 - 候选人池效忠链指向**法理主体**，不指向经办人
-- `executeDismiss(postId, dismisserId)` 的 `dismisserId` 传**法理主体**，不传经办人
-- 辟署权保护：`isBlockedByAppointRight` 沿效忠链检查，朝廷不可调走辟署权域内人员
-
-### 三年一考
-- 每三年正月触发，有地官员评分公式：人口增长×0.4 + 贤能增长×0.3 + 岗位匹配×0.3；中央和地方副职评分公式：贤能增长×0.5 + 岗位匹配×0.5
-- 任期不满三年时，增长指标按 `36/实际月数` 归一化（短任期者不吃亏）
-- 下等罢免，玩家管辖范围需通过 `ReviewPlanFlow` 审批
-- 考课评分纯函数在 `engine/systems/reviewSystem.ts`，行为逻辑在 `npc/behaviors/reviewBehavior.ts`
-
-### 继承系统
-- 宗法继承：`resolveHeir()`，绝嗣上交 `findParentAuthority()`
-- 辟署权拦截：`findAppointRightHolder()`（沿 parentId 全链查找）
-- 死亡继承管线在 `characterSystem.ts`
-- 好感继承：死者好感×0.5 → "先辈余泽"
-- 玩家死亡 → playerId 切换 / 王朝覆灭事件
-
----
-
-## 九、核心架构约定（必须遵守）
-
-### 批量写入
-- 月结等批量操作**必须使用 `batchMutate`**，禁止循环中多次 `setState`
+- `executeDismiss` 的 `dismisserId` 传**法理主体**，不传经办人
 
 ### 纯函数分离
-- `engine/` 下的**Calc 模块**（`economyCalc.ts`、`battleEngine.ts`、`selectionCalc.ts`、`reviewSystem.ts`、`mapDisplay.ts`、`legitimacyCalc.ts` 等）必须是**纯函数**，不得内部调用 `getState()`
-- 所有 `getState()` 调用在 System 层、behaviors 或 Store action 中完成，结果以参数传入
-- **Utils 文件**（`characterUtils.ts`、`officialUtils.ts`、`territoryUtils.ts` 等）是**便捷包装层**，允许调用 `getState()` 读取 Store 数据后委派给纯函数。这些文件供 UI 和交互层直接调用，避免每个调用方重复准备参数。
-  - 例：`characterUtils.calculateBaseOpinion` 内部通过 `officialUtils.getLegitimacyOpinion` 读取岗位数据计算正统性好感。这是因为正统性好感是状态推导值（非事件驱动），存入 relationships 会导致同步复杂度和遗忘风险。
-  - NPC Engine 等高频批量场景应预计算 `Map<charId, LegitimacyOpinionResult>` 后传参给纯函数，避免重复遍历领地。
+- `engine/` 下的 Calc 模块必须是**纯函数**，不得调用 `getState()`
+- Utils 文件是便捷包装层，允许读 Store 后委派给纯函数
 
-### ID 生成
-- **必须使用 `crypto.randomUUID()`**，禁止模块级自增计数器（读档后会 ID 冲突）
-
-### 数据层纯净
-- `data/` 目录**只存纯数据和索引**，不放逻辑函数
-- 实体数据用 JSON 文件存储，TS 文件仅做薄 wrapper（类型导出）
-- 初始化逻辑在 `engine/init/`，生成器在 `engine/character/`，存储在 `engine/storage.ts`
-
-### 单元测试
-- 对 `engine/` 下的**纯函数模块**写单元测试（vitest）
-- 重点测试：铨选评分、继承顺序、战斗计算、地图着色等关键业务规则
-- 每完成一个功能模块后补充测试，不追求覆盖率，只测关键路径
-- 测试文件放在 `src/__tests__/` 目录下
-- 运行：`npx vitest run`
+### 其他规则
+- 批量操作**必须用 `batchMutate`**，禁止循环 `setState`
+- ID 生成**必须用 `crypto.randomUUID()`**，禁止自增计数器
+- `data/` 只存纯数据和索引，不放逻辑
+- `ui/` 不写游戏逻辑，只读 Store + 调用 interaction
+- `canShow()` 必须是廉价纯布尔判断
+- 不引入新 npm 依赖（除非用户授权）
 
 ---
 
-## 十、禁止事项
+## 六、NPC Engine
 
-- **不要引入新 npm 依赖**（除非用户明确授权）
-- **不要在 `data/` 下写逻辑函数**（data/ 只存纯数据）
-- **不要在 `ui/` 组件中写游戏逻辑**（UI 只读 Store + 调用 interaction registry）
-- **不要循环调用 `setState`**（必须用 `batchMutate`）
+- 10 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈 / 补员
+- `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
+- `weight` = 百分比概率，`forced` = 强制执行
+- `maxActions` = `clamp(0, 3, round(1 + energy × 4))`，品级<9 上限 1
+- 新增行为：实现 `NpcBehavior` → `registerBehavior()` → 自动调度
 
 ---
 
-## 十一、当前开发阶段
+## 七、战争系统要点
 
-项目处于 **Phase 4（已完成 4a + 4b + 4c）+ 地图重构**。核心游戏循环、继承系统、铨选系统、考课系统、正统性系统均已实现。
+- **宣战理由**：武力兼并（危世仅辟署权持有者可用，治世不可见）/ 法理宣称 / 独立
+- **独立战争**：宣战即脱离效忠，败北恢复
+- **关隘通行**：己方/臣属控制或己方占领 → 通行；被敌方占领 → 阻隔（即使原控制者是己方）
+- **行营 AI**：寻路→行军→围城→推进→撤退→重新出击，玩家行营跳过 AI
+- **战斗触发**：同一州的同战争敌对行营自动交战，无战争关系不交战
+- **地图行军 UI**：CK3 风格，在地图上点击选目的地，金色虚线显示路径
 
-### 已完成
-- 继承法 + 辟署权（宗法继承、绝嗣上交、辟署权拦截）
-- 流官铨选（分级任命权、候选人三层分级、连锁铨选、辟署权域自动铨选）
-- 三年一考（考课评分 + 审批 + 任期归一化）
-- 继承交互（指定继承人、治所联动、继承法/辟署权切换）
-- NPC 引擎基础（自动铨选 + 考课行为）
-- 角色生成器（characterGen.ts，~100 随机角色 + 闲散人才池）
-- 百官图、集权调整 UI
-- **Voronoi 多边形地图**（替代旧圆点连线，SVG clipPath 疆域裁剪）
-- **CK3 风格分层着色**（默认按藩镇，点击展开封臣层级）
-- **数据层重构**（JSON 化 + 逻辑文件移至 engine/）
-- **关隘重构**（从独立实体合并为 Territory 属性）
-- **Phase 4c 王朝兴衰**（正统性系统 + 时代进度条 + 品位软限制 + 宣战资源校验）
-- **铨选审批链**（两步流程：月N拟草稿 → 月N+1皇帝审批。TransferPlanFlow 支持逐条调整）
+---
+
+## 八、当前开发阶段
+
+**Phase 6 完成，进入稳定性打磨阶段。** 核心循环、继承、铨选、考课、正统性、NPC Engine（10 个行为）、战争系统均已实现并可自主运转。
 
 ### 尚未完成
-- 存档/读档 UI 界面（底层 `engine/storage.ts` 已实现）
+- 存档/读档 UI（底层已实现）
 - AI 史书（GameEvent → 大模型生成史书文本）
-- 生育系统（宗法继承长期运转的基础）
-- 人才自然生成（"进士及第"/"举孝廉"机制）
+- 生育系统（宗法继承长期运转基础）
+- 人才自然生成（进士及第/举孝廉）
 - 非宗法皇位更替（禅让/篡位/权臣拥立）
-- ~~正统性系统~~（Phase 4c 已实现基础版：品位Cap + 岗位刷新 + 时代衰减 + 好感传导）
 - 权知机制
-- 谋略/派系系统（Phase 6）
-- 地图显示增强：选中领主金色边界高亮、展开后封臣名标签、效忠链箭头
-- ~~架构侵蚀修复第二批~~：CentralizationFlow / RealmPanel / BuildMenu / OfficialPanel / DeclareWarFlow 的 UI 直写 Store 已抽离到 Action 层
-
-### 已知待修复
-1. ~~`WarStore.ts` 模块级自增 ID~~：已修复，现使用 `crypto.randomUUID()`
+- 谋略/派系系统
+- NPC 事件通知 UI（宣战/效忠变化推送）
+- 地图增强：选中领主高亮、封臣名标签、效忠链箭头
+- 月结改日结（CK3 风格按日推进）
+- 行营AI目标选择优化（都统性格+攻守态势）
+- 强力CB（一次宣战多个领地）
+- NPC Engine 旧 UI 兼容层清理（`TODO(phase6-cleanup)`）
 
 ---
 
-## 十二、数据规模
+## 九、数据规模
 
-| 实体 | 当前 | 目标 |
-|------|------|------|
-| 角色 | ~160（79 史实/NPC + ~80 随机生成 + 闲散） | 300~500 |
-| 领地 | 72（1 天下 + 5 国 + 17 道 + 49 州） | — |
-| 军队 | 43 | — |
-| 营 | 378 | 随角色增长 |
+| 实体 | 当前 |
+|------|------|
+| 角色 | ~160（79 史实 + ~80 随机生成） |
+| 领地 | 72（1 天下 + 5 国 + 17 道 + 49 州） |
+| 军队 | 41 |
+| 营 | 366 |
 
-### 军事经济基准
-- 1 牙兵 = 2 斛粮/月
-- 长安 ~2万、洛阳 ~1万、太原 ~1万、成都 ~1.8万、扬州 ~3万（以粮产自养上限）
+军事经济基准：1 牙兵 = 2 斛粮/月

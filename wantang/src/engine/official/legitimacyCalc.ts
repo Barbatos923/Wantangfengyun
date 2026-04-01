@@ -11,7 +11,7 @@ export function getBaseLegitimacy(templateId: string): number {
   if (templateId === 'pos-emperor') return 95;
   const tpl = positionMap.get(templateId);
   if (!tpl) return 60;
-  return tpl.minRank >= 17 ? 80 : 60;
+  return getRankLegitimacyCap(tpl.minRank);
 }
 
 /** 角色持有岗位中最高的 baseLegitimacy，无岗位返回 null */

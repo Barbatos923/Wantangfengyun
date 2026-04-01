@@ -13,6 +13,7 @@ import { getHighestBaseLegitimacy, getRankLegitimacyCap } from '@engine/official
 import { getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { collectRulerIds } from '@engine/official/postQueries';
 
 /** 注册任命交互 */
 registerInteraction({
@@ -269,4 +270,14 @@ export function executeAppoint(
 
   // 7. 立即重算玩家 ledger
   refreshPlayerLedger();
+
+  // 8. 更新正统性预期缓存
+  useTerritoryStore.getState().updateExpectedLegitimacy(appointeeId);
+  if (previousHolderId && previousHolderId !== appointeeId) {
+    useTerritoryStore.getState().updateExpectedLegitimacy(previousHolderId);
+  }
+
+  // 9. 刷新 isRuler（岗位持有人变化）
+  const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
+  useCharacterStore.getState().refreshIsRuler(rulerIds);
 }

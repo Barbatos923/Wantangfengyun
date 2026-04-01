@@ -36,5 +36,14 @@ export function executeDeclareWar(
     prestige: cost.prestige,
     legitimacy: cost.legitimacy,
   });
-  useWarStore.getState().declareWar(playerId, targetId, casusBelli, targetTerritoryIds, date);
+  const war = useWarStore.getState().declareWar(playerId, targetId, casusBelli, targetTerritoryIds, date);
+
+  // 独立战争：宣战即脱离效忠关系
+  if (casusBelli === 'independence') {
+    const attacker = useCharacterStore.getState().getCharacter(playerId);
+    if (attacker?.overlordId === targetId) {
+      useWarStore.getState().updateWar(war.id, { previousOverlordId: targetId });
+      useCharacterStore.getState().updateCharacter(playerId, { overlordId: undefined });
+    }
+  }
 }

@@ -17,6 +17,7 @@ import { resolveHeir, findParentAuthority } from '@engine/character/successionUt
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { useTurnManager } from '@engine/TurnManager';
+import { collectRulerIds } from '@engine/official/postQueries';
 
 export function runCharacterSystem(date: GameDate): void {
   const charStore = useCharacterStore.getState();
@@ -247,6 +248,20 @@ export function runCharacterSystem(date: GameDate): void {
             },
           });
         }
+
+        // 私兵继承：postId 为 null 的军队随人继承
+        for (const army of milStore.armies.values()) {
+          if (army.ownerId === deadId && !army.postId) {
+            milStore.updateArmy(army.id, { ownerId: primaryHeir });
+          }
+        }
+      } else {
+        // 绝嗣：解散无主私兵
+        for (const army of [...milStore.armies.values()]) {
+          if (army.ownerId === deadId && !army.postId) {
+            milStore.disbandArmy(army.id);
+          }
+        }
       }
 
       // 五、玩家死亡处理
@@ -268,6 +283,14 @@ export function runCharacterSystem(date: GameDate): void {
         }
       }
     }
+  }
+
+  // 死亡/继承完成后刷新缓存
+  if (deadIds.length > 0) {
+    useTerritoryStore.getState().refreshExpectedLegitimacy();
+    // 岗位持有人变化 → 刷新 isRuler
+    const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
+    useCharacterStore.getState().refreshIsRuler(rulerIds);
   }
 
   // ===== 2. 角色压力结算（批量） =====

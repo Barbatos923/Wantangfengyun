@@ -1,6 +1,7 @@
 // ===== 行军计算（纯函数） =====
 
 import type { Territory } from '@engine/territory/types';
+import type { Character } from '@engine/character/types';
 import { ALL_EDGES } from '@data/mapTopology';
 import { positionMap } from '@data/positions';
 
@@ -35,10 +36,32 @@ function buildAdjacency(): Map<string, string[]> {
   return adj;
 }
 
+/** 检查关隘控制者是否是 ownerId 本人或其臣属（沿效忠链上溯） */
+function isAllyControlled(
+  controllerId: string,
+  ownerId: string,
+  characters?: Map<string, Character>,
+): boolean {
+  if (controllerId === ownerId) return true;
+  if (!characters) return false;
+  let current = controllerId;
+  const visited = new Set<string>();
+  while (current) {
+    const c = characters.get(current);
+    if (!c?.overlordId) return false;
+    if (c.overlordId === ownerId) return true;
+    if (visited.has(current)) return false;
+    visited.add(current);
+    current = c.overlordId;
+  }
+  return false;
+}
+
 /**
  * BFS 最短路径。
  * 有关隘+被敌方控制的州不可穿越（必须先围城攻克）。
  * 无关隘的州可自由穿越（包括敌方领地）。
+ * 己方或臣属控制的关隘可自由通行。
  * 返回路径（含起点和终点），无路径返回 null。
  */
 export function findPath(
@@ -46,6 +69,7 @@ export function findPath(
   to: string,
   ownerId: string,
   territories: Map<string, Territory>,
+  characters?: Map<string, Character>,
 ): string[] | null {
   if (from === to) return [from];
 
@@ -68,9 +92,21 @@ export function findPath(
         if (terr) {
           const controller = getController(terr);
           const passLevel = getPassLevel(terr);
-          // 有关隘 + 非己方控制 → 不可穿越
-          if (passLevel > 0 && controller !== ownerId) {
-            continue;
+          // 有关隘时的通行判定：
+          // - 己方占领 → 可通行
+          // - 被敌方占领 → 不可通行（即使原控制者是己方）
+          // - 未被占领 + 己方/臣属控制 → 可通行
+          // - 未被占领 + 敌方控制 → 不可通行
+          if (passLevel > 0) {
+            if (terr.occupiedBy === ownerId) {
+              // 己方占领，放行
+            } else if (terr.occupiedBy) {
+              // 被他人占领，阻隔
+              continue;
+            } else if (!controller || !isAllyControlled(controller, ownerId, characters)) {
+              // 非己方/臣属控制，阻隔
+              continue;
+            }
           }
         }
       }

@@ -372,38 +372,6 @@
     ]
   },
   {
-    "id": "army-npc-w",
-    "name": "武宁军",
-    "postId": "post-fangyu-xuzhou",
-    "ownerId": "char-npc-w",
-    "commanderId": null,
-    "locationId": "u",
-    "battalionIds": [
-      "bat-npc-w-1",
-      "bat-npc-w-2",
-      "bat-npc-w-3",
-      "bat-npc-w-4",
-      "bat-npc-w-5",
-      "bat-npc-w-6"
-    ]
-  },
-  {
-    "id": "army-npc-z",
-    "name": "武宁军",
-    "postId": "post-fangyu-xuzhou",
-    "ownerId": "char-npc-z",
-    "commanderId": null,
-    "locationId": "h",
-    "battalionIds": [
-      "bat-npc-z-1",
-      "bat-npc-z-2",
-      "bat-npc-z-3",
-      "bat-npc-z-4",
-      "bat-npc-z-5",
-      "bat-npc-z-6"
-    ]
-  },
-  {
     "id": "army-npc-zhongwu",
     "name": "忠武军",
     "postId": "post-fangyu-xuchang",

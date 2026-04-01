@@ -12,7 +12,6 @@ import {
   runBuildingSystem,
 } from './systems/index.ts';
 import { runNpcEngine } from './npc/NpcEngine.ts';
-import { runReview } from './npc/behaviors/reviewBehavior.ts';
 
 const systems: Array<(date: GameDate) => void> = [
   runCharacterSystem,    // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
@@ -33,9 +32,5 @@ export function runMonthlySettlement(date: GameDate): void {
   for (const system of systems) {
     system(date);
   }
-
-  // 三年一考：每三年正月触发
-  if (date.month === 1 && date.year % 3 === 0) {
-    runReview(date);
-  }
+  // 考课改由 NpcEngine 的 reviewBehavior 统一驱动（CD: 三年一考正月）
 }

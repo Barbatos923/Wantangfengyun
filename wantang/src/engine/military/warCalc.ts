@@ -1,12 +1,22 @@
 // ===== 战争计算（纯函数） =====
 
-import type { CasusBelli, WarContext, CasusBelliEval, PeaceContext, PeaceResult } from './types';
+import type { CasusBelli, WarContext, CasusBelliEval, PeaceProposalContext, PeaceAcceptanceContext, PeaceResult } from './types';
 import { CASUS_BELLI_NAMES } from './types';
 import type { Territory } from '@engine/territory/types';
 import { Era } from '@engine/types';
 import { positionMap } from '@data/positions';
 import { isVassalOf } from '@engine/character/successionUtils';
 import { ALL_EDGES } from '@data/mapTopology';
+
+/** 检查角色是否持有任何拥有辟署权的岗位 */
+function hasAppointRightPost(charId: string, territories: Map<string, Territory>): boolean {
+  for (const t of territories.values()) {
+    for (const p of t.posts) {
+      if (p.holderId === charId && p.hasAppointRight) return true;
+    }
+  }
+  return false;
+}
 
 // ── 核心 API ──────────────────────────────────────────────────────────────────
 
@@ -40,10 +50,13 @@ const CASUS_BELLI_DEFS: CasusBelliDef[] = [
   // 武力兼并
   {
     id: 'annexation',
-    canShow: () => true,
+    canShow: (ctx) => ctx.era !== Era.ZhiShi,
     getFailureReason: (ctx) => {
       if (isVassalOf(ctx.defenderId, ctx.attackerId, ctx.characters)) {
         return '该角色是你的附庸';
+      }
+      if (ctx.era === Era.WeiShi && !hasAppointRightPost(ctx.attackerId, ctx.territories)) {
+        return '危世下仅辟署权持有者可武力兼并';
       }
       if (getAnnexTargets(ctx.attackerId, ctx.defenderId, ctx.territories).length === 0) {
         return '你与该角色没有相邻领地';
@@ -170,48 +183,73 @@ export function getDeJureTargets(
 
 // ── 和谈判定 ─────────────────────────────────────────────────────────────────
 
-const PEACE_THRESHOLD = 50;
+/**
+ * 计算提议方的和谈意愿权重（NPC behavior 用于掷骰）。
+ * 返回值作为 NpcBehavior weight，越高越想和谈。
+ */
+export function calcPeaceProposalWeight(ctx: PeaceProposalContext): number {
+  let score = 0;
+
+  // 基础：默认不太想和谈
+  score += -10;
+
+  // 性格驱动
+  score += ctx.personality.compassion * 10;  // 仁慈者倾向和平
+  score += ctx.personality.boldness * -8;    // 好战者不愿和
+  score += ctx.personality.rationality * 8;  // 理性者愿止损
+
+  // 战争局势：输得越多越想和
+  if (ctx.myScore < 0) {
+    score += Math.abs(ctx.myScore) * 0.3;
+  }
+
+  // 战争持续时间
+  score += ctx.warDurationMonths * 0.5;
+
+  // 经济压力
+  if (ctx.money < 0) score += 15;          // 负债
+  if (ctx.monthlyIncome < 0) score += 10;  // 赤字
+
+  return Math.max(0, score);
+}
+
+const PEACE_ACCEPTANCE_THRESHOLD = 30;
 
 /**
- * 计算和谈是否会被对方接受。
- * 返回评分 breakdown 和最终结果。
+ * 计算被提议方是否接受和谈（白和）。
+ * proposerScore > 0 表示提议方占优 → 被提议方处于劣势 → 更愿接受。
+ * proposerScore < 0 表示提议方处于劣势 → 被提议方占优 → 不愿接受。
  */
-export function calcPeaceAcceptance(ctx: PeaceContext): PeaceResult {
+export function calcPeaceAcceptance(ctx: PeaceAcceptanceContext): PeaceResult {
   const breakdown: Record<string, number> = {};
 
-  // 基础分 = 战争分数对被提议方的有利程度
-  // 提议方希望对方接受 → 分数越有利于提议方，对方越不愿接受
-  const base = ctx.proposerIsAttacker ? ctx.warScore : -ctx.warScore;
-  breakdown['战争形势'] = base;
+  // 战争形势：提议方分数越高 → 被提议方越劣势 → 越愿接受
+  const warFactor = Math.round(ctx.proposerScore * 0.5);
+  breakdown['战争形势'] = warFactor;
 
-  // 战争持续时间（越久越愿和谈，max +30）
-  const durationBonus = Math.min(30, Math.round(ctx.warDurationMonths * 0.5));
+  // 持续时间：越久越愿和谈（max +30）
+  const durationBonus = Math.min(30, Math.round(ctx.warDurationMonths * 0.8));
   breakdown['战争持久'] = durationBonus;
 
-  // 兵力对比
-  const militaryFactor = ctx.targetMilitary < ctx.proposerMilitary ? 10 : -5;
-  breakdown['兵力对比'] = militaryFactor;
+  // 被提议方性格
+  const compassionFactor = Math.round(ctx.targetPersonality.compassion * 8);
+  breakdown['仁慈'] = compassionFactor;
 
-  // 提议方外交能力（越高越能说服对方）
-  const diplomacyFactor = Math.min(10, Math.round(ctx.proposerDiplomacy * 0.5));
-  breakdown['外交能力'] = diplomacyFactor;
-
-  // 对方性格
-  const boldnessFactor = -Math.round(ctx.targetPersonality.boldness * 15);
+  const boldnessFactor = -Math.round(ctx.targetPersonality.boldness * 10);
   breakdown['胆识'] = boldnessFactor;
 
-  const honorFactor = Math.round(ctx.targetPersonality.honor * 10);
+  const honorFactor = Math.round(ctx.targetPersonality.honor * 5);
   breakdown['荣誉'] = honorFactor;
 
-  const greedFactor = -Math.round(ctx.targetPersonality.greed * 8);
+  const greedFactor = -Math.round(ctx.targetPersonality.greed * 5);
   breakdown['贪婪'] = greedFactor;
 
-  const score = base + durationBonus + militaryFactor + diplomacyFactor + boldnessFactor + honorFactor + greedFactor;
+  const score = warFactor + durationBonus + compassionFactor + boldnessFactor + honorFactor + greedFactor;
 
   return {
-    accept: score >= PEACE_THRESHOLD,
+    accept: score >= PEACE_ACCEPTANCE_THRESHOLD,
     score,
-    threshold: PEACE_THRESHOLD,
+    threshold: PEACE_ACCEPTANCE_THRESHOLD,
     breakdown,
   };
 }

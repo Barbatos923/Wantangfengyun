@@ -9,6 +9,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { collectRulerIds } from '@engine/official/postQueries';
 
 /** 注册罢免交互 */
 registerInteraction({
@@ -106,4 +107,16 @@ export function executeDismiss(
 
   // 立即重算玩家 ledger
   refreshPlayerLedger();
+
+  // 更新正统性预期缓存
+  if (previousHolderId) {
+    useTerritoryStore.getState().updateExpectedLegitimacy(previousHolderId);
+  }
+  if (tpl?.grantsControl) {
+    useTerritoryStore.getState().updateExpectedLegitimacy(dismisserId);
+  }
+
+  // 刷新 isRuler（岗位持有人变化）
+  const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
+  useCharacterStore.getState().refreshIsRuler(rulerIds);
 }

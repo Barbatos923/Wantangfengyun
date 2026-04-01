@@ -196,20 +196,3 @@ export function isCivilByAbilities(abilities: { military: number; administration
   return military <= maxNonMilitary;
 }
 
-// ── 正统性好感查询（便捷版，自动注入 Store） ──────────────
-
-import {
-  getHighestBaseLegitimacy,
-  calcLegitimacyOpinion,
-} from './legitimacyCalc';
-import type { LegitimacyOpinionResult } from './legitimacyCalc';
-
-/** 计算角色的正统性好感结果（读 Store，用于 UI/交互层调用） */
-export function getLegitimacyOpinion(char: Character): LegitimacyOpinionResult | null {
-  if (!char.official) return null;
-  const { territories, centralPosts } = useTerritoryStore.getState();
-  return calcLegitimacyOpinion(
-    char.resources.legitimacy,
-    getHighestBaseLegitimacy(_getHeldPostsPure(char.id, territories, centralPosts)),
-  );
-}

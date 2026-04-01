@@ -20,17 +20,14 @@ describe('getBaseLegitimacy', () => {
     expect(getBaseLegitimacy('pos-emperor')).toBe(95);
   });
 
-  it('五品及以上岗位（minRank >= 17）返回 80', () => {
-    expect(getBaseLegitimacy('pos-jiedushi')).toBe(80);     // minRank 17
-    expect(getBaseLegitimacy('pos-guancha-shi')).toBe(80);  // minRank 17
-    expect(getBaseLegitimacy('pos-zaixiang')).toBe(80);     // minRank 25
-    expect(getBaseLegitimacy('pos-shumi')).toBe(80);        // minRank 22
-  });
-
-  it('六品及以下岗位（minRank < 17）返回 60', () => {
-    expect(getBaseLegitimacy('pos-cishi')).toBe(60);        // minRank 12
-    expect(getBaseLegitimacy('pos-panguan')).toBe(60);      // minRank 9
-    expect(getBaseLegitimacy('pos-zhengzi')).toBe(60);      // minRank 3
+  it('baseLegitimacy = 岗位 minRank 对应的 rankCap', () => {
+    expect(getBaseLegitimacy('pos-jiedushi')).toBe(80);     // minRank 17 → cap 80
+    expect(getBaseLegitimacy('pos-guancha-shi')).toBe(80);  // minRank 17 → cap 80
+    expect(getBaseLegitimacy('pos-zaixiang')).toBe(90);     // minRank 25 → cap 90
+    expect(getBaseLegitimacy('pos-shumi')).toBe(85);        // minRank 22 → cap 85
+    expect(getBaseLegitimacy('pos-cishi')).toBe(60);        // minRank 12 → cap 60
+    expect(getBaseLegitimacy('pos-panguan')).toBe(60);      // minRank 9 → cap 60
+    expect(getBaseLegitimacy('pos-zhengzi')).toBe(40);      // minRank 3 → cap 40
   });
 
   it('未知模板返回 60', () => {

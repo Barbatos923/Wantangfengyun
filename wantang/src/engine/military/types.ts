@@ -99,6 +99,7 @@ export interface War {
   startDate: { year: number; month: number };
   status: 'active' | 'ended';
   result?: 'attackerWin' | 'defenderWin' | 'whitePeace';
+  previousOverlordId?: string; // 独立战争：攻方宣战前的领主，败北时恢复
 }
 
 /** 正在赶赴行营的军队 */
@@ -132,15 +133,24 @@ export interface Campaign {
   phaseStrategies: PhaseStrategies; // 玩家预设的阶段策略
 }
 
-/** 和谈判定上下文 */
-export interface PeaceContext {
-  warScore: number;
-  proposerIsAttacker: boolean;
-  targetPersonality: { boldness: number; honor: number; greed: number };
-  proposerDiplomacy: number;
+/** 和谈提议意愿上下文（提议方视角） */
+export interface PeaceProposalContext {
+  /** 提议方视角的战争分数（正=我方优势，负=我方劣势） */
+  myScore: number;
   warDurationMonths: number;
-  proposerMilitary: number;
-  targetMilitary: number;
+  personality: { compassion: number; boldness: number; rationality: number };
+  money: number;
+  /** 月收入（负=赤字） */
+  monthlyIncome: number;
+}
+
+/** 和谈接受判定上下文（被提议方视角） */
+export interface PeaceAcceptanceContext {
+  /** 提议方视角的战争分数（正=提议方优势，负=被提议方优势） */
+  proposerScore: number;
+  warDurationMonths: number;
+  /** 被提议方性格 */
+  targetPersonality: { compassion: number; boldness: number; honor: number; greed: number };
 }
 
 /** 和谈判定结果 */
