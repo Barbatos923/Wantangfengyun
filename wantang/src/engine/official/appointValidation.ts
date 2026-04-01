@@ -21,7 +21,7 @@ export function canAppointToPost(
   post: Post,
   territories: Map<string, Territory>,
   centralPosts: Post[],
-): { ok: boolean; reason?: string } {
+): { ok: boolean; reason?: string; warning?: string } {
   const tpl = positionMap.get(post.templateId);
   if (!tpl) return { ok: false, reason: '职位模板不存在' };
 
@@ -29,7 +29,7 @@ export function canAppointToPost(
   if (!appointee.alive) return { ok: false, reason: '目标已死亡' };
   if (!appointee.official) return { ok: false, reason: '目标无官职资格' };
   const effectiveMinRank = getEffectiveMinRank(post);
-  if (appointee.official.rankLevel < effectiveMinRank) return { ok: false, reason: '品位不足' };
+  const isUnderRank = appointee.official.rankLevel < effectiveMinRank;
 
   // 不能任命自己到岗位
   if (appointee.id === appointer.id) return { ok: false, reason: '不能任命自己' };
@@ -47,9 +47,11 @@ export function canAppointToPost(
 
   // ── 任命权校验（辟署权优先）──
 
+  const okResult = isUnderRank ? { ok: true as const, warning: '品位不足，正统性将受损' } : { ok: true as const };
+
   // 自己持有的 grantsControl 岗位 → 可转让，无需进一步校验
   if (tpl.grantsControl && post.holderId === appointer.id) {
-    return { ok: true };
+    return okResult;
   }
 
   // 辟署权防火墙
@@ -61,7 +63,7 @@ export function canAppointToPost(
         return { ok: false, reason: '受辟署权保护' };
       }
       // appointer 是辟署权持有人 → 允许
-      return { ok: true };
+      return okResult;
     }
   }
 
@@ -86,7 +88,7 @@ export function canAppointToPost(
     }
   }
 
-  return { ok: true };
+  return okResult;
 }
 
 /**

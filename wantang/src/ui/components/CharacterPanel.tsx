@@ -288,7 +288,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               { label: '钱', value: character.resources.money },
               { label: '粮', value: character.resources.grain },
               { label: '名望', value: character.resources.prestige },
-              { label: '合法性', value: character.resources.legitimacy },
+              { label: '正统性', value: character.resources.legitimacy },
               { label: '兵力', value: (() => {
                 const { armies, battalions } = useMilitaryStore.getState();
                 let total = 0;

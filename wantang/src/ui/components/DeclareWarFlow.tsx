@@ -4,12 +4,10 @@ import React, { useState } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
-import { useWarStore } from '@engine/military/WarStore';
-import type { CasusBelli } from '@engine/military/types';
-import { CASUS_BELLI_NAMES } from '@engine/military/types';
-import { getAvailableCasusBelli, getWarCost, getDeJureTargets } from '@engine/military/warCalc';
-import { ALL_EDGES } from '@data/mapTopology';
-import { positionMap } from '@data/positions';
+import type { CasusBelli, CasusBelliEval } from '@engine/military/types';
+import { evaluateAllCasusBelli, getWarCost, getDeJureTargets, getAnnexTargets } from '@engine/military/warCalc';
+import { executeDeclareWar } from '@engine/interaction';
+import { canAffordWarCost } from '@engine/official/legitimacyCalc';
 
 interface DeclareWarFlowProps {
   targetId: string;
@@ -23,6 +21,7 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
   const target = useCharacterStore((s) => s.characters.get(targetId));
   const playerId = useCharacterStore((s) => s.playerId);
   const player = useCharacterStore((s) => (playerId ? s.characters.get(playerId) : undefined));
+  const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
   const era = useTurnManager((s) => s.era);
   const currentDate = useTurnManager((s) => s.currentDate);
@@ -32,58 +31,32 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     return null;
   }
 
-  const isVassal = target.overlordId === playerId;
-  const availableCasus = isVassal ? [] : getAvailableCasusBelli(playerId, targetId, era, territories);
-  const disabledReason = isVassal
-    ? '该角色是你的附庸，无法直接宣战'
-    : availableCasus.length === 0
-      ? '你对该角色没有可用的战争理由'
-      : null;
+  // 评估所有可见的宣战理由
+  const casusBelliEvals: CasusBelliEval[] = evaluateAllCasusBelli({
+    attackerId: playerId,
+    defenderId: targetId,
+    era,
+    territories,
+    characters,
+  });
+
+  // 选中的理由是否可用
+  const selectedEval = casusBelliEvals.find((e) => e.id === selectedCasus);
+  const isSelectedAvailable = selectedEval && selectedEval.failureReason === null;
 
   // 法理宣称目标领地
   const deJureTargetIds = selectedCasus === 'deJureClaim'
     ? getDeJureTargets(playerId, targetId, territories)
     : [];
 
-  // 武力兼并：defender 控制的州中与 attacker 控制的州相邻的
-  const annexTargets: string[] = (() => {
-    if (selectedCasus !== 'annexation') return [];
-
-    // attacker 控制的州
-    const attackerZhouIds = new Set<string>();
-    for (const t of territories.values()) {
-      if (t.tier !== 'zhou') continue;
-      const mainPost = t.posts.find((p) => {
-        const tpl = positionMap.get(p.templateId);
-        return tpl?.grantsControl === true;
-      });
-      if (mainPost?.holderId === playerId) attackerZhouIds.add(t.id);
-    }
-
-    // defender 控制的州
-    const defenderZhouIds: string[] = [];
-    for (const t of territories.values()) {
-      if (t.tier !== 'zhou') continue;
-      const mainPost = t.posts.find((p) => {
-        const tpl = positionMap.get(p.templateId);
-        return tpl?.grantsControl === true;
-      });
-      if (mainPost?.holderId === targetId) defenderZhouIds.push(t.id);
-    }
-
-    // 过滤出与 attacker 相邻的
-    return defenderZhouIds.filter((defId) =>
-      ALL_EDGES.some(
-        (e) =>
-          (e.from === defId && attackerZhouIds.has(e.to)) ||
-          (e.to === defId && attackerZhouIds.has(e.from)),
-      ),
-    );
-  })();
+  // 武力兼并目标州
+  const annexTargets = selectedCasus === 'annexation'
+    ? getAnnexTargets(playerId, targetId, territories)
+    : [];
 
   // 确认宣战
   const handleConfirm = () => {
-    if (!selectedCasus) return;
+    if (!selectedCasus || !isSelectedAvailable) return;
 
     let selectedTargets: string[] = [];
     if (selectedCasus === 'deJureClaim') {
@@ -94,18 +67,19 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     }
 
     const cost = getWarCost(selectedCasus, era);
-    useCharacterStore.getState().addResources(playerId, {
-      prestige: cost.prestige,
-      legitimacy: cost.legitimacy,
-    });
-    useWarStore.getState().declareWar(playerId, targetId, selectedCasus, selectedTargets, currentDate);
+    executeDeclareWar(playerId, targetId, selectedCasus, selectedTargets, currentDate, cost);
     onClose();
   };
 
-  const canConfirm = selectedCasus !== null && (
+  const selectedCost = selectedCasus ? getWarCost(selectedCasus, era) : { prestige: 0, legitimacy: 0 };
+  const canAfford = canAffordWarCost(player.resources, selectedCost);
+
+  const canConfirm = isSelectedAvailable && canAfford && (
     selectedCasus === 'deJureClaim'
       ? deJureTargetIds.length > 0
-      : selectedAnnexTarget !== ''
+      : selectedCasus === 'annexation'
+        ? selectedAnnexTarget !== ''
+        : true
   );
 
   return (
@@ -132,47 +106,65 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
 
         {/* 战争理由列表 */}
         <div className="mb-4">
-          {disabledReason ? (
+          {casusBelliEvals.length === 0 ? (
             <div className="px-3 py-4 rounded border border-[var(--color-border)] text-center">
-              <div className="text-sm text-[var(--color-text-muted)]">{disabledReason}</div>
+              <div className="text-sm text-[var(--color-text-muted)]">你对该角色没有可用的战争理由</div>
             </div>
           ) : (
-          <>
-          <div className="text-xs text-[var(--color-text-muted)] mb-2">选择战争理由</div>
-          <div className="space-y-1.5">
-            {availableCasus.map((casus) => {
-              const cost = getWarCost(casus, era);
-              const isSelected = selectedCasus === casus;
-              return (
-                <button
-                  key={casus}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded border transition-colors text-left ${
-                    isSelected
-                      ? 'border-[var(--color-accent-gold)] bg-[var(--color-bg-surface)]/40'
-                      : 'border-[var(--color-border)] hover:border-[var(--color-accent-gold)]'
-                  }`}
-                  onClick={() => {
-                    setSelectedCasus(casus);
-                    setSelectedAnnexTarget('');
-                  }}
-                >
-                  <span className={`text-sm font-bold ${isSelected ? 'text-[var(--color-accent-gold)]' : 'text-[var(--color-text)]'}`}>
-                    {CASUS_BELLI_NAMES[casus]}
-                  </span>
-                  <span className="text-xs text-[var(--color-text-muted)]">
-                    名望 {cost.prestige}
-                    {cost.legitimacy !== 0 && ` / 合法性 ${cost.legitimacy}`}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          </>
+            <>
+              <div className="text-xs text-[var(--color-text-muted)] mb-2">选择战争理由</div>
+              <div className="space-y-1.5">
+                {casusBelliEvals.map((evalItem) => {
+                  const isDisabled = evalItem.failureReason !== null;
+                  const isSelected = selectedCasus === evalItem.id;
+                  return (
+                    <button
+                      key={evalItem.id}
+                      className={`w-full flex flex-col px-3 py-2 rounded border transition-colors text-left ${
+                        isDisabled
+                          ? 'border-[var(--color-border)] opacity-50 cursor-not-allowed'
+                          : isSelected
+                            ? 'border-[var(--color-accent-gold)] bg-[var(--color-bg-surface)]/40'
+                            : 'border-[var(--color-border)] hover:border-[var(--color-accent-gold)]'
+                      }`}
+                      disabled={isDisabled}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          setSelectedCasus(evalItem.id);
+                          setSelectedAnnexTarget('');
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className={`text-sm font-bold ${
+                          isDisabled
+                            ? 'text-[var(--color-text-muted)]'
+                            : isSelected
+                              ? 'text-[var(--color-accent-gold)]'
+                              : 'text-[var(--color-text)]'
+                        }`}>
+                          {evalItem.name}
+                        </span>
+                        <span className="text-xs text-[var(--color-text-muted)]">
+                          名望 {evalItem.cost.prestige}
+                          {evalItem.cost.legitimacy !== 0 && ` / 正统性 ${evalItem.cost.legitimacy}`}
+                        </span>
+                      </div>
+                      {isDisabled && (
+                        <span className="text-xs text-[var(--color-accent-red)] mt-0.5">
+                          {evalItem.failureReason}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
 
         {/* 法理宣称：显示目标领地列表 */}
-        {selectedCasus === 'deJureClaim' && (
+        {selectedCasus === 'deJureClaim' && isSelectedAvailable && (
           <div className="mb-4">
             <div className="text-xs text-[var(--color-text-muted)] mb-2">法理宣称目标</div>
             {deJureTargetIds.length === 0 ? (
@@ -196,7 +188,7 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
         )}
 
         {/* 武力兼并：选择目标州 */}
-        {selectedCasus === 'annexation' && (
+        {selectedCasus === 'annexation' && isSelectedAvailable && (
           <div className="mb-4">
             <div className="text-xs text-[var(--color-text-muted)] mb-2">选择目标州</div>
             {annexTargets.length === 0 ? (
@@ -218,6 +210,13 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
                 })}
               </select>
             )}
+          </div>
+        )}
+
+        {/* 资源不足提示 */}
+        {isSelectedAvailable && !canAfford && (
+          <div className="mb-2 text-xs text-[var(--color-accent-red)] text-center">
+            威望或正统性不足
           </div>
         )}
 

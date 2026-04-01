@@ -10,6 +10,7 @@ import { useTurnManager } from '@engine/TurnManager.ts';
 import * as siegeUtils from '@engine/military/siegeCalc.ts';
 import * as battleEngine from '@engine/military/battleEngine.ts';
 import { ALL_EDGES as mapEdges } from '@data/mapTopology.ts';
+import { getRealmZhouCount } from '@engine/official/postQueries.ts';
 
 export function runWarSystem(date: GameDate): void {
   const warStore = useWarStore.getState();
@@ -181,27 +182,14 @@ export function runWarSystem(date: GameDate): void {
       }
     });
 
-    // 战争分数
-    if (result.overallResult === 'attackerWin') {
-      if (campaign.ownerId === war!.attackerId) {
-        useWarStore.getState().updateWar(war!.id, {
-          attackerWarScore: Math.min(100, war!.attackerWarScore + result.warScoreChange),
-        });
-      } else {
-        useWarStore.getState().updateWar(war!.id, {
-          defenderWarScore: Math.min(100, war!.defenderWarScore + result.warScoreChange),
-        });
-      }
-    } else {
-      if (enemyCampaign.ownerId === war!.attackerId) {
-        useWarStore.getState().updateWar(war!.id, {
-          attackerWarScore: Math.min(100, war!.attackerWarScore + result.warScoreChange),
-        });
-      } else {
-        useWarStore.getState().updateWar(war!.id, {
-          defenderWarScore: Math.min(100, war!.defenderWarScore + result.warScoreChange),
-        });
-      }
+    // 战争分数（-100~+100 单轴，正=攻方优势）
+    {
+      const winnerCampaignOwner = result.overallResult === 'attackerWin' ? campaign.ownerId : enemyCampaign.ownerId;
+      const delta = winnerCampaignOwner === war!.attackerId
+        ? result.warScoreChange   // 攻方赢 → 正
+        : -result.warScoreChange; // 防方赢 → 负
+      const newScore = Math.max(-100, Math.min(100, war!.warScore + delta));
+      useWarStore.getState().updateWar(war!.id, { warScore: newScore });
     }
 
     // 胜方行营保持idle
@@ -343,41 +331,27 @@ export function runWarSystem(date: GameDate): void {
       // c. 驻军转移给占领者
       useMilitaryStore.getState().transferArmiesAtTerritory(siege.territoryId, campaign.ownerId);
 
-      // d. 战争分数
+      // d. 战争分数：按占领领地占对方势力总州数的比例线性计算
       const warForScore = useWarStore.getState().wars.get(siege.warId);
       if (warForScore) {
-        const isTarget = warForScore.targetTerritoryIds.includes(siege.territoryId);
-        const scoreGain = isTarget ? 30 : 15;
-        if (campaign.ownerId === warForScore.attackerId) {
-          useWarStore.getState().updateWar(warForScore.id, {
-            attackerWarScore: Math.min(100, warForScore.attackerWarScore + scoreGain),
-          });
-        } else {
-          useWarStore.getState().updateWar(warForScore.id, {
-            defenderWarScore: Math.min(100, warForScore.defenderWarScore + scoreGain),
-          });
-        }
-
-        // e. 检查是否所有目标领地都已被占领 → 直接100分
         const isAttacker = campaign.ownerId === warForScore.attackerId;
-        if (isAttacker) {
-          // 进攻方：宣战目标领地是否全部被占领
-          const allTargetsTaken = warForScore.targetTerritoryIds.every((tid) => {
-            const t = useTerritoryStore.getState().territories.get(tid);
-            return t?.occupiedBy === campaign.ownerId;
-          });
-          if (allTargetsTaken) {
-            useWarStore.getState().updateWar(warForScore.id, { attackerWarScore: 100 });
-          }
-        } else {
-          // 防守方：进攻方所有州是否全部被占领
-          const enemyTerritories = useTerritoryStore.getState().getTerritoriesByController(warForScore.attackerId)
-            .filter((t) => t.tier === 'zhou');
-          const allEnemyOccupied = enemyTerritories.length > 0 && enemyTerritories.every((t) => t.occupiedBy === campaign.ownerId);
-          if (allEnemyOccupied) {
-            useWarStore.getState().updateWar(warForScore.id, { defenderWarScore: 100 });
-          }
+        const enemyId = isAttacker ? warForScore.defenderId : warForScore.attackerId;
+        const chars = useCharacterStore.getState().characters;
+        const terrs = useTerritoryStore.getState().territories;
+
+        const enemyRealmSize = getRealmZhouCount(enemyId, chars, terrs);
+        let occupiedCount = 0;
+        for (const t of terrs.values()) {
+          if (t.tier === 'zhou' && t.occupiedBy === campaign.ownerId) occupiedCount++;
         }
+        const occupyRatio = occupiedCount / Math.max(1, enemyRealmSize);
+        const occupyScore = Math.round(occupyRatio * 100);
+
+        // 攻方占领 → 正分取 max，防方占领 → 负分取 min
+        const newWarScore = isAttacker
+          ? Math.max(warForScore.warScore, occupyScore)
+          : Math.min(warForScore.warScore, -occupyScore);
+        useWarStore.getState().updateWar(warForScore.id, { warScore: Math.max(-100, Math.min(100, newWarScore)) });
       }
 
       // f. 事件
@@ -409,9 +383,9 @@ export function runWarSystem(date: GameDate): void {
       (c) => c.status === 'marching' || c.status === 'sieging',
     );
     if (!hasProgress) {
-      // 攻方无进展，防守方 +2
+      // 攻方无进展，分数向防方倾斜 -2
       warStore.updateWar(war.id, {
-        defenderWarScore: Math.min(100, war.defenderWarScore + 2),
+        warScore: Math.max(-100, war.warScore - 2),
       });
     }
   }

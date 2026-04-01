@@ -58,7 +58,18 @@
       "Bash(npx tsx -e \":*)",
       "Bash(node -e \":*)",
       "Bash(npx tsx:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(mv \"《晚唐风云》GDD v2.0.md\" \"docs/GDD-v2.0.md\")",
+      "Bash(mv \"《晚唐风云：起居注与史书》.md\" \"docs/archive/GDD-v1.0.md\")",
+      "Bash(mv \"开发里程碑与阶段方案.md\" \"docs/archive/开发里程碑与阶段方案-原版.md\")",
+      "Bash(mv \"Phase 4：继承系统 + 王朝周期律 — 系统设计.md\" \"docs/design/phase4ab-继承与铨选.md\")",
+      "Bash(mv \"Phase4 继承与王朝设计.md\" \"docs/archive/Phase4-继承设计-纯文本副本.md\")",
+      "Bash(mv \"docs/phase4c-王朝兴衰设计方案.md\" \"docs/design/phase4c-王朝兴衰.md\")",
+      "Bash(mv \"docs/positions.md\" \"docs/design/positions.md\")",
+      "Bash(mv \"CK3 性格特质（Personality Traits）完整效果表格.md\" \"docs/reference/CK3-性格特质表.md\")",
+      "Bash(mv \"CK3 游戏Prompt/战略分析prompt.md\" \"docs/reference/CK3-战略分析prompt.md\")",
+      "Bash(mv \"CK3 游戏Prompt/史书撰写.txt\" \"docs/reference/CK3-史书撰写.txt\")",
+      "Bash(find /d/桌面/CC/wantang/src/engine/official -name *selection* -o -name *appoint*)"
     ]
   }
 }

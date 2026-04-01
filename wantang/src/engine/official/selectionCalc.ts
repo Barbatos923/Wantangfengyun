@@ -6,6 +6,7 @@ import type { GameDate } from '@engine/types';
 import { positionMap } from '@data/positions';
 import { isVassalOf, findAppointRightHolder } from '@engine/character/successionUtils';
 import { getHeldPosts, findEmperorId } from './postQueries';
+import { calcRankMismatchPenalty } from './legitimacyCalc';
 
 /** 候选人层次 */
 export type CandidateTier = 'promote' | 'transfer' | 'fresh';
@@ -16,6 +17,8 @@ export interface CandidateEntry {
   tier: CandidateTier;
   score: number;
   currentPost?: Post;
+  /** 品位不足标记 */
+  underRank?: boolean;
 }
 
 /** 获取岗位的有效 minRank（minRankOverride 优先） */
@@ -140,7 +143,7 @@ export function generateCandidates(
     // 硬性前提
     if (!char.alive || !char.official) continue;
     if (char.id === appointerId) continue; // 法理主体（皇帝/辟署权持有人）不参与铨选
-    if (char.official.rankLevel < effectiveRank) continue;
+    const isUnderRank = char.official.rankLevel < effectiveRank;
     // 效忠链必须指向法理主体（appointerId）
     if (!isVassalOf(char.id, appointerId, characters)) continue;
     // 辟署权保护：效忠链上若经过非 appointerId 的辟署权持有人，排除
@@ -175,6 +178,11 @@ export function generateCandidates(
       }
     }
 
+    // 品位不足减益
+    if (isUnderRank) {
+      score += calcRankMismatchPenalty(char.official.rankLevel, effectiveRank);
+    }
+
     // 新任减益：最近被任命的角色评分大幅降低，36个月内线性衰减
     if (currentDate && referencePost?.appointedDate) {
       const ad = referencePost.appointedDate;
@@ -187,7 +195,7 @@ export function generateCandidates(
       }
     }
 
-    result.push({ character: char, tier, score, currentPost: referencePost });
+    result.push({ character: char, tier, score, currentPost: referencePost, underRank: isUnderRank || undefined });
   }
 
   // 排序：纯按分数降序（tier 仅用于 UI 分组展示，不影响排序）

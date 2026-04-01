@@ -23,6 +23,7 @@ const TABS: { key: TabKey; label: string }[] = [
 const INSTITUTION_ORDER: Institution[] = [
   '中书门下', '翰林院', '枢密院', '神策军',
   '三司', '中书省', '门下省', '尚书省',
+  '吏部', '户部', '礼部', '兵部', '刑部', '工部',
   '御史台', '秘书省', '三公',
 ];
 

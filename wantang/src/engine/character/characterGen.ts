@@ -104,7 +104,7 @@ export function generateFillerCharacter(opts: {
       money: 1000 + rankLevel * 500,
       grain: 2000 + rankLevel * 800,
       prestige: rankLevel,
-      legitimacy: 0,
+      legitimacy: 30,
     },
     relationships: [],
     overlordId,

@@ -21,6 +21,7 @@
 | 测试命令 | `npx vitest run` |
 | 路径别名 | `@` → `src/`，`@engine` → `src/engine/`，`@data` → `src/data/`，`@ui` → `src/ui/` |
 | 工作目录 | CWD 为 `D:\桌面\CC`，项目代码在 `wantang/` 子目录 |
+| 文档 | `docs/` 目录：GDD-v2.0（权威设计案）、milestones.md（进度）、design/（活跃方案）、archive/（历史文档）、reference/（参考资料），详见 `docs/README.md` |
 
 ---
 
@@ -62,7 +63,8 @@ wantang/src/
 │   │   ├── selectionUtils.ts          # 铨选包装（resolveAppointAuthority / resolveLegalAppointer）
 │   │   ├── appointValidation.ts       # 任命校验
 │   │   ├── postQueries.ts             # 岗位查询（findEmperorId / getPendingVacancies）
-│   │   ├── officialUtils.ts           # 官职工具
+│   │   ├── officialUtils.ts           # 官职工具（便捷包装，允许读 Store）
+│   │   ├── legitimacyCalc.ts          # 正统性计算纯函数
 │   │   └── types.ts                   # PositionTemplate 等类型
 │   │
 │   ├── military/                      # 军事子系统
@@ -96,6 +98,7 @@ wantang/src/
 │   │   ├── militarySystem.ts          # 征兵池/士气训练/兵变
 │   │   ├── warSystem.ts               # 行军/战斗/围城/战争分数
 │   │   ├── buildingSystem.ts          # 建筑施工完成
+│   │   ├── eraSystem.ts               # 时代进度推进/时代切换
 │   │   └── reviewSystem.ts            # 考课评分纯函数
 │   │
 │   └── utils/                         # 通用工具
@@ -212,15 +215,16 @@ wantang/src/
 | 顺序 | System 文件 | 职责 |
 |------|-------------|------|
 | 1 | `characterSystem.ts` | 健康/老化/死亡/继承管线（必须最先，死亡影响后续所有系统） |
-| 2 | `populationSystem.ts` | 年度人口变化 |
-| 3 | `socialSystem.ts` | 好感衰减/领地漂移/人才/晋升 |
-| 4 | `economySystem.ts` | 经济结算/破产检查 |
-| 5 | `militarySystem.ts` | 征兵池/士气训练/兵变 |
-| 6 | `warSystem.ts` | 行军/战斗/围城/战争分数 |
-| 7 | `buildingSystem.ts` | 建筑施工完成 |
+| 2 | `NpcEngine.ts` | NPC 决策（铨选拟案等） |
+| 3 | `populationSystem.ts` | 年度人口变化 |
+| 4 | `socialSystem.ts` | 好感衰减/领地漂移/贤能/晋升/正统性衰减+品位Cap |
+| 5 | `economySystem.ts` | 经济结算/破产检查 |
+| 6 | `militarySystem.ts` | 征兵池/士气训练/兵变 |
+| 7 | `warSystem.ts` | 行军/战斗/围城/战争分数 |
+| 8 | `eraSystem.ts` | 时代进度推进/时代切换 |
+| 9 | `buildingSystem.ts` | 建筑施工完成 |
 
 结算后额外触发：
-- **NPC 引擎**：`runNpcEngine(date)` — NPC 自动铨选等行为
 - **三年一考**：`year % 3 === 0 && month === 1` 时触发 `runReview(date)`
 
 **规则**：不要在 `settlement.ts` 中直接写业务逻辑，应当新建 System 文件。
@@ -253,6 +257,9 @@ wantang/src/
 ### 军队绑定
 - `Army.postId` 是真相源，`ownerId` 是缓存
 - 岗位变动调用 `syncArmyOwnersByPost(postId, newHolderId)`
+- **领地控制权是从岗位推导的**（`getActualController` 查主岗 holderId），改岗位 → 领地自动变，无需额外操作
+- **军队不会自动跟随岗位转移**。所有修改 `grantsControl` 岗位 `holderId` 的地方，都必须手动配套调用 `syncArmyOwnersByPost(postId, newHolderId)`
+- 当前已在 4 处配套：`appointAction` / `dismissAction` / `characterSystem`（继承）/ `warSettlement`（战争结算）
 
 ### 皇帝查找
 - 皇帝岗位在 `tianxia` 领地的 posts 中，**不在 `centralPosts` 数组里**
@@ -287,8 +294,11 @@ wantang/src/
 - 月结等批量操作**必须使用 `batchMutate`**，禁止循环中多次 `setState`
 
 ### 纯函数分离
-- `engine/` 下的计算函数（`economyCalc.ts`、`battleEngine.ts`、`selectionCalc.ts`、`reviewSystem.ts`、`mapDisplay.ts` 等）必须是**纯函数**，不得内部调用 `getState()`
+- `engine/` 下的**Calc 模块**（`economyCalc.ts`、`battleEngine.ts`、`selectionCalc.ts`、`reviewSystem.ts`、`mapDisplay.ts`、`legitimacyCalc.ts` 等）必须是**纯函数**，不得内部调用 `getState()`
 - 所有 `getState()` 调用在 System 层、behaviors 或 Store action 中完成，结果以参数传入
+- **Utils 文件**（`characterUtils.ts`、`officialUtils.ts`、`territoryUtils.ts` 等）是**便捷包装层**，允许调用 `getState()` 读取 Store 数据后委派给纯函数。这些文件供 UI 和交互层直接调用，避免每个调用方重复准备参数。
+  - 例：`characterUtils.calculateBaseOpinion` 内部通过 `officialUtils.getLegitimacyOpinion` 读取岗位数据计算正统性好感。这是因为正统性好感是状态推导值（非事件驱动），存入 relationships 会导致同步复杂度和遗忘风险。
+  - NPC Engine 等高频批量场景应预计算 `Map<charId, LegitimacyOpinionResult>` 后传参给纯函数，避免重复遍历领地。
 
 ### ID 生成
 - **必须使用 `crypto.randomUUID()`**，禁止模块级自增计数器（读档后会 ID 冲突）
@@ -318,7 +328,7 @@ wantang/src/
 
 ## 十一、当前开发阶段
 
-项目处于 **Phase 4（已完成 4a + 4b）+ 地图重构**。核心游戏循环、继承系统、铨选系统、考课系统均已实现。
+项目处于 **Phase 4（已完成 4a + 4b + 4c）+ 地图重构**。核心游戏循环、继承系统、铨选系统、考课系统、正统性系统均已实现。
 
 ### 已完成
 - 继承法 + 辟署权（宗法继承、绝嗣上交、辟署权拦截）
@@ -332,21 +342,23 @@ wantang/src/
 - **CK3 风格分层着色**（默认按藩镇，点击展开封臣层级）
 - **数据层重构**（JSON 化 + 逻辑文件移至 engine/）
 - **关隘重构**（从独立实体合并为 Territory 属性）
+- **Phase 4c 王朝兴衰**（正统性系统 + 时代进度条 + 品位软限制 + 宣战资源校验）
+- **铨选审批链**（两步流程：月N拟草稿 → 月N+1皇帝审批。TransferPlanFlow 支持逐条调整）
 
 ### 尚未完成
-- **Phase 4c 王朝兴衰**（下一步）
 - 存档/读档 UI 界面（底层 `engine/storage.ts` 已实现）
 - AI 史书（GameEvent → 大模型生成史书文本）
 - 生育系统（宗法继承长期运转的基础）
 - 人才自然生成（"进士及第"/"举孝廉"机制）
 - 非宗法皇位更替（禅让/篡位/权臣拥立）
-- 正统性系统、权知机制
+- ~~正统性系统~~（Phase 4c 已实现基础版：品位Cap + 岗位刷新 + 时代衰减 + 好感传导）
+- 权知机制
 - 谋略/派系系统（Phase 6）
 - 地图显示增强：选中领主金色边界高亮、展开后封臣名标签、效忠链箭头
-- 架构侵蚀修复第二批：CentralizationFlow / RealmPanel / BuildMenu / OfficialPanel / DeclareWarFlow 的 UI 直写 Store 抽离
+- ~~架构侵蚀修复第二批~~：CentralizationFlow / RealmPanel / BuildMenu / OfficialPanel / DeclareWarFlow 的 UI 直写 Store 已抽离到 Action 层
 
 ### 已知待修复
-1. `WarStore.ts` 模块级自增 ID → 需替换为 `crypto.randomUUID()`
+1. ~~`WarStore.ts` 模块级自增 ID~~：已修复，现使用 `crypto.randomUUID()`
 
 ---
 

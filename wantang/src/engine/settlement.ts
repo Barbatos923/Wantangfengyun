@@ -8,6 +8,7 @@ import {
   runEconomySystem,
   runMilitarySystem,
   runWarSystem,
+  runEraSystem,
   runBuildingSystem,
 } from './systems/index.ts';
 import { runNpcEngine } from './npc/NpcEngine.ts';
@@ -21,7 +22,8 @@ const systems: Array<(date: GameDate) => void> = [
   runEconomySystem,      // 5. 经济结算/破产检查
   runMilitarySystem,     // 6. 征兵池/士气训练/兵变
   runWarSystem,          // 7. 行营推进/战斗/围城/战争分数
-  runBuildingSystem,     // 8. 建筑施工
+  runEraSystem,          // 8. 时代进度推进/时代切换
+  runBuildingSystem,     // 9. 建筑施工
 ];
 
 /**

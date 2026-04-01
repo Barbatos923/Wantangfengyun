@@ -18,3 +18,13 @@ export { executeDemandFealty, previewDemandFealty, calcFealtyChance } from './de
 export type { DemandFealtyResult, FealtyChanceResult } from './demandFealtyAction';
 export { getTransferCandidates, executeTransferVassal } from './transferVassalAction';
 export type { TransferCandidate } from './transferVassalAction';
+export {
+  executeTaxChange,
+  executeToggleType,
+  executeToggleSuccession,
+  executeToggleAppointRight,
+  executeRedistributionChange,
+  executeDesignateHeir,
+} from './centralizationAction';
+export { executeDeclareWar } from './declareWarAction';
+export { executeBuild } from './buildAction';

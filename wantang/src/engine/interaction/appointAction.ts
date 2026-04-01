@@ -9,6 +9,8 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { getActualController, getHeldPosts, calculateMonthlyLedger } from '@engine/official/officialUtils';
+import { getHighestBaseLegitimacy, getRankLegitimacyCap } from '@engine/official/legitimacyCalc';
+import { getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
@@ -209,7 +211,26 @@ export function executeAppoint(
     }
   }
 
-  // 5. 治所联动：道级 grantsControl 岗位 → 自动任命治所刺史
+  // 5. 正统性刷新：任命后刷新至岗位 baseLegitimacy（受品位 Cap 约束）
+  {
+    const freshAppointee = charStore.getCharacter(appointeeId);
+    if (freshAppointee) {
+      const freshTerrStore = useTerritoryStore.getState();
+      const heldPosts = getHeldPostsPure(appointeeId, freshTerrStore.territories, freshTerrStore.centralPosts);
+      const baseLeg = getHighestBaseLegitimacy(heldPosts);
+      if (baseLeg !== null && freshAppointee.resources.legitimacy < baseLeg) {
+        const cap = freshAppointee.official ? getRankLegitimacyCap(freshAppointee.official.rankLevel) : 100;
+        const targetLeg = Math.min(baseLeg, cap);
+        if (freshAppointee.resources.legitimacy < targetLeg) {
+          charStore.addResources(appointeeId, {
+            legitimacy: targetLeg - freshAppointee.resources.legitimacy,
+          });
+        }
+      }
+    }
+  }
+
+  // 6. 治所联动：道级 grantsControl 岗位 → 自动任命治所刺史
   if (post) {
     const postTpl = positionMap.get(post.templateId);
     if (postTpl?.grantsControl && post.territoryId) {
@@ -246,6 +267,6 @@ export function executeAppoint(
     }
   }
 
-  // 6. 立即重算玩家 ledger
+  // 7. 立即重算玩家 ledger
   refreshPlayerLedger();
 }

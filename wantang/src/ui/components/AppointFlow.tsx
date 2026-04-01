@@ -7,11 +7,12 @@ import { getAppointablePosts, executeAppoint } from '@engine/interaction';
 import { canAppointToPost } from '@engine/official/officialUtils';
 import { positionMap } from '@data/positions';
 import { rankMap } from '@data/ranks';
+import { childInstitutions } from '@data/institutions';
 import { getEffectiveMinRank } from '@engine/official/selectionUtils';
 import type { Post, Territory } from '@engine/territory/types';
 import type { Institution } from '@engine/official/types';
 
-// ── 机构显示顺序（与 GovernmentPanel 一致）──
+// ── 一级机构显示顺序（六部作为尚书省子机构，不单独列出）──
 const INSTITUTION_ORDER: Institution[] = [
   '中书门下', '翰林院', '枢密院', '神策军',
   '三司', '中书省', '门下省', '尚书省',
@@ -33,6 +34,7 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
   const [activeTab, setActiveTab] = useState<'local' | 'central'>('local');
   const [expandedGuos, setExpandedGuos] = useState<Set<string>>(new Set());
   const [expandedDaos, setExpandedDaos] = useState<Set<string>>(new Set());
+  const [expandedInsts, setExpandedInsts] = useState<Set<string>>(new Set());
   const [confirmPost, setConfirmPost] = useState<Post | null>(null); // 替换确认
 
   if (!player || !target) return null;
@@ -318,13 +320,68 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
               )}
               {INSTITUTION_ORDER.map(inst => {
                 const posts = centralByInst.get(inst);
-                if (!posts || posts.length === 0) return null;
+                const children = childInstitutions(inst);
+                const hasChildren = children.length > 0;
+                if ((!posts || posts.length === 0) && !hasChildren) return null;
+
+                const isExpanded = expandedInsts.has(inst);
+                const totalCount = (posts?.length ?? 0) + children.reduce((s, c) => s + (centralByInst.get(c.id)?.length ?? 0), 0);
+
                 return (
-                  <div key={inst}>
-                    <div className="text-xs font-bold text-[var(--color-text-muted)] px-2 py-1">{inst}</div>
-                    <div className="space-y-1">
-                      {posts.map(p => renderPostRow(p))}
-                    </div>
+                  <div key={inst} className="border border-[var(--color-border)] rounded">
+                    <button
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-[var(--color-bg)] transition-colors"
+                      onClick={() => {
+                        const next = new Set(expandedInsts);
+                        if (next.has(inst)) next.delete(inst); else next.add(inst);
+                        setExpandedInsts(next);
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-[var(--color-text-muted)]">{isExpanded ? '▼' : '▶'}</span>
+                        <span className="text-sm font-bold text-[var(--color-accent-gold)]">{inst}</span>
+                        <span className="text-[10px] text-[var(--color-text-muted)] opacity-60">({totalCount})</span>
+                      </div>
+                    </button>
+                    {isExpanded && (
+                      <div className="border-t border-[var(--color-border)] px-2 py-1.5 space-y-1.5">
+                        {/* 直属岗位 */}
+                        {posts && posts.length > 0 && (
+                          <div className="space-y-1">
+                            {posts.map(p => renderPostRow(p))}
+                          </div>
+                        )}
+                        {/* 子机构二级折叠 */}
+                        {children.map(child => {
+                          const childPosts = centralByInst.get(child.id);
+                          if (!childPosts || childPosts.length === 0) return null;
+                          const childExpanded = expandedInsts.has(child.id);
+                          return (
+                            <div key={child.id} className="border border-[var(--color-border)] rounded ml-1">
+                              <button
+                                className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-[var(--color-bg)] transition-colors"
+                                onClick={() => {
+                                  const next = new Set(expandedInsts);
+                                  if (next.has(child.id)) next.delete(child.id); else next.add(child.id);
+                                  setExpandedInsts(next);
+                                }}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] text-[var(--color-text-muted)]">{childExpanded ? '▼' : '▶'}</span>
+                                  <span className="text-xs font-bold text-[var(--color-text-muted)]">{child.name}</span>
+                                  <span className="text-[10px] text-[var(--color-text-muted)] opacity-60">({childPosts.length})</span>
+                                </div>
+                              </button>
+                              {childExpanded && (
+                                <div className="border-t border-[var(--color-border)] px-2 py-1.5 space-y-1">
+                                  {childPosts.map(p => renderPostRow(p))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })}

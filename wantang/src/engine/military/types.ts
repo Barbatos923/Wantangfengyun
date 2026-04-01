@@ -44,6 +44,10 @@ export const MAX_BATTALION_STRENGTH = 1000;
 
 // ===== Phase 3b: 战争系统类型 =====
 
+import type { Era } from '@engine/types';
+import type { Territory } from '@engine/territory/types';
+import type { Character } from '@engine/character/types';
+
 /** 战争理由 */
 export type CasusBelli =
   | 'annexation'
@@ -67,6 +71,23 @@ export const CASUS_BELLI_NAMES: Record<CasusBelli, string> = {
   expansion: '开疆拓土',
 };
 
+/** 宣战判定上下文 */
+export interface WarContext {
+  attackerId: string;
+  defenderId: string;
+  era: Era;
+  territories: Map<string, Territory>;
+  characters: Map<string, Character>;
+}
+
+/** 单条宣战理由的判定结果 */
+export interface CasusBelliEval {
+  id: CasusBelli;
+  name: string;
+  failureReason: string | null; // null = 可用
+  cost: { prestige: number; legitimacy: number };
+}
+
 /** 战争 */
 export interface War {
   id: string;
@@ -74,8 +95,7 @@ export interface War {
   defenderId: string;
   casusBelli: CasusBelli;
   targetTerritoryIds: string[];
-  attackerWarScore: number;
-  defenderWarScore: number;
+  warScore: number; // -100~+100，正=攻方优势，负=防方优势
   startDate: { year: number; month: number };
   status: 'active' | 'ended';
   result?: 'attackerWin' | 'defenderWin' | 'whitePeace';
@@ -110,6 +130,25 @@ export interface Campaign {
   status: 'mustering' | 'marching' | 'idle' | 'sieging';
   musteringTurnsLeft: number;
   phaseStrategies: PhaseStrategies; // 玩家预设的阶段策略
+}
+
+/** 和谈判定上下文 */
+export interface PeaceContext {
+  warScore: number;
+  proposerIsAttacker: boolean;
+  targetPersonality: { boldness: number; honor: number; greed: number };
+  proposerDiplomacy: number;
+  warDurationMonths: number;
+  proposerMilitary: number;
+  targetMilitary: number;
+}
+
+/** 和谈判定结果 */
+export interface PeaceResult {
+  accept: boolean;
+  score: number;
+  threshold: number;
+  breakdown: Record<string, number>;
 }
 
 /** 围城 */

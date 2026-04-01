@@ -14,6 +14,8 @@ interface TurnManagerState {
   currentDate: GameDate;
   speed: GameSpeed;
   era: Era;
+  stabilityProgress: number;
+  collapseProgress: number;
   events: GameEvent[];
   isPaused: boolean;
   seed: string;
@@ -25,6 +27,7 @@ interface TurnManagerState {
   getEventsForYear: (year: number) => GameEvent[];
   archiveOldEvents: () => Promise<void>;
   loadArchivedEvents: (year: number) => Promise<GameEvent[]>;
+  setEraState: (patch: { era?: Era; stabilityProgress?: number; collapseProgress?: number }) => void;
   registerMonthlyCallback: (id: string, callback: MonthlyCallback) => void;
   unregisterMonthlyCallback: (id: string) => void;
 }
@@ -42,6 +45,8 @@ export const useTurnManager = create<TurnManagerState>((set, get) => ({
   currentDate: { year: 870, month: 1 },
   speed: GameSpeed.Normal,
   era: Era.WeiShi,
+  stabilityProgress: 0,
+  collapseProgress: 0,
   events: [],
   isPaused: false,
   seed: (() => { const s = Date.now().toString(); initRng(s); return s; })(),
@@ -126,6 +131,14 @@ export const useTurnManager = create<TurnManagerState>((set, get) => ({
 
   loadArchivedEvents: (year: number) => {
     return loadArchivedEventsFromDB(year);
+  },
+
+  setEraState: (patch) => {
+    set((state) => ({
+      ...(patch.era !== undefined ? { era: patch.era } : {}),
+      stabilityProgress: patch.stabilityProgress ?? state.stabilityProgress,
+      collapseProgress: patch.collapseProgress ?? state.collapseProgress,
+    }));
   },
 
   registerMonthlyCallback: (id: string, callback: MonthlyCallback) => {

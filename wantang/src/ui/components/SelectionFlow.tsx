@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { Post } from '@engine/territory/types';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { useTurnManager } from '@engine/TurnManager';
 import { executeAppoint } from '@engine/interaction';
 import {
   generateCandidates,
@@ -14,12 +15,16 @@ import {
 import type { CandidateEntry, CandidateTier } from '@engine/official/selectionUtils';
 import { positionMap } from '@data/positions';
 import { rankMap } from '@data/ranks';
+import { useNpcStore } from '@engine/npc/NpcStore';
+import type { TransferEntry } from '@engine/npc/types';
 
 interface SelectionFlowProps {
   vacantPosts: Post[];
   onClose: () => void;
   /** 特旨模式：连锁扫描时不限于 playerId 有权的岗位 */
   specialDecree?: boolean;
+  /** 草稿模式：确认后写入 draftPlan 而非立即执行 */
+  draft?: boolean;
 }
 
 /** 构建岗位显示名称 */
@@ -79,6 +84,11 @@ function CandidateRow({
         )}
       </div>
       <div className="flex items-center gap-2 shrink-0">
+        {entry.underRank && (
+          <span className="text-xs px-1 py-0.5 rounded bg-red-900/40 text-red-400 border border-red-700/60">
+            品位不足
+          </span>
+        )}
         <span className={`text-xs px-1.5 py-0.5 rounded ${TIER_CLASS[entry.tier]}`}>
           {TIER_LABEL[entry.tier]}
         </span>
@@ -125,51 +135,51 @@ function VacantPostRow({
   if (confirmed) return null;
 
   return (
-    <div className="border border-[var(--color-border)] rounded overflow-hidden">
+    <div className="border border-[var(--color-border)] rounded overflow-hidden shrink-0">
       {/* 主行 */}
-      <div className="flex items-center gap-2 px-3 py-2.5 bg-[var(--color-bg-panel)]">
-        {/* 左侧：岗位信息 */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+      <div className="px-3 py-2 bg-[var(--color-bg-panel)]">
+        {/* 第一行：岗位名 + 品级 */}
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2 min-w-0">
             <span className="text-sm font-bold text-[var(--color-text)] truncate">{postLabel}</span>
             <span className="text-xs text-[var(--color-text-muted)] shrink-0">{rankLabel}</span>
           </div>
+          <div className="flex items-center gap-1.5 shrink-0 ml-2">
+            <button
+              onClick={() => setExpanded(v => !v)}
+              className="text-xs px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-accent-gold)]/60 transition-colors"
+            >
+              {expanded ? '收起' : '展开'}
+            </button>
+            <button
+              disabled={!canConfirm}
+              onClick={onConfirm}
+              className={`text-xs px-2 py-0.5 rounded border font-bold transition-colors ${
+                canConfirm
+                  ? 'border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10'
+                  : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
+              }`}
+            >
+              确认
+            </button>
+          </div>
         </div>
-
-        {/* 右侧：推荐人 + 操作按钮 */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* 第二行：推荐人 */}
+        <div className="flex items-center gap-1.5">
           {noCandidates ? (
             <span className="text-xs text-[var(--color-text-muted)] italic">暂无人选</span>
           ) : selectedEntry ? (
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm text-[var(--color-text)]">{selectedEntry.character.name}</span>
+            <>
+              <span className="text-xs text-[var(--color-text-muted)]">推荐：</span>
+              <span className="text-xs text-[var(--color-text)]">{selectedEntry.character.name}</span>
               <span className={`text-xs px-1 py-0.5 rounded ${TIER_CLASS[selectedEntry.tier]}`}>
                 {TIER_LABEL[selectedEntry.tier]}
               </span>
               <span className="text-xs text-[var(--color-text-muted)]">{selectedEntry.score}</span>
-            </div>
+            </>
           ) : (
             <span className="text-xs text-[var(--color-text-muted)]">未选择</span>
           )}
-
-          <button
-            onClick={() => setExpanded(v => !v)}
-            className="text-xs px-2 py-1 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-accent-gold)]/60 transition-colors"
-          >
-            {expanded ? '收起' : '展开'}
-          </button>
-
-          <button
-            disabled={!canConfirm}
-            onClick={onConfirm}
-            className={`text-xs px-2 py-1 rounded border font-bold transition-colors ${
-              canConfirm
-                ? 'border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10'
-                : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
-            }`}
-          >
-            确认
-          </button>
         </div>
       </div>
 
@@ -207,33 +217,70 @@ function VacantPostRow({
   );
 }
 
-function buildDefaultSelections(posts: Post[]): Map<string, string | null> {
+/**
+ * 构建默认推荐选择，同时追加连锁空缺岗位。
+ * 返回 { selections, allPosts }：allPosts 包含原始空缺 + 连锁追加的岗位。
+ */
+function buildDefaultSelections(posts: Post[]): { selections: Map<string, string | null>; allPosts: Post[] } {
   const map = new Map<string, string | null>();
   const usedIds = new Set<string>();
-  for (const post of posts) {
+  const processedPostIds = new Set<string>();
+  const cascadePostIds = new Set<string>();
+  // 使用可变队列，处理过程中可追加连锁岗位
+  const queue = [...posts];
+  const allPosts = [...posts];
+
+  for (let i = 0; i < queue.length && i < 100; i++) { // 上限防无限循环
+    const post = queue[i];
+    if (processedPostIds.has(post.id)) continue;
+    processedPostIds.add(post.id);
+
     const executorId = resolveAppointAuthority(post);
     if (!executorId) { map.set(post.id, null); continue; }
     const legalId = resolveLegalAppointer(executorId, post);
     const candidates = generateCandidates(post, legalId);
-    const pick = candidates.find(c => !usedIds.has(c.character.id));
+
+    let pick: CandidateEntry | undefined;
+    if (cascadePostIds.has(post.id)) {
+      // 连锁空缺：优先新授，避免继续产生连锁
+      pick = candidates.find(c => !usedIds.has(c.character.id) && c.tier === 'fresh');
+    }
+    if (!pick) {
+      pick = candidates.find(c => !usedIds.has(c.character.id));
+    }
+
     const pickId = pick?.character.id ?? null;
     map.set(post.id, pickId);
-    if (pickId) usedIds.add(pickId);
+    if (pickId) {
+      usedIds.add(pickId);
+      // 升调/平调 → 其旧岗追加到队列
+      if (pick && (pick.tier === 'promote' || pick.tier === 'transfer') && pick.currentPost) {
+        const oldPostId = pick.currentPost.id;
+        if (!processedPostIds.has(oldPostId)) {
+          cascadePostIds.add(oldPostId);
+          const terrStore = useTerritoryStore.getState();
+          const oldPost = terrStore.findPost(oldPostId);
+          if (oldPost) {
+            queue.push(oldPost);
+            allPosts.push(oldPost);
+          }
+        }
+      }
+    }
   }
-  return map;
+  return { selections: map, allPosts };
 }
 
-export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: SelectionFlowProps) {
+export default function SelectionFlow({ vacantPosts, onClose, specialDecree, draft }: SelectionFlowProps) {
   const territories = useTerritoryStore(s => s.territories);
   const playerId = useCharacterStore(s => s.playerId);
 
-  // 内部管理的岗位列表（初始来自 props，确认后可能追加连锁空缺）
-  const [currentPosts, setCurrentPosts] = useState<Post[]>(vacantPosts);
+  // 内部管理的岗位列表（初始来自 props + 连锁追加的空缺）
+  const [initialResult] = useState(() => buildDefaultSelections(vacantPosts));
+  const [currentPosts, setCurrentPosts] = useState<Post[]>(initialResult.allPosts);
 
   // postId -> 选中的 candidateId
-  const [selections, setSelections] = useState<Map<string, string | null>>(() => {
-    return buildDefaultSelections(vacantPosts);
-  });
+  const [selections, setSelections] = useState<Map<string, string | null>>(initialResult.selections);
 
   // 已确认的 postId 集合
   const [confirmed, setConfirmed] = useState<Set<string>>(new Set());
@@ -293,7 +340,46 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: S
     }
   }
 
+  /** 将选择结果写入 draftPlan（draft 模式） */
+  function writeToDraft() {
+    const date = useTurnManager.getState().currentDate;
+    const draftEntries: TransferEntry[] = [];
+
+    for (const post of currentPosts) {
+      const candidateId = selections.get(post.id) ?? null;
+      if (!candidateId) continue;
+
+      const executorId = resolveAppointAuthority(post);
+      if (!executorId) continue;
+      const legalId = resolveLegalAppointer(executorId, post);
+
+      const candidates = getCandidatesForPost(post);
+      const entry = candidates.find(c => c.character.id === candidateId);
+      const vacateOldPost = entry?.tier === 'promote' || entry?.tier === 'transfer';
+
+      draftEntries.push({
+        postId: post.id,
+        appointeeId: candidateId,
+        legalAppointerId: legalId,
+        vacateOldPost,
+        proposedBy: playerId!,
+      });
+    }
+
+    if (draftEntries.length > 0) {
+      const npcStore = useNpcStore.getState();
+      const existing = npcStore.draftPlan;
+      // 合并到已有的 NPC 草稿
+      const mergedEntries = [...(existing?.entries ?? []), ...draftEntries];
+      npcStore.setDraftPlan({ entries: mergedEntries, date: existing?.date ?? { ...date } });
+    }
+    useNpcStore.getState().setPlayerDraftPostIds([]);
+    onClose();
+  }
+
   function handleConfirmOne(post: Post) {
+    if (draft) { writeToDraft(); return; }
+
     const candidateId = selections.get(post.id) ?? null;
     if (!candidateId) return;
 
@@ -317,6 +403,8 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: S
   }
 
   function handleConfirmAll() {
+    if (draft) { writeToDraft(); return; }
+
     for (const post of currentPosts) {
       if (confirmed.has(post.id)) continue;
       const candidateId = selections.get(post.id) ?? null;
@@ -337,8 +425,24 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: S
 
     // 重新扫描连锁空缺
     if (!playerId) { onClose(); return; }
-    const newVacancies = getPendingVacancies(playerId);
     const knownIds = new Set(currentPosts.map(p => p.id));
+
+    let newVacancies: Post[];
+    if (specialDecree) {
+      const terrStore = useTerritoryStore.getState();
+      const allVacant: Post[] = [];
+      for (const t of terrStore.territories.values()) {
+        for (const p of t.posts) {
+          if (p.holderId === null && !HONORARY_TEMPLATES.has(p.templateId)) allVacant.push(p);
+        }
+      }
+      for (const p of terrStore.centralPosts) {
+        if (p.holderId === null && !HONORARY_TEMPLATES.has(p.templateId)) allVacant.push(p);
+      }
+      newVacancies = allVacant;
+    } else {
+      newVacancies = getPendingVacancies(playerId);
+    }
     const cascaded = newVacancies.filter(p => !knownIds.has(p.id));
 
     if (cascaded.length > 0) {
@@ -357,12 +461,12 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: S
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl w-full max-w-lg mx-4 flex flex-col overflow-hidden max-h-[80vh]"
+        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl w-full max-w-2xl mx-4 flex flex-col overflow-hidden max-h-[90vh]"
         onClick={e => e.stopPropagation()}
       >
         {/* 标题栏 */}
         <div className="px-5 py-3 flex items-center justify-between border-b border-[var(--color-border)] shrink-0">
-          <span className="font-bold text-base text-[var(--color-accent-gold)]">📋 铨选单</span>
+          <span className="font-bold text-base text-[var(--color-accent-gold)]">{draft ? '📋 拟定铨选草案' : '📋 铨选单'}</span>
           <button
             onClick={onClose}
             className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-xl leading-none"
@@ -408,7 +512,7 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree }: S
                   : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
               }`}
             >
-              全部确认推荐{confirmableCount > 0 ? `（${confirmableCount} 位）` : ''}
+              {draft ? '呈报' : '全部确认推荐'}{confirmableCount > 0 ? `（${confirmableCount} 位）` : ''}
             </button>
           </div>
         )}

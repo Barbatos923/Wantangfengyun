@@ -4,6 +4,10 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { settleWar } from '@engine/military/warSettlement';
+import { calcPeaceAcceptance } from '@engine/military/warCalc';
+import { calcPersonality } from '@engine/character/personalityUtils';
+import { getEffectiveAbilities } from '@engine/character/characterUtils';
+import { useTurnManager } from '@engine/TurnManager';
 import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish } from '@engine/interaction/militaryAction';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import type { Army, Battalion, UnitType } from '@engine/military/types';
@@ -748,9 +752,11 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           <span className="text-sm font-bold text-[var(--color-accent-gold)]">
                             对{defenderName}的{casusBelliName}
                           </span>
-                          <div className="flex gap-3 text-xs text-[var(--color-text-muted)]">
-                            <span>攻方 {war.attackerWarScore}</span>
-                            <span>守方 {war.defenderWarScore}</span>
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-[var(--color-text-muted)]">战争分数</span>
+                            <span className={`font-bold ${war.warScore > 0 ? 'text-[var(--color-accent-green)]' : war.warScore < 0 ? 'text-[var(--color-accent-red)]' : 'text-[var(--color-text-muted)]'}`}>
+                              {war.warScore > 0 ? '+' : ''}{war.warScore}
+                            </span>
                           </div>
                         </div>
                         {war.targetTerritoryIds.length > 0 && (
@@ -766,45 +772,78 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       {/* 和谈/投降按钮 */}
                       {(() => {
                         const isAttacker = war.attackerId === playerId;
-                        const myScore = isAttacker ? war.attackerWarScore : war.defenderWarScore;
-                        const enemyScore = isAttacker ? war.defenderWarScore : war.attackerWarScore;
-                        const canForce = myScore >= 100;         // 我方碾压，强制对方投降
-                        const canSurrender = enemyScore >= 100;  // 对方碾压，我方投降认输
-                        const canPeace = myScore >= 50;
-                        return (canForce || canSurrender || canPeace) ? (
+                        const myScore = isAttacker ? war.warScore : -war.warScore;
+                        const canForce = myScore >= 100;
+                        const canSurrender = myScore <= -100;
+                        const currentDate = useTurnManager.getState().currentDate;
+                        const warMonths = (currentDate.year - war.startDate.year) * 12 + (currentDate.month - war.startDate.month);
+
+                        // 和谈判定
+                        const enemyId = isAttacker ? war.defenderId : war.attackerId;
+                        const enemy = characters.get(enemyId);
+                        const player = characters.get(playerId ?? '');
+                        let peaceResult: import('@engine/military/types').PeaceResult | null = null;
+                        if (enemy && player && !canForce && !canSurrender) {
+                          const enemyPersonality = calcPersonality(enemy);
+                          const playerAbilities = getEffectiveAbilities(player);
+                          // 简单兵力统计
+                          let proposerMil = 0, targetMil = 0;
+                          for (const army of armies.values()) {
+                            for (const batId of army.battalionIds) {
+                              const bat = battalions.get(batId);
+                              if (!bat) continue;
+                              if (army.ownerId === playerId) proposerMil += bat.currentStrength;
+                              if (army.ownerId === enemyId) targetMil += bat.currentStrength;
+                            }
+                          }
+                          peaceResult = calcPeaceAcceptance({
+                            warScore: war.warScore,
+                            proposerIsAttacker: isAttacker,
+                            targetPersonality: { boldness: enemyPersonality.boldness, honor: enemyPersonality.honor, greed: enemyPersonality.greed },
+                            proposerDiplomacy: playerAbilities.diplomacy,
+                            warDurationMonths: warMonths,
+                            proposerMilitary: proposerMil,
+                            targetMilitary: targetMil,
+                          });
+                        }
+                        const peaceTooltip = peaceResult
+                          ? Object.entries(peaceResult.breakdown).map(([k, v]) => `${k}: ${v > 0 ? '+' : ''}${v}`).join('\n') + `\n——\n总分: ${peaceResult.score} / 需要: ${peaceResult.threshold}`
+                          : '';
+
+                        return (
                           <div className="flex gap-2 px-3 py-2 border-t border-[var(--color-border)]">
                             {canForce && (
                               <button
-                                onClick={() => {
-                                  settleWar(war.id, isAttacker ? 'attackerWin' : 'defenderWin');
-                                }}
+                                onClick={() => settleWar(war.id, isAttacker ? 'attackerWin' : 'defenderWin')}
                                 className="flex-1 py-1.5 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-bg-surface)] transition-colors"
                               >
                                 强制投降
                               </button>
                             )}
-                            {canSurrender && !canForce && (
+                            {canSurrender && (
                               <button
-                                onClick={() => {
-                                  settleWar(war.id, isAttacker ? 'defenderWin' : 'attackerWin');
-                                }}
+                                onClick={() => settleWar(war.id, isAttacker ? 'defenderWin' : 'attackerWin')}
                                 className="flex-1 py-1.5 rounded border border-[var(--color-accent-red,#e74c3c)] text-xs font-bold text-[var(--color-accent-red,#e74c3c)] hover:bg-[var(--color-accent-red,#e74c3c)]/10 transition-colors"
                               >
                                 投降
                               </button>
                             )}
-                            {canPeace && !canForce && !canSurrender && (
+                            {!canForce && !canSurrender && peaceResult && (
                               <button
-                                onClick={() => {
-                                  settleWar(war.id, 'whitePeace');
-                                }}
-                                className="flex-1 py-1.5 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)] transition-colors"
+                                onClick={() => { if (peaceResult!.accept) settleWar(war.id, 'whitePeace'); }}
+                                disabled={!peaceResult.accept}
+                                title={peaceTooltip}
+                                className={`flex-1 py-1.5 rounded border text-xs font-bold transition-colors ${
+                                  peaceResult.accept
+                                    ? 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)] cursor-pointer'
+                                    : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
+                                }`}
                               >
-                                和谈
+                                和谈 ({peaceResult.score}/{peaceResult.threshold})
                               </button>
                             )}
                           </div>
-                        ) : null;
+                        );
                       })()}
 
                       {/* 行营列表 */}

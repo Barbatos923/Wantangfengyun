@@ -64,8 +64,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
       defenderId,
       casusBelli,
       targetTerritoryIds,
-      attackerWarScore: 0,
-      defenderWarScore: 0,
+      warScore: 0,
       startDate: date,
       status: 'active',
     };

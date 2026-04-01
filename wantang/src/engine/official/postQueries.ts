@@ -149,3 +149,26 @@ export function getVassals(charId: string, characters: Map<string, Character>): 
   }
   return result;
 }
+
+/**
+ * 递归获取 charId 势力范围内的全部州数（直辖 + 所有层级附庸的直辖）。
+ * 用于衡量势力大小、计算围城战争分数比例。
+ */
+export function getRealmZhouCount(
+  charId: string,
+  characters: Map<string, Character>,
+  territories: Map<string, Territory>,
+  visited?: Set<string>,
+): number {
+  const seen = visited ?? new Set<string>();
+  if (seen.has(charId)) return 0;
+  seen.add(charId);
+
+  let count = getControlledZhou(charId, territories).length;
+  for (const c of characters.values()) {
+    if (c.alive && c.overlordId === charId) {
+      count += getRealmZhouCount(c.id, characters, territories, seen);
+    }
+  }
+  return count;
+}

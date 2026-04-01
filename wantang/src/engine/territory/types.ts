@@ -8,7 +8,7 @@ export type TerritoryTier = 'zhou' | 'dao' | 'guo' | 'tianxia';
 /** 领地类型 */
 export type TerritoryType = 'civil' | 'military';
 
-/** 集权等级 1-4 */
+/** 赋税等级 1-4 */
 export type CentralizationLevel = 1 | 2 | 3 | 4;
 
 /** 建筑槽位 */

@@ -2,7 +2,7 @@ import React from 'react';
 import type { Territory } from '@engine/territory/types';
 import { ALL_BUILDINGS, buildingMap } from '@data/buildings';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { executeBuild } from '@engine/interaction';
 
 interface BuildMenuProps {
   territory: Territory;
@@ -26,13 +26,7 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
   function handleBuild(buildingId: string, targetLevel: number, moneyCost: number, grainCost: number, duration: number) {
     const playerId = useCharacterStore.getState().playerId;
     if (!playerId) return;
-    useCharacterStore.getState().addResources(playerId, { money: -moneyCost, grain: -grainCost });
-    useTerritoryStore.getState().startConstruction(territory.id, {
-      slotIndex,
-      buildingId,
-      targetLevel,
-      remainingMonths: duration,
-    });
+    executeBuild(playerId, territory.id, slotIndex, buildingId, targetLevel, moneyCost, grainCost, duration);
     onClose();
   }
 

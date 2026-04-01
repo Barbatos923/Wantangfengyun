@@ -343,6 +343,14 @@ export function resolveBattle(
   let totalAttackerLosses = 0;
   let totalDefenderLosses = 0;
 
+  // 记录双方战前总兵力（用于战争分数计算）
+  let initialAttackerTroops = 0;
+  let initialDefenderTroops = 0;
+  for (const bat of battalions.values()) {
+    if (attackerArmyIds.includes(bat.armyId)) initialAttackerTroops += bat.currentStrength;
+    if (defenderArmyIds.includes(bat.armyId)) initialDefenderTroops += bat.currentStrength;
+  }
+
   // 前三阶段
   const battlePhases: BattlePhase[] = ['deploy', 'clash', 'decisive'];
   for (const phase of battlePhases) {
@@ -445,10 +453,12 @@ export function resolveBattle(
     defenderNarrative: overallResult === 'attackerWin' ? loserPursuit.narrative : winnerPursuit.narrative,
   });
 
-  // 战争分数
-  const loserTotalTroops = overallResult === 'attackerWin' ? totalDefenderLosses : totalAttackerLosses;
-  const lossRatio = loserTotalTroops / Math.max(1, 50000);
-  const warScoreChange = lossRatio >= 0.5 ? 25 : lossRatio >= 0.3 ? 15 : lossRatio >= 0.15 ? 8 : 3;
+  // 战争分数：以败方损失 / min(败方战前兵力, 50000) 线性映射到 10~100
+  const loserTotalLosses = overallResult === 'attackerWin' ? totalDefenderLosses : totalAttackerLosses;
+  const loserInitialTroops = overallResult === 'attackerWin' ? initialDefenderTroops : initialAttackerTroops;
+  const scoreDenom = Math.max(1, Math.min(loserInitialTroops, 50000));
+  const lossRatio = Math.min(1, loserTotalLosses / scoreDenom);
+  const warScoreChange = Math.round(10 + lossRatio * 90);
 
   // 士气和精锐度影响
   const finalLoserArmyIds = overallResult === 'attackerWin' ? defenderArmyIds : attackerArmyIds;

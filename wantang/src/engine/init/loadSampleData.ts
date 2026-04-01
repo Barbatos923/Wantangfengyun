@@ -31,7 +31,7 @@ export function loadSampleData(): void {
   const battalions = createAllBattalions();
   useMilitaryStore.getState().initMilitary(armies, battalions);
 
-  // 初始化集权和回拨好感
+  // 初始化赋税等级和回拨好感
   const charStore = useCharacterStore.getState();
   const CENTRALIZATION_OPINION: Record<number, number> = { 1: 10, 2: 0, 3: -10, 4: -20 };
   for (const c of characters) {
@@ -40,7 +40,7 @@ export function loadSampleData(): void {
       const opinion = CENTRALIZATION_OPINION[level] ?? 0;
       if (opinion !== 0) {
         charStore.setOpinion(c.id, c.overlordId, {
-          reason: '集权等级',
+          reason: '赋税等级',
           value: opinion,
           decayable: false,
         });
@@ -63,6 +63,7 @@ export function loadSampleData(): void {
       }
     }
   }
+
 
   // 初始化玩家 ledger
   const player = useCharacterStore.getState().getPlayer();

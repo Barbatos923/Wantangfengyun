@@ -24,7 +24,7 @@ function sumMG(
 // ===== 公共函数 =====
 
 /**
- * 根据集权等级和领地类型返回朝贡比例。
+ * 根据赋税等级和领地类型返回朝贡比例。
  */
 export function getTributeRatio(centralization: CentralizationLevel, territoryType: TerritoryType): number {
   if (territoryType === 'military') {

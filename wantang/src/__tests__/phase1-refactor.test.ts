@@ -9,13 +9,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-<<<<<<< HEAD
 import { generateFillerCharacter, resetNameIndex } from '@engine/character/characterGen';
 import { Registry } from '@engine/utils/registries';
-=======
-import { generateFillerCharacter, resetNameIndex } from '@data/characterGen';
-import { Registry } from '@data/registries';
->>>>>>> 649782b93a3eead49926567b09c7206751f66480
 
 // ─────────────────────────────────────────────────────────────────
 // 1. generateFillerCharacter — 确定性生成契约

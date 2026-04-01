@@ -72,7 +72,7 @@
       "money": 50000,
       "grain": 80000,
       "prestige": 40,
-      "legitimacy": 30
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -115,7 +115,7 @@
       "money": 40000,
       "grain": 60000,
       "prestige": 30,
-      "legitimacy": 25
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -158,7 +158,7 @@
       "money": 30000,
       "grain": 50000,
       "prestige": 35,
-      "legitimacy": 30
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -201,7 +201,7 @@
       "money": 20000,
       "grain": 40000,
       "prestige": 20,
-      "legitimacy": 15
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -243,7 +243,7 @@
       "money": 10000,
       "grain": 20000,
       "prestige": 10,
-      "legitimacy": 8
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -286,7 +286,7 @@
       "money": 25000,
       "grain": 40000,
       "prestige": 30,
-      "legitimacy": 25
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -329,7 +329,7 @@
       "money": 20000,
       "grain": 35000,
       "prestige": 25,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -372,7 +372,7 @@
       "money": 18000,
       "grain": 30000,
       "prestige": 28,
-      "legitimacy": 22
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -415,7 +415,7 @@
       "money": 22000,
       "grain": 35000,
       "prestige": 32,
-      "legitimacy": 28
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -458,7 +458,7 @@
       "money": 20000,
       "grain": 30000,
       "prestige": 25,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -500,7 +500,7 @@
       "money": 8000,
       "grain": 15000,
       "prestige": 12,
-      "legitimacy": 10
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -542,7 +542,7 @@
       "money": 10000,
       "grain": 18000,
       "prestige": 15,
-      "legitimacy": 12
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -584,7 +584,7 @@
       "money": 6000,
       "grain": 12000,
       "prestige": 8,
-      "legitimacy": 6
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -626,7 +626,7 @@
       "money": 5000,
       "grain": 10000,
       "prestige": 6,
-      "legitimacy": 5
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -668,7 +668,7 @@
       "money": 7000,
       "grain": 12000,
       "prestige": 8,
-      "legitimacy": 7
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -710,7 +710,7 @@
       "money": 8000,
       "grain": 14000,
       "prestige": 10,
-      "legitimacy": 8
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -753,7 +753,7 @@
       "money": 9000,
       "grain": 16000,
       "prestige": 12,
-      "legitimacy": 10
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -795,7 +795,7 @@
       "money": 6000,
       "grain": 10000,
       "prestige": 7,
-      "legitimacy": 6
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -837,7 +837,7 @@
       "money": 5000,
       "grain": 8000,
       "prestige": 5,
-      "legitimacy": 4
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -879,7 +879,7 @@
       "money": 4000,
       "grain": 8000,
       "prestige": 4,
-      "legitimacy": 3
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -921,7 +921,7 @@
       "money": 80000,
       "grain": 150000,
       "prestige": 35,
-      "legitimacy": 30
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -963,7 +963,7 @@
       "money": 100000,
       "grain": 200000,
       "prestige": 45,
-      "legitimacy": 40
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1008,7 +1008,7 @@
       "money": 90000,
       "grain": 180000,
       "prestige": 40,
-      "legitimacy": 30
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1050,7 +1050,7 @@
       "money": 80000,
       "grain": 160000,
       "prestige": 35,
-      "legitimacy": 25
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1093,7 +1093,7 @@
       "money": 90000,
       "grain": 180000,
       "prestige": 40,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1136,7 +1136,7 @@
       "money": 40000,
       "grain": 80000,
       "prestige": 25,
-      "legitimacy": 15
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -1178,7 +1178,7 @@
       "money": 100000,
       "grain": 200000,
       "prestige": 40,
-      "legitimacy": 35
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1220,7 +1220,7 @@
       "money": 70000,
       "grain": 140000,
       "prestige": 30,
-      "legitimacy": 28
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1263,7 +1263,7 @@
       "money": 50000,
       "grain": 100000,
       "prestige": 30,
-      "legitimacy": 28
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1305,7 +1305,7 @@
       "money": 40000,
       "grain": 80000,
       "prestige": 25,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -1347,7 +1347,7 @@
       "money": 35000,
       "grain": 70000,
       "prestige": 22,
-      "legitimacy": 18
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1390,7 +1390,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 15
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1431,7 +1431,7 @@
       "money": 25000,
       "grain": 50000,
       "prestige": 15,
-      "legitimacy": 12
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -1472,7 +1472,7 @@
       "money": 25000,
       "grain": 50000,
       "prestige": 15,
-      "legitimacy": 12
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-xiaoye",
@@ -1516,7 +1516,7 @@
       "money": 120000,
       "grain": 300000,
       "prestige": 60,
-      "legitimacy": 40
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -1561,7 +1561,7 @@
       "money": 50000,
       "grain": 100000,
       "prestige": 30,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -1603,7 +1603,7 @@
       "money": 1000,
       "grain": 2000,
       "prestige": 5,
-      "legitimacy": 2
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-liguochang",
@@ -1639,7 +1639,7 @@
       "money": 500,
       "grain": 1000,
       "prestige": 2,
-      "legitimacy": 1
+      "legitimacy": 30
     },
     "relationships": [],
     "isPlayer": false,
@@ -1675,7 +1675,7 @@
       "money": 8000,
       "grain": 20000,
       "prestige": 10,
-      "legitimacy": 2
+      "legitimacy": 30
     },
     "relationships": [],
     "isPlayer": false,
@@ -1709,7 +1709,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1750,7 +1750,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -1791,7 +1791,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1832,7 +1832,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -1873,7 +1873,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -1914,7 +1914,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -1955,7 +1955,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -1996,7 +1996,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2037,7 +2037,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2078,7 +2078,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2119,7 +2119,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2160,7 +2160,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2201,7 +2201,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -2242,7 +2242,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2283,7 +2283,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shannan-e",
@@ -2324,7 +2324,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shannan-e",
@@ -2365,7 +2365,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2406,7 +2406,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -2447,7 +2447,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -2488,7 +2488,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -2529,7 +2529,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2570,7 +2570,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhennan",
@@ -2611,7 +2611,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-liutong",
@@ -2652,7 +2652,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2693,7 +2693,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -2734,7 +2734,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -2775,7 +2775,7 @@
       "money": 30000,
       "grain": 60000,
       "prestige": 20,
-      "legitimacy": 20
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-lihongfu",
@@ -2818,7 +2818,7 @@
       "money": 5000,
       "grain": 10000,
       "prestige": 30,
-      "legitimacy": 60
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2860,7 +2860,7 @@
       "money": 10000,
       "grain": 20000,
       "prestige": 15,
-      "legitimacy": 15
+      "legitimacy": 30
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -2901,7 +2901,7 @@
       "money": 15000,
       "grain": 25000,
       "prestige": 20,
-      "legitimacy": 15
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2942,7 +2942,7 @@
       "money": 20000,
       "grain": 35000,
       "prestige": 25,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -2983,7 +2983,7 @@
       "money": 12000,
       "grain": 20000,
       "prestige": 18,
-      "legitimacy": 12
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3024,7 +3024,7 @@
       "money": 40000,
       "grain": 60000,
       "prestige": 30,
-      "legitimacy": 20
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3066,7 +3066,7 @@
       "money": 80000,
       "grain": 100000,
       "prestige": 35,
-      "legitimacy": 10
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3107,7 +3107,7 @@
       "money": 50000,
       "grain": 70000,
       "prestige": 25,
-      "legitimacy": 15
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3149,7 +3149,7 @@
       "money": 18000,
       "grain": 30000,
       "prestige": 22,
-      "legitimacy": 18
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3190,7 +3190,7 @@
       "money": 20000,
       "grain": 35000,
       "prestige": 28,
-      "legitimacy": 22
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3231,7 +3231,7 @@
       "money": 15000,
       "grain": 25000,
       "prestige": 20,
-      "legitimacy": 16
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3272,7 +3272,7 @@
       "money": 12000,
       "grain": 20000,
       "prestige": 18,
-      "legitimacy": 14
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3310,7 +3310,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3348,7 +3348,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3386,7 +3386,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3424,7 +3424,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-ducong",
@@ -3462,7 +3462,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -3500,7 +3500,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -3538,7 +3538,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-binning",
@@ -3576,7 +3576,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-jiaweiqing",
@@ -3614,7 +3614,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenguo",
@@ -3652,7 +3652,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-lupan",
@@ -3690,7 +3690,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-tuobasigong",
@@ -3728,7 +3728,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3766,7 +3766,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3804,7 +3804,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -3842,7 +3842,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shanzhou",
@@ -3880,7 +3880,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -3918,7 +3918,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -3956,7 +3956,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -3994,7 +3994,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhaoyi",
@@ -4032,7 +4032,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhengcongdang",
@@ -4070,7 +4070,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-liguochang",
@@ -4108,7 +4108,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -4146,7 +4146,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -4184,7 +4184,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -4222,7 +4222,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhangyunshen",
@@ -4260,7 +4260,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-yiwu",
@@ -4298,7 +4298,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-wangjingchong",
@@ -4336,7 +4336,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-wangjingchong",
@@ -4374,7 +4374,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-wangjingchong",
@@ -4412,7 +4412,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-wangjingchong",
@@ -4450,7 +4450,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-hanyunzhong",
@@ -4488,7 +4488,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-hanyunzhong",
@@ -4526,7 +4526,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-hanyunzhong",
@@ -4564,7 +4564,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-hanyunzhong",
@@ -4602,7 +4602,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -4640,7 +4640,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -4678,7 +4678,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanwu",
@@ -4716,7 +4716,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-yicheng",
@@ -4754,7 +4754,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-tianping",
@@ -4792,7 +4792,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-taining",
@@ -4830,7 +4830,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-wuning",
@@ -4868,7 +4868,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-pinglu",
@@ -4906,7 +4906,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhongwu",
@@ -4944,7 +4944,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-fengguo",
@@ -4982,7 +4982,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shannan-e",
@@ -5020,7 +5020,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shannan-e",
@@ -5058,7 +5058,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-shannan-e",
@@ -5096,7 +5096,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-jingnan",
@@ -5134,7 +5134,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-wuchang",
@@ -5172,7 +5172,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-xiaoye",
@@ -5210,7 +5210,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-xiaoye",
@@ -5248,7 +5248,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-xiaoye",
@@ -5286,7 +5286,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-sundang",
@@ -5324,7 +5324,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-cuiyanzeng",
@@ -5362,7 +5362,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-cuiyanzeng",
@@ -5400,7 +5400,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-cuiyanzeng",
@@ -5438,7 +5438,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -5476,7 +5476,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -5514,7 +5514,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhenhai",
@@ -5552,7 +5552,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhendong",
@@ -5590,7 +5590,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-weiwu",
@@ -5628,7 +5628,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-xuanshe",
@@ -5666,7 +5666,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhennan",
@@ -5704,7 +5704,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhennan",
@@ -5742,7 +5742,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-zhennan",
@@ -5780,7 +5780,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-hunan",
@@ -5818,7 +5818,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-liutong",
@@ -5856,7 +5856,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-liutong",
@@ -5894,7 +5894,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-liutong",
@@ -5932,7 +5932,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-dongchuan",
@@ -5970,7 +5970,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -6008,7 +6008,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -6046,7 +6046,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-qinghai",
@@ -6084,7 +6084,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-lingnan-w",
@@ -6122,7 +6122,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-jingjiang",
@@ -6160,7 +6160,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-gaopian",
@@ -6198,7 +6198,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-lihongfu",
@@ -6236,7 +6236,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-lihongfu",
@@ -6274,7 +6274,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-lihongfu",
@@ -6312,7 +6312,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-npc-tianshui",
@@ -6350,7 +6350,7 @@
       "money": 5500,
       "grain": 9200,
       "prestige": 9,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhanghuaishen",
@@ -6388,7 +6388,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhanghuaishen",
@@ -6426,7 +6426,7 @@
       "money": 6500,
       "grain": 10800,
       "prestige": 11,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-zhanghuaishen",
@@ -6464,7 +6464,7 @@
       "money": 4500,
       "grain": 7600,
       "prestige": 7,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6502,7 +6502,7 @@
       "money": 4500,
       "grain": 7600,
       "prestige": 7,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6540,7 +6540,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6578,7 +6578,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6616,7 +6616,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6654,7 +6654,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6692,7 +6692,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6730,7 +6730,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6768,7 +6768,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6806,7 +6806,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6844,7 +6844,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6882,7 +6882,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6920,7 +6920,7 @@
       "money": 11000,
       "grain": 18000,
       "prestige": 20,
-      "legitimacy": 0
+      "legitimacy": 80
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6958,7 +6958,7 @@
       "money": 8000,
       "grain": 13200,
       "prestige": 14,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -6996,7 +6996,7 @@
       "money": 7500,
       "grain": 12400,
       "prestige": 13,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -7034,7 +7034,7 @@
       "money": 6000,
       "grain": 10000,
       "prestige": 10,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -7072,7 +7072,7 @@
       "money": 5000,
       "grain": 8400,
       "prestige": 8,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -7110,7 +7110,7 @@
       "money": 3000,
       "grain": 5200,
       "prestige": 4,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",
@@ -7148,7 +7148,7 @@
       "money": 2500,
       "grain": 4400,
       "prestige": 3,
-      "legitimacy": 0
+      "legitimacy": 60
     },
     "relationships": [],
     "overlordId": "char-yizong",

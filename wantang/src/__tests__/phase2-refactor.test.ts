@@ -14,17 +14,8 @@
 import { describe, it, expect } from 'vitest';
 import { createAllTerritories } from '@data/territories';
 import { createAllArmies, createAllBattalions } from '@data/initialArmies';
-<<<<<<< HEAD
 import { ALL_TRAITS, traitMap } from '@data/traits';
 import { getTraitsByCategory, getEducationTrait } from '@engine/character/characterUtils';
-=======
-import {
-  ALL_TRAITS,
-  traitMap,
-  getTraitsByCategory,
-  getEducationTrait,
-} from '@data/traits';
->>>>>>> 649782b93a3eead49926567b09c7206751f66480
 
 // ─────────────────────────────────────────────────────────────────
 // 1. createAllTerritories — 领地数据完整性

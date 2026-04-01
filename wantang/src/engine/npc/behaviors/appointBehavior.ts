@@ -48,10 +48,10 @@ export function planAppointments(npcId: string, sharedUsedIds?: Set<string>): Tr
       const legalId = resolveLegalAppointer(executorId, post);
       const candidates = generateCandidates(post, legalId);
 
-      // 连锁轮优先选新授（fresh），避免继续产生连锁
-      let pick = candidates.find(c => !usedIds.has(c.character.id));
+      // NPC 不会破格任命品位不足的候选人；连锁轮优先选新授（fresh）
+      let pick = candidates.find(c => !usedIds.has(c.character.id) && !c.underRank);
       if (round > 1) {
-        const freshPick = candidates.find(c => !usedIds.has(c.character.id) && c.tier === 'fresh');
+        const freshPick = candidates.find(c => !usedIds.has(c.character.id) && !c.underRank && c.tier === 'fresh');
         if (freshPick) pick = freshPick;
       }
       if (!pick) continue;

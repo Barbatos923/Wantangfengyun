@@ -7,23 +7,7 @@ import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getControlledZhou, getHeldPosts } from '@engine/official/officialUtils';
 import { positionMap } from '@data/positions';
-import { refreshPlayerLedger } from '@engine/interaction';
-
-/** 根据回拨率对所有附庸设置好感（不衰减）。回拨越高好感越低，以60%为零点。 */
-function applyRedistributionOpinion(playerId: string, newRate: number) {
-  const charStore = useCharacterStore.getState();
-  const characters = charStore.characters;
-  const vassals = getVassals(playerId, characters);
-  // 以 60% 为基准 0，回拨越高好感越高，每 10% 偏移 → +5 好感
-  const opinion = Math.floor((newRate - 60) / 10) * 5;
-  for (const v of vassals) {
-    charStore.setOpinion(v.id, playerId, {
-      reason: '回拨率',
-      value: opinion,
-      decayable: false,
-    });
-  }
-}
+import { executeRedistributionChange } from '@engine/interaction';
 
 interface RealmPanelProps {
   onClose: () => void;
@@ -293,14 +277,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                         disabled={redistributionRate <= 0}
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (playerId) {
-                            const newRate = Math.max(0, redistributionRate - 10);
-                            useCharacterStore.getState().updateCharacter(playerId, {
-                              redistributionRate: newRate,
-                            });
-                            applyRedistributionOpinion(playerId, newRate);
-                            refreshPlayerLedger();
-                          }
+                          if (playerId) executeRedistributionChange(playerId, -10);
                         }}
                       >−</button>
                       <span className="text-sm font-bold text-[var(--color-accent-gold)] w-10 text-center">{redistributionRate}%</span>
@@ -309,14 +286,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                         disabled={redistributionRate >= 100}
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (playerId) {
-                            const newRate = Math.min(100, redistributionRate + 10);
-                            useCharacterStore.getState().updateCharacter(playerId, {
-                              redistributionRate: newRate,
-                            });
-                            applyRedistributionOpinion(playerId, newRate);
-                            refreshPlayerLedger();
-                          }
+                          if (playerId) executeRedistributionChange(playerId, 10);
                         }}
                       >+</button>
                     </div>
@@ -325,7 +295,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                 </div>
               </div>
 
-              {/* 对下属的集权等级 */}
+              {/* 对下属的赋税等级 */}
               {player && (() => {
                 const vassals = getVassals(player.id, characters);
                 if (vassals.length === 0) return null;

@@ -4,6 +4,7 @@ import type { Character } from '@engine/character/types';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getRankTitle, calculateSalary, getDynamicTitle, getHeldPosts, getControlledZhou } from '@engine/official/officialUtils';
 import { isVassalOf } from '@engine/character/successionUtils';
+import { executeDesignateHeir } from '@engine/interaction';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import { usePanelStore } from '@ui/stores/panelStore';
@@ -235,15 +236,11 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                                   characters={characters}
                                   currentDate={undefined}
                                   onSelect={(charId) => {
-                                    const ts = useTerritoryStore.getState();
-                                    ts.updatePost(post.id, { designatedHeirId: charId });
-                                    if (capitalPostId) ts.updatePost(capitalPostId, { designatedHeirId: charId });
+                                    executeDesignateHeir(post.id, charId, capitalPostId);
                                     setHeirPickerPost(null);
                                   }}
                                   onClear={() => {
-                                    const ts = useTerritoryStore.getState();
-                                    ts.updatePost(post.id, { designatedHeirId: null });
-                                    if (capitalPostId) ts.updatePost(capitalPostId, { designatedHeirId: null });
+                                    executeDesignateHeir(post.id, null, capitalPostId);
                                     setHeirPickerPost(null);
                                   }}
                                   onClose={() => setHeirPickerPost(null)}

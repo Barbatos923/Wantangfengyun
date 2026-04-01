@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTurnManager } from '../../engine';
 import type { GameDate } from '../../engine';
 import { Era } from '../../engine';
+import EraPopup from './EraPopup';
 
 interface ReignEra {
   start: number;
@@ -56,15 +57,20 @@ function getEraBg(era: Era): string {
 
 const TimeControl: React.FC = () => {
   const { currentDate, era, advanceMonth } = useTurnManager();
+  const [showEra, setShowEra] = useState(false);
 
   return (
     <div className="flex items-center gap-3">
       <div className="text-[var(--color-text)] text-sm font-medium">
         {formatChineseDate(currentDate)}
       </div>
-      <span className={`text-xs px-2 py-0.5 rounded-full ${getEraBg(era)} text-[var(--color-bg)] font-bold`}>
+      <button
+        onClick={() => setShowEra(true)}
+        className={`text-xs px-2 py-0.5 rounded-full ${getEraBg(era)} text-[var(--color-bg)] font-bold hover:brightness-110 transition-all cursor-pointer`}
+      >
         {era}
-      </span>
+      </button>
+      {showEra && <EraPopup onClose={() => setShowEra(false)} />}
       <button
         onClick={advanceMonth}
         className="ml-2 px-4 py-1.5 text-sm font-bold rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] hover:brightness-110 active:brightness-90 transition-all"

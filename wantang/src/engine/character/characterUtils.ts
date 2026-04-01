@@ -3,6 +3,7 @@
 import type { Abilities, Character } from './types';
 import { ALL_TRAITS, traitMap, type TraitDef, type TraitCategory } from '@data/traits';
 import { randInt, random, shuffle } from '@engine/random.ts';
+import { getLegitimacyOpinion } from '@engine/official/officialUtils';
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {
@@ -198,6 +199,12 @@ export function calculateBaseOpinion(a: Character, b: Character): number {
     opinion += 5;
   }
 
+  // 正统性好感（实时从 Store 推导，见 officialUtils.getLegitimacyOpinion）
+  const bLegitimacy = getLegitimacyOpinion(b);
+  if (bLegitimacy) {
+    opinion += bLegitimacy.gapValue + bLegitimacy.absoluteValue;
+  }
+
   // 事件累积好感度
   const rel = a.relationships.find((r) => r.targetId === b.id);
   if (rel) {
@@ -267,6 +274,23 @@ export function getOpinionBreakdown(a: Character, b: Character): OpinionBreakdow
   }
   if (a.clan && a.clan === b.clan && a.id !== b.id) {
     entries.push({ label: '同族', value: 5 });
+  }
+
+  // 正统性好感（实时从 Store 推导）
+  const bLeg = getLegitimacyOpinion(b);
+  if (bLeg) {
+    if (bLeg.gapValue > 0) {
+      entries.push({ label: '正统性高于预期', value: bLeg.gapValue });
+    } else if (bLeg.gapValue >= -15) {
+      entries.push({ label: '正统性不及预期', value: bLeg.gapValue });
+    } else if (bLeg.gapValue < -15) {
+      entries.push({ label: '正统性严重不及预期', value: bLeg.gapValue });
+    }
+    if (bLeg.absoluteValue > 0) {
+      entries.push({ label: '天命所归', value: bLeg.absoluteValue });
+    } else if (bLeg.absoluteValue < 0) {
+      entries.push({ label: '名器尽失', value: bLeg.absoluteValue });
+    }
   }
 
   // 事件累积

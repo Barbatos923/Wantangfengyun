@@ -5,6 +5,7 @@ import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { getActualController } from '@engine/official/officialUtils';
+import { getRealmZhouCount } from '@engine/official/postQueries';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 
 function formatValue(value: number): string {
@@ -31,6 +32,7 @@ const ResourceBar: React.FC = () => {
     const pid = s.playerId;
     return pid ? s.characters.get(pid) : undefined;
   });
+  const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
   const playerLedger = useLedgerStore((s) => s.playerLedger);
   const { armies: milArmies, battalions: milBattalions } = useMilitaryStore();
@@ -41,9 +43,10 @@ const ResourceBar: React.FC = () => {
         { label: '钱', icon: '💰', value: 0, change: 0 },
         { label: '粮', icon: '🌾', value: 0, change: 0 },
         { label: '名望', icon: '⭐', value: 0, change: 0 },
-        { label: '合法性', icon: '🏛', value: 0, change: 0 },
+        { label: '正统性', icon: '🏛', value: 0, change: 0 },
         { label: '兵力', icon: '⚔', value: 0, change: 0 },
         { label: '领地', icon: '🏯', value: 0, change: 0 },
+        { label: '势力', icon: '🏴', value: 0, change: 0 },
       ];
     }
 
@@ -96,11 +99,12 @@ const ResourceBar: React.FC = () => {
       { label: '钱(贯)', icon: '💰', value: player.resources.money, change: monthlyMoney, title: moneyTitle },
       { label: '粮(斛)', icon: '🌾', value: player.resources.grain, change: monthlyGrain, title: grainTitle },
       { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
-      { label: '合法性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
+      { label: '正统性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
       { label: '兵力', icon: '⚔', value: totalTroops, change: 0 },
       { label: '领地', icon: '🏯', value: territoryCount, change: 0 },
+      { label: '势力', icon: '🏴', value: getRealmZhouCount(player.id, characters, territories), change: 0, title: '势力范围内的全部州数（含附庸领地）' },
     ];
-  }, [player, territories, playerLedger, milArmies, milBattalions]);
+  }, [player, characters, territories, playerLedger, milArmies, milBattalions]);
 
   return (
     <div className="flex items-center justify-evenly bg-[var(--color-bg-panel)] border-b border-[var(--color-border)] px-4 py-2 shrink-0">
