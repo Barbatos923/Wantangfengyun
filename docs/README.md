@@ -11,18 +11,18 @@
 
 | 文档 | 状态 | 说明 |
 |------|------|------|
-| [phase4ab-继承与铨选.md](design/phase4ab-继承与铨选.md) | 已实施 | Phase 4a+4b：继承法、铨选、考课系统设计 |
-| [继承法与人事任命-manus.md](design/继承法与人事任命-manus.md) | 已实施 | 辟署权机制、流官/宗法双轨、Post 扩展字段 |
-| [phase4c-王朝兴衰.md](design/phase4c-王朝兴衰.md) | **待实施** | 威望/正统性、时代转换、NPC叛乱、篡位/禅让 |
 | [positions.md](design/positions.md) | 已实施 | 46个职位模板完整列表 |
 
-## archive/ — 历史文档（已过时或被合并）
+## archive/ — 历史文档（已完成、已过时或被合并）
 
 | 文档 | 说明 |
 |------|------|
 | [GDD-v1.0.md](archive/GDD-v1.0.md) | 原版 GDD（角色/军事/谋略/派系/继承/史书章节仍为参考） |
 | [开发里程碑与阶段方案-原版.md](archive/开发里程碑与阶段方案-原版.md) | 开发前的初始规划 |
 | [Phase4-继承设计-纯文本副本.md](archive/Phase4-继承设计-纯文本副本.md) | phase4ab 的纯文本格式副本 |
+| [phase4ab-继承与铨选.md](design/phase4ab-继承与铨选.md) | 已实施 | Phase 4a+4b：继承法、铨选、考课系统设计 |
+| [继承法与人事任命-manus.md](design/继承法与人事任命-manus.md) | 已实施 | 辟署权机制、流官/宗法双轨、Post 扩展字段 |
+| [phase4c-王朝兴衰.md](design/phase4c-王朝兴衰.md) | 已实施 | 威望/正统性、时代转换、NPC叛乱、篡位/禅让 |
 
 ## reference/ — 参考资料
 
