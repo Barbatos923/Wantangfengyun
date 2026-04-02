@@ -51,7 +51,7 @@ export function executeDismiss(
     terrStore.updatePost(postId, {
       holderId: dismisserId,
       appointedBy: 'system',
-      appointedDate: { year: date.year, month: date.month },
+      appointedDate: { year: date.year, month: date.month, day: date.day },
     });
     // 该岗位绑定的军队随岗位易手
     useMilitaryStore.getState().syncArmyOwnersByPost(postId, dismisserId);
@@ -97,7 +97,7 @@ export function executeDismiss(
           terrStoreNow.updatePost(capitalPost.id, {
             holderId: dismisserId,
             appointedBy: 'system',
-            appointedDate: { year: date.year, month: date.month },
+            appointedDate: { year: date.year, month: date.month, day: date.day },
           });
           useMilitaryStore.getState().syncArmyOwnersByPost(capitalPost.id, dismisserId);
         }

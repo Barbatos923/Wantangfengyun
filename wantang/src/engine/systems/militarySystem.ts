@@ -87,7 +87,7 @@ export function runMilitarySystem(date: GameDate): void {
         const army = useMilitaryStore.getState().getArmy(bat.armyId);
         if (army) {
           useTurnManager.getState().addEvent({
-            id: `mutiny-${date.year}-${date.month}-${bat.id}`,
+            id: `mutiny-${date.year}-${date.month}-${date.day}-${bat.id}`,
             date,
             type: '兵变',
             actors: [army.ownerId],

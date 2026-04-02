@@ -164,7 +164,7 @@ export function executeAppoint(
   const baselineUpdate: Record<string, unknown> = {
     holderId: appointeeId,
     appointedBy: appointerId,
-    appointedDate: { year: date.year, month: date.month },
+    appointedDate: { year: date.year, month: date.month, day: date.day },
   };
   // 流官岗位：重置考课基线（任期从此刻起算）
   if (post?.successionLaw === 'bureaucratic') {
@@ -172,7 +172,7 @@ export function executeAppoint(
     baselineUpdate.reviewBaseline = {
       population: terr?.basePopulation ?? 0,
       virtue: appointee?.official?.virtue ?? 0,
-      date: { year: date.year, month: date.month },
+      date: { year: date.year, month: date.month, day: date.day },
     };
   }
   terrStore.updatePost(postId, baselineUpdate);
@@ -251,13 +251,13 @@ export function executeAppoint(
             const capitalUpdate: Record<string, unknown> = {
               holderId: appointeeId,
               appointedBy: appointerId,
-              appointedDate: { year: date.year, month: date.month },
+              appointedDate: { year: date.year, month: date.month, day: date.day },
             };
             if (capitalPost.successionLaw === 'bureaucratic') {
               capitalUpdate.reviewBaseline = {
                 population: capitalZhou.basePopulation,
                 virtue: appointee?.official?.virtue ?? 0,
-                date: { year: date.year, month: date.month },
+                date: { year: date.year, month: date.month, day: date.day },
               };
             }
             terrStore.updatePost(capitalPost.id, capitalUpdate);

@@ -1,9 +1,10 @@
 // ===== 核心类型定义 =====
 
-/** 游戏日期（农历） */
+/** 游戏日期（现实平年日历，无闰年） */
 export interface GameDate {
   year: number;
   month: number; // 1-12
+  day: number;   // 1-28/30/31（取决于月份）
 }
 
 /** 游戏速度 */

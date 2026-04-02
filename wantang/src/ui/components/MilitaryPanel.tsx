@@ -7,6 +7,7 @@ import { settleWar } from '@engine/military/warSettlement';
 import { calcPeaceAcceptance } from '@engine/military/warCalc';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { useTurnManager } from '@engine/TurnManager';
+import { diffMonths } from '@engine/dateUtils';
 import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish } from '@engine/interaction/militaryAction';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import type { Army, Battalion, UnitType } from '@engine/military/types';
@@ -775,7 +776,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                         const canForce = myScore >= 100;
                         const canSurrender = myScore <= -100;
                         const currentDate = useTurnManager.getState().currentDate;
-                        const warMonths = (currentDate.year - war.startDate.year) * 12 + (currentDate.month - war.startDate.month);
+                        const warMonths = diffMonths(war.startDate, currentDate);
 
                         // 和谈判定
                         const enemyId = isAttacker ? war.defenderId : war.attackerId;
@@ -867,7 +868,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                       {campCommander?.name ?? '无将领'}
                                     </span>
                                     <span className="text-xs text-[var(--color-text-muted)]">
-                                      {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}回合）`}
+                                      {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
                                       {camp.status === 'idle' && '待命'}
                                       {camp.status === 'marching' && `行军中`}
                                       {camp.status === 'sieging' && '围城中'}

@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import type { TransferPlan, PlayerTask } from './types';
 import type { GameDate } from '@engine/types';
 import type { ReviewPlan } from '@engine/systems/reviewSystem';
+import { isDateReached } from '@engine/dateUtils';
 
 interface NpcStoreState {
   // ── 旧字段（UI 兼容，TODO(phase6-cleanup): 待 AlertBar 改造后删除） ──
@@ -46,9 +47,6 @@ export const useNpcStore = create<NpcStoreState>((set, get) => ({
     playerTasks: s.playerTasks.filter((t) => t.id !== taskId),
   })),
   getExpiredTasks: (date) => {
-    return get().playerTasks.filter((t) =>
-      t.deadline.year < date.year ||
-      (t.deadline.year === date.year && t.deadline.month <= date.month),
-    );
+    return get().playerTasks.filter((t) => isDateReached(date, t.deadline));
   },
 }));

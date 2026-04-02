@@ -4,6 +4,7 @@ import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from
 import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useCharacterStore } from '@engine/character/CharacterStore';
 import { executeReward } from '@engine/interaction/militaryAction';
 import { registerBehavior } from './index';
 
@@ -100,7 +101,9 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
     }
     if (totalStrength === 0) return;
 
-    const money = actor.resources.money;
+    const fresh = useCharacterStore.getState().getCharacter(actor.id);
+    if (!fresh) return;
+    const money = fresh.resources.money;
     if (money <= 0) return;
 
     // 基准 10 万贯；钱多时多赏一点（超出部分的 5%）

@@ -3,6 +3,7 @@
 import type { Character } from '@engine/character/types';
 import type { Post, Territory } from '@engine/territory/types';
 import type { GameDate } from '@engine/types';
+import { diffMonths } from '@engine/dateUtils';
 import { positionMap } from '@data/positions';
 import { isVassalOf, findAppointRightHolder } from '@engine/character/successionUtils';
 import { getHeldPosts, findEmperorId } from './postQueries';
@@ -186,7 +187,7 @@ export function generateCandidates(
     // 新任减益：最近被任命的角色评分大幅降低，36个月内线性衰减
     if (currentDate && referencePost?.appointedDate) {
       const ad = referencePost.appointedDate;
-      const monthsSince = (currentDate.year - ad.year) * 12 + (currentDate.month - ad.month);
+      const monthsSince = diffMonths(ad, currentDate);
       const COOLDOWN_MONTHS = 36;
       if (monthsSince < COOLDOWN_MONTHS) {
         // 0个月 → -100，36个月 → 0

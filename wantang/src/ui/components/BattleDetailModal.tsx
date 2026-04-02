@@ -102,7 +102,7 @@ const BattleDetailModal: React.FC<Props> = ({ event, onClose }) => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-bold text-[var(--color-accent-gold)]">
-              ⚔ {event.date.year}年{event.date.month}月 · {terrName}之战
+              ⚔ {event.date.year}年{event.date.month}月{event.date.day}日 · {terrName}之战
             </h3>
             <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{event.description}</p>
           </div>

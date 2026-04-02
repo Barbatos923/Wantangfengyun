@@ -5,13 +5,14 @@ import type { Post, Territory } from '@engine/territory/types';
 import type { PositionTemplate } from '@engine/official/types';
 import type { GameDate } from '@engine/types';
 import { clamp } from '@engine/utils';
+import { diffMonths } from '@engine/dateUtils';
 
 /** 完整考课周期（月） */
 const FULL_CYCLE_MONTHS = 36;
 
-/** 两个日期之间的月数 */
+/** @deprecated 使用 dateUtils.diffMonths 代替 */
 export function monthsBetween(from: GameDate, to: GameDate): number {
-  return (to.year - from.year) * 12 + (to.month - from.month);
+  return diffMonths(from, to);
 }
 
 /** 考课结果条目 */

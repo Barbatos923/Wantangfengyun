@@ -60,19 +60,28 @@ wantang/src/
 
 ---
 
-## 四、月度结算管线
+## 四、日结/月结双层结算管线
 
-入口：`TurnManager.ts` → `settlement.ts`，**严格顺序**：
+时间系统采用**日结驱动**（现实平年日历，365天/年），各系统按不同频率触发。
 
+入口：`TurnManager.ts` → `settlement.ts`
+
+### 日结管线（每日触发，dailyCallback）
+- `warSystem` — 行军（marchSpeed 累积器）/战斗/围城/战争分数
+
+### 月结管线（每月初 day===1 触发，monthlyCallback），严格顺序：
 1. `characterSystem` — 健康/死亡/继承（必须最先）
 2. `NpcEngine` — NPC 决策（两遍：forced→重建快照→normal+概率掷骰）
-3. `populationSystem` — 年度人口
+3. `populationSystem` — 年度人口（仅 month===1）
 4. `socialSystem` — 好感/领地漂移/晋升
 5. `economySystem` — 经济/破产
 6. `militarySystem` — 征兵池/士气/兵变
-7. `warSystem` — 行军/战斗/围城/战争分数
-8. `eraSystem` — 时代进度
-9. `buildingSystem` — 建筑施工
+7. `eraSystem` — 时代进度
+8. `buildingSystem` — 建筑施工
+
+### 日期工具
+- `dateUtils.ts`：`getDaysInMonth` / `toAbsoluteDay` / `addDays` / `diffDays` / `diffMonths` 等
+- 禁止手写 `(y2-y1)*12+(m2-m1)` 日期算术，必须用 `dateUtils`
 
 **规则**：不要在 `settlement.ts` 中直接写业务逻辑，应当新建 System 或 NpcBehavior。
 

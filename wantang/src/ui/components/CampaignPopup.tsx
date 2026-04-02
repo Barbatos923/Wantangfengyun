@@ -122,7 +122,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
                 const army = armies.get(ia.armyId);
                 return army ? (
                   <span key={ia.armyId} className="inline-block mr-1.5 text-[var(--color-accent-gold)]">
-                    {army.name}（{ia.turnsLeft}回合）
+                    {army.name}（{ia.turnsLeft}日）
                   </span>
                 ) : null;
               })}

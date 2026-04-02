@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority, type GameEvent } from '@engine/types';
+import { diffDays } from '@engine/dateUtils';
 import BattleDetailModal from './BattleDetailModal';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -56,11 +57,11 @@ const AlertBar: React.FC = () => {
     return { draftPosts: draft, directPosts: direct };
   }, [allVacancies, isEmperor, playerId]);
 
-  // 显示最近3个月的重要事件
+  // 显示最近90天的重要事件
   const recentEvents = events.filter((e) => {
     if (e.priority < EventPriority.Major) return false;
-    const monthsDiff = (currentDate.year - e.date.year) * 12 + (currentDate.month - e.date.month);
-    return monthsDiff >= 0 && monthsDiff <= 3;
+    const daysDiff = diffDays(e.date, currentDate);
+    return daysDiff >= 0 && daysDiff <= 90;
   }).slice(-5);
 
   if (recentEvents.length === 0 && directPosts.length === 0 && !pendingPlan && !pendingReviewPlan && draftPosts.length === 0) return null;
@@ -132,7 +133,7 @@ const AlertBar: React.FC = () => {
             <div
               key={event.id}
               className="flex items-center gap-1 bg-[var(--color-bg-surface)] text-[var(--color-text-muted)] px-2.5 py-1 rounded text-xs hover:text-[var(--color-text)] cursor-pointer transition-colors max-w-xs"
-              title={isClickable ? `点击查看战斗详情` : `${event.date.year}年${event.date.month}月 ${event.description}`}
+              title={isClickable ? `点击查看战斗详情` : `${event.date.year}年${event.date.month}月${event.date.day}日 ${event.description}`}
               onClick={() => handleClick(event)}
             >
               <span>{icon}</span>

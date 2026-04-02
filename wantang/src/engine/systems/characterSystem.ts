@@ -86,7 +86,7 @@ export function runCharacterSystem(date: GameDate): void {
             terrStore.updatePost(post.id, {
               holderId: receiver,
               appointedBy: heir ? 'succession' : 'escheat',
-              appointedDate: { year: date.year, month: date.month },
+              appointedDate: { year: date.year, month: date.month, day: date.day },
             });
             milStore.syncArmyOwnersByPost(post.id, receiver);
 
@@ -100,7 +100,7 @@ export function runCharacterSystem(date: GameDate): void {
                   terrStore.updatePost(capPost.id, {
                     holderId: receiver,
                     appointedBy: heir ? 'succession' : 'escheat',
-                    appointedDate: { year: date.year, month: date.month },
+                    appointedDate: { year: date.year, month: date.month, day: date.day },
                   });
                   milStore.syncArmyOwnersByPost(capPost.id, receiver);
                 }
@@ -162,7 +162,7 @@ export function runCharacterSystem(date: GameDate): void {
       if (hadClanPost) {
         turnMgr.addEvent({
           id: crypto.randomUUID(),
-          date: { year: date.year, month: date.month },
+          date: { year: date.year, month: date.month, day: date.day },
           type: primaryHeir ? '继位' : '绝嗣',
           actors: primaryHeir ? [deadId, primaryHeir] : [deadId],
           territories: [],
@@ -176,7 +176,7 @@ export function runCharacterSystem(date: GameDate): void {
       if (vacantPostNames.length > 0) {
         turnMgr.addEvent({
           id: crypto.randomUUID(),
-          date: { year: date.year, month: date.month },
+          date: { year: date.year, month: date.month, day: date.day },
           type: '岗位空缺',
           actors: [deadId],
           territories: [],
@@ -273,7 +273,7 @@ export function runCharacterSystem(date: GameDate): void {
         } else {
           turnMgr.addEvent({
             id: crypto.randomUUID(),
-            date: { year: date.year, month: date.month },
+            date: { year: date.year, month: date.month, day: date.day },
             type: '王朝覆灭',
             actors: [deadId],
             territories: [],

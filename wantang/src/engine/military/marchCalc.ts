@@ -135,8 +135,8 @@ export function findPath(
 // ── 集结时间 ──
 
 /**
- * 计算军队从当前位置到行营集结点的集结时间（回合数）。
- * 同道=0，同国=1，不同国=2。
+ * 计算军队从当前位置到行营集结点的集结时间（天数）。
+ * 同道=0天，同国=10天，不同国=20天。
  */
 export function getMusteringTime(
   armyLocationId: string,
@@ -147,7 +147,7 @@ export function getMusteringTime(
 
   const armyTerr = territories.get(armyLocationId);
   const campTerr = territories.get(campaignLocationId);
-  if (!armyTerr || !campTerr) return 2;
+  if (!armyTerr || !campTerr) return 20;
 
   // 同道
   if (armyTerr.parentId && armyTerr.parentId === campTerr.parentId) return 0;
@@ -155,9 +155,9 @@ export function getMusteringTime(
   // 同国：道的 parentId 是国
   const armyDao = armyTerr.parentId ? territories.get(armyTerr.parentId) : undefined;
   const campDao = campTerr.parentId ? territories.get(campTerr.parentId) : undefined;
-  if (armyDao?.parentId && armyDao.parentId === campDao?.parentId) return 1;
+  if (armyDao?.parentId && armyDao.parentId === campDao?.parentId) return 10;
 
-  return 2;
+  return 20;
 }
 
 // ── 补给系数 ──

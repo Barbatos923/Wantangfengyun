@@ -1,6 +1,7 @@
 // ===== 战争系统：行营推进/战斗/围城/战争分数 =====
 
 import type { GameDate } from '@engine/types.ts';
+import { diffDays, getDaysInMonth } from '@engine/dateUtils.ts';
 import { EventPriority } from '@engine/types.ts';
 import { useCharacterStore } from '@engine/character/CharacterStore.ts';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore.ts';
@@ -13,6 +14,8 @@ import * as battleEngine from '@engine/military/battleEngine.ts';
 import { ALL_EDGES as mapEdges } from '@data/mapTopology.ts';
 import { getRealmZhouCount } from '@engine/official/postQueries.ts';
 import { findPath } from '@engine/military/marchCalc.ts';
+import { getArmyMarchSpeed } from '@engine/military/militaryCalc.ts';
+import { unitTypeMap } from '@data/unitTypes.ts';
 
 /** 判断一个州的控制者是否属于 enemyId 的势力（本人或其附庸） */
 function isEnemyTerritory(
@@ -118,35 +121,57 @@ export function runWarSystem(date: GameDate): void {
         useWarStore.getState().updateCampaign(campaign.id, { musteringTurnsLeft: campaign.musteringTurnsLeft - 1 });
       }
     }
-    // 行军中：每月推进一格
+    // 行军中：每日按 marchSpeed 累积推进
     else if (campaign.status === 'marching' && campaign.route.length > 0) {
-      const nextProgress = campaign.routeProgress + 1;
-      if (nextProgress >= campaign.route.length - 1) {
+      // 计算行营行军速度（木桶效应：取所有军最慢速度）
+      const milStore = useMilitaryStore.getState();
+      let minSpeed = Infinity;
+      for (const armyId of campaign.armyIds) {
+        const army = milStore.armies.get(armyId);
+        if (army) {
+          const speed = getArmyMarchSpeed(army, milStore.battalions, unitTypeMap);
+          if (speed < minSpeed) minSpeed = speed;
+        }
+      }
+      if (minSpeed === Infinity) minSpeed = 1.0;
+      const dailyRate = minSpeed / 10; // marchSpeed=1.0 → 10天一格
+
+      let mp = campaign.marchProgress + dailyRate;
+      let rp = campaign.routeProgress;
+
+      while (mp >= 1.0 && rp < campaign.route.length - 1) {
+        mp -= 1.0;
+        rp += 1;
+      }
+
+      if (rp >= campaign.route.length - 1) {
         // 到达目的地
         const destId = campaign.route[campaign.route.length - 1];
         useWarStore.getState().updateCampaign(campaign.id, {
           locationId: destId,
-          routeProgress: nextProgress,
+          routeProgress: rp,
+          marchProgress: 0,
           status: 'idle',
           targetId: null,
           route: [],
         });
-        // 移动该行营下所有军的 locationId
-        const campArmies = campaign.armyIds;
-        for (const armyId of campArmies) {
+        for (const armyId of campaign.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: destId });
         }
-      } else {
-        // 推进一格
-        const nextLocId = campaign.route[nextProgress];
+      } else if (rp !== campaign.routeProgress) {
+        // 推进了至少一格
+        const nextLocId = campaign.route[rp];
         useWarStore.getState().updateCampaign(campaign.id, {
           locationId: nextLocId,
-          routeProgress: nextProgress,
+          routeProgress: rp,
+          marchProgress: mp,
         });
-        // 移动军队
         for (const armyId of campaign.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: nextLocId });
         }
+      } else {
+        // 仅累积 marchProgress，未到达下一格
+        useWarStore.getState().updateCampaign(campaign.id, { marchProgress: mp });
       }
     }
   }
@@ -287,7 +312,7 @@ export function runWarSystem(date: GameDate): void {
     const terrName = useTerritoryStore.getState().territories.get(campaign.locationId)?.name ?? '';
 
     useTurnManager.getState().addEvent({
-      id: `battle-${date.year}-${date.month}-${campaign.locationId}`,
+      id: `battle-${date.year}-${date.month}-${date.day}-${campaign.locationId}`,
       date,
       type: '野战',
       actors: [campaign.ownerId, enemyCampaign.ownerId],
@@ -337,11 +362,13 @@ export function runWarSystem(date: GameDate): void {
 
     const milState = useMilitaryStore.getState();
 
-    // 守军损耗
+    const dim = getDaysInMonth(date.month);
+
+    // 守军损耗（日结：月损耗率 / 当月天数）
     const defStats = siegeUtils.calcDefenderStats(siege.territoryId, defenderId, milState.armies, milState.battalions);
-    const attritionRate = siegeUtils.calcDefenderAttritionRate(defStats.avgElite, defStats.avgMorale);
+    const monthlyAttritionRate = siegeUtils.calcDefenderAttritionRate(defStats.avgElite, defStats.avgMorale);
     siegeUtils.applyDefenderAttrition(
-      siege.territoryId, defenderId, attritionRate,
+      siege.territoryId, defenderId, monthlyAttritionRate / dim,
       milState.armies, milState.battalions,
       useMilitaryStore.getState().batchMutateBattalions,
     );
@@ -351,8 +378,9 @@ export function runWarSystem(date: GameDate): void {
     const troops = siegeUtils.calcCampaignTroops(campaign.armyIds, milAfter.armies, milAfter.battalions);
     const siegeValue = siegeUtils.calcTotalSiegeValue(campaign.armyIds, milAfter.armies, milAfter.battalions);
     const defenderTroops = siegeUtils.calcDefenderTroops(siege.territoryId, defenderId, milAfter.armies, milAfter.battalions);
-    const progress = siegeUtils.calcMonthlyProgress(troops, siegeValue, terr, defenderTroops);
-    const newProgress = Math.min(100, siege.progress + progress);
+    const monthlyProgress = siegeUtils.calcMonthlyProgress(troops, siegeValue, terr, defenderTroops);
+    const dailyProgress = monthlyProgress / dim;
+    const newProgress = Math.min(100, siege.progress + dailyProgress);
 
     if (newProgress >= 100) {
       // 城破！
@@ -395,7 +423,7 @@ export function runWarSystem(date: GameDate): void {
 
       // f. 事件
       useTurnManager.getState().addEvent({
-        id: `siege-fall-${date.year}-${date.month}-${siege.territoryId}`,
+        id: `siege-fall-${date.year}-${date.month}-${date.day}-${siege.territoryId}`,
         date,
         type: '城破',
         actors: [campaign.ownerId],
@@ -496,14 +524,15 @@ export function runWarSystem(date: GameDate): void {
       const hasProgress = attackerCampaigns.some(
         (c) => c.status === 'marching' || c.status === 'sieging',
       );
-      // 跳过刚宣战还没来得及动员的战争（给1个月缓冲）
-      const warMonths = (date.year - war.startDate.year) * 12 + (date.month - war.startDate.month);
-      if (!hasProgress && warMonths >= 2) {
-        // 攻方无进展，分数向防方倾斜 -2
+      // 跳过刚宣战还没来得及动员的战争（给60天缓冲）
+      const warDays = diffDays(war.startDate, date);
+      if (!hasProgress && warDays >= 60) {
+        // 攻方无进展，分数向防方倾斜（日结：-2/月 → -2/当月天数/天）
+        const dim = getDaysInMonth(date.month);
         const latestWar = useWarStore.getState().wars.get(war.id);
         if (latestWar && latestWar.status === 'active') {
           useWarStore.getState().updateWar(war.id, {
-            warScore: Math.max(-100, latestWar.warScore - 2),
+            warScore: Math.max(-100, latestWar.warScore - 2 / dim),
           });
         }
       }

@@ -14,7 +14,7 @@ interface WarState {
     defenderId: string,
     casusBelli: CasusBelli,
     targetTerritoryIds: string[],
-    date: { year: number; month: number },
+    date: { year: number; month: number; day: number },
   ): War;
   endWar(warId: string, result: War['result']): void;
   getActiveWars(): War[];
@@ -38,7 +38,7 @@ interface WarState {
     warId: string,
     campaignId: string,
     territoryId: string,
-    date: { year: number; month: number },
+    date: { year: number; month: number; day: number },
   ): Siege;
   endSiege(siegeId: string): void;
   getSiegeAtTerritory(territoryId: string): Siege | undefined;
@@ -119,6 +119,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
       targetId: null,
       route: [],
       routeProgress: 0,
+      marchProgress: 0,
       status: 'idle',
       musteringTurnsLeft: 0,
     };
@@ -148,6 +149,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
         targetId,
         route,
         routeProgress: 0,
+        marchProgress: 0,
         status: 'marching',
       });
       return { campaigns };

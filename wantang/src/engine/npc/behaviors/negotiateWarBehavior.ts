@@ -6,6 +6,7 @@ import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { calcPeaceProposalWeight, calcPeaceAcceptance } from '@engine/military/warCalc';
 import { settleWar } from '@engine/military/warSettlement';
+import { diffMonths } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 行为定义 ────────────────────────────────────────────
@@ -35,8 +36,7 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
       const isAttacker = war.attackerId === actor.id;
       const myScore = isAttacker ? war.warScore : -war.warScore;
       const currentDate = ctx.date;
-      const warMonths = (currentDate.year - war.startDate.year) * 12
-        + (currentDate.month - war.startDate.month);
+      const warMonths = diffMonths(war.startDate, currentDate);
 
       const weight = calcPeaceProposalWeight({
         myScore,

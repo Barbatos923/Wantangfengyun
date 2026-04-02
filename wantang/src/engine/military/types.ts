@@ -96,7 +96,7 @@ export interface War {
   casusBelli: CasusBelli;
   targetTerritoryIds: string[];
   warScore: number; // -100~+100，正=攻方优势，负=防方优势
-  startDate: { year: number; month: number };
+  startDate: { year: number; month: number; day: number };
   status: 'active' | 'ended';
   result?: 'attackerWin' | 'defenderWin' | 'whitePeace';
   previousOverlordId?: string; // 独立战争：攻方宣战前的领主，败北时恢复
@@ -128,8 +128,9 @@ export interface Campaign {
   targetId: string | null;
   route: string[];
   routeProgress: number;
+  marchProgress: number; // 0.0~1.0 日行军累积器
   status: 'mustering' | 'marching' | 'idle' | 'sieging';
-  musteringTurnsLeft: number;
+  musteringTurnsLeft: number; // 单位：天
   phaseStrategies: PhaseStrategies; // 玩家预设的阶段策略
 }
 
@@ -168,5 +169,5 @@ export interface Siege {
   campaignId: string;
   territoryId: string;
   progress: number;
-  startDate: { year: number; month: number };
+  startDate: { year: number; month: number; day: number };
 }
