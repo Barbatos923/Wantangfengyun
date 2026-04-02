@@ -22,8 +22,10 @@ const AlertBar: React.FC = () => {
   const [draftOpen, setDraftOpen] = useState(false);
   const [transferPlanOpen, setTransferPlanOpen] = useState(false);
   const [reviewPlanOpen, setReviewPlanOpen] = useState(false);
-  const pendingPlan = useNpcStore((s) => s.pendingPlan);
-  const pendingReviewPlan = useNpcStore((s) => s.pendingReviewPlan);
+  const playerTasks = useNpcStore((s) => s.playerTasks);
+  const draftPlan = useNpcStore((s) => s.draftPlan);
+  const appointApproveTask = useMemo(() => playerTasks.find(t => t.type === 'appoint-approve') ?? null, [playerTasks]);
+  const reviewTask = useMemo(() => playerTasks.find(t => t.type === 'review') ?? null, [playerTasks]);
   const territories = useTerritoryStore((s) => s.territories);
   const centralPosts = useTerritoryStore((s) => s.centralPosts);
 
@@ -38,13 +40,16 @@ const AlertBar: React.FC = () => {
 
   // 分流：玩家是皇帝 → 全部走直辖铨选（直接执行）；非皇帝 → 作为经办人拟草稿
   // 作为经办人的岗位 = resolveAppointAuthority 指向自己的岗位
+  // 已写入 draftPlan 的岗位不再提示（草稿已提交，等待下月审批）
   const { draftPosts, directPosts } = useMemo(() => {
     if (isEmperor || !playerId) {
       return { draftPosts: [] as Post[], directPosts: allVacancies };
     }
+    const draftedPostIds = new Set(draftPlan?.entries.map(e => e.postId) ?? []);
     const draft: Post[] = [];
     const direct: Post[] = [];
     for (const post of allVacancies) {
+      if (draftedPostIds.has(post.id)) continue; // 已进入草案，不重复提示
       const authority = resolveAppointAuthority(post);
       if (authority === playerId) {
         // 玩家是这个岗位的经办人（吏部/宰相/辟署权）→ 走草稿流程
@@ -55,7 +60,7 @@ const AlertBar: React.FC = () => {
       }
     }
     return { draftPosts: draft, directPosts: direct };
-  }, [allVacancies, isEmperor, playerId]);
+  }, [allVacancies, isEmperor, playerId, draftPlan]);
 
   // 显示最近90天的重要事件
   const recentEvents = events.filter((e) => {
@@ -64,7 +69,7 @@ const AlertBar: React.FC = () => {
     return daysDiff >= 0 && daysDiff <= 90;
   }).slice(-5);
 
-  if (recentEvents.length === 0 && directPosts.length === 0 && !pendingPlan && !pendingReviewPlan && draftPosts.length === 0) return null;
+  if (recentEvents.length === 0 && directPosts.length === 0 && !appointApproveTask && !reviewTask && draftPosts.length === 0) return null;
 
   const handleClick = (event: GameEvent) => {
     if (event.type === '野战' && event.payload) {
@@ -76,14 +81,14 @@ const AlertBar: React.FC = () => {
     <>
       <div className="flex flex-wrap items-center gap-2 p-3">
         {/* 审批链：皇帝审批调动名单 */}
-        {pendingPlan && pendingPlan.entries.length > 0 && (
+        {appointApproveTask && (appointApproveTask.data as { entries: unknown[] }).entries.length > 0 && (
           <div
             className="flex items-center gap-1 bg-[var(--color-accent-gold)]/20 text-[var(--color-accent-gold)] px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-[var(--color-accent-gold)]/30 transition-colors border border-[var(--color-accent-gold)]/40"
             onClick={() => setTransferPlanOpen(true)}
             title="点击审批调动名单"
           >
             <span>📜</span>
-            <span>{pendingPlan.entries.length}项调动待审批</span>
+            <span>{(appointApproveTask!.data as { entries: unknown[] }).entries.length}项调动待审批</span>
           </div>
         )}
         {/* 审批链：玩家拟定铨选草案 */}
@@ -98,14 +103,14 @@ const AlertBar: React.FC = () => {
           </div>
         )}
         {/* 考课审批 */}
-        {pendingReviewPlan && pendingReviewPlan.entries.length > 0 && (
+        {reviewTask && (reviewTask.data as { entries: unknown[] }).entries.length > 0 && (
           <div
             className="flex items-center gap-1 bg-orange-500/20 text-orange-400 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-orange-500/30 transition-colors border border-orange-500/40"
             onClick={() => setReviewPlanOpen(true)}
             title="点击审批考课结果"
           >
             <span>📝</span>
-            <span>{pendingReviewPlan.entries.length}项考课待审</span>
+            <span>{(reviewTask!.data as { entries: unknown[] }).entries.length}项考课待审</span>
           </div>
         )}
         {/* 直辖空缺（非审批链，如辟署权域内空缺） */}
@@ -161,10 +166,10 @@ const AlertBar: React.FC = () => {
         />
       )}
       {/* 皇帝审批调动名单 */}
-      {transferPlanOpen && pendingPlan && (
+      {transferPlanOpen && appointApproveTask && (
         <TransferPlanFlow onClose={() => setTransferPlanOpen(false)} />
       )}
-      {reviewPlanOpen && pendingReviewPlan && (
+      {reviewPlanOpen && reviewTask && (
         <ReviewPlanFlow onClose={() => setReviewPlanOpen(false)} />
       )}
     </>

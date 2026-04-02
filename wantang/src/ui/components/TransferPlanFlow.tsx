@@ -33,7 +33,8 @@ const TIER_CLASS: Record<CandidateTier, string> = {
 };
 
 export default function TransferPlanFlow({ onClose }: TransferPlanFlowProps) {
-  const plan = useNpcStore((s) => s.pendingPlan);
+  const task = useNpcStore((s) => s.playerTasks.find(t => t.type === 'appoint-approve') ?? null);
+  const plan = task ? (task.data as import('@engine/npc/types').TransferPlan) : null;
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
   const centralPosts = useTerritoryStore((s) => s.centralPosts);
@@ -185,6 +186,7 @@ export default function TransferPlanFlow({ onClose }: TransferPlanFlowProps) {
 
   function handleApprove() {
     executeTransferPlan({ entries, date: plan!.date });
+    if (task) useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 

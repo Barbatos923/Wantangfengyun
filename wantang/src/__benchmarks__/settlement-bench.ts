@@ -205,7 +205,7 @@ export function runBenchmark() {
     const month = (r % 12) + 1;
     const year = startYear + Math.floor(r / 12);
     const rs = performance.now();
-    runMonthlySettlement({ year, month });
+    runMonthlySettlement({ year, month, day: 1 });
     const re = performance.now();
     const elapsed = re - rs;
     roundTimes.push(elapsed);

@@ -1,16 +1,18 @@
-// ===== NPC Engine 框架入口（统一决策循环） =====
+// ===== NPC Engine 框架入口（日结化决策循环） =====
 
 import type { GameDate } from '@engine/types';
 import type { TransferPlan, NpcBehavior, NpcContext } from './types';
+import type { ReviewEntry } from '@engine/systems/reviewSystem';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from './NpcStore';
-import { executeAppoint } from '@engine/interaction';
+import { executeAppoint, executeDismiss } from '@engine/interaction';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
 import { calcMaxActions } from '@engine/character/personalityUtils';
 import { random } from '@engine/random';
+import { addDays } from '@engine/dateUtils';
 
 // 导入行为模块以触发注册
 import './behaviors/appointBehavior';
@@ -30,13 +32,65 @@ export function executeTransferPlan(plan: TransferPlan): void {
   for (const entry of plan.entries) {
     executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
   }
-  useNpcStore.getState().setPendingPlan(null);
+}
+
+// ── 哈希槽位调度 ─────────────────────────────────────────
+
+/** 计算角色+行为的月内基础槽位日（1-28） */
+export function getBehaviorSlot(actorId: string, behaviorId: string): number {
+  let hash = 0;
+  const key = actorId + ':' + behaviorId;
+  for (let i = 0; i < key.length; i++) {
+    hash = ((hash << 5) - hash + key.charCodeAt(i)) | 0;
+  }
+  return (Math.abs(hash) % 28) + 1;
+}
+
+/**
+ * 根据品级分档展开月内槽位日。
+ * - 王公级 (25+): 2次/月 — base, base+14
+ * - 节度使级 (17-24): 1次/月 — base
+ * - 刺史级 (12-16): 1次/月 — base（跨月门控另行处理）
+ * - 县令级 (0-11): 1次/月 — base（跨月门控另行处理）
+ */
+export function getSlotDays(baseSlot: number, rankLevel: number): number[] {
+  const slots = [baseSlot];
+  if (rankLevel >= 25) {
+    slots.push(((baseSlot - 1 + 14) % 28) + 1);
+  }
+  return slots;
+}
+
+/**
+ * 判断当月是否为某角色某行为的活跃月。
+ * - 王公/节度使: 每月活跃
+ * - 刺史: 每2月活跃一次（按哈希决定奇偶月）
+ * - 县令: 每3月活跃一次（按哈希决定月份）
+ */
+export function isActiveMonth(month: number, actorId: string, behaviorId: string, rankLevel: number): boolean {
+  if (rankLevel >= 17) return true; // 节度使+：每月
+  const base = getBehaviorSlot(actorId, behaviorId);
+  if (rankLevel >= 12) return month % 2 === base % 2; // 刺史：每2月
+  return month % 3 === base % 3; // 县令：每3月
+}
+
+/** 判断当天是否为某角色某行为的槽位日（含跨月门控） */
+export function isSlotDay(day: number, month: number, actorId: string, behaviorId: string, rankLevel: number): boolean {
+  if (!isActiveMonth(month, actorId, behaviorId, rankLevel)) return false;
+  const base = getBehaviorSlot(actorId, behaviorId);
+  return getSlotDays(base, rankLevel).includes(day);
+}
+
+/** 获取行为的有效调度频率（显式设置 > 从 playerMode 推断） */
+function getEffectiveSchedule(behavior: NpcBehavior): 'daily' | 'monthly-slot' {
+  if (behavior.schedule) return behavior.schedule;
+  return behavior.playerMode === 'push-task' ? 'daily' : 'monthly-slot';
 }
 
 // ── 前置步骤 ───────────────────────────────────────────────
 
-/** 步骤 1：处理上月铨选草稿提交 */
-function handleDraftSubmission(): void {
+/** 步骤 1：处理铨选草稿提交（每天检测） */
+function handleDraftSubmission(date: GameDate): void {
   const npcStore = useNpcStore.getState();
   const draft = npcStore.draftPlan;
   if (!draft || draft.entries.length === 0) return;
@@ -45,9 +99,15 @@ function handleDraftSubmission(): void {
   const { territories, centralPosts } = useTerritoryStore.getState();
   const emperorId = findEmperorId(territories, centralPosts);
 
-  if (emperorId === playerId) {
-    // 玩家是皇帝 → 转为 pendingPlan 等待审批
-    npcStore.setPendingPlan(draft);
+  if (emperorId && emperorId === playerId) {
+    // 玩家是皇帝 → 创建 appoint-approve PlayerTask 等待审批
+    npcStore.addPlayerTask({
+      id: crypto.randomUUID(),
+      type: 'appoint-approve',
+      actorId: emperorId,
+      data: { entries: draft.entries, date: draft.date },
+      deadline: addDays(date, 30),
+    });
   } else {
     // NPC 皇帝自动批准 → 立即执行
     for (const entry of draft.entries) {
@@ -57,19 +117,32 @@ function handleDraftSubmission(): void {
   npcStore.setDraftPlan(null);
 }
 
-/** 步骤 2：超时 PlayerTask 兜底执行 */
+/** 步骤 2：超时 PlayerTask 兜底执行（每天检测） */
 function handleExpiredPlayerTasks(date: GameDate): void {
   const npcStore = useNpcStore.getState();
   const expired = npcStore.getExpiredTasks(date);
 
   for (const task of expired) {
-    // 查找对应行为的 executeAsNpc 兜底
-    const behavior = getAllBehaviors().find(b => b.id === task.type);
-    if (behavior) {
-      const actor = useCharacterStore.getState().getCharacter(task.actorId);
-      if (actor) {
-        const ctx = buildNpcContext();
-        behavior.executeAsNpc(actor, task.data, ctx);
+    if (task.type === 'appoint-approve') {
+      // 皇帝超时未审批 → 自动批准执行
+      const data = task.data as { entries: TransferPlan['entries'] };
+      for (const entry of data.entries) {
+        executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+      }
+    } else if (task.type === 'review') {
+      // 玩家超时未处理考课 → 自动执行所有罢免
+      const data = task.data as { entries: ReviewEntry[] };
+      for (const entry of data.entries) {
+        executeDismiss(entry.postId, entry.legalAppointerId);
+      }
+    } else {
+      // 通用 behavior dispatch（用于未来 push-task 行为）
+      const behavior = getAllBehaviors().find(b => b.id === task.type);
+      if (behavior) {
+        const actor = useCharacterStore.getState().getCharacter(task.actorId);
+        if (actor) {
+          behavior.executeAsNpc(actor, task.data, buildNpcContext());
+        }
       }
     }
     npcStore.removePlayerTask(task.id);
@@ -98,7 +171,26 @@ function collectActors(characters: Map<string, import('@engine/character/types')
   return actors;
 }
 
-// ── 月结入口 ───────────────────────────────────────────────
+// ── 岗位门控检查 ──────────────────────────────────────────
+
+/** 检查 actor 是否通过行为的岗位门控 */
+function passesPostGate(actor: import('@engine/character/types').Character, behavior: NpcBehavior, centralPosts: import('@engine/territory/types').Post[]): boolean {
+  if (!behavior.requiredTemplateIds?.length) return true;
+
+  const { holderIndex, postIndex } = useTerritoryStore.getState();
+  const postIds = holderIndex.get(actor.id) ?? [];
+  return (
+    postIds.some(pid => {
+      const p = postIndex.get(pid);
+      return p && behavior.requiredTemplateIds!.includes(p.templateId);
+    }) ||
+    centralPosts.some(
+      p => p.holderId === actor.id && behavior.requiredTemplateIds!.includes(p.templateId)
+    )
+  );
+}
+
+// ── 日结入口 ───────────────────────────────────────────────
 
 /** 执行单个任务（根据 playerMode 路由） */
 function executeTask(
@@ -123,20 +215,22 @@ function executeTask(
 }
 
 /**
- * NPC Engine 每月入口（统一决策循环）。
+ * NPC Engine 日结入口（每天调用）。
  *
  * 流程：
- * 1. 前置：处理上月铨选草稿提交 + 超时兜底
- * 2. 第一遍：forced 任务（考课等，会改变世界状态）
+ * 1. 前置：处理铨选草稿提交 + 超时兜底（每天检测）
+ * 2. 第一遍：forced 任务（考课等，每天检测，会改变世界状态）
  * 3. 重建快照（forced 任务可能产生空缺等变化）
- * 4. 第二遍：normal 任务（铨选、宣战、要求效忠等）
+ * 4. 第二遍：normal 任务
+ *    - daily 行为（push-task）：每天对所有 actors 执行 generateTask
+ *    - monthly-slot 行为（skip）：仅在哈希槽位日执行，品级越高频率越高
  */
-export function runNpcEngine(date: GameDate): void {
-  // ── 前置步骤 ──
-  handleDraftSubmission();
+export function runDailyNpcEngine(date: GameDate): void {
+  // ── 前置步骤（每天） ──
+  handleDraftSubmission(date);
   handleExpiredPlayerTasks(date);
 
-  // ── 第一遍：forced 任务（考课等，会改变世界状态） ──
+  // ── 第一遍：forced 任务（每天检测） ──
   {
     const ctx1 = buildNpcContext();
     const actors1 = collectActors(ctx1.characters, ctx1.rankLevelCache);
@@ -144,6 +238,8 @@ export function runNpcEngine(date: GameDate): void {
 
     for (const actor of actors1) {
       for (const behavior of behaviors1) {
+        if (!passesPostGate(actor, behavior, ctx1.centralPosts)) continue;
+
         const result = behavior.generateTask(actor, ctx1);
         if (!result || !result.forced) continue;
         executeTask(actor, { behavior, data: result.data }, ctx1);
@@ -156,7 +252,7 @@ export function runNpcEngine(date: GameDate): void {
   const actors = collectActors(ctx.characters, ctx.rankLevelCache);
   const behaviors = getAllBehaviors();
 
-  // ── 第二遍：normal 任务（铨选、宣战、要求效忠等） ──
+  // ── 第二遍：normal 任务（按 schedule 分流） ──
   for (const actor of actors) {
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) continue;
@@ -170,8 +266,18 @@ export function runNpcEngine(date: GameDate): void {
     const voluntaryTasks: Array<{ behavior: NpcBehavior; data: unknown; weight: number }> = [];
 
     for (const behavior of behaviors) {
-      // 有 pendingPlan 等待审批时跳过铨选（避免重复拟草）
-      if (behavior.id === 'appoint' && useNpcStore.getState().pendingPlan) continue;
+      // 有 appoint-approve 任务等待审批时跳过铨选（避免重复拟草）
+      if (behavior.id === 'appoint' && useNpcStore.getState().playerTasks.some(t => t.type === 'appoint-approve')) continue;
+
+      if (!passesPostGate(actor, behavior, ctx.centralPosts)) continue;
+
+      // ── 调度频率过滤 ──
+      const schedule = getEffectiveSchedule(behavior);
+      if (schedule === 'monthly-slot') {
+        // 仅在哈希槽位日执行
+        if (!isSlotDay(date.day, date.month, actor.id, behavior.id, rankLevel)) continue;
+      }
+      // daily 行为：每天都执行 generateTask
 
       const result = behavior.generateTask(actor, ctx);
       if (!result || result.forced) continue;

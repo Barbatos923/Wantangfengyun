@@ -50,7 +50,7 @@ const ARCHIVE_AGE_MONTHS = 12;
 
 /** 核心回合管理 Store */
 export const useTurnManager = create<TurnManagerState>((set, get) => ({
-  currentDate: { year: 870, month: 1, day: 1 },
+  currentDate: { year: 870, month: 1, day: 2 },
   speed: GameSpeed.Normal,
   era: Era.WeiShi,
   stabilityProgress: 0,

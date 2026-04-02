@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTurnManager } from '../../engine';
 import type { GameDate } from '../../engine';
 import { Era, GameSpeed } from '../../engine';
@@ -38,18 +38,20 @@ const numberToChinese: Record<number, string> = {
   16: '十六', 17: '十七', 18: '十八', 19: '十九', 20: '二十',
 };
 
-function formatChineseDate(date: GameDate): string {
+function formatEraYear(date: GameDate): string {
   const era = reignEras.find((e) => date.year >= e.start && date.year <= e.end);
-  const month = monthNames[date.month - 1] || `${date.month}月`;
-  const day = dayNames[date.day - 1] || `${date.day}日`;
-
   if (era) {
     const yearInEra = date.year - era.start + 1;
     const yearStr = numberToChinese[yearInEra] || String(yearInEra);
-    return `大唐 ${era.name}${yearStr}年 ${month}${day}`;
+    return `${era.name}${yearStr}年`;
   }
+  return `${date.year}年`;
+}
 
-  return `大唐 ${date.year}年 ${month}${day}`;
+function formatMonthDay(date: GameDate): string {
+  const month = monthNames[date.month - 1] || `${date.month}月`;
+  const day = dayNames[date.day - 1] || `${date.day}日`;
+  return `${month}${day}`;
 }
 
 function getEraBg(era: Era): string {
@@ -63,23 +65,30 @@ function getEraBg(era: Era): string {
   }
 }
 
+function getEraGlow(era: Era): string {
+  switch (era) {
+    case Era.ZhiShi:
+      return 'shadow-[0_0_8px_var(--color-accent-green)]';
+    case Era.WeiShi:
+      return 'shadow-[0_0_8px_var(--color-accent-gold)]';
+    case Era.LuanShi:
+      return 'shadow-[0_0_8px_var(--color-accent-red)]';
+  }
+}
+
 /** 速度档位对应的自动推进间隔（毫秒），0 表示暂停 */
 const SPEED_INTERVALS: Record<number, number> = {
   [GameSpeed.Paused]: 0,
-  [GameSpeed.Normal]: 500,
-  [GameSpeed.Fast]: 200,
-  [GameSpeed.VeryFast]: 50,
+  [GameSpeed.Normal]: 1000,   // 1天/秒（≈CK3 2速）
+  [GameSpeed.Fast]: 500,      // 2天/秒（≈CK3 3速）
+  [GameSpeed.VeryFast]: 200,  // 5天/秒（≈CK3 4速）
 };
 
-const SPEED_LABELS: Record<number, string> = {
-  [GameSpeed.Paused]: '⏸',
-  [GameSpeed.Normal]: '▶',
-  [GameSpeed.Fast]: '▶▶',
-  [GameSpeed.VeryFast]: '▶▶▶',
-};
+/** 三个速度档位（不含 Paused） */
+const SPEED_TIERS = [GameSpeed.Normal, GameSpeed.Fast, GameSpeed.VeryFast] as const;
 
 const TimeControl: React.FC = () => {
-  const { currentDate, era, speed, advanceDay, advanceToNextMonth, setSpeed, isPaused } = useTurnManager();
+  const { currentDate, era, speed, setSpeed, isPaused } = useTurnManager();
   const [showEra, setShowEra] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -100,23 +109,45 @@ const TimeControl: React.FC = () => {
     };
   }, [speed]);
 
-  const cycleSpeed = () => {
-    if (isPaused) {
-      setSpeed(GameSpeed.Normal);
-    } else if (speed === GameSpeed.Normal) {
-      setSpeed(GameSpeed.Fast);
-    } else if (speed === GameSpeed.Fast) {
-      setSpeed(GameSpeed.VeryFast);
+  // 空格键：播放/暂停
+  const togglePause = useCallback(() => {
+    const tm = useTurnManager.getState();
+    if (tm.isPaused) {
+      // 恢复到上次的速度（默认 Normal）
+      setSpeed(tm.speed === GameSpeed.Paused ? GameSpeed.Normal : tm.speed);
     } else {
       setSpeed(GameSpeed.Paused);
     }
-  };
+  }, [setSpeed]);
+
+  // 键盘快捷键
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      // 忽略在输入框中的按键
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePause();
+      } else if (e.key === '+' || e.key === '=') {
+        // 加速
+        const tm = useTurnManager.getState();
+        if (tm.speed === GameSpeed.Normal) setSpeed(GameSpeed.Fast);
+        else if (tm.speed === GameSpeed.Fast) setSpeed(GameSpeed.VeryFast);
+      } else if (e.key === '-') {
+        // 减速
+        const tm = useTurnManager.getState();
+        if (tm.speed === GameSpeed.VeryFast) setSpeed(GameSpeed.Fast);
+        else if (tm.speed === GameSpeed.Fast) setSpeed(GameSpeed.Normal);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [setSpeed, togglePause]);
 
   return (
     <div className="flex items-center gap-2">
-      <div className="text-[var(--color-text)] text-sm font-medium">
-        {formatChineseDate(currentDate)}
-      </div>
+      {/* ── 时代标签 ── */}
       <button
         onClick={() => setShowEra(true)}
         className={`text-xs px-2 py-0.5 rounded-full ${getEraBg(era)} text-[var(--color-bg)] font-bold hover:brightness-110 transition-all cursor-pointer`}
@@ -124,32 +155,60 @@ const TimeControl: React.FC = () => {
         {era}
       </button>
       {showEra && <EraPopup onClose={() => setShowEra(false)} />}
-      {/* 速度控制 */}
-      <button
-        onClick={cycleSpeed}
-        className={`px-2 py-1 text-sm font-bold rounded transition-all cursor-pointer ${
-          isPaused
-            ? 'bg-[var(--color-border)] text-[var(--color-text-muted)]'
-            : 'bg-[var(--color-accent-gold)] text-[var(--color-bg)] hover:brightness-110'
-        }`}
-        title={`速度: ${['暂停', '正常', '快速', '极速'][speed]}`}
-      >
-        {SPEED_LABELS[speed]}
-      </button>
-      {/* 下一日 */}
-      <button
-        onClick={() => { setSpeed(GameSpeed.Paused); advanceDay(); }}
-        className="px-3 py-1 text-xs font-bold rounded bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:brightness-110 transition-all cursor-pointer"
-      >
-        下一日
-      </button>
-      {/* 下月 */}
-      <button
-        onClick={() => { setSpeed(GameSpeed.Paused); advanceToNextMonth(); }}
-        className="px-3 py-1 text-xs font-bold rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] hover:brightness-110 active:brightness-90 transition-all cursor-pointer"
-      >
-        下月
-      </button>
+
+      {/* ── 日期 ── */}
+      <div className="text-[var(--color-text)] text-sm font-bold tracking-wide whitespace-nowrap">
+        大唐 {formatEraYear(currentDate)} {formatMonthDay(currentDate)}
+      </div>
+
+      {/* ── 播放三角 + 三档速率色块（CK3 风格紧凑排列） ── */}
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <filter id="rough-edge">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+      <div className="flex items-center gap-[3px]">
+        {/* 播放/暂停小三角 */}
+        <button
+          onClick={togglePause}
+          className="cursor-pointer flex items-center justify-center transition-colors overflow-hidden"
+          style={{
+            width: 20,
+            height: 16,
+            color: isPaused ? '#8b4539' : '#6b8f5e',
+            fontSize: 16,
+            lineHeight: '16px',
+            position: 'relative',
+            top: -2,
+          }}
+          title="播放/暂停（空格）"
+        >
+          {isPaused ? '▶' : '⏸'}
+        </button>
+
+        {/* 三档色块 */}
+        {SPEED_TIERS.map((tier, i) => {
+          const isActive = !isPaused && speed >= tier;
+          return (
+            <button
+              key={tier}
+              onClick={() => setSpeed(tier)}
+              className="cursor-pointer transition-colors"
+              style={{
+                width: 18,
+                height: 16,
+                backgroundColor: isActive ? '#6b8f5e' : '#8b4539',
+                filter: 'url(#rough-edge)',
+              }}
+              title={['正常 (1天/秒)', '快速 (2天/秒)', '极速 (5天/秒)'][i]}
+            />
+          );
+        })}
+      </div>
+
     </div>
   );
 };

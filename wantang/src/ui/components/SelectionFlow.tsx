@@ -293,6 +293,34 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
     return generateCandidates(post, legalId);
   }
 
+  /**
+   * 草稿模式专用：选中升调/平调候选人时，动态追加其原岗位到列表。
+   * 直接模式依赖 executeAppoint 后的 rescanVacancies，无需此函数。
+   */
+  function handleDraftCascade(post: Post, newCandidateId: string) {
+    const candidates = getCandidatesForPost(post);
+    const entry = candidates.find(c => c.character.id === newCandidateId);
+    if (!entry?.currentPost || (entry.tier !== 'promote' && entry.tier !== 'transfer')) return;
+
+    const cascadePost = entry.currentPost;
+
+    setCurrentPosts(prev => {
+      if (prev.some(p => p.id === cascadePost.id)) return prev;
+      return [...prev, cascadePost];
+    });
+
+    setSelections(prev => {
+      if (prev.has(cascadePost.id)) return prev;
+      const next = new Map(prev);
+      const usedIds = new Set([...prev.values()].filter(Boolean) as string[]);
+      const cascadeCandidates = getCandidatesForPost(cascadePost);
+      // 连锁岗位优先选新授，避免再次产生连锁
+      const pick = cascadeCandidates.find(c => c.tier === 'fresh' && !usedIds.has(c.character.id));
+      next.set(cascadePost.id, pick?.character.id ?? null);
+      return next;
+    });
+  }
+
   /** 扫描连锁空缺，有新坑则追加到列表 */
   function rescanVacancies(knownPosts: Post[]) {
     if (!playerId) return;
@@ -374,7 +402,6 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
       const mergedEntries = [...(existing?.entries ?? []), ...draftEntries];
       npcStore.setDraftPlan({ entries: mergedEntries, date: existing?.date ?? { ...date } });
     }
-    useNpcStore.getState().setPlayerDraftPostIds([]);
     onClose();
   }
 
@@ -475,6 +502,7 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
                   next.set(post.id, candidateId);
                   return next;
                 });
+                if (draft && candidateId) handleDraftCascade(post, candidateId);
               }}
               onConfirm={() => handleConfirmOne(post)}
               confirmed={confirmed.has(post.id)}

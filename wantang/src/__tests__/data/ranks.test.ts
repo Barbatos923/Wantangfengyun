@@ -83,7 +83,6 @@ describe('ALL_RANKS — 散官品位数据完整性', () => {
   });
 
   it('较高品级的月俸不应低于较低品级（大体趋势）', () => {
-    const sorted = [...ALL_RANKS].sort((a, b) => a.level - b.level);
     // 前后两级比较，允许极少量例外（但月俸整体应单调）
     // 此处仅检验最低品 level=1 << level=29
     const level1 = rankMap.get(1)!;

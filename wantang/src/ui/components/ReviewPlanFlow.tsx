@@ -14,7 +14,8 @@ interface ReviewPlanFlowProps {
 }
 
 export default function ReviewPlanFlow({ onClose }: ReviewPlanFlowProps) {
-  const plan = useNpcStore((s) => s.pendingReviewPlan);
+  const task = useNpcStore((s) => s.playerTasks.find(t => t.type === 'review') ?? null);
+  const plan = task ? (task.data as import('@engine/systems/reviewSystem').ReviewPlan) : null;
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
 
@@ -38,7 +39,7 @@ export default function ReviewPlanFlow({ onClose }: ReviewPlanFlowProps) {
     for (const entry of plan!.entries) {
       executeDismiss(entry.postId, entry.legalAppointerId);
     }
-    useNpcStore.getState().setPendingReviewPlan(null);
+    if (task) useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 

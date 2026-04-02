@@ -11,13 +11,16 @@ import {
   runEraSystem,
   runBuildingSystem,
 } from './systems/index.ts';
-import { runNpcEngine } from './npc/NpcEngine.ts';
+import { runDailyNpcEngine } from './npc/NpcEngine.ts';
 
 /**
  * 每日执行。由 TurnManager.advanceDay() 的 dailyCallback 触发。
  */
 export function runDailySettlement(date: GameDate): void {
   runWarSystem(date);
+  if (date.day !== 1) {
+    runDailyNpcEngine(date);  // 非月初：日结中运行 NPC 决策
+  }
 }
 
 /**
@@ -26,7 +29,7 @@ export function runDailySettlement(date: GameDate): void {
  */
 export function runMonthlySettlement(date: GameDate): void {
   runCharacterSystem(date);   // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
-  runNpcEngine(date);         // 2. NPC 决策（铨选拟案等）
+  runDailyNpcEngine(date);    // 2. NPC 决策（月初在 characterSystem 之后，保证继承先完成）
   runPopulationSystem(date);  // 3. 年度人口变化
   runSocialSystem(date);      // 4. 好感度衰减/领地漂移/贤能/晋升
   runEconomySystem(date);     // 5. 经济结算/破产检查

@@ -121,10 +121,8 @@ export const appointBehavior: NpcBehavior<AppointData> = {
     npcStore.setDraftPlan({ entries: mergedEntries, date: ctx.date });
   },
 
-  generatePlayerTask(_actor: Character, data: AppointData, _ctx: NpcContext): PlayerTask | null {
-    // TODO(phase6-cleanup): 旧 UI（SelectionFlow）通过 playerDraftPostIds 处理，
-    // 不返回 PlayerTask，避免超时兜底重复执行
-    useNpcStore.getState().setPlayerDraftPostIds(data.vacancyPostIds);
+  generatePlayerTask(_actor: Character, _data: AppointData, _ctx: NpcContext): PlayerTask | null {
+    // AlertBar 通过实时空缺计算显示拟定提示，无需额外 PlayerTask
     return null;
   },
 };

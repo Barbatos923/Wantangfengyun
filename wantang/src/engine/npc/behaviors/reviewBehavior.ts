@@ -15,6 +15,7 @@ import {
   resolveLegalAppointer,
 } from '@engine/official/selectionUtils';
 import { findEmperorId } from '@engine/official/postQueries';
+import { addDays } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 内部实现：执行考课（保留原有逻辑） ─────────────────
@@ -100,11 +101,16 @@ export function runReview(date: GameDate): void {
     executeDismiss(entry.postId, entry.legalAppointerId);
   }
 
-  // 玩家审批
+  // 玩家审批 → 创建统一 PlayerTask
   if (playerEntries.length > 0) {
     const plan: ReviewPlan = { entries: playerEntries, date: { ...date } };
-    // TODO(phase6-cleanup): 兼容旧 UI
-    useNpcStore.getState().setPendingReviewPlan(plan);
+    useNpcStore.getState().addPlayerTask({
+      id: crypto.randomUUID(),
+      type: 'review',
+      actorId: '',
+      data: plan,
+      deadline: addDays(date, 30),
+    });
   }
 }
 
@@ -116,11 +122,12 @@ interface ReviewData {
 
 export const reviewBehaviorDef: NpcBehavior<ReviewData> = {
   id: 'review',
+  requiredTemplateIds: ['pos-emperor'], // 考课是朝廷级行为，只由皇帝触发
   playerMode: 'push-task',
 
   generateTask(actor: Character, ctx: NpcContext) {
-    // CD 判定：三年一考，每三年正月触发
-    if (ctx.date.month !== 1 || ctx.date.year % 3 !== 0) return null;
+    // CD 判定：三年一考，每三年正月初一触发（day===1 防止日结 forced pass 重复触发）
+    if (ctx.date.day !== 1 || ctx.date.month !== 1 || ctx.date.year % 3 !== 0) return null;
 
     // 只由皇帝触发（考课是朝廷级行为）
     const emperorId = findEmperorId(ctx.territories, ctx.centralPosts);
@@ -138,10 +145,8 @@ export const reviewBehaviorDef: NpcBehavior<ReviewData> = {
   },
 
   generatePlayerTask(_actor: Character, _data: ReviewData, ctx: NpcContext): PlayerTask | null {
-    // 执行考课逻辑（评分 + NPC自动罢免 + 玩家部分进 pendingReviewPlan）
+    // runReview 内部会创建 'review' PlayerTask（如有玩家管辖的罢免条目）
     runReview(ctx.date);
-    // TODO(phase6-cleanup): 旧 UI（ReviewPlanFlow）通过 pendingReviewPlan 处理审批，
-    // 不返回 PlayerTask，避免超时兜底重复执行
     return null;
   },
 };

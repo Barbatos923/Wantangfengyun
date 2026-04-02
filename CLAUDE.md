@@ -78,10 +78,11 @@ wantang/src/
 
 ### 日结管线（每日触发，dailyCallback）
 - `warSystem` — 行军（marchSpeed 累积器）/战斗/围城/战争分数
+- `NpcEngine`（非月初）— NPC 日结决策（daily 行为每天检测，monthly-slot 行为按哈希槽位+品级分档）
 
 ### 月结管线（每月初 day===1 触发，monthlyCallback），严格顺序：
 1. `characterSystem` — 健康/死亡/继承（必须最先）
-2. `NpcEngine` — NPC 决策（两遍：forced→重建快照→normal+概率掷骰）
+2. `NpcEngine` — NPC 决策（月初在 characterSystem 之后，保证继承先完成）
 3. `populationSystem` — 年度人口（仅 month===1）
 4. `socialSystem` — 好感/领地漂移/晋升
 5. `economySystem` — 经济/破产
@@ -140,13 +141,16 @@ wantang/src/
 
 ---
 
-## 六、NPC Engine
+## 六、NPC Engine（已日结化）
 
-- 10 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈 / 补员
+- 9 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
-- `weight` = 百分比概率，`forced` = 强制执行
+- `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
+- `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
 - `maxActions` = `clamp(0, 3, round(1 + energy × 4))`，品级<9 上限 1
-- 新增行为：实现 `NpcBehavior` → `registerBehavior()` → 自动调度
+- **哈希槽位调度**：`hash(actorId + ':' + behaviorId) % 28 + 1` 决定月内执行日
+- **品级分档频率**：王公(25+) 2次/月，节度使(17-24) 1次/月，刺史(12-16) 1次/2月，县令(0-11) 1次/3月
+- 新增行为：实现 `NpcBehavior` → `registerBehavior()` → 自动调度，默认从 playerMode 推断 schedule
 
 ---
 
@@ -164,10 +168,9 @@ wantang/src/
 
 ## 八、当前开发阶段
 
-**日结时间系统已完成。** 核心循环、继承、铨选、考课、正统性、NPC Engine（10 个行为）、战争系统均已实现并可自主运转。时间系统已从月结改为日结（CK3 风格），战争系统按日推进，其余系统保持月结。
+**NPC Engine 日结化已完成。** 核心循环、继承、铨选、考课、正统性、NPC Engine（9 个行为）、战争系统均已实现并可自主运转。时间系统全面日结（CK3 风格）：战争按日推进，NPC 决策按哈希槽位+品级分档分散到月内不同天，其余系统保持月结。时间控制 UI 采用 CK3 风格（日期+播放键+三档毛边色块，空格暂停，+/-加减速）。
 
 ### 尚未完成
-- NPC Engine 日结化（哈希槽位调度，按品级打散行为到不同天，正在设计中）
 - 存档/读档 UI（底层已实现）
 - AI 史书（GameEvent → 大模型生成史书文本）
 - 生育系统（宗法继承长期运转基础）

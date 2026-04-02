@@ -73,19 +73,6 @@ function makeVacantPost(templateId: string, overrides: Partial<Post> = {}): Post
   };
 }
 
-/** 构造仅含一个空posts数组的领地（不干扰 appointRightHolders 收集） */
-function makeEmptyTerritory(id: string): Territory {
-  return {
-    id, name: id, tier: 'zhou', territoryType: 'civil',
-    childIds: [], dejureControllerId: 'emp',
-    posts: [],
-    control: 60, development: 60, populace: 60,
-    buildings: [], constructions: [],
-    basePopulation: 10000, conscriptionPool: 100,
-    moneyRatio: 1, grainRatio: 1,
-  };
-}
-
 const APPOINTER_ID = 'emp'; // 法理主体（皇帝 or 辟署权持有人）
 
 // ─────────────────────────────────────────────────────────────────────────────

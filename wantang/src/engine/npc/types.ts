@@ -65,12 +65,27 @@ export interface NpcBehavior<TData = unknown> {
   id: string;
 
   /**
+   * 岗位门控：非空时，调度器在调用 generateTask 前检查 actor 是否持有其中一个 templateId 的岗位。
+   * 用于岗位专属行为（如 'pos-emperor' 限定考课只由皇帝触发），可跳过绝大多数不符合条件的 actor。
+   */
+  requiredTemplateIds?: string[];
+
+  /**
    * 玩家处理模式：
    * - 'push-task': 生成 PlayerTask 推送给玩家（铨选、考课审批）
    * - 'skip': 玩家跳过此行为，由玩家自己主动发起（宣战、要求效忠）
    * - 'auto-execute': 即使是玩家也自动执行（未来被动行为）
    */
   playerMode: 'push-task' | 'skip' | 'auto-execute';
+
+  /**
+   * 调度频率（日结化）：
+   * - 'daily': 每天对所有 actor 检测（行政职责，需及时推送）
+   * - 'monthly-slot': 按哈希槽位+品级分档每月触发若干次（自愿行为）
+   * 默认从 playerMode 推断：push-task → daily, skip/auto-execute → monthly-slot。
+   * forced 行为的 forced 分支始终每天检测，不受此字段影响。
+   */
+  schedule?: 'daily' | 'monthly-slot';
 
   /** 纯函数：评估 actor 是否应触发此行为。返回 null 表示不触发 */
   generateTask: (actor: Character, context: NpcContext) => BehaviorTaskResult<TData> | null;

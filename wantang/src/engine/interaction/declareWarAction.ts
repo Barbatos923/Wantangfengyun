@@ -22,7 +22,7 @@ export function executeDeclareWar(
   targetId: string,
   casusBelli: CasusBelli,
   targetTerritoryIds: string[],
-  date: { year: number; month: number },
+  date: { year: number; month: number; day: number },
   cost: { prestige: number; legitimacy: number },
 ): void {
   // 资源校验：不足则拒绝
