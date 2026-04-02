@@ -1,6 +1,7 @@
 // ===== 调动名单审批弹窗（支持逐条调整） =====
 
 import { useState } from 'react';
+import { Modal, ModalHeader, Button } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useNpcStore } from '@engine/npc/NpcStore';
@@ -201,29 +202,9 @@ export default function TransferPlanFlow({ onClose }: TransferPlanFlowProps) {
   });
 
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl w-full max-w-2xl mx-4 flex flex-col overflow-hidden max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 标题 */}
-        <div className="px-5 py-3 flex items-center justify-between border-b border-[var(--color-border)] shrink-0">
-          <span className="font-bold text-base text-[var(--color-accent-gold)]">
-            官员调动名单 — {plan.date.year}年{plan.date.month}月
-          </span>
-          <button
-            onClick={onClose}
-            className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-xl leading-none"
-          >
-            &times;
-          </button>
-        </div>
-
-        {/* 调动列表 */}
-        <div className="flex-1 overflow-y-auto px-5 py-3 flex flex-col gap-3">
+    <Modal size="xl" onOverlayClick={onClose}>
+      <ModalHeader title={`官员调动名单 — ${plan.date.year}年${plan.date.month}月`} onClose={onClose} />
+      <div className="flex-1 overflow-y-auto px-5 py-3 flex flex-col gap-3">
           {groups.map(({ proposerId, items }) => (
             <div key={proposerId}>
               <div className="text-xs text-[var(--color-text-muted)] mb-1.5">
@@ -291,23 +272,13 @@ export default function TransferPlanFlow({ onClose }: TransferPlanFlowProps) {
           ))}
         </div>
 
-        {/* 底部 */}
-        <div className="px-5 py-3 border-t border-[var(--color-border)] shrink-0 flex gap-2">
-          <button
-            onClick={onClose}
-            className="flex-1 py-2 rounded text-sm border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-          >
-            留中不发
-          </button>
-          <button
-            onClick={handleApprove}
-            className="flex-1 py-2 rounded text-sm font-bold border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10 transition-colors"
-          >
-            批准（{entries.length}项）
-          </button>
-        </div>
+      <div className="px-5 py-3 border-t border-[var(--color-border)] shrink-0 flex gap-2">
+        <Button variant="default" className="flex-1 py-2" onClick={onClose}>留中不发</Button>
+        <Button variant="primary" className="flex-1 py-2 font-bold" onClick={handleApprove}>
+          批准（{entries.length}项）
+        </Button>
       </div>
-    </div>
+    </Modal>
   );
 }
 

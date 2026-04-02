@@ -8,6 +8,7 @@ import type { CasusBelli, CasusBelliEval } from '@engine/military/types';
 import { evaluateAllCasusBelli, getWarCost, getDeJureTargets, getAnnexTargets } from '@engine/military/warCalc';
 import { executeDeclareWar } from '@engine/interaction';
 import { canAffordWarCost } from '@engine/official/legitimacyCalc';
+import { Modal, ModalHeader, Button } from './base';
 
 interface DeclareWarFlowProps {
   targetId: string;
@@ -83,26 +84,9 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
   );
 
   return (
-    <div
-      className="fixed inset-0 z-30 flex items-center justify-center bg-black/50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg p-4 max-w-md w-full mx-4 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 标题栏 */}
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-[var(--color-accent-gold)]">
-            向 {target.name} 宣战
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-lg leading-none"
-          >
-            ×
-          </button>
-        </div>
+    <Modal size="md" zIndex={30} onOverlayClick={onClose}>
+      <ModalHeader title={`向 ${target.name} 宣战`} onClose={onClose} />
+      <div className="p-4 flex flex-col gap-4 overflow-y-auto flex-1">
 
         {/* 战争理由列表 */}
         <div className="mb-4">
@@ -221,19 +205,16 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
         )}
 
         {/* 确认按钮 */}
-        <button
-          className={`w-full py-2 rounded text-sm font-bold transition-colors ${
-            canConfirm
-              ? 'bg-[var(--color-accent-red)]/80 hover:bg-[var(--color-accent-red)] text-white'
-              : 'bg-[var(--color-bg-surface)] text-[var(--color-text-muted)] cursor-not-allowed'
-          }`}
+        <Button
+          variant="danger"
           disabled={!canConfirm}
           onClick={handleConfirm}
+          className="w-full py-2 font-bold"
         >
           确认宣战
-        </button>
+        </Button>
       </div>
-    </div>
+    </Modal>
   );
 };
 

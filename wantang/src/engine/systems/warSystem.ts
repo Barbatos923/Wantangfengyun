@@ -65,53 +65,15 @@ export function runWarSystem(date: GameDate): void {
     }
   }
 
-  // 对向行军拦截：两个敌对行营相向而行时，拦截到同一州
-  const intercepted = new Set<string>();
-  for (const campA of warStore.campaigns.values()) {
-    if (campA.status !== 'marching' || intercepted.has(campA.id)) continue;
-    const war = warStore.wars.get(campA.warId);
-    if (!war || war.status !== 'active') continue;
-
-    const nextA = campA.route[campA.routeProgress + 1];
-    if (!nextA) continue;
-
-    for (const campB of warStore.campaigns.values()) {
-      if (campB.id === campA.id || campB.warId !== campA.warId) continue;
-      if (campB.status !== 'marching' || intercepted.has(campB.id)) continue;
-      if (campB.ownerId === campA.ownerId) continue; // 同一方不拦截
-
-      const nextB = campB.route[campB.routeProgress + 1];
-      if (!nextB) continue;
-
-      // 检测交叉：A→B的位置，B→A的位置
-      if (nextA === campB.locationId && nextB === campA.locationId) {
-        // 相向而行！在防守方（war.defenderId）所在位置相遇
-        intercepted.add(campA.id);
-        intercepted.add(campB.id);
-        const defenderCamp = campA.ownerId === war.defenderId ? campA : campB;
-        const attackerCamp = campA.ownerId === war.defenderId ? campB : campA;
-        const meetLocation = defenderCamp.locationId;
-
-        warStore.updateCampaign(defenderCamp.id, {
-          status: 'idle', targetId: null, route: [], routeProgress: 0,
-        });
-        warStore.updateCampaign(attackerCamp.id, {
-          locationId: meetLocation,
-          status: 'idle', targetId: null, route: [], routeProgress: 0,
-        });
-        // 移动攻方军队到相遇点
-        for (const armyId of attackerCamp.armyIds) {
-          useMilitaryStore.getState().updateArmy(armyId, { locationId: meetLocation });
-        }
-        break;
-      }
+  // 记录行军前的行营位置，供行军后的交叉拦截检测使用
+  const marchStartLocations = new Map<string, string>(); // campaignId → 行军前所在州
+  for (const c of useWarStore.getState().campaigns.values()) {
+    if (c.status === 'marching') {
+      marchStartLocations.set(c.id, c.locationId);
     }
   }
 
-  // 注意：必须用 getState() 获取最新 campaigns，拦截已修改了部分行营状态
   for (const campaign of useWarStore.getState().campaigns.values()) {
-    // 已被拦截的行营跳过
-    if (intercepted.has(campaign.id)) continue;
 
     // 集结中：倒计时
     if (campaign.status === 'mustering') {
@@ -172,6 +134,53 @@ export function runWarSystem(date: GameDate): void {
       } else {
         // 仅累积 marchProgress，未到达下一格
         useWarStore.getState().updateCampaign(campaign.id, { marchProgress: mp });
+      }
+    }
+  }
+
+  // ===== 对向行军拦截（后置交叉检测）=====
+  // 在行军结算之后运行：仅当甲从 X→Y、乙从 Y→X 在同一天互换位置时触发。
+  // 相遇地点为防守方的原始位置（即攻方刚抵达处），随后由下方战斗检测自动触发战斗。
+  // 速度不一致时，快方会先抵达慢方所在州，由常规战斗检测处理；此处只捕获真正的"交叉"情形。
+  {
+    const interceptedCrossing = new Set<string>();
+    for (const [campAId, fromA] of marchStartLocations) {
+      if (interceptedCrossing.has(campAId)) continue;
+      const campA = useWarStore.getState().campaigns.get(campAId);
+      if (!campA || campA.locationId === fromA) continue; // A 本轮未移动
+      const warA = warStore.wars.get(campA.warId);
+      if (!warA || warA.status !== 'active') continue;
+
+      for (const [campBId, fromB] of marchStartLocations) {
+        if (campBId === campAId || interceptedCrossing.has(campBId)) continue;
+        const campB = useWarStore.getState().campaigns.get(campBId);
+        if (!campB || campB.locationId === fromB) continue; // B 本轮未移动
+        if (campB.warId !== campA.warId || campB.ownerId === campA.ownerId) continue;
+
+        // 交叉条件：A 移到了 B 的起点，同时 B 移到了 A 的起点
+        if (campA.locationId !== fromB || campB.locationId !== fromA) continue;
+
+        interceptedCrossing.add(campAId);
+        interceptedCrossing.add(campBId);
+
+        // 相遇在防守方的原始位置（攻方刚抵达处）
+        const meetLoc = campA.ownerId === warA.defenderId ? fromA : fromB;
+
+        useWarStore.getState().updateCampaign(campA.id, {
+          locationId: meetLoc, status: 'idle',
+          targetId: null, route: [], routeProgress: 0, marchProgress: 0,
+        });
+        useWarStore.getState().updateCampaign(campB.id, {
+          locationId: meetLoc, status: 'idle',
+          targetId: null, route: [], routeProgress: 0, marchProgress: 0,
+        });
+        for (const armyId of campA.armyIds) {
+          useMilitaryStore.getState().updateArmy(armyId, { locationId: meetLoc });
+        }
+        for (const armyId of campB.armyIds) {
+          useMilitaryStore.getState().updateArmy(armyId, { locationId: meetLoc });
+        }
+        break;
       }
     }
   }

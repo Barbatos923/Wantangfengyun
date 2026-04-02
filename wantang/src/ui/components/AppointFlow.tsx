@@ -1,6 +1,7 @@
 // ===== 任命职位流程（层级折叠 + 状态显示 + 替换确认）=====
 
 import { useState, useMemo } from 'react';
+import { Modal, ModalHeader, Button } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getAppointablePosts, executeAppoint } from '@engine/interaction';
@@ -184,57 +185,36 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
     const postLabel = terrName ? `${terrName}${tpl?.name}` : (tpl?.name ?? confirmPost.id);
 
     return (
-      <div
-        className="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-        onClick={(e) => { if (e.target === e.currentTarget) setConfirmPost(null); }}
-      >
-        <div
-          className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg p-5 max-w-sm w-full mx-4 shadow-xl"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h2 className="text-base font-bold text-[var(--color-accent-gold)] mb-3">确认替换</h2>
-          <p className="text-sm text-[var(--color-text)] mb-4">
+      <Modal size="sm" onOverlayClick={() => setConfirmPost(null)}>
+        <ModalHeader title="确认替换" onClose={() => setConfirmPost(null)} />
+        <div className="p-5 flex flex-col gap-4">
+          <p className="text-sm text-[var(--color-text)]">
             将 <span className="font-bold text-[var(--color-accent-gold)]">{holderChar?.name}</span> 从
             <span className="font-bold"> {postLabel}</span> 罢免，改任
             <span className="font-bold text-[var(--color-accent-gold)]"> {target.name}</span>？
           </p>
           <div className="flex gap-2 justify-end">
-            <button
-              onClick={() => setConfirmPost(null)}
-              className="px-3 py-1.5 rounded border border-[var(--color-border)] text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-            >
-              取消
-            </button>
-            <button
+            <Button variant="default" size="sm" onClick={() => setConfirmPost(null)}>取消</Button>
+            <Button
+              variant="danger"
+              size="sm"
               onClick={() => {
                 executeAppoint(confirmPost.id, targetId, player!.id);
                 onClose();
               }}
-              className="px-3 py-1.5 rounded border border-[var(--color-accent-red)] text-sm text-[var(--color-accent-red)] hover:bg-[var(--color-accent-red)]/10 transition-colors font-bold"
             >
               确认替换
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 
   // ── 主界面 ──
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl max-w-lg w-full mx-4 max-h-[80vh] flex flex-col overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="px-5 py-3 flex items-center justify-between border-b border-[var(--color-border)] shrink-0">
-          <h2 className="text-base font-bold text-[var(--color-accent-gold)]">任命 {target.name}</h2>
-          <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-xl leading-none">×</button>
-        </div>
+    <Modal size="lg" onOverlayClick={onClose}>
+      <ModalHeader title={`任命 ${target.name}`} onClose={onClose} />
 
         {/* Tabs */}
         <div className="flex border-b border-[var(--color-border)] shrink-0">
@@ -388,7 +368,6 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

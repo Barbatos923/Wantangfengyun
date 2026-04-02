@@ -1,3 +1,4 @@
+import { Modal, ModalHeader } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import {
@@ -65,19 +66,9 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg p-4 max-w-md w-full mx-4 shadow-xl max-h-[80vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-3 shrink-0">
-          <h3 className="text-sm font-bold text-[var(--color-accent-gold)]">
-            调整对 {target.name} 的权责
-          </h3>
-          <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-lg leading-none">×</button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto space-y-3">
+    <Modal size="md" onOverlayClick={onClose}>
+      <ModalHeader title={`调整对 ${target.name} 的权责`} onClose={onClose} />
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {/* ===== 赋税等级 ===== */}
           <div className="flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)]">
             <span className="text-xs text-[var(--color-text-muted)]">赋税等级</span>
@@ -172,9 +163,8 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
               </div>
             </div>
           )}
-        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

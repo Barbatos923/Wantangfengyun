@@ -15,7 +15,7 @@
 | 存储 | IndexedDB（`idb` 库），数据库名 `wantang-db`，三张表：saves / chronicles / events |
 | 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts`，存档时序列化种子 |
 | 地图 | `d3-delaunay` Voronoi 多边形 + SVG clipPath 疆域裁剪 |
-| 测试 | `vitest`，对 engine/ 纯函数写单元测试 |
+| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 14 个文件 318 个测试 |
 | 构建 | `pnpm build`（tsc -b && vite build），产物纯静态 |
 | 开发 | `pnpm dev` |
 | 测试命令 | `npx vitest run` |
@@ -42,9 +42,19 @@ wantang/src/
 ├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
 ├── ui/                                # React UI 层（只读 Store + 调用 interaction）
 │   ├── components/                    # GameMap / CampaignPopup / MapPlaceholder 等 ~27 个
+│   │   └── base/                      # 基础组件库：Modal / ModalHeader / Button
 │   ├── layouts/ / hooks/ / panels/ / stores/
-└── __tests__/                         # vitest 单元测试
+└── __tests__/
+    ├── data/                          # 数据完整性（positions / ranks / buildings / traits / map）
+    ├── engine/                        # 纯函数（dateUtils / territoryUtils / battleEngine /
+    │                                  #         economyCalc / reviewSystem / selectionCalc）
+    └── phase*.test.ts                 # 重构安全网（已有 3 个，锁定数据契约和正统性公式）
 ```
+
+### 测试原则
+- **测什么**：纯函数（Calc 模块、dateUtils、territoryUtils、reviewSystem、selectionCalc）和静态数据完整性
+- **不测什么**：Store 状态流转、结算管线顺序、NPC 决策（依赖随机 + 完整游戏状态，ROI 低）
+- 每个测试必须写**具体期望数值**，禁止只写 `toBeGreaterThan(0)`，确保公式被无意修改时能立刻报警
 
 ---
 
@@ -113,6 +123,13 @@ wantang/src/
 - `engine/` 下的 Calc 模块必须是**纯函数**，不得调用 `getState()`
 - Utils 文件是便捷包装层，允许读 Store 后委派给纯函数
 
+### UI 组件规范
+- 新建弹窗/流程组件**必须使用** `base/` 基础组件：`<Modal>`、`<ModalHeader>`、`<Button>`
+- `Modal` size：`sm`=max-w-sm / `md`=max-w-md / `lg`=max-w-lg / `xl`=max-w-4xl
+- `Button` variant：`default`（默认）/ `primary`（金色确认）/ `danger`（红色警告）/ `ghost`（无边框）/ `icon`（圆形图标）
+- 颜色、字号、圆角、阴影均通过 `index.css` 的 CSS 变量控制，**禁止在组件内硬编码颜色值**
+- 新弹窗禁止直接写 `fixed inset-0 bg-black/50` 遮罩，统一用 `<Modal>`
+
 ### 其他规则
 - 批量操作**必须用 `batchMutate`**，禁止循环 `setState`
 - ID 生成**必须用 `crypto.randomUUID()`**，禁止自增计数器
@@ -140,6 +157,7 @@ wantang/src/
 - **关隘通行**：己方/臣属控制或己方占领 → 通行；被敌方占领 → 阻隔（即使原控制者是己方）
 - **行营 AI**：寻路→行军→围城→推进→撤退→重新出击，玩家行营跳过 AI
 - **战斗触发**：同一州的同战争敌对行营自动交战，无战争关系不交战
+- **对向行军拦截**：后置交叉检测（行军结算之后），仅当甲从 X→Y、乙从 Y→X **同一天互换位置**时触发，相遇在防守方原始位置；速度不一致时由常规战斗检测接手（`warSystem.ts`）
 - **地图行军 UI**：CK3 风格，在地图上点击选目的地，金色虚线显示路径
 
 ---

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Modal, ModalHeader, Button } from './base';
 import type { Post } from '@engine/territory/types';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
@@ -456,67 +457,43 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
   const confirmableCount = pendingPosts.filter(p => (selections.get(p.id) ?? null) !== null).length;
 
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className="bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl w-full max-w-2xl mx-4 flex flex-col overflow-hidden max-h-[90vh]"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* 标题栏 */}
-        <div className="px-5 py-3 flex items-center justify-between border-b border-[var(--color-border)] shrink-0">
-          <span className="font-bold text-base text-[var(--color-accent-gold)]">{draft ? '📋 拟定铨选草案' : '📋 铨选单'}</span>
-          <button
-            onClick={onClose}
-            className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-xl leading-none"
-          >
-            ×
-          </button>
-        </div>
-
-        {/* 岗位列表 */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
-          {pendingPosts.length === 0 ? (
-            <p className="text-sm text-[var(--color-text-muted)] text-center py-6">所有空缺岗位均已处理</p>
-          ) : (
-            pendingPosts.map(post => (
-              <VacantPostRow
-                key={post.id}
-                post={post}
-                territories={territories}
-                selectedId={selections.get(post.id) ?? null}
-                onSelect={candidateId => {
-                  setSelections(prev => {
-                    const next = new Map(prev);
-                    next.set(post.id, candidateId);
-                    return next;
-                  });
-                }}
-                onConfirm={() => handleConfirmOne(post)}
-                confirmed={confirmed.has(post.id)}
-              />
-            ))
-          )}
-        </div>
-
-        {/* 底部操作区 */}
-        {pendingPosts.length > 0 && (
-          <div className="px-4 py-3 border-t border-[var(--color-border)] shrink-0">
-            <button
-              disabled={confirmableCount === 0}
-              onClick={handleConfirmAll}
-              className={`w-full py-2 rounded font-bold text-sm border transition-colors ${
-                confirmableCount > 0
-                  ? 'border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10'
-                  : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
-              }`}
-            >
-              {draft ? '呈报' : '全部确认推荐'}{confirmableCount > 0 ? `（${confirmableCount} 位）` : ''}
-            </button>
-          </div>
+    <Modal size="xl" onOverlayClick={onClose}>
+      <ModalHeader title={draft ? '📋 拟定铨选草案' : '📋 铨选单'} onClose={onClose} />
+      <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
+        {pendingPosts.length === 0 ? (
+          <p className="text-sm text-[var(--color-text-muted)] text-center py-6">所有空缺岗位均已处理</p>
+        ) : (
+          pendingPosts.map(post => (
+            <VacantPostRow
+              key={post.id}
+              post={post}
+              territories={territories}
+              selectedId={selections.get(post.id) ?? null}
+              onSelect={candidateId => {
+                setSelections(prev => {
+                  const next = new Map(prev);
+                  next.set(post.id, candidateId);
+                  return next;
+                });
+              }}
+              onConfirm={() => handleConfirmOne(post)}
+              confirmed={confirmed.has(post.id)}
+            />
+          ))
         )}
       </div>
-    </div>
+      {pendingPosts.length > 0 && (
+        <div className="px-4 py-3 border-t border-[var(--color-border)] shrink-0">
+          <Button
+            variant="primary"
+            disabled={confirmableCount === 0}
+            onClick={handleConfirmAll}
+            className="w-full py-2 font-bold"
+          >
+            {draft ? '呈报' : '全部确认推荐'}{confirmableCount > 0 ? `（${confirmableCount} 位）` : ''}
+          </Button>
+        </div>
+      )}
+    </Modal>
   );
 }
