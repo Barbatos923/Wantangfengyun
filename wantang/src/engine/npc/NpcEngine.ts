@@ -29,6 +29,7 @@ import './behaviors/revokeBehavior';
 import './behaviors/transferVassalBehavior';
 import './behaviors/deployDraftBehavior';
 import './behaviors/deployApproveBehavior';
+import './behaviors/conscriptBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 
@@ -87,9 +88,12 @@ export function isSlotDay(day: number, month: number, actorId: string, behaviorI
 }
 
 /** 获取行为的有效调度频率（显式设置 > 从 playerMode 推断） */
-function getEffectiveSchedule(behavior: NpcBehavior): 'daily' | 'monthly-slot' {
+function getEffectiveSchedule(behavior: NpcBehavior, isPlayer: boolean): 'daily' | 'monthly-slot' {
+  // standing 行为：玩家每天检测（维护常驻任务），NPC 用 schedule 字段
+  if (behavior.playerMode === 'standing' && isPlayer) return 'daily';
   if (behavior.schedule) return behavior.schedule;
-  return behavior.playerMode === 'push-task' ? 'daily' : 'monthly-slot';
+  if (behavior.playerMode === 'push-task') return 'daily';
+  return 'monthly-slot';
 }
 
 // ── 前置步骤 ───────────────────────────────────────────────
@@ -128,6 +132,7 @@ function handleExpiredPlayerTasks(date: GameDate): void {
   const expired = npcStore.getExpiredTasks(date);
 
   for (const task of expired) {
+    if (task.standing) continue; // 常驻任务不过期
     if (task.type === 'appoint-approve') {
       // 皇帝超时未审批 → 自动批准执行
       const data = task.data as { entries: TransferPlan['entries'] };
@@ -215,6 +220,21 @@ function executeTask(
     return;
   }
 
+  if (isPlayer && task.behavior.playerMode === 'standing') {
+    // 常驻任务：若同 type 的 standing task 不存在则创建，已存在则更新 data
+    const npcStore = useNpcStore.getState();
+    const existing = npcStore.playerTasks.find(
+      t => t.type === task.behavior.id && t.standing,
+    );
+    if (!existing) {
+      const playerTask = task.behavior.generatePlayerTask?.(actor, task.data, ctx);
+      if (playerTask) {
+        useNpcStore.getState().addPlayerTask(playerTask);
+      }
+    }
+    return;
+  }
+
   // NPC 执行 / auto-execute
   task.behavior.executeAsNpc(actor, task.data, ctx);
 }
@@ -266,6 +286,20 @@ export function runDailyNpcEngine(date: GameDate): void {
     const rankLevel = ctx.rankLevelCache.get(actor.id) ?? 0;
     if (rankLevel < 9) maxActions = Math.min(maxActions, 1);
 
+    // 清理失效的 standing 任务（玩家失去角色资格时）
+    if (actor.id === ctx.playerId) {
+      const npcStore = useNpcStore.getState();
+      for (const st of npcStore.playerTasks.filter(t => t.standing && t.actorId === actor.id)) {
+        const beh = behaviors.find(b => b.id === st.type);
+        if (!beh || !passesPostGate(actor, beh, ctx.centralPosts)) {
+          npcStore.removePlayerTask(st.id);
+          continue;
+        }
+        const result = beh.generateTask(actor, ctx);
+        if (!result) npcStore.removePlayerTask(st.id);
+      }
+    }
+
     // 收集 normal 任务，分为行政职责和自愿行为
     const adminTasks: Array<{ behavior: NpcBehavior; data: unknown }> = [];
     const voluntaryTasks: Array<{ behavior: NpcBehavior; data: unknown; weight: number }> = [];
@@ -277,7 +311,8 @@ export function runDailyNpcEngine(date: GameDate): void {
       if (!passesPostGate(actor, behavior, ctx.centralPosts)) continue;
 
       // ── 调度频率过滤 ──
-      const schedule = getEffectiveSchedule(behavior);
+      const isPlayer = actor.id === ctx.playerId;
+      const schedule = getEffectiveSchedule(behavior, isPlayer);
       if (schedule === 'monthly-slot') {
         // 仅在哈希槽位日执行
         if (!isSlotDay(date.day, date.month, actor.id, behavior.id, rankLevel)) continue;
@@ -287,8 +322,8 @@ export function runDailyNpcEngine(date: GameDate): void {
       const result = behavior.generateTask(actor, ctx);
       if (!result || result.forced) continue;
 
-      if (behavior.playerMode === 'push-task') {
-        // 行政职责（铨选/考课等）：不受 maxActions 限制
+      if (behavior.playerMode === 'push-task' || behavior.playerMode === 'standing') {
+        // 行政职责 + 常驻任务：不受 maxActions 限制
         adminTasks.push({ behavior, data: result.data });
       } else {
         // 自愿行为（宣战/效忠等）：受 maxActions 限制

@@ -6,15 +6,22 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import type { UnitType } from '@engine/military/types';
 
-/** 征兵：创建一个新营，扣减领地人口和征兵池 */
+/** 每兵征募费用（贯） */
+export const RECRUIT_COST_PER_SOLDIER = 20;
+
+/** 征兵：创建一个新营，扣减领地人口、征兵池和金钱 */
 export function executeRecruit(
   armyId: string,
   territoryId: string,
   unitType: UnitType,
   name: string,
 ): void {
+  const army = useMilitaryStore.getState().armies.get(armyId);
+  if (!army) return;
   useMilitaryStore.getState().recruitBattalion(armyId, territoryId, unitType, name);
   const householdsLost = Math.floor(MAX_BATTALION_STRENGTH / 5);
+  const moneyCost = MAX_BATTALION_STRENGTH * RECRUIT_COST_PER_SOLDIER;
+  useCharacterStore.getState().addResources(army.ownerId, { money: -moneyCost });
   const territory = useTerritoryStore.getState().territories.get(territoryId);
   if (territory) {
     useTerritoryStore.getState().updateTerritory(territoryId, {
@@ -79,12 +86,15 @@ export function executeDisbandBattalion(battalionId: string): void {
   useMilitaryStore.getState().disbandBattalion(battalionId);
 }
 
-/** 补员：补满营兵力，扣减籍贯地人口 */
+/** 补员：补满营兵力，扣减籍贯地人口和金钱 */
 export function executeReplenish(
   battalionId: string,
   territoryId: string,
   deficit: number,
+  payerId: string,
 ): void {
+  const moneyCost = deficit * RECRUIT_COST_PER_SOLDIER;
+  useCharacterStore.getState().addResources(payerId, { money: -moneyCost });
   useMilitaryStore.getState().updateBattalion(battalionId, { currentStrength: MAX_BATTALION_STRENGTH });
   const territory = useTerritoryStore.getState().territories.get(territoryId);
   if (territory) {

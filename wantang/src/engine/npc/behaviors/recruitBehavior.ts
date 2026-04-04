@@ -99,7 +99,7 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
     for (const bat of sorted) {
       if (count >= 3) break;
       if (actor.resources.money < 50) break;
-      executeReplenish(bat.battalionId, bat.territoryId, bat.deficit);
+      executeReplenish(bat.battalionId, bat.territoryId, bat.deficit, actor.id);
       count++;
     }
   },

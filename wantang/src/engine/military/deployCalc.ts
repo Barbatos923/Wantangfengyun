@@ -257,68 +257,54 @@ export function planDeployments(
 // ── 草拟人解析 ───────────────────────────────────────────
 
 /**
+ * 四级草拟人岗位 templateId：
+ * - 天下(皇帝) → 兵部尚书
+ * - 国(王/行台尚书令) → 国司马
+ * - 道(节度使/观察使) → 都知兵马使
+ * - 州(刺史/防御使) → 录事参军
+ */
+const DRAFTER_TEMPLATE_IDS = new Set([
+  'pos-bingbu-shangshu',
+  'pos-guo-sima',
+  'pos-duzhibingmashi',
+  'pos-lushibcanjun',
+]);
+
+/**
  * 判断 actorId 是否是某个 ruler 的调兵草拟人，返回对应的 rulerId。
  *
- * 查找顺序：
- * 1. 持有 pos-duzhibingmashi → ruler = 所在道的节度使
- * 2. 持有 pos-bingbu-shangshu → ruler = 皇帝
- * 3. 自己是 grantsControl 持有人（ruler 本人） → ruler = 自己
- * 4. 以上都不符合 → null
+ * 逻辑：直接检测 actor 是否持有四个草拟人岗位之一，
+ * 若是则找该岗位所在领地的 grantsControl 主岗持有人作为 ruler。
  */
 export function resolveDeployDrafter(
   actorId: string,
   territories: Map<string, Territory>,
   centralPosts: Post[],
 ): { rulerId: string } | null {
-  // 检查中央岗位：兵部尚书
+  // 1. 检查中央岗位（兵部尚书 → ruler 为皇帝）
   for (const p of centralPosts) {
-    if (p.holderId === actorId && p.templateId === 'pos-bingbu-shangshu') {
+    if (p.holderId === actorId && DRAFTER_TEMPLATE_IDS.has(p.templateId)) {
       // 找皇帝
       const emperor = centralPosts.find((cp) => cp.templateId === 'pos-emperor')?.holderId;
-      if (!emperor) {
-        // fallback: 从天下领地找
-        for (const t of territories.values()) {
-          if (t.tier === 'tianxia') {
-            const ep = t.posts.find((tp) => tp.templateId === 'pos-emperor');
-            if (ep?.holderId) return { rulerId: ep.holderId };
-          }
+      if (emperor) return { rulerId: emperor };
+      // fallback: 从天下领地找
+      for (const t of territories.values()) {
+        if (t.tier === 'tianxia') {
+          const ep = t.posts.find((tp) => tp.templateId === 'pos-emperor');
+          if (ep?.holderId) return { rulerId: ep.holderId };
         }
       }
-      if (emperor) return { rulerId: emperor };
       return null;
     }
   }
 
-  // 检查领地岗位
+  // 2. 检查领地岗位（国司马/都知兵马使/录事参军 → ruler 为所在领地主岗持有人）
   for (const t of territories.values()) {
     for (const p of t.posts) {
       if (p.holderId !== actorId) continue;
-
-      // 都知兵马使 → 找所在道的节度使
-      if (p.templateId === 'pos-duzhibingmashi') {
-        // 此岗位在道级领地上，找该道的 grantsControl 主岗持有人
-        const daoCtrl = getController(t);
-        if (daoCtrl) return { rulerId: daoCtrl };
-      }
-
-      // grantsControl 持有人 → 自己就是 ruler
-      const tpl = positionMap.get(p.templateId);
-      if (tpl?.grantsControl) {
-        return { rulerId: actorId };
-      }
-    }
-  }
-
-  // 检查是否是皇帝（皇帝岗位不在 grantsControl 里但是 ruler）
-  for (const p of centralPosts) {
-    if (p.holderId === actorId && p.templateId === 'pos-emperor') {
-      return { rulerId: actorId };
-    }
-  }
-  for (const t of territories.values()) {
-    if (t.tier === 'tianxia') {
-      const ep = t.posts.find((tp) => tp.templateId === 'pos-emperor');
-      if (ep?.holderId === actorId) return { rulerId: actorId };
+      if (!DRAFTER_TEMPLATE_IDS.has(p.templateId)) continue;
+      const ruler = getController(t);
+      if (ruler) return { rulerId: ruler };
     }
   }
 

@@ -22,7 +22,8 @@ export function buildNpcContext(): NpcContext {
   const warState = useWarStore.getState();
 
   const { characters } = charState;
-  const { territories, centralPosts, expectedLegitimacy } = terrState;
+  const { territories, centralPosts, expectedLegitimacy, controllerIndex } = terrState;
+  const { armies, battalions } = milState;
 
   // ── 预计算缓存 ──
 
@@ -92,6 +93,9 @@ export function buildNpcContext(): NpcContext {
     expectedLegitimacyCache: expectedLegitimacy,
     getOpinion,
     getMilitaryStrength,
+    armies,
+    battalions,
+    controllerIndex,
     activeWars,
     appointedThisRound: new Set(),
   };

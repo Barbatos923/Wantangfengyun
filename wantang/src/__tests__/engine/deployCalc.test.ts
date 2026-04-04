@@ -184,11 +184,23 @@ describe('resolveDeployDrafter', () => {
     expect(result).toEqual({ rulerId: 'jiedushi-1' });
   });
 
-  it('grantsControl 持有人 → ruler 为自己', () => {
+  it('录事参军 → ruler 为所在州的刺史', () => {
+    const zhouTerr = makeTerritory('zhou-1', 'zhou', 'cishi-1', {
+      posts: [
+        { id: 'p-cs', templateId: 'pos-cishi', holderId: 'cishi-1', territoryId: 'zhou-1', successionLaw: 'bureaucratic', hasAppointRight: false },
+        { id: 'p-ls', templateId: 'pos-lushibcanjun', holderId: 'lushi-1', territoryId: 'zhou-1', successionLaw: 'bureaucratic', hasAppointRight: false },
+      ],
+    });
+    const territories = new Map([['zhou-1', zhouTerr]]);
+    const result = resolveDeployDrafter('lushi-1', territories, []);
+    expect(result).toEqual({ rulerId: 'cishi-1' });
+  });
+
+  it('刺史本人不再是草拟人 → null', () => {
     const zhouTerr = makeTerritory('zhou-1', 'zhou', 'cishi-1');
     const territories = new Map([['zhou-1', zhouTerr]]);
     const result = resolveDeployDrafter('cishi-1', territories, []);
-    expect(result).toEqual({ rulerId: 'cishi-1' });
+    expect(result).toBeNull();
   });
 
   it('无任何岗位的角色 → null', () => {

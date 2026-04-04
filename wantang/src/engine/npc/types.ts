@@ -4,7 +4,7 @@ import type { GameDate, Era } from '@engine/types';
 import type { Character } from '@engine/character/types';
 import type { Territory, Post } from '@engine/territory/types';
 import type { Personality } from '@data/traits';
-import type { War } from '@engine/military/types';
+import type { War, Army, Battalion } from '@engine/military/types';
 
 // ── 调动方案（铨选系统沿用） ────────────────────────────
 
@@ -75,8 +75,9 @@ export interface NpcBehavior<TData = unknown> {
    * - 'push-task': 生成 PlayerTask 推送给玩家（铨选、考课审批）
    * - 'skip': 玩家跳过此行为，由玩家自己主动发起（宣战、要求效忠）
    * - 'auto-execute': 即使是玩家也自动执行（未来被动行为）
+   * - 'standing': 常驻任务，引擎自动维护 PlayerTask 存在性，玩家随时可打开处理
    */
-  playerMode: 'push-task' | 'skip' | 'auto-execute';
+  playerMode: 'push-task' | 'skip' | 'auto-execute' | 'standing';
 
   /**
    * 调度频率（日结化）：
@@ -93,7 +94,7 @@ export interface NpcBehavior<TData = unknown> {
   /** 副作用：NPC 自动执行 */
   executeAsNpc: (actor: Character, data: TData, context: NpcContext) => void;
 
-  /** 仅 playerMode='push-task' 时需要实现，生成玩家待处理任务 */
+  /** playerMode='push-task'|'standing' 时需要实现，生成玩家待处理任务 */
   generatePlayerTask?: (actor: Character, data: TData, context: NpcContext) => PlayerTask | null;
 }
 
@@ -120,6 +121,11 @@ export interface NpcContext {
   getOpinion: (aId: string, bId: string) => number;
   getMilitaryStrength: (charId: string) => number;
 
+  // 军事快照
+  armies: Map<string, Army>;
+  battalions: Map<string, Battalion>;
+  controllerIndex: Map<string, Set<string>>;  // controllerId → Set<territoryId>
+
   // 战争状态
   activeWars: War[];
 
@@ -135,4 +141,6 @@ export interface PlayerTask {
   actorId: string;     // 归属角色 ID
   data: unknown;       // 行为专属数据
   deadline: GameDate;  // 超时后 NPC Engine 兜底执行
+  /** 常驻任务标记：由引擎自动维护存在性，无 deadline 紧迫感 */
+  standing?: boolean;
 }

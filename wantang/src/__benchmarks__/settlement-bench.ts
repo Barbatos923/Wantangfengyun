@@ -117,7 +117,7 @@ function generateTerritories(count: number, lordCount: number): Territory[] {
       },
       {
         id: `bench-post-${i}-1`,
-        templateId: 'pos-sima',
+        templateId: 'pos-lushibcanjun',
         territoryId: id,
         holderId: Math.random() > 0.3 ? `bench-char-${randInt(0, lordCount - 1)}` : null,
         successionLaw: 'bureaucratic',

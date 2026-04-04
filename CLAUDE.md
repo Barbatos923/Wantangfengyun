@@ -15,7 +15,7 @@
 | 存储 | IndexedDB（`idb` 库），数据库名 `wantang-db`，三张表：saves / chronicles / events |
 | 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts`，存档时序列化种子 |
 | 地图 | `d3-delaunay` Voronoi 多边形 + SVG clipPath 疆域裁剪 |
-| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 14 个文件 318 个测试 |
+| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 15 个文件 329 个测试 |
 | 构建 | `pnpm build`（tsc -b && vite build），产物纯静态 |
 | 开发 | `pnpm dev` |
 | 测试命令 | `npx vitest run` |
@@ -150,7 +150,7 @@ src/
 
 ## 六、NPC Engine（已日结化）
 
-- 12 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属
+- 15 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
 - `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
 - `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
@@ -177,7 +177,7 @@ src/
 
 **NPC Engine 日结化已完成，交互系统和通知系统已重构，效忠关系级联机制已完善。**
 
-核心循环、继承、铨选、考课、正统性、NPC Engine（12 个行为）、战争系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
+核心循环、继承、铨选、考课、正统性、NPC Engine（15 个行为）、战争系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
 - **效忠关系级联更新**：主岗易手时自动级联更新法理下级和本领地副岗的 overlordId；铨选调动通过 `executeDismiss(skipOpinion: true)` 复用级联逻辑且无好感惩罚；铨选新任主岗者 overlordId 自动指向法理上级
@@ -192,6 +192,11 @@ src/
   - 中心弹出框（EventModal）：重大决策事件框架（角色卡+叙事+决策按钮+hover预览），SideMenu"活动"按钮可触发虚拟测试事件
 - **事件系统改进**：事件在引擎层无条件记录（作为 AI 史书史料），UI 层按与玩家关联度筛选显示（`getDisplayRelevance`）；新增宣战/战争结束事件
 - **notificationStore**：管理已清除事件 ID + 中心弹出框事件队列
+- **征兵/补员金钱消耗**（2026-04-04）：征兵和补员新增金钱成本（每兵 20 贯），`RECRUIT_COST_PER_SOLDIER` 常量
+- **NPC 征兵行为**（`conscriptBehavior`）：NPC 自主新建营扩军，基于性格/财政/粮草净收入决策，粮草评估使用轻量 `estimateNetGrain` 纯函数（领地粮产出 - 军费粮耗）
+- **调兵草拟人四级拆分**（2026-04-04）：`resolveDeployDrafter` 重写，直接检测 4 个专职草拟人岗位（兵部尚书→皇帝 / 国司马→王 / 都知兵马使→节度使 / 录事参军→刺史），ruler 不再自己兼任草拟人
+- **岗位调整**（2026-04-04）：新增 `pos-guo-sima`（国司马，国级军务副岗）；删除 `pos-sima`（州级司马）和 `pos-zhangshi`（州级长史），州级副岗仅保留录事参军
+- **NpcContext 扩展**：新增 `armies`、`battalions`、`controllerIndex` 快照字段，军事相关 behavior 的 `generateTask` 可通过 ctx 获取军事数据
 
 ### 尚未完成
 - 头衔/岗位创建与销毁功能
@@ -219,4 +224,4 @@ src/
 | 军队 | 41 |
 | 营 | 366 |
 
-军事经济基准：1 牙兵 = 2 斛粮/月
+军事经济基准：1 牙兵 = 2 斛粮/月，征兵/补员 = 20 贯/兵

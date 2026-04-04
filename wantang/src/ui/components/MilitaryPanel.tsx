@@ -629,7 +629,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                               disabled={!canReplenish || !ownsHome}
                               onClick={() => {
                                 if (!homeTerr || !canReplenish || !ownsHome) return;
-                                executeReplenish(bat.id, homeTerr.id, deficit);
+                                executeReplenish(bat.id, homeTerr.id, deficit, playerId!);
                               }}
                               className="shrink-0 px-2 py-0.5 rounded border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-bg-surface)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             >

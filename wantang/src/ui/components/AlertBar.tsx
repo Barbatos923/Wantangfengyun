@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useTurnManager } from '@engine/TurnManager';
 import { getPendingVacancies, resolveAppointAuthority } from '@engine/official/selectionUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from '@engine/npc/NpcStore';
@@ -8,6 +9,8 @@ import type { Post } from '@engine/territory/types';
 import SelectionFlow from './SelectionFlow';
 import TransferPlanFlow from './TransferPlanFlow';
 import ReviewPlanFlow from './ReviewPlanFlow';
+import DeployApproveFlow from './DeployApproveFlow';
+import DeployDraftFlow from './DeployDraftFlow';
 
 const AlertBar: React.FC = () => {
   const playerId = useCharacterStore((s) => s.playerId);
@@ -15,10 +18,13 @@ const AlertBar: React.FC = () => {
   const [draftOpen, setDraftOpen] = useState(false);
   const [transferPlanOpen, setTransferPlanOpen] = useState(false);
   const [reviewPlanOpen, setReviewPlanOpen] = useState(false);
+  const [deployApproveOpen, setDeployApproveOpen] = useState(false);
+  const [deployDraftOpen, setDeployDraftOpen] = useState(false);
   const playerTasks = useNpcStore((s) => s.playerTasks);
   const draftPlan = useNpcStore((s) => s.draftPlan);
   const appointApproveTask = useMemo(() => playerTasks.find(t => t.type === 'appoint-approve') ?? null, [playerTasks]);
   const reviewTask = useMemo(() => playerTasks.find(t => t.type === 'review') ?? null, [playerTasks]);
+  const deployApproveTask = useMemo(() => playerTasks.find(t => t.type === 'deploy-approve') ?? null, [playerTasks]);
   const territories = useTerritoryStore((s) => s.territories);
   const centralPosts = useTerritoryStore((s) => s.centralPosts);
 
@@ -51,11 +57,44 @@ const AlertBar: React.FC = () => {
     return { draftPosts: draft, directPosts: direct };
   }, [allVacancies, isEmperor, playerId, draftPlan]);
 
-  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && draftPosts.length === 0) return null;
+  // 常驻任务（standing）
+  const standingTasks = useMemo(() => playerTasks.filter(t => t.standing), [playerTasks]);
+
+  // ── 审批弹窗打开时自动暂停时间，全部关闭后恢复 ──
+  const anyModalOpen = selectionOpen || draftOpen || transferPlanOpen || reviewPlanOpen || deployApproveOpen || deployDraftOpen;
+  const wasPausedRef = useRef(false);
+
+  useEffect(() => {
+    if (anyModalOpen) {
+      const { isPaused } = useTurnManager.getState();
+      wasPausedRef.current = isPaused;
+      if (!isPaused) useTurnManager.getState().togglePause();
+    } else {
+      // 全部关闭 → 仅当之前不是暂停状态才恢复
+      if (!wasPausedRef.current) {
+        const { isPaused } = useTurnManager.getState();
+        if (isPaused) useTurnManager.getState().togglePause();
+      }
+    }
+  }, [anyModalOpen]);
+
+  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && standingTasks.length === 0 && draftPosts.length === 0) return null;
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-2 p-3">
+        {/* 常驻任务（standing）：始终在最左侧 */}
+        {standingTasks.map(st => st.type === 'deploy-draft' && (
+          <div
+            key={st.id}
+            className="flex items-center gap-1 bg-teal-500/20 text-teal-400 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-teal-500/30 transition-colors border border-teal-500/40"
+            onClick={() => setDeployDraftOpen(true)}
+            title="点击草拟调兵方案"
+          >
+            <span>&#9997;</span>
+            <span>调兵草拟</span>
+          </div>
+        ))}
         {/* 审批链：皇帝审批调动名单 */}
         {appointApproveTask && (appointApproveTask.data as { entries: unknown[] }).entries.length > 0 && (
           <div
@@ -87,6 +126,17 @@ const AlertBar: React.FC = () => {
           >
             <span>📝</span>
             <span>{(reviewTask!.data as { entries: unknown[] }).entries.length}项考课待审</span>
+          </div>
+        )}
+        {/* 调兵审批 */}
+        {deployApproveTask && (deployApproveTask.data as { entries: unknown[] }).entries.length > 0 && (
+          <div
+            className="flex items-center gap-1 bg-[var(--color-accent-green)]/20 text-[var(--color-accent-green)] px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-[var(--color-accent-green)]/30 transition-colors border border-[var(--color-accent-green)]/40"
+            onClick={() => setDeployApproveOpen(true)}
+            title="点击审批调兵方案"
+          >
+            <span>&#9876;</span>
+            <span>{(deployApproveTask.data as { entries: unknown[] }).entries.length}项调兵待审批</span>
           </div>
         )}
         {/* 直辖空缺（非审批链，如辟署权域内空缺） */}
@@ -122,6 +172,20 @@ const AlertBar: React.FC = () => {
       )}
       {reviewPlanOpen && reviewTask && (
         <ReviewPlanFlow onClose={() => setReviewPlanOpen(false)} />
+      )}
+      {deployApproveTask && (
+        <DeployApproveFlow
+          visible={deployApproveOpen}
+          onOpen={() => setDeployApproveOpen(true)}
+          onClose={() => setDeployApproveOpen(false)}
+        />
+      )}
+      {standingTasks.some(t => t.type === 'deploy-draft') && (
+        <DeployDraftFlow
+          visible={deployDraftOpen}
+          onOpen={() => setDeployDraftOpen(true)}
+          onClose={() => setDeployDraftOpen(false)}
+        />
       )}
     </>
   );

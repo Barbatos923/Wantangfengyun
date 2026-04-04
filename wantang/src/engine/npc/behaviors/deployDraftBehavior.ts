@@ -2,7 +2,7 @@
 // 草拟人（都知兵马使/兵部尚书/ruler自身）评估局势，
 // 生成部署方案存入 NpcStore.deploymentDrafts，等待批准人处理。
 
-import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from '../types';
+import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier, PlayerTask } from '../types';
 import type { Character } from '@engine/character/types';
 import { calcWeight } from '../types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -14,6 +14,7 @@ import {
   planDeployments,
   type DeploymentEntry,
 } from '@engine/military/deployCalc';
+import { addDays } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 数据 ────────────────────────────────────────────────
@@ -26,7 +27,7 @@ interface DeployDraftData {
 // ── 辅助函数 ────────────────────────────────────────────
 
 /** 收集已编入行营的军队 ID */
-function getCampaignArmyIds(): Set<string> {
+export function getCampaignArmyIds(): Set<string> {
   const ids = new Set<string>();
   for (const c of useWarStore.getState().campaigns.values()) {
     for (const aid of c.armyIds) ids.add(aid);
@@ -39,7 +40,7 @@ function getCampaignArmyIds(): Set<string> {
 
 export const deployDraftBehavior: NpcBehavior<DeployDraftData> = {
   id: 'deploy-draft',
-  playerMode: 'skip',           // 草拟是自主行为，不推任务给玩家
+  playerMode: 'standing',        // 玩家常驻任务，NPC 走 monthly-slot
   schedule: 'monthly-slot',
 
   generateTask(actor: Character, ctx: NpcContext): BehaviorTaskResult<DeployDraftData> | null {
@@ -58,6 +59,21 @@ export const deployDraftBehavior: NpcBehavior<DeployDraftData> = {
     // 获取 ruler 名下的军队
     const milStore = useMilitaryStore.getState();
     const armies = milStore.getArmiesByOwner(rulerId);
+
+    // standing 路径：玩家走常驻任务
+    if (actor.id === ctx.playerId) {
+      if (armies.length === 0) return null;
+      const campaignArmyIds = getCampaignArmyIds();
+      const personality = ctx.personalityCache.get(actor.id);
+      const entries = personality ? planDeployments(
+        rulerId, armies, milStore.battalions,
+        ctx.territories, ctx.characters, ctx.getOpinion,
+        campaignArmyIds, personality,
+      ) : [];
+      return { data: { entries, rulerId }, weight: 100 };
+    }
+
+    // NPC 路径：需要有建议 + 权重判定
     if (armies.length === 0) return null;
 
     const personality = ctx.personalityCache.get(actor.id);
@@ -103,8 +119,18 @@ export const deployDraftBehavior: NpcBehavior<DeployDraftData> = {
   },
 
   executeAsNpc(_actor: Character, data: DeployDraftData, _ctx: NpcContext): void {
-    // 存入 NpcStore 缓冲区，等待 deploy-approve 处理
     useNpcStore.getState().addDeploymentDraft(data.rulerId, data.entries);
+  },
+
+  generatePlayerTask(actor: Character, data: DeployDraftData, ctx: NpcContext): PlayerTask | null {
+    return {
+      id: crypto.randomUUID(),
+      type: 'deploy-draft',
+      actorId: actor.id,
+      data: { entries: data.entries, rulerId: data.rulerId },
+      deadline: addDays(ctx.date, 9999), // 常驻任务不真正过期
+      standing: true,
+    };
   },
 };
 

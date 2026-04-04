@@ -26,7 +26,7 @@ interface DeployApproveData {
  * 执行一条部署：创建调动行营（warId=''）→ 设定行军目标。
  * 军队已在目标位置时跳过。
  */
-function executeDeployEntry(entry: DeploymentEntry, rulerId: string): void {
+export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): void {
   if (entry.fromLocationId === entry.targetLocationId) return;
 
   const territories = useTerritoryStore.getState().territories;
