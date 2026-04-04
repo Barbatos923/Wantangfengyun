@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { usePanelStore } from '@ui/stores/panelStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -68,12 +69,39 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   const [peaceCampaignArmies, setPeaceCampaignArmies] = useState<string[]>([]);
   const [peaceCampaignLocationId, setPeaceCampaignLocationId] = useState<string>('');
 
+  // Tab1: 快速调兵 state
+  const [showQuickDeploy, setShowQuickDeploy] = useState(false);
+  const [quickDeployArmyId, setQuickDeployArmyId] = useState<string>('');
+  const [quickDeployTargetId, setQuickDeployTargetId] = useState<string>('');
+
   // Tab4: 战争 state
   const [createCampaignWarId, setCreateCampaignWarId] = useState<string | null>(null);
   const [selectedCampaignArmies, setSelectedCampaignArmies] = useState<string[]>([]);
   const [campaignLocationId, setCampaignLocationId] = useState<string>('');
   const [marchTargetId, setMarchTargetId] = useState<string>('');
   const [marchCampaignId, setMarchCampaignId] = useState<string | null>(null);
+
+  // 地图选择回调：记录哪个 setter 等待结果
+  const mapSelectionCallbackRef = useRef<((id: string) => void) | null>(null);
+  const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
+  const mapSelectionResult = usePanelStore((s) => s.mapSelectionResult);
+
+  useEffect(() => {
+    // 地图选择完成 → 填入结果
+    if (!mapSelectionActive && mapSelectionResult && mapSelectionCallbackRef.current) {
+      mapSelectionCallbackRef.current(mapSelectionResult);
+      mapSelectionCallbackRef.current = null;
+    }
+    // 取消选择
+    if (!mapSelectionActive && !mapSelectionResult) {
+      mapSelectionCallbackRef.current = null;
+    }
+  }, [mapSelectionActive, mapSelectionResult]);
+
+  function startLocationSelection(callback: (id: string) => void) {
+    mapSelectionCallbackRef.current = callback;
+    usePanelStore.getState().startMapSelection('点击地图选择集结位置');
+  }
 
   // Stores
   const playerId = useCharacterStore((s) => s.playerId);
@@ -98,6 +126,27 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
         return postHolder === playerId;
       }),
   );
+
+  // 玩家势力范围内的州（己方 + 臣属控制）
+  const playerRealmZhou = playerId
+    ? Array.from(territories.values()).filter((t) => {
+        if (t.tier !== 'zhou') return false;
+        const ctrl = t.posts.find((p) => positionMap.get(p.templateId)?.grantsControl)?.holderId;
+        if (!ctrl) return false;
+        if (ctrl === playerId) return true;
+        // 沿效忠链上溯，检查是否最终效忠于玩家
+        let cur = ctrl;
+        const visited = new Set<string>();
+        while (cur) {
+          const c = characters.get(cur);
+          if (!c?.overlordId || visited.has(cur)) return false;
+          if (c.overlordId === playerId) return true;
+          visited.add(cur);
+          cur = c.overlordId;
+        }
+        return false;
+      })
+    : [];
 
   // 玩家持有的 grantsControl 岗位（用于绑定军队）
   const playerControlPosts = playerId
@@ -1003,16 +1052,17 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             })()}
                             {/* 行营驻地选择 */}
                             <p className="text-xs font-bold text-[var(--color-text-muted)] pt-1">行营驻地</p>
-                            <select
-                              className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
-                              value={campaignLocationId}
-                              onChange={(e) => setCampaignLocationId(e.target.value)}
-                            >
-                              <option value="">-- 请选择 --</option>
-                              {playerControlledZhou.map((t) => (
-                                <option key={t.id} value={t.id}>{t.name}</option>
-                              ))}
-                            </select>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => startLocationSelection(setCampaignLocationId)}
+                                className="flex-1 px-2 py-1.5 rounded border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors text-left"
+                              >
+                                {campaignLocationId ? territories.get(campaignLocationId)?.name ?? campaignLocationId : '点击在地图上选择...'}
+                              </button>
+                              {campaignLocationId && (
+                                <button onClick={() => setCampaignLocationId('')} className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]">✕</button>
+                              )}
+                            </div>
 
                             <div className="flex gap-2 justify-end pt-1">
                               <button
@@ -1049,7 +1099,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                 });
               })()}
 
-              {/* 独立行营（不依附战争） */}
+              {/* 调动行营（不依附战争） */}
               {(() => {
                 const independentCampaigns = Array.from(campaigns.values()).filter(
                   (c) => c.ownerId === playerId && !c.warId,
@@ -1059,7 +1109,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     {independentCampaigns.length > 0 && (
                       <div className="rounded border border-[var(--color-border)] overflow-hidden">
                         <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                          <span className="text-xs font-bold text-[var(--color-text-muted)]">独立行营</span>
+                          <span className="text-xs font-bold text-[var(--color-text-muted)]">调动行营</span>
                         </div>
                         {independentCampaigns.map((camp) => {
                           const campLoc = territories.get(camp.locationId);
@@ -1069,16 +1119,97 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             const a = armies.get(aid);
                             if (a) campTroops += getArmyStrength(a, battalions);
                           }
+                          const campTarget = camp.targetId ? territories.get(camp.targetId) : null;
+                          const isSettingTarget = marchCampaignId === camp.id;
                           return (
-                            <div key={camp.id} className="px-3 py-2 text-xs border-b border-[var(--color-border)] last:border-b-0">
-                              <span className="text-[var(--color-text)]">{campCmd?.name ?? '无'}</span>
-                              <span className="text-[var(--color-text-muted)]"> · {campLoc?.name} · {campTroops.toLocaleString()}兵 · {camp.status === 'marching' ? '行军中' : camp.status === 'mustering' ? '集结中' : '待命'}</span>
+                            <div key={camp.id} className="px-3 py-2 border-b border-[var(--color-border)] last:border-b-0 bg-[var(--color-bg-surface)]">
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-col min-w-0 mr-2">
+                                  <span className="text-xs font-bold text-[var(--color-text)]">
+                                    {campCmd?.name ?? '无将领'}
+                                  </span>
+                                  <span className="text-xs text-[var(--color-text-muted)]">
+                                    {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
+                                    {camp.status === 'idle' && '待命'}
+                                    {camp.status === 'marching' && '行军中'}
+                                    {' · '}
+                                    {campLoc?.name ?? camp.locationId}
+                                    {' · '}
+                                    {camp.armyIds.length}军 / {campTroops.toLocaleString()}兵
+                                  </span>
+                                  {camp.status === 'marching' && campTarget && (
+                                    <span className="text-xs text-[var(--color-text-muted)]">
+                                      目标：{campTarget.name}（进度 {camp.routeProgress}/{camp.route.length}）
+                                    </span>
+                                  )}
+                                </div>
+                                {camp.status === 'idle' && !isSettingTarget && (
+                                  <button
+                                    onClick={() => {
+                                      setMarchCampaignId(camp.id);
+                                      setMarchTargetId('');
+                                    }}
+                                    className="text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] px-2 py-1 rounded hover:bg-[var(--color-bg)] transition-colors shrink-0"
+                                  >
+                                    设定目标
+                                  </button>
+                                )}
+                              </div>
+                              {isSettingTarget && (
+                                <div className="mt-2 space-y-2">
+                                  <select
+                                    className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
+                                    value={marchTargetId}
+                                    onChange={(e) => setMarchTargetId(e.target.value)}
+                                  >
+                                    <option value="">-- 选择目标州 --</option>
+                                    {playerRealmZhou
+                                      .filter((t) => t.id !== camp.locationId)
+                                      .map((t) => (
+                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                      ))}
+                                  </select>
+                                  <div className="flex gap-2 justify-end">
+                                    <button
+                                      onClick={() => setMarchCampaignId(null)}
+                                      className="px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]"
+                                    >
+                                      取消
+                                    </button>
+                                    <button
+                                      disabled={!marchTargetId}
+                                      onClick={() => {
+                                        if (!marchTargetId || !playerId) return;
+                                        const path = findPath(
+                                          camp.locationId,
+                                          marchTargetId,
+                                          playerId,
+                                          territories,
+                                          characters,
+                                        );
+                                        if (!path) {
+                                          alert('无法到达目标州');
+                                          return;
+                                        }
+                                        useWarStore
+                                          .getState()
+                                          .setCampaignTarget(camp.id, marchTargetId, path);
+                                        setMarchCampaignId(null);
+                                        setMarchTargetId('');
+                                      }}
+                                      className="px-2 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    >
+                                      确认行军
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           );
                         })}
                       </div>
                     )}
-                    {/* 组建独立行营 */}
+                    {/* 组建调动行营 */}
                     {!showCreatePeaceCampaign ? (
                       <button
                         onClick={() => setShowCreatePeaceCampaign(true)}
@@ -1115,16 +1246,17 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           );
                         })()}
                         <p className="text-xs font-bold text-[var(--color-text-muted)] pt-1">行营驻地</p>
-                        <select
-                          className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
-                          value={peaceCampaignLocationId}
-                          onChange={(e) => setPeaceCampaignLocationId(e.target.value)}
-                        >
-                          <option value="">-- 请选择 --</option>
-                          {playerControlledZhou.map((t) => (
-                            <option key={t.id} value={t.id}>{t.name}</option>
-                          ))}
-                        </select>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => startLocationSelection(setPeaceCampaignLocationId)}
+                            className="flex-1 px-2 py-1.5 rounded border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors text-left"
+                          >
+                            {peaceCampaignLocationId ? territories.get(peaceCampaignLocationId)?.name ?? peaceCampaignLocationId : '点击在地图上选择...'}
+                          </button>
+                          {peaceCampaignLocationId && (
+                            <button onClick={() => setPeaceCampaignLocationId('')} className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]">✕</button>
+                          )}
+                        </div>
                         <div className="flex gap-2 justify-end pt-1">
                           <button onClick={() => { setShowCreatePeaceCampaign(false); setPeaceCampaignArmies([]); setPeaceCampaignLocationId(''); }}
                             className="px-3 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">取消</button>
@@ -1137,6 +1269,88 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             }}
                             className="px-3 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] disabled:opacity-40 disabled:cursor-not-allowed"
                           >确认组建</button>
+                        </div>
+                      </div>
+                    )}
+                    {/* 快速调兵 */}
+                    {!showQuickDeploy ? (
+                      <button
+                        onClick={() => setShowQuickDeploy(true)}
+                        className="w-full py-2 rounded border border-dashed border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors"
+                      >
+                        快速调兵
+                      </button>
+                    ) : (
+                      <div className="rounded border border-[var(--color-accent-gold)] bg-[var(--color-bg)] p-3 space-y-2">
+                        <p className="text-xs font-bold text-[var(--color-text-muted)]">选择军队</p>
+                        {(() => {
+                          const usedArmyIds = new Set<string>();
+                          for (const c of campaigns.values()) {
+                            for (const aid of c.armyIds) usedArmyIds.add(aid);
+                            for (const ia of c.incomingArmies) usedArmyIds.add(ia.armyId);
+                          }
+                          const available = playerArmies.filter((a) => !usedArmyIds.has(a.id));
+                          return available.length === 0 ? (
+                            <p className="text-xs text-[var(--color-text-muted)]">无可用军队</p>
+                          ) : (
+                            <select
+                              className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
+                              value={quickDeployArmyId}
+                              onChange={(e) => setQuickDeployArmyId(e.target.value)}
+                            >
+                              <option value="">-- 选择军队 --</option>
+                              {available.map((army) => (
+                                <option key={army.id} value={army.id}>
+                                  {army.name}（{getArmyStrength(army, battalions).toLocaleString()}兵 · {territories.get(army.locationId)?.name}）
+                                </option>
+                              ))}
+                            </select>
+                          );
+                        })()}
+                        <p className="text-xs font-bold text-[var(--color-text-muted)] pt-1">目标州</p>
+                        <select
+                          className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
+                          value={quickDeployTargetId}
+                          onChange={(e) => setQuickDeployTargetId(e.target.value)}
+                        >
+                          <option value="">-- 选择目标州 --</option>
+                          {playerRealmZhou.map((t) => (
+                            <option key={t.id} value={t.id}>{t.name}</option>
+                          ))}
+                        </select>
+                        <div className="flex gap-2 justify-end pt-1">
+                          <button onClick={() => { setShowQuickDeploy(false); setQuickDeployArmyId(''); setQuickDeployTargetId(''); }}
+                            className="px-3 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">取消</button>
+                          <button
+                            disabled={!quickDeployArmyId || !quickDeployTargetId}
+                            onClick={() => {
+                              if (!playerId || !quickDeployArmyId || !quickDeployTargetId) return;
+                              const army = armies.get(quickDeployArmyId);
+                              if (!army) return;
+                              // 检查军队是否已在目标州
+                              if (army.locationId === quickDeployTargetId) {
+                                alert('军队已在目标州');
+                                return;
+                              }
+                              const path = findPath(army.locationId, quickDeployTargetId, playerId, territories, characters);
+                              if (!path) {
+                                alert('无法到达目标州（关隘阻挡）');
+                                return;
+                              }
+                              // 创建调动行营并立即设定目标
+                              executeCreateCampaign('', playerId, [quickDeployArmyId], army.locationId);
+                              // 找到刚创建的行营
+                              const allCamps = useWarStore.getState().campaigns;
+                              for (const c of allCamps.values()) {
+                                if (c.ownerId === playerId && !c.warId && c.armyIds.includes(quickDeployArmyId)) {
+                                  useWarStore.getState().setCampaignTarget(c.id, quickDeployTargetId, path);
+                                  break;
+                                }
+                              }
+                              setShowQuickDeploy(false); setQuickDeployArmyId(''); setQuickDeployTargetId('');
+                            }}
+                            className="px-3 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] disabled:opacity-40 disabled:cursor-not-allowed"
+                          >确认调兵</button>
                         </div>
                       </div>
                     )}

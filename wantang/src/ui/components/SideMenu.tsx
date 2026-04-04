@@ -5,6 +5,7 @@ import GovernmentPanel from './GovernmentPanel';
 import MilitaryPanel from './MilitaryPanel';
 import { useNotificationStore, type StoryEvent } from '@ui/stores/notificationStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { usePanelStore } from '@ui/stores/panelStore';
 
 interface MenuItem {
   label: string;
@@ -28,6 +29,7 @@ const SideMenu: React.FC = () => {
   const [showOfficialPanel, setShowOfficialPanel] = useState(false);
   const [showGovernmentPanel, setShowGovernmentPanel] = useState(false);
   const [showMilitaryPanel, setShowMilitaryPanel] = useState(false);
+  const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
 
   const handleClick = (label: string) => {
     if (label === '政体') {
@@ -103,7 +105,11 @@ const SideMenu: React.FC = () => {
       {showGovernmentPanel && <GovernmentPanel onClose={() => setShowGovernmentPanel(false)} />}
       {showRealmPanel && <RealmPanel onClose={() => setShowRealmPanel(false)} />}
       {showOfficialPanel && <OfficialPanel onClose={() => setShowOfficialPanel(false)} />}
-      {showMilitaryPanel && <MilitaryPanel onClose={() => setShowMilitaryPanel(false)} />}
+      {showMilitaryPanel && (
+        <div style={{ display: mapSelectionActive ? 'none' : undefined }}>
+          <MilitaryPanel onClose={() => setShowMilitaryPanel(false)} />
+        </div>
+      )}
     </div>
   );
 };

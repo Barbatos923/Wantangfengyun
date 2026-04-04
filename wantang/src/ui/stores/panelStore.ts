@@ -12,6 +12,13 @@ interface PanelState {
   /** 地图聚焦的角色 ID（顶级领主），null = 默认视图 */
   mapFocusCharId: string | null;
 
+  /** 地图选择模式（用于从弹窗中选择领地） */
+  mapSelectionActive: boolean;
+  mapSelectionPrompt: string;
+  mapSelectionResult: string | null;
+  startMapSelection: (prompt: string) => void;
+  finishMapSelection: (territoryId: string | null) => void;
+
   pushCharacter: (id: string) => void;
   goBack: () => void;
   goToPlayer: () => void;
@@ -27,6 +34,12 @@ export const usePanelStore = create<PanelState>((set, get) => ({
   pinned: false,
   territoryModalId: null,
   mapFocusCharId: null,
+
+  mapSelectionActive: false,
+  mapSelectionPrompt: '',
+  mapSelectionResult: null,
+  startMapSelection: (prompt) => set({ mapSelectionActive: true, mapSelectionPrompt: prompt, mapSelectionResult: null }),
+  finishMapSelection: (territoryId) => set({ mapSelectionActive: false, mapSelectionResult: territoryId }),
 
   pushCharacter: (id) => {
     const { stack } = get();

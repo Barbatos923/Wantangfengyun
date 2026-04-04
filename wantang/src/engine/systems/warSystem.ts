@@ -109,16 +109,21 @@ export function runWarSystem(date: GameDate): void {
       if (rp >= campaign.route.length - 1) {
         // 到达目的地
         const destId = campaign.route[campaign.route.length - 1];
-        useWarStore.getState().updateCampaign(campaign.id, {
-          locationId: destId,
-          routeProgress: rp,
-          marchProgress: 0,
-          status: 'idle',
-          targetId: null,
-          route: [],
-        });
         for (const armyId of campaign.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: destId });
+        }
+        if (!campaign.warId) {
+          // 调动行营：到达后自动解散，军队留在目标州
+          useWarStore.getState().disbandCampaign(campaign.id);
+        } else {
+          useWarStore.getState().updateCampaign(campaign.id, {
+            locationId: destId,
+            routeProgress: rp,
+            marchProgress: 0,
+            status: 'idle',
+            targetId: null,
+            route: [],
+          });
         }
       } else if (rp !== campaign.routeProgress) {
         // 推进了至少一格

@@ -43,22 +43,31 @@ const MapPlaceholder: React.FC = () => {
   const territoryForModal = territoryModalId ? territories.get(territoryModalId) : undefined;
   const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
 
+  // 地图选择模式（从弹窗触发的领地选择）
+  const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
+  const mapSelectionPrompt = usePanelStore((s) => s.mapSelectionPrompt);
+
   // 行军模式
   const [marchingCampaignId, setMarchingCampaignId] = useState<string | null>(null);
   const [marchError, setMarchError] = useState<string | null>(null);
 
-  // ESC 取消行军模式
+  // ESC 取消地图选择模式 / 行军模式
   useEffect(() => {
-    if (!marchingCampaignId) return;
+    if (!marchingCampaignId && !mapSelectionActive) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setMarchingCampaignId(null);
-        setMarchError(null);
+        if (mapSelectionActive) {
+          usePanelStore.getState().finishMapSelection(null);
+        }
+        if (marchingCampaignId) {
+          setMarchingCampaignId(null);
+          setMarchError(null);
+        }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [marchingCampaignId]);
+  }, [marchingCampaignId, mapSelectionActive]);
 
   // 错误提示自动消失
   useEffect(() => {
@@ -78,7 +87,20 @@ const MapPlaceholder: React.FC = () => {
     setMarchError(null);
   }, []);
 
+  const handleCancelSelection = useCallback(() => {
+    if (mapSelectionActive) {
+      usePanelStore.getState().finishMapSelection(null);
+    }
+    handleCancelMarch();
+  }, [mapSelectionActive, handleCancelMarch]);
+
   const handleSelectTerritory = (id: string) => {
+    // 地图选择模式：点击 = 选择领地
+    if (mapSelectionActive) {
+      usePanelStore.getState().finishMapSelection(id);
+      return;
+    }
+
     // 行军模式：点击 = 选择目的地
     if (marchingCampaignId) {
       const campaign = useWarStore.getState().campaigns.get(marchingCampaignId);
@@ -143,12 +165,29 @@ const MapPlaceholder: React.FC = () => {
       <GameMap
         onSelectTerritory={handleSelectTerritory}
         onSelectCampaign={(id) => setSelectedCampaignId(id)}
-        marchMode={!!marchingCampaignId}
-        onRightClick={handleCancelMarch}
+        marchMode={!!marchingCampaignId || mapSelectionActive}
+        onRightClick={handleCancelSelection}
       />
 
+      {/* 地图选择模式提示条 */}
+      {mapSelectionActive && (
+        <div
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-5 py-2 rounded-lg border text-sm font-bold shadow-lg"
+          style={{
+            background: 'rgba(26, 26, 46, 0.95)',
+            borderColor: 'var(--color-accent-gold)',
+            color: 'var(--color-accent-gold)',
+          }}
+        >
+          {mapSelectionPrompt}
+          <span className="text-xs font-normal ml-3" style={{ color: 'var(--color-text-muted)' }}>
+            ESC / 右键取消
+          </span>
+        </div>
+      )}
+
       {/* 行军模式提示条 */}
-      {marchingCampaignId && (
+      {marchingCampaignId && !mapSelectionActive && (
         <div
           className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-5 py-2 rounded-lg border text-sm font-bold shadow-lg"
           style={{

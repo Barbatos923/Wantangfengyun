@@ -27,6 +27,8 @@ import './behaviors/negotiateWarBehavior';
 import './behaviors/grantTerritoryBehavior';
 import './behaviors/revokeBehavior';
 import './behaviors/transferVassalBehavior';
+import './behaviors/deployDraftBehavior';
+import './behaviors/deployApproveBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 
