@@ -65,23 +65,13 @@ function getEraBg(era: Era): string {
   }
 }
 
-function getEraGlow(era: Era): string {
-  switch (era) {
-    case Era.ZhiShi:
-      return 'shadow-[0_0_8px_var(--color-accent-green)]';
-    case Era.WeiShi:
-      return 'shadow-[0_0_8px_var(--color-accent-gold)]';
-    case Era.LuanShi:
-      return 'shadow-[0_0_8px_var(--color-accent-red)]';
-  }
-}
 
 /** 速度档位对应的自动推进间隔（毫秒），0 表示暂停 */
 const SPEED_INTERVALS: Record<number, number> = {
   [GameSpeed.Paused]: 0,
   [GameSpeed.Normal]: 1000,   // 1天/秒（≈CK3 2速）
   [GameSpeed.Fast]: 500,      // 2天/秒（≈CK3 3速）
-  [GameSpeed.VeryFast]: 200,  // 5天/秒（≈CK3 4速）
+  [GameSpeed.VeryFast]: 100,  // 10天/秒（拍视频用）
 };
 
 /** 三个速度档位（不含 Paused） */

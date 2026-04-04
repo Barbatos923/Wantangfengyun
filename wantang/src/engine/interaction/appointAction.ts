@@ -14,6 +14,7 @@ import { getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { collectRulerIds } from '@engine/official/postQueries';
+import { executeDismiss } from './dismissAction';
 
 /** 注册任命交互 */
 registerInteraction({
@@ -126,12 +127,18 @@ export function executeAppoint(
   vacateOldPost?: boolean,
 ): void {
   // 升调/平调：先清空候选人的当前岗位
+  // grantsControl 岗位走 executeDismiss 以级联更新法理臣属效忠关系，skipOpinion 跳过好感惩罚
   if (vacateOldPost) {
     const ts = useTerritoryStore.getState();
     const currentPosts = ts.getPostsByHolder(appointeeId);
     for (const p of currentPosts) {
       if (p.id !== postId) {
-        ts.updatePost(p.id, { holderId: null, appointedBy: undefined, appointedDate: undefined });
+        const pTpl = positionMap.get(p.templateId);
+        if (pTpl?.grantsControl) {
+          executeDismiss(p.id, appointerId, { skipOpinion: true });
+        } else {
+          ts.updatePost(p.id, { holderId: null, appointedBy: undefined, appointedDate: undefined });
+        }
       }
     }
   }
@@ -178,17 +185,24 @@ export function executeAppoint(
   terrStore.updatePost(postId, baselineUpdate);
 
   // 2. 确保效忠关系
-  // 地方副岗：效忠本领地 grantsControl 主岗持有人（而非法理主体）
   let effectiveOverlord = appointerId;
   if (post) {
     const postTpl = positionMap.get(post.templateId);
-    if (!postTpl?.grantsControl && post.territoryId) {
+    if (postTpl?.grantsControl && post.territoryId && vacateOldPost) {
+      // 铨选调动主岗：沿 parentId 找法理上级主岗持有人
+      const terr = terrStore.territories.get(post.territoryId);
+      if (terr?.parentId) {
+        const parent = terrStore.territories.get(terr.parentId);
+        if (parent) {
+          const parentMainPost = parent.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+          if (parentMainPost?.holderId) effectiveOverlord = parentMainPost.holderId;
+        }
+      }
+    } else if (!postTpl?.grantsControl && post.territoryId) {
+      // 副岗：效忠本领地 grantsControl 主岗持有人
       const terr = terrStore.territories.get(post.territoryId);
       if (terr) {
-        const mainPost = terr.posts.find(p => {
-          const t = positionMap.get(p.templateId);
-          return t?.grantsControl === true;
-        });
+        const mainPost = terr.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
         if (mainPost?.holderId) effectiveOverlord = mainPost.holderId;
       }
     }
@@ -197,6 +211,33 @@ export function executeAppoint(
 
   // 3. 该岗位绑定的军队随岗位转移给被任命者
   useMilitaryStore.getState().syncArmyOwnersByPost(postId, appointeeId);
+
+  // 3.5 就任主岗时：本领地副岗持有人归附新任者
+  if (post) {
+    const postTpl = positionMap.get(post.templateId);
+    if (postTpl?.grantsControl && post.territoryId) {
+      const terr = terrStore.territories.get(post.territoryId);
+      if (terr) {
+        const cascadeIds: string[] = [];
+        for (const p of terr.posts) {
+          if (positionMap.get(p.templateId)?.grantsControl) continue;
+          if (!p.holderId || p.holderId === appointeeId) continue;
+          const holder = charStore.getCharacter(p.holderId);
+          if (holder?.alive && holder.overlordId !== appointeeId) {
+            cascadeIds.push(p.holderId);
+          }
+        }
+        if (cascadeIds.length > 0) {
+          charStore.batchMutate(chars => {
+            for (const cid of cascadeIds) {
+              const c = chars.get(cid);
+              if (c) c.overlordId = appointeeId;
+            }
+          });
+        }
+      }
+    }
+  }
 
   // 4. 好感修正：被任命者对任命者好感增加（按品级，可衰减）
   if (post) {

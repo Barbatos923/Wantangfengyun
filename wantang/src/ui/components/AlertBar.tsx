@@ -1,8 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { useTurnManager } from '@engine/TurnManager';
-import { EventPriority, type GameEvent } from '@engine/types';
-import { diffDays } from '@engine/dateUtils';
-import BattleDetailModal from './BattleDetailModal';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getPendingVacancies, resolveAppointAuthority } from '@engine/official/selectionUtils';
@@ -14,9 +10,6 @@ import TransferPlanFlow from './TransferPlanFlow';
 import ReviewPlanFlow from './ReviewPlanFlow';
 
 const AlertBar: React.FC = () => {
-  const events = useTurnManager((s) => s.events);
-  const currentDate = useTurnManager((s) => s.currentDate);
-  const [battleEvent, setBattleEvent] = useState<GameEvent | null>(null);
   const playerId = useCharacterStore((s) => s.playerId);
   const [selectionOpen, setSelectionOpen] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
@@ -39,8 +32,6 @@ const AlertBar: React.FC = () => {
   const allVacancies = playerId ? getPendingVacancies(playerId) : [];
 
   // 分流：玩家是皇帝 → 全部走直辖铨选（直接执行）；非皇帝 → 作为经办人拟草稿
-  // 作为经办人的岗位 = resolveAppointAuthority 指向自己的岗位
-  // 已写入 draftPlan 的岗位不再提示（草稿已提交，等待下月审批）
   const { draftPosts, directPosts } = useMemo(() => {
     if (isEmperor || !playerId) {
       return { draftPosts: [] as Post[], directPosts: allVacancies };
@@ -49,33 +40,18 @@ const AlertBar: React.FC = () => {
     const draft: Post[] = [];
     const direct: Post[] = [];
     for (const post of allVacancies) {
-      if (draftedPostIds.has(post.id)) continue; // 已进入草案，不重复提示
+      if (draftedPostIds.has(post.id)) continue;
       const authority = resolveAppointAuthority(post);
       if (authority === playerId) {
-        // 玩家是这个岗位的经办人（吏部/宰相/辟署权）→ 走草稿流程
         draft.push(post);
       } else {
-        // 其他空缺（如辟署权域内但经办人不是玩家）→ 直接执行
         direct.push(post);
       }
     }
     return { draftPosts: draft, directPosts: direct };
   }, [allVacancies, isEmperor, playerId, draftPlan]);
 
-  // 显示最近90天的重要事件
-  const recentEvents = events.filter((e) => {
-    if (e.priority < EventPriority.Major) return false;
-    const daysDiff = diffDays(e.date, currentDate);
-    return daysDiff >= 0 && daysDiff <= 90;
-  }).slice(-5);
-
-  if (recentEvents.length === 0 && directPosts.length === 0 && !appointApproveTask && !reviewTask && draftPosts.length === 0) return null;
-
-  const handleClick = (event: GameEvent) => {
-    if (event.type === '野战' && event.payload) {
-      setBattleEvent(event);
-    }
-  };
+  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && draftPosts.length === 0) return null;
 
   return (
     <>
@@ -124,32 +100,7 @@ const AlertBar: React.FC = () => {
             <span>{directPosts.length}个待铨选岗位</span>
           </div>
         )}
-        {recentEvents.map((event) => {
-          const icon = event.type === '野战' ? '⚔'
-            : event.type === '城破' ? '🏰'
-            : event.type === '兵变' ? '🔥'
-            : event.type === '继位' ? '👑'
-            : event.type === '绝嗣' ? '💀'
-            : event.type === '岗位空缺' ? '🏛'
-            : event.type === '王朝覆灭' ? '⚡'
-            : '📋';
-          const isClickable = event.type === '野战' && !!event.payload;
-          return (
-            <div
-              key={event.id}
-              className="flex items-center gap-1 bg-[var(--color-bg-surface)] text-[var(--color-text-muted)] px-2.5 py-1 rounded text-xs hover:text-[var(--color-text)] cursor-pointer transition-colors max-w-xs"
-              title={isClickable ? `点击查看战斗详情` : `${event.date.year}年${event.date.month}月${event.date.day}日 ${event.description}`}
-              onClick={() => handleClick(event)}
-            >
-              <span>{icon}</span>
-              <span className="truncate">{event.description}</span>
-            </div>
-          );
-        })}
       </div>
-      {battleEvent && (
-        <BattleDetailModal event={battleEvent} onClose={() => setBattleEvent(null)} />
-      )}
       {/* 直辖铨选（立即执行） */}
       {selectionOpen && directPosts.length > 0 && (
         <SelectionFlow

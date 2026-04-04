@@ -55,7 +55,7 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
       // 纯函数版检查
       const targetPosts = getPostsByHolderFromCtx(target.id, ctx);
       const actorPosts = getPostsByHolderFromCtx(actor.id, ctx);
-      if (!canDemandFealtyPure(actor, target, ctx.territories, targetPosts, actorPosts)) continue;
+      if (!canDemandFealtyPure(actor, target, ctx.territories, targetPosts, actorPosts, ctx.activeWars)) continue;
 
       // 计算成功率
       const opinion = ctx.getOpinion(target.id, actor.id);
@@ -68,8 +68,11 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
 
       // ── 权重计算：Base(0) + Add + Factor（CK3 模式） ──
       const modifiers: WeightModifier[] = [
+        // 基础权重（前置筛选已保证候选池小，这里给足动机）
+        { label: '基础', add: 50 },
+
         // 人格驱动
-        { label: '荣誉感', add: -personality.honor * 8 },
+        { label: '荣誉感', add: personality.honor * 8 },   // 荣誉感强 → 维护体制秩序
         { label: '贪婪', add: personality.greed * 6 },
         { label: '胆量', add: personality.boldness * 4 },
 

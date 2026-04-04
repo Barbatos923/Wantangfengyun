@@ -24,6 +24,9 @@ import './behaviors/recruitBehavior';
 import './behaviors/rewardBehavior';
 import './behaviors/buildBehavior';
 import './behaviors/negotiateWarBehavior';
+import './behaviors/grantTerritoryBehavior';
+import './behaviors/revokeBehavior';
+import './behaviors/transferVassalBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

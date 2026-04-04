@@ -4,6 +4,8 @@ import { useWarStore } from './WarStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useMilitaryStore } from './MilitaryStore';
+import { useTurnManager } from '@engine/TurnManager';
+import { EventPriority } from '@engine/types';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
 import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
@@ -36,10 +38,38 @@ export function settleWar(warId: string, result: War['result']): void {
       break;
   }
 
+  // ── 战争结束事件通知 ────────────────────────────────────────────────────
+  emitWarEndEvent(war, result);
+
   // ── 通用收尾 ──────────────────────────────────────────────────────────
   clearOccupation(war);
   warStore.endWar(warId, result);
   disbandCampaigns(warId);
+}
+
+// ── 战争结束事件（无条件记录，UI 层筛选显示） ─────────────────────────────
+
+function emitWarEndEvent(war: War, result: War['result']): void {
+  const charStore = useCharacterStore.getState();
+  const turnMgr = useTurnManager.getState();
+  const date = turnMgr.currentDate;
+
+  const attackerName = charStore.getCharacter(war.attackerId)?.name ?? '???';
+  const defenderName = charStore.getCharacter(war.defenderId)?.name ?? '???';
+
+  const resultText = result === 'attackerWin' ? `${attackerName}获胜`
+    : result === 'defenderWin' ? `${defenderName}获胜`
+    : '双方和谈';
+
+  turnMgr.addEvent({
+    id: crypto.randomUUID(),
+    date: { year: date.year, month: date.month, day: date.day },
+    type: '战争结束',
+    actors: [war.attackerId, war.defenderId],
+    territories: war.targetTerritoryIds,
+    description: `${attackerName}与${defenderName}的战争结束：${resultText}`,
+    priority: EventPriority.Normal,
+  });
 }
 
 // ── 领地战争结算（武力兼并 / 法理宣称） ────────────────────────────────────

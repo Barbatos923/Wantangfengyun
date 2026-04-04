@@ -129,7 +129,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
         const modifiers: WeightModifier[] = [
           // 基础倾向（默认不好战，需要强动机才会宣战）
-          { label: '基础', add: -5 },
+          { label: '基础', add: -3 },
           // 通用人格驱动
           { label: '胆识', add: personality.boldness * 8 },
           { label: '理性', add: -personality.rationality * 8 },

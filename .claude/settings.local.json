@@ -70,7 +70,8 @@
       "Bash(mv \"CK3 游戏Prompt/战略分析prompt.md\" \"docs/reference/CK3-战略分析prompt.md\")",
       "Bash(mv \"CK3 游戏Prompt/史书撰写.txt\" \"docs/reference/CK3-史书撰写.txt\")",
       "Bash(find /d/桌面/CC/wantang/src/engine/official -name *selection* -o -name *appoint*)",
-      "Bash(/dev/null:*)"
+      "Bash(/dev/null:*)",
+      "Bash(find:*)"
     ]
   }
 }

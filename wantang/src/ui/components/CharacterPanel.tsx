@@ -19,6 +19,7 @@ import DismissFlow from './DismissFlow';
 import CentralizationFlow from './CentralizationFlow';
 import DeclareWarFlow from './DeclareWarFlow';
 import TransferVassalFlow from './TransferVassalFlow';
+import RevokeFlow from './RevokeFlow';
 import { executeDemandFealty, previewDemandFealty } from '@engine/interaction';
 import type { DemandFealtyResult, FealtyChanceResult } from '@engine/interaction';
 
@@ -520,6 +521,13 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
       {activeInteraction === 'transferVassal' && (
         <TransferVassalFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
+
+      {activeInteraction === 'revoke' && (
+        <RevokeFlow
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />

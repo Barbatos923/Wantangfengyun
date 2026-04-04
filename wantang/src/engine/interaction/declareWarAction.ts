@@ -3,6 +3,8 @@
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useWarStore } from '@engine/military/WarStore';
+import { useTurnManager } from '@engine/TurnManager';
+import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
 
 registerInteraction({
@@ -37,6 +39,23 @@ export function executeDeclareWar(
     legitimacy: cost.legitimacy,
   });
   const war = useWarStore.getState().declareWar(playerId, targetId, casusBelli, targetTerritoryIds, date);
+
+  // ── 宣战事件（无条件记录，UI 层筛选显示） ──
+  {
+    const charStore = useCharacterStore.getState();
+    const attackerName = charStore.getCharacter(playerId)?.name ?? '???';
+    const defenderName = charStore.getCharacter(targetId)?.name ?? '???';
+
+    useTurnManager.getState().addEvent({
+      id: crypto.randomUUID(),
+      date: { ...date },
+      type: '宣战',
+      actors: [playerId, targetId],
+      territories: targetTerritoryIds,
+      description: `${attackerName}向${defenderName}宣战`,
+      priority: EventPriority.Normal,
+    });
+  }
 
   // 独立战争：宣战即脱离效忠关系
   if (casusBelli === 'independence') {

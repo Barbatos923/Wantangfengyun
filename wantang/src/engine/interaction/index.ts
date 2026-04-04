@@ -10,6 +10,7 @@ import './dismissAction';
 import './centralizationAction';
 import './demandFealtyAction';
 import './transferVassalAction';
+import './revokeAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -28,3 +29,4 @@ export {
 } from './centralizationAction';
 export { executeDeclareWar } from './declareWarAction';
 export { executeBuild } from './buildAction';
+export { getRevokablePosts, calcRevokeChance, previewRevokeChance, executeRevoke } from './revokeAction';

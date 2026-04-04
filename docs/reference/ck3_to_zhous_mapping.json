@@ -1,0 +1,1344 @@
+[
+  {
+    "zhouId": "zhou-changan",
+    "zhouName": "长安",
+    "ck3Matches": [
+      {
+        "county": "c_jingzhao",
+        "duchy": "d_yongxing",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10430,
+          10150,
+          10149,
+          10148,
+          10151
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 3,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-fengxiang",
+    "zhouName": "凤翔",
+    "ck3Matches": [
+      {
+        "county": "c_fengxiang",
+        "duchy": "d_fengxiang",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10132,
+          10133,
+          10134
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-binzhou",
+    "zhouName": "邠州",
+    "ck3Matches": [
+      {
+        "county": "c_binzhou",
+        "duchy": "d_binning",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10124,
+          10125,
+          13084
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-fangzhou",
+    "zhouName": "坊州",
+    "ck3Matches": [
+      {
+        "county": "c_fangzhou",
+        "duchy": "d_fufang",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10138,
+          10140,
+          10152
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "yogacara",
+    "holdings": {
+      "castle_holding": 1,
+      "church_holding": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-tongzhou",
+    "zhouName": "同州",
+    "ck3Matches": [
+      {
+        "county": "c_tongzhou",
+        "duchy": "d_yongxing",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10153,
+          13039,
+          10139
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-lingzhou",
+    "zhouName": "灵州",
+    "ck3Matches": [
+      {
+        "county": "c_lingzhou",
+        "duchy": "d_shuofang",
+        "kingdom": "k_xia",
+        "empire": "e_yongliang",
+        "provinces": [
+          10088,
+          10090,
+          13089,
+          13140
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "tangut",
+    "dominantReligion": "mantrayana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xiazhou",
+    "zhouName": "夏州",
+    "ck3Matches": [
+      {
+        "county": "c_xiazhou",
+        "duchy": "d_xiasui",
+        "kingdom": "k_xia",
+        "empire": "e_yongliang",
+        "provinces": [
+          10099,
+          10101,
+          10100,
+          13072
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "tangut",
+    "dominantReligion": "melieism",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-luoyang",
+    "zhouName": "洛阳",
+    "ck3Matches": [
+      {
+        "county": "c_henan",
+        "duchy": "d_dongji",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9780,
+          9782,
+          9788,
+          9787,
+          9786
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "none": 2,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-shanzhou",
+    "zhouName": "陕州",
+    "ck3Matches": [
+      {
+        "county": "c_shanzhou",
+        "duchy": "d_biansong",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9809,
+          13003
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-taiyuan",
+    "zhouName": "太原",
+    "ck3Matches": [
+      {
+        "county": "c_taiyuan",
+        "duchy": "d_hedong",
+        "kingdom": "k_hedong",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10073,
+          10076,
+          10075,
+          10074,
+          10077
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-luzhou",
+    "zhouName": "潞州",
+    "ck3Matches": [
+      {
+        "county": "c_luzhou_2",
+        "duchy": "d_wuxin",
+        "kingdom": "k_dongchuan",
+        "empire": "e_liangyi",
+        "provinces": [
+          9730,
+          9731,
+          10413
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "zhengyi",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-hezhong",
+    "zhouName": "河中",
+    "ck3Matches": [
+      {
+        "county": "c_hezhong",
+        "duchy": "d_hezhong",
+        "kingdom": "k_hedong",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10403,
+          10402,
+          10404,
+          10309
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yunzhou",
+    "zhouName": "云州",
+    "ck3Matches": [
+      {
+        "county": "c_yunzhou",
+        "duchy": "d_yuncao",
+        "kingdom": "k_qingxu",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          8883,
+          8884,
+          8882,
+          13034
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-youzhou",
+    "zhouName": "幽州",
+    "ck3Matches": [
+      {
+        "county": "c_youzhou",
+        "duchy": "d_youzhou",
+        "kingdom": "k_youji",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9702,
+          9700,
+          12172,
+          9705,
+          10428
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yingzhou",
+    "zhouName": "瀛州",
+    "ck3Matches": [
+      {
+        "county": "c_yingzhou",
+        "duchy": "d_biansong",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9798,
+          9800,
+          10377,
+          9806
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "maitreya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-dingzhou",
+    "zhouName": "定州",
+    "ck3Matches": [
+      {
+        "county": "c_dingzhou",
+        "duchy": "d_yideng",
+        "kingdom": "k_youji",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10085,
+          10084
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-zhenzhou",
+    "zhouName": "镇州",
+    "ck3Matches": [
+      {
+        "county": "c_zhenzhou",
+        "duchy": "d_chengde",
+        "kingdom": "k_hebei",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10187,
+          10086,
+          10087
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-jizhou",
+    "zhouName": "冀州",
+    "ck3Matches": [
+      {
+        "county": "c_jizhou",
+        "duchy": "d_chengde",
+        "kingdom": "k_hebei",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10310,
+          10311
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-weizhou",
+    "zhouName": "魏州",
+    "ck3Matches": [
+      {
+        "county": "c_weizhou",
+        "duchy": "d_weibo",
+        "kingdom": "k_hebei",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10358,
+          10357,
+          10364
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xiangzhou",
+    "zhouName": "相州",
+    "ck3Matches": [
+      {
+        "county": "c_xiangzhou",
+        "duchy": "d_xingming",
+        "kingdom": "k_hebei",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10353,
+          10352,
+          10354
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-bianzhou",
+    "zhouName": "汴州",
+    "ck3Matches": [
+      {
+        "county": "c_bianzhou",
+        "duchy": "d_biansong",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9822,
+          9823,
+          9824,
+          9825
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-huazhou",
+    "zhouName": "滑州",
+    "ck3Matches": [
+      {
+        "county": "c_huazhou",
+        "duchy": "d_zhenghua",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9819,
+          13031,
+          13032
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yunzhou-sd",
+    "zhouName": "郓州",
+    "ck3Matches": [
+      {
+        "county": "c_yunzhou",
+        "duchy": "d_yuncao",
+        "kingdom": "k_qingxu",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          8883,
+          8884,
+          8882,
+          13034
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yanzhou",
+    "zhouName": "兖州",
+    "ck3Matches": [
+      {
+        "county": "c_yanzhou",
+        "duchy": "d_yanhai",
+        "kingdom": "k_qingxu",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          8881,
+          8878,
+          8879,
+          8880,
+          13004
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 2,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xuzhou",
+    "zhouName": "徐州",
+    "ck3Matches": [
+      {
+        "county": "c_xuzhou_1",
+        "duchy": "d_xusi",
+        "kingdom": "k_qingxu",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9688,
+          9686,
+          13120,
+          13121
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-qingzhou",
+    "zhouName": "青州",
+    "ck3Matches": [
+      {
+        "county": "c_qingzhou",
+        "duchy": "d_ziqing",
+        "kingdom": "k_qingxu",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          8861,
+          8862,
+          8859,
+          8860
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xuchang",
+    "zhouName": "许州",
+    "ck3Matches": [
+      {
+        "county": "c_yingchuan",
+        "duchy": "d_chenxu",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          10441,
+          9795,
+          9794,
+          9796
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-caizhou",
+    "zhouName": "蔡州",
+    "ck3Matches": [
+      {
+        "county": "c_caizhou",
+        "duchy": "d_chenxu",
+        "kingdom": "k_henan",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          9797,
+          10376,
+          10378,
+          9793
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "maitreya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xiangyang",
+    "zhouName": "襄州",
+    "ck3Matches": [
+      {
+        "county": "c_xiangyang",
+        "duchy": "d_xiangdeng",
+        "kingdom": "k_shannan",
+        "empire": "e_jingyang",
+        "provinces": [
+          10043,
+          10045,
+          10044,
+          13027,
+          10037
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "pundarika",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-jiangling",
+    "zhouName": "江陵",
+    "ck3Matches": [
+      {
+        "county": "c_jiangling",
+        "duchy": "d_jingnan",
+        "kingdom": "k_shannan",
+        "empire": "e_jingyang",
+        "provinces": [
+          10022,
+          10023,
+          13007,
+          13008,
+          13005
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "pundarika",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-ezhou",
+    "zhouName": "鄂州",
+    "ck3Matches": [
+      {
+        "county": "c_ezhou",
+        "duchy": "d_eyue",
+        "kingdom": "k_shannan",
+        "empire": "e_jingyang",
+        "provinces": [
+          10395,
+          10397,
+          10396,
+          10398,
+          10401
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xingyuan",
+    "zhouName": "兴元",
+    "ck3Matches": [
+      {
+        "county": "c_xingyuan",
+        "duchy": "d_xingyuan",
+        "kingdom": "k_xingyuan",
+        "empire": "e_liangyi",
+        "provinces": [
+          9767,
+          9768,
+          9769,
+          13064
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "jingxue",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-suizhou",
+    "zhouName": "遂州",
+    "ck3Matches": [
+      {
+        "county": "c_suizhou",
+        "duchy": "d_xiasui",
+        "kingdom": "k_xia",
+        "empire": "e_yongliang",
+        "provinces": [
+          10107,
+          10431,
+          13071
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "tangut",
+    "dominantReligion": "mantrayana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yangzhou",
+    "zhouName": "扬州",
+    "ck3Matches": [
+      {
+        "county": "c_yangzhou",
+        "duchy": "d_huainan",
+        "kingdom": "k_huainan",
+        "empire": "e_jingyang",
+        "provinces": [
+          8933,
+          8934,
+          8951,
+          8935
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-runzhou",
+    "zhouName": "润州",
+    "ck3Matches": [
+      {
+        "county": "c_runzhou",
+        "duchy": "d_jiangdong",
+        "kingdom": "k_jiangdong",
+        "empire": "e_jingyang",
+        "provinces": [
+          10333,
+          12950,
+          10334
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yuezhou",
+    "zhouName": "越州",
+    "ck3Matches": [
+      {
+        "county": "c_yuezhou",
+        "duchy": "d_zhedong",
+        "kingdom": "k_liangzhe",
+        "empire": "e_jingyang",
+        "provinces": [
+          8828,
+          8827,
+          8829,
+          10262
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "pundarika",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-fuzhou",
+    "zhouName": "福州",
+    "ck3Matches": [
+      {
+        "county": "c_fuzhou",
+        "duchy": "d_xinan",
+        "kingdom": "k_daibei",
+        "empire": "e_zhongyuan",
+        "provinces": [
+          13139,
+          13078
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "sogdian",
+    "dominantReligion": "khurmazta",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-xuanzhou",
+    "zhouName": "宣州",
+    "ck3Matches": [
+      {
+        "county": "c_xuanzhou",
+        "duchy": "d_xuanshe",
+        "kingdom": "k_jiangdong",
+        "empire": "e_jingyang",
+        "provinces": [
+          10340,
+          8847,
+          10372,
+          10341,
+          10339
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-hongzhou",
+    "zhouName": "洪州",
+    "ck3Matches": [
+      {
+        "county": "c_hongzhou",
+        "duchy": "d_jiangxi",
+        "kingdom": "k_jiangxi",
+        "empire": "e_jingyang",
+        "provinces": [
+          8990,
+          8991,
+          13042,
+          13098,
+          13104
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 2
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-tanzhou",
+    "zhouName": "潭州",
+    "ck3Matches": [
+      {
+        "county": "c_tanzhou",
+        "duchy": "d_hunan",
+        "kingdom": "k_hunan",
+        "empire": "e_jingyang",
+        "provinces": [
+          12989,
+          12988,
+          8972,
+          13144,
+          13137
+        ]
+      }
+    ],
+    "totalProvinces": 5,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 2,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-chengdu",
+    "zhouName": "成都",
+    "ck3Matches": [
+      {
+        "county": "c_chengdu",
+        "duchy": "d_xichuan",
+        "kingdom": "k_xichuan",
+        "empire": "e_liangyi",
+        "provinces": [
+          10216,
+          10218,
+          10217
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-zizhou",
+    "zhouName": "梓州",
+    "ck3Matches": [
+      {
+        "county": "c_zizhou_2",
+        "duchy": "d_dongchuan",
+        "kingdom": "k_dongchuan",
+        "empire": "e_liangyi",
+        "provinces": [
+          9724,
+          9725
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "han",
+    "dominantReligion": "mantrayana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-guangzhou",
+    "zhouName": "广州",
+    "ck3Matches": [
+      {
+        "county": "c_guangzhou",
+        "duchy": "d_huaixi",
+        "kingdom": "k_huainan",
+        "empire": "e_jingyang",
+        "provinces": [
+          10256,
+          10253,
+          10254,
+          10255
+        ]
+      }
+    ],
+    "totalProvinces": 4,
+    "dominantCulture": "han",
+    "dominantReligion": "vinaya",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1,
+      "none": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-yongzhou",
+    "zhouName": "邕州",
+    "ck3Matches": [
+      {
+        "county": "c_yongzhou",
+        "duchy": "d_lingling",
+        "kingdom": "k_hunan",
+        "empire": "e_jingyang",
+        "provinces": [
+          8956,
+          8955,
+          8953
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "hmong",
+    "dominantReligion": "dab_qhuas",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-guizhou",
+    "zhouName": "桂州",
+    "ck3Matches": [
+      {
+        "county": "c_guizhou",
+        "duchy": "d_jingnan",
+        "kingdom": "k_shannan",
+        "empire": "e_jingyang",
+        "provinces": [
+          10015,
+          10014,
+          10453
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "yi",
+    "dominantReligion": "bimoism",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-jiaozhou",
+    "zhouName": "交州",
+    "ck3Matches": [
+      {
+        "county": "c_hai_dong",
+        "duchy": "d_hai_dong",
+        "kingdom": "k_viet",
+        "empire": "e_lingnan",
+        "provinces": [
+          10847,
+          10848,
+          10849
+        ]
+      },
+      {
+        "county": "c_nghe_an",
+        "duchy": "d_nghe_an",
+        "kingdom": "k_viet",
+        "empire": "e_lingnan",
+        "provinces": [
+          10839,
+          10840,
+          12509,
+          12545
+        ]
+      }
+    ],
+    "totalProvinces": 7,
+    "dominantCulture": "viet",
+    "dominantReligion": "dhyana",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 2,
+      "none": 3
+    },
+    "matchCount": 2
+  },
+  {
+    "zhouId": "zhou-jingzhou-ly",
+    "zhouName": "泾州",
+    "ck3Matches": [
+      {
+        "county": "c_jingzhou",
+        "duchy": "d_jingyuan",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          10126,
+          10127,
+          10128
+        ]
+      }
+    ],
+    "totalProvinces": 3,
+    "dominantCulture": "han",
+    "dominantReligion": "mantrayana",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1,
+      "church_holding": 1
+    },
+    "matchCount": 1
+  },
+  {
+    "zhouId": "zhou-qinzhou",
+    "zhouName": "秦州",
+    "ck3Matches": [
+      {
+        "county": "c_qinzhou_1",
+        "duchy": "d_qincheng",
+        "kingdom": "k_guannei",
+        "empire": "e_yongliang",
+        "provinces": [
+          12357,
+          12356,
+          12358,
+          12355
+        ]
+      },
+      {
+        "county": "c_qinzhou_2",
+        "duchy": "d_yongguan",
+        "kingdom": "k_lingxi",
+        "empire": "e_lingnan",
+        "provinces": [
+          9817,
+          9815,
+          9816
+        ]
+      }
+    ],
+    "totalProvinces": 7,
+    "dominantCulture": "han",
+    "dominantReligion": "sukhavati",
+    "holdings": {
+      "castle_holding": 2,
+      "city_holding": 2,
+      "church_holding": 2,
+      "none": 1
+    },
+    "matchCount": 2
+  },
+  {
+    "zhouId": "zhou-shazhou",
+    "zhouName": "沙州",
+    "ck3Matches": [
+      {
+        "county": "c_shazhou",
+        "duchy": "d_guasha",
+        "kingdom": "k_hexi",
+        "empire": "e_yongliang",
+        "provinces": [
+          9476,
+          9477
+        ]
+      }
+    ],
+    "totalProvinces": 2,
+    "dominantCulture": "han",
+    "dominantReligion": "yogacara",
+    "holdings": {
+      "castle_holding": 1,
+      "city_holding": 1
+    },
+    "matchCount": 1
+  }
+]

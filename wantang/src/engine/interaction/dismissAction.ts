@@ -17,26 +17,32 @@ registerInteraction({
   name: '罢免职位',
   icon: '❌',
   canShow: (player, target) => {
-    // target 必须持有由 player 任命的岗位
+    // target 必须是臣属且持有非 grantsControl 岗位
     return getDismissablePosts(player, target).length > 0;
   },
   paramType: 'dismiss',
 });
 
-/** 获取 target 中由 player 任命的所有岗位 */
+/** 获取臣属持有的非 grantsControl 岗位（京官、地方副岗） */
 export function getDismissablePosts(
   player: Character,
   target: Character,
 ): Post[] {
+  if (target.overlordId !== player.id) return [];
   const terrStore = useTerritoryStore.getState();
   const posts = terrStore.getPostsByHolder(target.id);
-  return posts.filter(p => p.appointedBy === player.id);
+  return posts.filter(p => {
+    const tpl = positionMap.get(p.templateId);
+    // grantsControl 岗位走"剥夺领地"流程，不在此处罢免
+    return !tpl?.grantsControl;
+  });
 }
 
 /** 执行罢免：统一流程，零特殊分支 */
 export function executeDismiss(
   postId: string,
   dismisserId: string,
+  opts?: { skipOpinion?: boolean },
 ): void {
   const terrStore = useTerritoryStore.getState();
   const date = useTurnManager.getState().currentDate;
@@ -65,7 +71,8 @@ export function executeDismiss(
   }
 
   // 好感修正：被罢免者对罢免者好感降低（按品级，可衰减）
-  if (previousHolderId && tpl) {
+  // skipOpinion: 铨选调动等合规场景跳过惩罚
+  if (previousHolderId && tpl && !opts?.skipOpinion) {
     const charStore = useCharacterStore.getState();
     const opinion = -Math.floor(5 + (tpl.minRank / 29) * 25);
     charStore.addOpinion(previousHolderId, dismisserId, {
@@ -79,6 +86,49 @@ export function executeDismiss(
   if (previousHolderId) {
     const charStore = useCharacterStore.getState();
     charStore.updateCharacter(previousHolderId, { overlordId: dismisserId });
+  }
+
+  // 级联效忠：主岗易手时，法理下级主岗持有人 + 本领地副岗持有人的 overlordId 回退给接管者
+  if (previousHolderId && tpl?.grantsControl && post.territoryId) {
+    const charStore = useCharacterStore.getState();
+    const terrStoreForCascade = useTerritoryStore.getState();
+    const terr = terrStoreForCascade.territories.get(post.territoryId);
+    if (terr) {
+      const cascadeIds: string[] = [];
+
+      // 1. 法理下级主岗持有人（子领地的 grantsControl holder）
+      for (const childId of terr.childIds) {
+        const child = terrStoreForCascade.territories.get(childId);
+        if (!child) continue;
+        const childMainPost = child.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+        if (childMainPost?.holderId) {
+          const holder = charStore.getCharacter(childMainPost.holderId);
+          if (holder?.alive && holder.overlordId === previousHolderId) {
+            cascadeIds.push(childMainPost.holderId);
+          }
+        }
+      }
+
+      // 2. 本领地副岗持有人（同领地非 grantsControl 岗位）
+      for (const p of terr.posts) {
+        if (positionMap.get(p.templateId)?.grantsControl) continue;
+        if (!p.holderId) continue;
+        const holder = charStore.getCharacter(p.holderId);
+        if (holder?.alive && holder.overlordId === previousHolderId) {
+          cascadeIds.push(p.holderId);
+        }
+      }
+
+      // 批量更新
+      if (cascadeIds.length > 0) {
+        charStore.batchMutate(chars => {
+          for (const cid of cascadeIds) {
+            const c = chars.get(cid);
+            if (c) c.overlordId = dismisserId;
+          }
+        });
+      }
+    }
   }
 
   // 治所联动：罢免道级 grantsControl 岗位时，一并罢免同人的治所刺史

@@ -3,6 +3,8 @@ import RealmPanel from './RealmPanel';
 import OfficialPanel from './OfficialPanel';
 import GovernmentPanel from './GovernmentPanel';
 import MilitaryPanel from './MilitaryPanel';
+import { useNotificationStore, type StoryEvent } from '@ui/stores/notificationStore';
+import { useCharacterStore } from '@engine/character/CharacterStore';
 
 interface MenuItem {
   label: string;
@@ -36,6 +38,50 @@ const SideMenu: React.FC = () => {
       setShowMilitaryPanel(true);
     } else if (label === '官职') {
       setShowOfficialPanel(true);
+    } else if (label === '活动') {
+      // 测试事件：推入虚拟决策事件
+      const playerId = useCharacterStore.getState().playerId;
+      if (playerId) {
+        const testEvent: StoryEvent = {
+          id: crypto.randomUUID(),
+          title: '边关急报',
+          description: '北方游牧部族大举南下侵扰边境，烽火连绵数百里。边关守将急报朝廷，请求增援。群臣议论纷纷，或主战，或主和，须速作决断。',
+          actors: [
+            { characterId: playerId, role: '决策者' },
+          ],
+          options: [
+            {
+              label: '出兵迎敌',
+              description: '调遣精锐北上迎战，若胜则威名远扬。',
+              successChance: 70,
+              effects: [
+                { label: '威望', value: 10, type: 'positive' },
+                { label: '金钱', value: -50, type: 'negative' },
+              ],
+              onSelect: () => console.log('[测试事件] 选择：出兵迎敌'),
+            },
+            {
+              label: '和谈纳贡',
+              description: '遣使和谈，以金帛换取边境安宁。',
+              successChance: 95,
+              effects: [
+                { label: '金钱', value: -100, type: 'negative' },
+                { label: '威望', value: -5, type: 'negative' },
+              ],
+              onSelect: () => console.log('[测试事件] 选择：和谈纳贡'),
+            },
+            {
+              label: '按兵不动',
+              description: '静观其变，不作回应。',
+              effects: [
+                { label: '威望', value: -15, type: 'negative' },
+              ],
+              onSelect: () => console.log('[测试事件] 选择：按兵不动'),
+            },
+          ],
+        };
+        useNotificationStore.getState().pushStoryEvent(testEvent);
+      }
     } else {
       console.log(`[SideMenu] Clicked: ${label}`);
     }

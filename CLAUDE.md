@@ -20,7 +20,7 @@
 | 开发 | `pnpm dev` |
 | 测试命令 | `npx vitest run` |
 | 路径别名 | `@` → `src/`，`@engine` → `src/engine/`，`@data` → `src/data/`，`@ui` → `src/ui/` |
-| 工作目录 | CWD 为 `D:\桌面\CC`，项目代码在 `wantang/` 子目录 |
+| 工作目录 | `D:\桌面\Github上传\Wantangfengyun`（即 Git 仓库根目录） |
 | 文档 | `docs/` 目录：GDD-v2.0（权威设计案）、milestones.md（进度）、design/（活跃方案）、archive/（历史文档）、reference/（参考资料） |
 
 ---
@@ -28,7 +28,7 @@
 ## 二、目录结构
 
 ```
-wantang/src/
+src/
 ├── engine/                            # 游戏引擎层（与 UI 完全解耦）
 │   ├── types.ts / random.ts / utils.ts / TurnManager.ts / settlement.ts / storage.ts
 │   ├── init/loadSampleData.ts         # 开局数据组装
@@ -36,12 +36,12 @@ wantang/src/
 │   ├── territory/                     # TerritoryStore + 工具
 │   ├── official/                      # 官职：经济/铨选/正统性/地图着色/岗位查询
 │   ├── military/                      # MilitaryStore/WarStore + 战斗/行军/围城/结算
-│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/集权等）
-│   ├── npc/                           # NPC Engine 框架 + 10 个行为模块
+│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/剥夺领地/集权等）
+│   ├── npc/                           # NPC Engine 框架 + 12 个行为模块
 │   └── systems/                       # 月结管线各 System（9 个）
 ├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
 ├── ui/                                # React UI 层（只读 Store + 调用 interaction）
-│   ├── components/                    # GameMap / CampaignPopup / MapPlaceholder 等 ~27 个
+│   ├── components/                    # GameMap / CampaignPopup / MapPlaceholder / EventToast / EventModal 等 ~30 个
 │   │   └── base/                      # 基础组件库：Modal / ModalHeader / Button
 │   ├── layouts/ / hooks/ / panels/ / stores/
 └── __tests__/
@@ -106,7 +106,14 @@ wantang/src/
 2. `refreshIsRuler(collectRulerIds(territories))` — 刷新统治者标记
 3. （如适用）`refreshExpectedLegitimacy()` — 正统性缓存
 
-当前已在 4 处配套：`appointAction` / `dismissAction` / `characterSystem`（继承）/ `warSettlement`
+当前已在 5 处配套：`appointAction` / `dismissAction` / `revokeAction`（剥夺成功时调用 dismissAction）/ `characterSystem`（继承）/ `warSettlement`
+
+### 效忠关系级联
+主岗（grantsControl）易手时，效忠关系自动级联更新：
+- **离任级联**（`executeDismiss`）：法理下级主岗持有人 + 本领地副岗持有人的 `overlordId` 回退给接管者（dismisserId）
+- **就任级联**（`executeAppoint`）：本领地副岗持有人自动归附新任者；法理下级刺史**不自动**转移，由就任者通过要求效忠收服
+- **铨选调动**（`vacateOldPost=true`）：旧 grantsControl 岗位走 `executeDismiss(skipOpinion: true)` 复用级联且无好感惩罚；新任者 overlordId 沿 parentId 找法理上级主岗持有人
+- **单独任命**（`vacateOldPost` 为 false）：新任者 overlordId 直接指向 appointerId（保持现状）
 
 ### 私兵继承
 - `postId: null` 的军队不受 `syncArmyOwnersByPost` 管理
@@ -143,7 +150,7 @@ wantang/src/
 
 ## 六、NPC Engine（已日结化）
 
-- 9 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈
+- 12 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
 - `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
 - `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
@@ -168,18 +175,35 @@ wantang/src/
 
 ## 八、当前开发阶段
 
-**NPC Engine 日结化已完成。** 核心循环、继承、铨选、考课、正统性、NPC Engine（9 个行为）、战争系统均已实现并可自主运转。时间系统全面日结（CK3 风格）：战争按日推进，NPC 决策按哈希槽位+品级分档分散到月内不同天，其余系统保持月结。时间控制 UI 采用 CK3 风格（日期+播放键+三档毛边色块，空格暂停，+/-加减速）。
+**NPC Engine 日结化已完成，交互系统和通知系统已重构，效忠关系级联机制已完善。**
+
+核心循环、继承、铨选、考课、正统性、NPC Engine（12 个行为）、战争系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
+
+### 最近完成
+- **效忠关系级联更新**：主岗易手时自动级联更新法理下级和本领地副岗的 overlordId；铨选调动通过 `executeDismiss(skipOpinion: true)` 复用级联逻辑且无好感惩罚；铨选新任主岗者 overlordId 自动指向法理上级
+- **NPC 转移臣属行为**（`transferVassalBehavior`）：节度使及以上主动将法理下级臣属转给对应的下级领主，品级 >= 17 触发
+- **要求效忠权重调整**：基础权重 0→50，荣誉感改为正向修正（维护体制秩序）
+- **NPC 授予领地行为**（`grantTerritoryBehavior`）：直辖超额时自动授予臣属，受赠者按好感(60%)+属性总和(40%)评分
+- **NPC 剥夺领地行为**（`revokeBehavior`）+ 玩家交互（`revokeAction` + `RevokeFlow`）：对仇敌臣属剥夺领地，有成功率判定（`calcRevokeChance`），失败触发免费独立战争
+- **罢免/剥夺分离**：罢免（dismiss）仅限非 grantsControl 岗位（京官/地方副岗），剥夺（revoke）针对 grantsControl 岗位（有风险）；罢免条件改为"臣属"而非"你任命的"
+- **通知系统三层重构**：
+  - 顶部通知栏（AlertBar）：仅行政任务（铨选/审批/考课）
+  - 侧边栏通知（EventToast）：CK3 风格右侧卡片流，羊皮纸材质，头像集成，边框颜色编码，入场动画
+  - 中心弹出框（EventModal）：重大决策事件框架（角色卡+叙事+决策按钮+hover预览），SideMenu"活动"按钮可触发虚拟测试事件
+- **事件系统改进**：事件在引擎层无条件记录（作为 AI 史书史料），UI 层按与玩家关联度筛选显示（`getDisplayRelevance`）；新增宣战/战争结束事件
+- **notificationStore**：管理已清除事件 ID + 中心弹出框事件队列
 
 ### 尚未完成
+- 头衔/岗位创建与销毁功能
+- 铨选调动时法理下级刺史的可选转移（CK3 风格，玩家可选是否同时转给新任者）
 - 存档/读档 UI（底层已实现）
-- AI 史书（GameEvent → 大模型生成史书文本）
+- AI 史书（GameEvent → 大模型生成史书文本，事件 payload 需结构化补充）
 - 生育系统（宗法继承长期运转基础）
 - 人才自然生成（进士及第/举孝廉）
 - 非宗法皇位更替（禅让/篡位/权臣拥立）
 - 权知机制
 - 谋略/派系系统
-- NPC 事件通知 UI（宣战/效忠变化推送）
-- 地图增强：选中领主高亮、封臣名标签、效忠链箭头
+- 地图增强：选中领主高亮、封臣名标签、效忠链箭头、地图管理器（右下角）
 - 行营AI目标选择优化（都统性格+攻守态势）
 - 强力CB（一次宣战多个领地）
 - NPC Engine 旧 UI 兼容层清理（`TODO(phase6-cleanup)`）

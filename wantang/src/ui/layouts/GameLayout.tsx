@@ -2,6 +2,8 @@ import React from 'react';
 import ResourceBar from '../components/ResourceBar';
 import SideMenu from '../components/SideMenu';
 import AlertBar from '../components/AlertBar';
+import EventToast from '../components/EventToast';
+import EventModal from '../components/EventModal';
 import MapPlaceholder from '../components/MapPlaceholder';
 import BottomBar from '../components/BottomBar';
 import LeftPanel from '../components/LeftPanel';
@@ -20,11 +22,15 @@ const GameLayout: React.FC = () => {
         {/* Left panel (character / territory info) */}
         {panelOpen && <LeftPanel />}
 
-        {/* Map area with alert overlay */}
+        {/* Map area with overlays */}
         <div className="flex-1 relative flex">
-          {/* Alert bar overlaid top-left */}
+          {/* Alert bar overlaid top-left（行政任务通知） */}
           <div className="absolute top-0 left-0 z-10">
             <AlertBar />
+          </div>
+          {/* Event toast overlaid right-center-low（事件卡片通知，右侧中心偏下） */}
+          <div className="absolute right-2 z-10" style={{ bottom: '15%' }}>
+            <EventToast />
           </div>
           <MapPlaceholder />
         </div>
@@ -35,6 +41,9 @@ const GameLayout: React.FC = () => {
 
       {/* Bottom: Info Bar */}
       <BottomBar onClickPlayer={() => usePanelStore.getState().goToPlayer()} />
+
+      {/* 中心弹出框（最高层级） */}
+      <EventModal />
     </div>
   );
 };

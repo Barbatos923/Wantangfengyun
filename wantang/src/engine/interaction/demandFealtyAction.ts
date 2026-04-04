@@ -2,11 +2,13 @@
 
 import type { Character } from '@engine/character/types';
 import type { Post, Territory } from '@engine/territory/types';
+import type { War } from '@engine/military/types';
 import type { Personality } from '@data/traits';
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getActualController } from '@engine/official/postQueries';
@@ -29,7 +31,8 @@ function canDemandFealty(player: Character, target: Character): boolean {
   const terrStore = useTerritoryStore.getState();
   const targetPosts = terrStore.getPostsByHolder(target.id);
   const playerPosts = terrStore.getPostsByHolder(player.id);
-  return canDemandFealtyPure(player, target, terrStore.territories, targetPosts, playerPosts);
+  const activeWars = useWarStore.getState().getActiveWars();
+  return canDemandFealtyPure(player, target, terrStore.territories, targetPosts, playerPosts, activeWars);
 }
 
 // ── canDemandFealty 纯函数版（供 NPC Engine 使用） ────────
@@ -48,9 +51,17 @@ export function canDemandFealtyPure(
   territories: Map<string, Territory>,
   targetPosts: Post[],
   playerPosts?: Post[],
+  activeWars?: War[],
 ): boolean {
   if (!target.alive) return false;
   if (target.overlordId === player.id) return false;
+
+  // 双方正在交战时不可要求效忠
+  if (activeWars?.some(w =>
+    w.status === 'active' &&
+    ((w.attackerId === player.id && w.defenderId === target.id) ||
+     (w.attackerId === target.id && w.defenderId === player.id)),
+  )) return false;
 
   // target 必须有 grantsControl 主岗位（控制领地的统治者）
   const mainPosts = targetPosts.filter(p => {
