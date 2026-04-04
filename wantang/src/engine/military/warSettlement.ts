@@ -108,6 +108,9 @@ function settleTerritorialWar(war: War, result: War['result']): void {
     }
   }
 
+  // 治所州被占 → 销毁父道主岗
+  checkCapitalZhouLost(war.targetTerritoryIds);
+
   // 领地转手后刷新缓存
   useTerritoryStore.getState().refreshExpectedLegitimacy();
   const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
@@ -200,5 +203,67 @@ function disbandCampaigns(warId: string): void {
     }
 
     useWarStore.getState().disbandCampaign(campaign.id);
+  }
+}
+
+/**
+ * 治所州失陷检查：若被转移的领地是某道的治所州，且新控制者不再是道主岗持有者，
+ * 则销毁该道的 grantsControl 主岗。
+ */
+function checkCapitalZhouLost(transferredTerritoryIds: string[]): void {
+  const terrStore = useTerritoryStore.getState();
+  const territories = terrStore.territories;
+
+  // 建立 capitalZhouId → daoId 反向映射
+  const capitalToDao = new Map<string, string>();
+  for (const t of territories.values()) {
+    if (t.tier === 'dao' && t.capitalZhouId) {
+      capitalToDao.set(t.capitalZhouId, t.id);
+    }
+  }
+
+  for (const tId of transferredTerritoryIds) {
+    const daoId = capitalToDao.get(tId);
+    if (!daoId) continue;
+
+    const dao = terrStore.territories.get(daoId);
+    if (!dao) continue;
+
+    const daoMainPost = dao.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
+    if (!daoMainPost?.holderId) continue;
+
+    // 治所州的新控制者
+    const capitalZhou = terrStore.territories.get(tId);
+    if (!capitalZhou) continue;
+    const capitalPost = capitalZhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
+    const newCapitalHolder = capitalPost?.holderId ?? null;
+
+    // 治所州已不在道主岗持有者手中 → 销毁道主岗 + 清空副岗
+    if (newCapitalHolder !== daoMainPost.holderId) {
+      const milStore = useMilitaryStore.getState();
+
+      // 先清空所有副岗
+      const freshDao = useTerritoryStore.getState().territories.get(daoId);
+      if (freshDao) {
+        for (const p of freshDao.posts) {
+          if (p.id === daoMainPost.id) continue;
+          if (p.holderId) {
+            useTerritoryStore.getState().updatePost(p.id, {
+              holderId: null, appointedBy: undefined, appointedDate: undefined,
+            });
+          }
+        }
+      }
+
+      // 主岗绑定军队变为私兵（postId → null，保留原 owner）
+      for (const army of milStore.armies.values()) {
+        if (army.postId === daoMainPost.id) {
+          milStore.updateArmy(army.id, { postId: null });
+        }
+      }
+
+      // 移除主岗
+      useTerritoryStore.getState().removePost(daoMainPost.id);
+    }
   }
 }

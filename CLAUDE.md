@@ -15,7 +15,7 @@
 | 存储 | IndexedDB（`idb` 库），数据库名 `wantang-db`，三张表：saves / chronicles / events |
 | 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts`，存档时序列化种子 |
 | 地图 | `d3-delaunay` Voronoi 多边形 + SVG clipPath 疆域裁剪 |
-| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 15 个文件 329 个测试 |
+| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 16 个文件 352 个测试 |
 | 构建 | `pnpm build`（tsc -b && vite build），产物纯静态 |
 | 开发 | `pnpm dev` |
 | 测试命令 | `npx vitest run` |
@@ -36,8 +36,9 @@ src/
 │   ├── territory/                     # TerritoryStore + 工具
 │   ├── official/                      # 官职：经济/铨选/正统性/地图着色/岗位查询
 │   ├── military/                      # MilitaryStore/WarStore + 战斗/行军/围城/结算
-│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/剥夺领地/集权等）
-│   ├── npc/                           # NPC Engine 框架 + 12 个行为模块
+│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/剥夺领地/篡夺/集权等）
+│   ├── decision/                      # 决议系统（称王/称帝/建镇/销毁头衔）
+│   ├── npc/                           # NPC Engine 框架 + 21 个行为模块
 │   └── systems/                       # 月结管线各 System（9 个）
 ├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
 ├── ui/                                # React UI 层（只读 Store + 调用 interaction）
@@ -63,7 +64,7 @@ src/
 各 Store **维护预计算索引**以支持 O(1) 查询，**查询时必须优先使用索引，禁止全量遍历**。
 
 - **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `refreshIsRuler()`
-- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存
+- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存 + `addPost()` / `removePost()`
 - **MilitaryStore**：`armies` / `battalions` Map + `ownerArmyIndex` + `locationArmyIndex` + `syncArmyOwnersByPost()`
 - **WarStore**：`wars` / `campaigns` / `sieges` 三个 Map
 - **NpcStore**：`playerTasks` 队列 + 旧字段（`TODO(phase6-cleanup)`）
@@ -106,7 +107,24 @@ src/
 2. `refreshIsRuler(collectRulerIds(territories))` — 刷新统治者标记
 3. （如适用）`refreshExpectedLegitimacy()` — 正统性缓存
 
-当前已在 5 处配套：`appointAction` / `dismissAction` / `revokeAction`（剥夺成功时调用 dismissAction）/ `characterSystem`（继承）/ `warSettlement`
+当前已在 8 处配套：`appointAction` / `dismissAction` / `revokeAction`（剥夺成功时调用 dismissAction）/ `characterSystem`（继承）/ `warSettlement` / `usurpPostAction`（篡夺）/ `createKingdomDecision`（创建岗位）/ `destroyTitleDecision`（销毁岗位）
+
+### 岗位销毁清理
+销毁 grantsControl 主岗时，**必须配套**：
+1. 同领地副岗 `holderId` 全部清空
+2. 绑定军队 `postId → null`（变私兵，保留原 owner）
+3. 三连刷新（refreshIsRuler + refreshExpectedLegitimacy）
+
+当前已在 3 处配套：`warSettlement`（治所失陷）/ `destroyTitleDecision`（决议销毁）/ `eraSystem`（皇帝自动销毁，tianxia 无副岗/军队）
+
+### 治所州联动
+道级领地的 `capitalZhouId` 治所州是道的附属品：
+- **任命道级主岗** → 自动授予治所州刺史（仅当治所空缺或仍在任命方势力内）
+- **罢免道级主岗** → 自动罢免治所州刺史
+- **继承道级主岗** → 治所州跟随继承（仅当治所 holderId === deadId）
+- **铨选候选池** → 跳过治所州（不单独铨选）
+- **治所州被战争占领** → 自动销毁父道主岗 + 清空副岗 + 军队变私兵
+- **道级篡夺/创建** → 必须控制治所州作为前置条件
 
 ### 效忠关系级联
 主岗（grantsControl）易手时，效忠关系自动级联更新：
@@ -150,7 +168,7 @@ src/
 
 ## 六、NPC Engine（已日结化）
 
-- 18 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争
+- 21 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
 - `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
 - `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
@@ -186,11 +204,24 @@ src/
 
 ## 八、当前开发阶段
 
-**NPC Engine 日结化已完成，交互系统和通知系统已重构，效忠关系级联机制已完善。**
+**NPC Engine 日结化已完成，交互系统和通知系统已重构，效忠关系级联机制已完善，头衔创建/篡夺/销毁系统已完成。**
 
-核心循环、继承、铨选、考课、正统性、NPC Engine（18 个行为）、战争系统（含多方参战）均已实现并可自主运转。时间系统全面日结（CK3 风格）。
+核心循环、继承、铨选、考课、正统性、NPC Engine（21 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
+- **决议系统**（`engine/decision/`）：框架（Decision 接口 + registry）+ 4 个决议（称王/建镇/称帝/销毁头衔）
+  - 称王：guo 级，控制 50% 法理州，可选体制/继承法/辟署权，创建时一并生成国司马+国长史副岗
+  - 建镇：dao 级，控制 50% 法理州 + 治所州，治所失陷后重建节度使/观察使
+  - 称帝：乱世限定，控制 80% 全国州，触发乱世→治世
+  - 销毁头衔：guo 级，非唯一主岗
+  - 控制比例统一以州为最小单位（`calcRealmControlRatio` 递归收集法理 zhou）
+  - UI：SideMenu"决议"按钮 → DecisionPanel 列表 → DecisionDetailModal 详情弹窗
+- **篡夺头衔交互**（`usurpPostAction`）：guo+dao 级，控制 50% 法理州，dao 需控制治所州，好感-40，本领地副岗归附
+- **治所州失陷联动**：战争转移治所州 → 自动销毁父道主岗 + 副岗清空 + 军队变私兵；`executeAppoint` 不再强覆盖被敌方占领的治所
+- **时代钩子**：危世→乱世自动销毁皇帝岗位（`eraSystem.ts`）
+- **NPC 称王/称帝/篡夺行为**（3 个）：`createKingdomBehavior`（guo+dao 通用）/ `createEmperorBehavior` / `usurpBehavior`
+- **岗位模板新增**：`pos-guo-changshi`（国长史，国级行政副岗）
+- **TerritoryStore 扩展**：`addPost()` / `removePost()` 方法，含完整索引增量更新
 - **效忠关系级联更新**：主岗易手时自动级联更新法理下级和本领地副岗的 overlordId；铨选调动通过 `executeDismiss(skipOpinion: true)` 复用级联逻辑且无好感惩罚；铨选新任主岗者 overlordId 自动指向法理上级
 - **NPC 转移臣属行为**（`transferVassalBehavior`）：节度使及以上主动将法理下级臣属转给对应的下级领主，品级 >= 17 触发
 - **要求效忠权重调整**：基础权重 0→50，荣誉感改为正向修正（维护体制秩序）
@@ -220,7 +251,6 @@ src/
 - NPC 指定继承人（`characterSystem` 内扩展）：根据性格偏好选择继承人
 
 ### 尚未完成（后续系统）
-- 头衔/岗位创建与销毁功能
 - 铨选调动时法理下级刺史的可选转移（CK3 风格，玩家可选是否同时转给新任者）
 - 存档/读档 UI（底层已实现）
 - AI 史书（GameEvent → 大模型生成史书文本，事件 payload 需结构化补充）

@@ -284,7 +284,14 @@ export function executeAppoint(
             const t = positionMap.get(p.templateId);
             return t?.grantsControl === true;
           });
-          if (capitalPost && capitalPost.holderId !== appointeeId) {
+          // 仅当治所刺史空缺或仍由任命方势力控制时才联动（被敌方占领的治所不强覆盖）
+          const capitalHolderId = capitalPost?.holderId ?? null;
+          const canTakeCapital = capitalPost && capitalPost.holderId !== appointeeId && (
+            !capitalHolderId ||
+            capitalHolderId === appointerId ||
+            charStore.getCharacter(capitalHolderId)?.overlordId === appointerId
+          );
+          if (canTakeCapital && capitalPost) {
             // 清退治所前任（如有）
             if (capitalPost.holderId) {
               charStore.updateCharacter(capitalPost.holderId, { overlordId: appointerId });

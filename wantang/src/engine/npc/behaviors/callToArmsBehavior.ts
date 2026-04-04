@@ -8,8 +8,10 @@ import type { Character } from '@engine/character/types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { executeJoinWar } from '@engine/interaction/joinWarAction';
 import { isWarLeader, isWarParticipant, getWarSide } from '@engine/military/warParticipantUtils';
-import { addDays } from '@engine/dateUtils';
+import { addDays, toAbsoluteDay } from '@engine/dateUtils';
+import { useWarStore } from '@engine/military/WarStore';
 import { random } from '@engine/random';
+import { useNpcStore } from '../NpcStore';
 import { registerBehavior } from './index';
 
 // ── 数据 ────────────────────────────────────────────────
@@ -18,6 +20,16 @@ interface CallToArmsData {
   warId: string;
   side: 'attacker' | 'defender';
   vassalIds: string[];
+}
+
+const SUMMON_COOLDOWN_DAYS = 30;
+
+function recordSummonCooldown(warId: string, charId: string, absoluteDay: number): void {
+  const warStore = useWarStore.getState();
+  const war = warStore.wars.get(warId);
+  if (!war) return;
+  const cooldowns = { ...war.summonCooldowns, [charId]: absoluteDay };
+  warStore.updateWar(warId, { summonCooldowns: cooldowns });
 }
 
 // ── 行为定义 ────────────────────────────────────────────
@@ -36,13 +48,18 @@ export const callToArmsBehavior: NpcBehavior<CallToArmsData> = {
 
       const side = getWarSide(actor.id, war)!;
 
-      // 找到未参战的直属臣属（排除对方领袖，防止快照中 overlordId 尚未清除的竞态）
+      // 找到未参战的直属臣属（排除对方领袖、已参战者、冷却中的）
+      const today = toAbsoluteDay(ctx.date);
+      const cooldowns = war.summonCooldowns ?? {};
       const vassalIds: string[] = [];
       for (const char of ctx.characters.values()) {
         if (!char.alive || !char.isRuler) continue;
         if (char.overlordId !== actor.id) continue;
         if (char.id === war.attackerId || char.id === war.defenderId) continue;
         if (isWarParticipant(char.id, war)) continue;
+        // 冷却期内跳过
+        const lastSummoned = cooldowns[char.id];
+        if (lastSummoned !== undefined && today - lastSummoned < SUMMON_COOLDOWN_DAYS) continue;
         vassalIds.push(char.id);
       }
       if (vassalIds.length === 0) continue;
@@ -58,7 +75,21 @@ export const callToArmsBehavior: NpcBehavior<CallToArmsData> = {
   },
 
   executeAsNpc(actor: Character, data: CallToArmsData, ctx: NpcContext) {
+    const today = toAbsoluteDay(ctx.date);
+
     for (const vassalId of data.vassalIds) {
+      // 记录召集冷却
+      recordSummonCooldown(data.warId, vassalId, today);
+
+      // 目标是玩家时推送 PlayerTask，由玩家自己决定
+      if (vassalId === ctx.playerId) {
+        const playerTask = callToArmsBehavior.generatePlayerTask?.(actor, data, ctx);
+        if (playerTask) {
+          useNpcStore.getState().addPlayerTask(playerTask);
+        }
+        continue;
+      }
+
       const vassal = ctx.characters.get(vassalId);
       if (!vassal?.alive) continue;
 

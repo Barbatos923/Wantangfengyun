@@ -567,6 +567,16 @@ const localPositions: PositionTemplate[] = [
     grantsControl: false,
   },
   {
+    id: 'pos-guo-changshi',
+    name: '国长史',
+    scope: 'local',
+    tier: 'guo',
+    minRank: 17,
+    salary: { money: 100, grain: 80 },
+    description: '国级行政副手，辅佐国政',
+    grantsControl: false,
+  },
+  {
     id: 'pos-wang',
     name: '王',
     scope: 'local',

@@ -80,6 +80,8 @@ interface TerritoryStoreState {
   // 修改
   updateTerritory: (id: string, patch: Partial<Territory>) => void;
   updatePost: (postId: string, patch: Partial<Post>) => void;
+  addPost: (territoryId: string, post: Post) => void;
+  removePost: (postId: string) => void;
   startConstruction: (territoryId: string, construction: Construction) => void;
   advanceConstructions: (territoryId: string) => void;
 }
@@ -288,6 +290,122 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
       }
 
       return state;
+    });
+  },
+
+  // 向领地添加新岗位 + 增量更新索引
+  addPost: (territoryId, post) => {
+    set((state) => {
+      const t = state.territories.get(territoryId);
+      if (!t) return state;
+
+      // 更新领地
+      const terrs = new Map(state.territories);
+      terrs.set(territoryId, { ...t, posts: [...t.posts, post] });
+
+      // 更新 postIndex
+      const newPostIndex = new Map(state.postIndex);
+      newPostIndex.set(post.id, post);
+
+      // 更新 holderIndex
+      let newHolderIndex = state.holderIndex;
+      if (post.holderId) {
+        newHolderIndex = new Map(state.holderIndex);
+        const arr = newHolderIndex.get(post.holderId);
+        if (arr) {
+          newHolderIndex.set(post.holderId, [...arr, post.id]);
+        } else {
+          newHolderIndex.set(post.holderId, [post.id]);
+        }
+      }
+
+      // 更新 controllerIndex
+      let newControllerIndex = state.controllerIndex;
+      if (
+        positionMap.get(post.templateId)?.grantsControl === true &&
+        post.holderId &&
+        post.territoryId
+      ) {
+        newControllerIndex = new Map(state.controllerIndex);
+        const existingSet = newControllerIndex.get(post.holderId);
+        if (existingSet) {
+          const newSet = new Set(existingSet);
+          newSet.add(post.territoryId);
+          newControllerIndex.set(post.holderId, newSet);
+        } else {
+          newControllerIndex.set(post.holderId, new Set([post.territoryId]));
+        }
+      }
+
+      return { territories: terrs, postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
+    });
+  },
+
+  // 从领地移除岗位 + 增量清理索引
+  removePost: (postId) => {
+    set((state) => {
+      const oldPost = state.postIndex.get(postId);
+      if (!oldPost) return state;
+
+      // 更新 postIndex
+      const newPostIndex = new Map(state.postIndex);
+      newPostIndex.delete(postId);
+
+      // 更新 holderIndex
+      let newHolderIndex = state.holderIndex;
+      if (oldPost.holderId) {
+        newHolderIndex = new Map(state.holderIndex);
+        const arr = newHolderIndex.get(oldPost.holderId);
+        if (arr) {
+          const filtered = arr.filter(id => id !== postId);
+          if (filtered.length > 0) {
+            newHolderIndex.set(oldPost.holderId, filtered);
+          } else {
+            newHolderIndex.delete(oldPost.holderId);
+          }
+        }
+      }
+
+      // 更新 controllerIndex
+      let newControllerIndex = state.controllerIndex;
+      if (
+        positionMap.get(oldPost.templateId)?.grantsControl === true &&
+        oldPost.holderId &&
+        oldPost.territoryId
+      ) {
+        newControllerIndex = new Map(state.controllerIndex);
+        const oldSet = newControllerIndex.get(oldPost.holderId);
+        if (oldSet) {
+          const newSet = new Set(oldSet);
+          newSet.delete(oldPost.territoryId);
+          if (newSet.size > 0) {
+            newControllerIndex.set(oldPost.holderId, newSet);
+          } else {
+            newControllerIndex.delete(oldPost.holderId);
+          }
+        }
+      }
+
+      // 从领地的 posts 数组中移除
+      const terrs = new Map(state.territories);
+      for (const [tid, t] of terrs) {
+        const idx = t.posts.findIndex(p => p.id === postId);
+        if (idx !== -1) {
+          terrs.set(tid, { ...t, posts: t.posts.filter(p => p.id !== postId) });
+          return { territories: terrs, postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
+        }
+      }
+
+      // fallback: 从 centralPosts 中移除
+      const centralIdx = state.centralPosts.findIndex(p => p.id === postId);
+      if (centralIdx !== -1) {
+        return {
+          centralPosts: state.centralPosts.filter(p => p.id !== postId),
+          postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex,
+        };
+      }
+
+      return { postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
     });
   },
 

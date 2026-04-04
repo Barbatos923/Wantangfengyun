@@ -102,6 +102,7 @@ export interface War {
   status: 'active' | 'ended';
   result?: 'attackerWin' | 'defenderWin' | 'whitePeace';
   previousOverlordId?: string; // 独立战争：攻方宣战前的领主，败北时恢复
+  summonCooldowns?: Record<string, number>; // charId → absoluteDay，召集参战冷却（30天内不重复）
 }
 
 /** 正在赶赴行营的军队 */

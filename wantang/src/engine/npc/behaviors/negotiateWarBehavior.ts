@@ -8,6 +8,8 @@ import { calcPeaceProposalWeight, calcPeaceAcceptance } from '@engine/military/w
 import { settleWar } from '@engine/military/warSettlement';
 import { diffMonths } from '@engine/dateUtils';
 import { isWarLeader } from '@engine/military/warParticipantUtils';
+import { useNotificationStore } from '@ui/stores/notificationStore';
+import type { StoryEvent } from '@ui/stores/notificationStore';
 import { registerBehavior } from './index';
 
 // ── 行为定义 ────────────────────────────────────────────
@@ -66,9 +68,42 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(_actor: Character, data: NegotiateData, ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: NegotiateData, ctx: NpcContext) {
     const war = useWarStore.getState().wars.get(data.warId);
     if (!war || war.status !== 'active') return;
+
+    // 对方是玩家时弹出 StoryEvent 让玩家选择
+    if (data.enemyId === ctx.playerId) {
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '和谈提议',
+        description: `${actor.name}向你提议白和，结束这场战争。双方各退一步，不割地、不赔款。你是否接受？`,
+        actors: [
+          { characterId: actor.id, role: '提议者' },
+          { characterId: data.enemyId, role: '你' },
+        ],
+        options: [
+          {
+            label: '接受和谈',
+            description: '双方握手言和，战争结束。',
+            effects: [],
+            onSelect: () => {
+              settleWar(data.warId, 'whitePeace');
+            },
+          },
+          {
+            label: '拒绝和谈',
+            description: '继续战争，直到分出胜负。',
+            effects: [],
+            onSelect: () => {
+              // 拒绝和谈，无额外效果
+            },
+          },
+        ],
+      };
+      useNotificationStore.getState().pushStoryEvent(event);
+      return;
+    }
 
     const currentDate = useTurnManager.getState().currentDate;
     const warMonths = (currentDate.year - war.startDate.year) * 12

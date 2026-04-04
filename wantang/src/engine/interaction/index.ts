@@ -12,6 +12,7 @@ import './demandFealtyAction';
 import './transferVassalAction';
 import './revokeAction';
 import './joinWarAction';
+import './usurpPostAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -33,3 +34,5 @@ export { executeBuild } from './buildAction';
 export { getRevokablePosts, calcRevokeChance, previewRevokeChance, executeRevoke } from './revokeAction';
 export { executeJoinWar, getJoinableWars, getCallableWars, calcCallToArmsChance, executeCallToArms } from './joinWarAction';
 export type { JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from './joinWarAction';
+export { getUsurpablePosts, previewUsurp, executeUsurp } from './usurpPostAction';
+export type { UsurpPreview } from './usurpPostAction';

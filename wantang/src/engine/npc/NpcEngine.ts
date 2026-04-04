@@ -33,6 +33,9 @@ import './behaviors/conscriptBehavior';
 import './behaviors/callToArmsBehavior';
 import './behaviors/joinWarBehavior';
 import './behaviors/withdrawWarBehavior';
+import './behaviors/createKingdomBehavior';
+import './behaviors/createEmperorBehavior';
+import './behaviors/usurpBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

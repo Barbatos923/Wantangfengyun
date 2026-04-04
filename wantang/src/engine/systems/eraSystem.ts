@@ -5,7 +5,7 @@ import { Era } from '@engine/types';
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { findEmperorId } from '@engine/official/postQueries';
+import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
 import { getHeldPosts } from '@engine/official/postQueries';
 
@@ -66,7 +66,31 @@ export function runEraSystem(_date: GameDate): void {
       collapseProgress: 0,
       stabilityProgress: 0,
     });
+
+    // 危世→乱世：自动销毁皇帝岗位
+    if (nextEra === Era.LuanShi) {
+      destroyEmperorPost();
+    }
   } else {
     useTurnManager.getState().setEraState({ collapseProgress });
+  }
+}
+
+// ── 危世→乱世：自动销毁皇帝岗位 ──────────────────────────────────────────────
+
+function destroyEmperorPost(): void {
+  const terrStore = useTerritoryStore.getState();
+  for (const t of terrStore.territories.values()) {
+    if (t.tier === 'tianxia') {
+      const ep = t.posts.find(p => p.templateId === 'pos-emperor');
+      if (ep) {
+        terrStore.removePost(ep.id);
+        useCharacterStore.getState().refreshIsRuler(
+          collectRulerIds(useTerritoryStore.getState().territories),
+        );
+        useTerritoryStore.getState().refreshExpectedLegitimacy();
+      }
+      break;
+    }
   }
 }

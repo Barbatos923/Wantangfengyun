@@ -3,6 +3,7 @@ import RealmPanel from './RealmPanel';
 import OfficialPanel from './OfficialPanel';
 import GovernmentPanel from './GovernmentPanel';
 import MilitaryPanel from './MilitaryPanel';
+import DecisionPanel from './DecisionPanel';
 import { useNotificationStore, type StoryEvent } from '@ui/stores/notificationStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { usePanelStore } from '@ui/stores/panelStore';
@@ -29,6 +30,7 @@ const SideMenu: React.FC = () => {
   const [showOfficialPanel, setShowOfficialPanel] = useState(false);
   const [showGovernmentPanel, setShowGovernmentPanel] = useState(false);
   const [showMilitaryPanel, setShowMilitaryPanel] = useState(false);
+  const [showDecisionPanel, setShowDecisionPanel] = useState(false);
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
 
   const handleClick = (label: string) => {
@@ -40,6 +42,8 @@ const SideMenu: React.FC = () => {
       setShowMilitaryPanel(true);
     } else if (label === '官职') {
       setShowOfficialPanel(true);
+    } else if (label === '决议') {
+      setShowDecisionPanel(true);
     } else if (label === '活动') {
       // 测试事件：推入虚拟决策事件
       const playerId = useCharacterStore.getState().playerId;
@@ -110,6 +114,7 @@ const SideMenu: React.FC = () => {
           <MilitaryPanel onClose={() => setShowMilitaryPanel(false)} />
         </div>
       )}
+      {showDecisionPanel && <DecisionPanel onClose={() => setShowDecisionPanel(false)} />}
     </div>
   );
 };

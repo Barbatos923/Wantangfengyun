@@ -5,6 +5,9 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
 import { canDemandFealtyPure, calcFealtyChance, executeDemandFealty } from '@engine/interaction';
+import { useCharacterStore } from '@engine/character/CharacterStore';
+import { useNotificationStore } from '@ui/stores/notificationStore';
+import type { StoryEvent } from '@ui/stores/notificationStore';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取角色持有的岗位（从 Context 快照） ─────────
@@ -96,7 +99,54 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: DemandFealtyData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: DemandFealtyData, ctx: NpcContext) {
+    // 目标是玩家时弹出 StoryEvent 让玩家选择
+    if (data.targetId === ctx.playerId) {
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '要求效忠',
+        description: `${actor.name}要求你向其效忠，承认其为你的领主。你作何决断？`,
+        actors: [
+          { characterId: actor.id, role: '要求者' },
+          { characterId: data.targetId, role: '你' },
+        ],
+        options: [
+          {
+            label: '俯首称臣',
+            description: '接受效忠，成为其臣属。',
+            effects: [
+              { label: '好感', value: -10, type: 'negative' },
+            ],
+            onSelect: () => {
+              const charStore = useCharacterStore.getState();
+              charStore.updateCharacter(data.targetId, { overlordId: actor.id });
+              charStore.addOpinion(data.targetId, actor.id, {
+                reason: '要求效忠',
+                value: -10,
+                decayable: true,
+              });
+            },
+          },
+          {
+            label: '严词拒绝',
+            description: '拒绝效忠要求。',
+            effects: [
+              { label: '好感', value: -15, type: 'negative' },
+            ],
+            onSelect: () => {
+              useCharacterStore.getState().addOpinion(data.targetId, actor.id, {
+                reason: '拒绝效忠',
+                value: -15,
+                decayable: true,
+              });
+            },
+          },
+        ],
+      };
+      useNotificationStore.getState().pushStoryEvent(event);
+      return;
+    }
+
     executeDemandFealty(actor.id, data.targetId);
   },
 };

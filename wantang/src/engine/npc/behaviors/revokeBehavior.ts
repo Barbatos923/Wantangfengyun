@@ -5,8 +5,12 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
 import { positionMap } from '@data/positions';
-import { executeRevoke } from '@engine/interaction';
+import { executeRevoke, executeDismiss, executeDeclareWar } from '@engine/interaction';
+import { useTurnManager } from '@engine/TurnManager';
+import { useCharacterStore } from '@engine/character/CharacterStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { useNotificationStore } from '@ui/stores/notificationStore';
+import type { StoryEvent } from '@ui/stores/notificationStore';
 import { registerBehavior } from './index';
 
 // ── 辅助：判断角色是否在战争中 ──────────────────────────────
@@ -116,8 +120,61 @@ export const revokeBehavior: NpcBehavior<RevokeData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(_actor: Character, data: RevokeData, _ctx: NpcContext) {
-    executeRevoke(data.postId, _actor.id);
+  executeAsNpc(actor: Character, data: RevokeData, ctx: NpcContext) {
+    // 目标是玩家时弹出 StoryEvent 让玩家选择接受或反抗
+    if (data.targetId === ctx.playerId) {
+      const postLabel = (() => {
+        for (const t of ctx.territories.values()) {
+          for (const p of t.posts) {
+            if (p.id === data.postId) return `${t.name}${positionMap.get(p.templateId)?.name ?? ''}`;
+          }
+        }
+        return '领地';
+      })();
+
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '领地被剥夺',
+        description: `${actor.name}意图剥夺你的${postLabel}。你是接受这一决定，还是起兵反抗？`,
+        actors: [
+          { characterId: actor.id, role: '剥夺者' },
+          { characterId: data.targetId, role: '你' },
+        ],
+        options: [
+          {
+            label: '忍辱接受',
+            description: '服从上级决定，交出领地。',
+            effects: [],
+            onSelect: () => {
+              executeDismiss(data.postId, actor.id);
+            },
+          },
+          {
+            label: '起兵反抗',
+            description: '拒绝剥夺，发动独立战争。',
+            effects: [
+              { label: '好感', value: -30, type: 'negative' },
+            ],
+            onSelect: () => {
+              const date = useTurnManager.getState().currentDate;
+              useCharacterStore.getState().addOpinion(data.targetId, actor.id, {
+                reason: '强行剥夺领地',
+                value: -30,
+                decayable: true,
+              });
+              executeDeclareWar(
+                data.targetId, actor.id, 'independence', [],
+                date, { prestige: 0, legitimacy: 0 },
+              );
+            },
+          },
+        ],
+      };
+      useNotificationStore.getState().pushStoryEvent(event);
+      return;
+    }
+
+    executeRevoke(data.postId, actor.id);
   },
 };
 
