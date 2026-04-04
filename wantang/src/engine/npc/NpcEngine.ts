@@ -124,8 +124,12 @@ function handleDraftSubmission(date: GameDate): void {
       deadline: addDays(date, 30),
     });
   } else {
-    // NPC 皇帝自动批准 → 立即执行
+    // NPC 皇帝自动批准 → 立即执行（去重：同一人只执行最后一条）
+    const deduped = new Map<string, typeof draft.entries[number]>();
     for (const entry of draft.entries) {
+      deduped.set(entry.appointeeId, entry);
+    }
+    for (const entry of deduped.values()) {
       executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
     }
   }

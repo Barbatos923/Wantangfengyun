@@ -1,0 +1,381 @@
+react-dom_client.js?v=5fd3b264:14338 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+random.ts:5 Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+autoseed @ seedrandom.js?v=5fd3b264:517
+seedrandom @ seedrandom.js?v=5fd3b264:440
+(anonymous) @ random.ts:5
+TerritoryStore.ts:227 [岗位变动] 潞州 防御使: char-npc-zhaoyi → char-hanyunzhong (由char-hanyunzhong任命)
+TerritoryStore.ts:227 [岗位变动] 相州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+TerritoryStore.ts:227 [岗位变动] 滑州 防御使: char-npc-yicheng → char-hanyunzhong (由char-hanyunzhong任命)
+TerritoryStore.ts:227 [岗位变动] 滑州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+TerritoryStore.ts:227 [岗位变动] 定州 防御使: char-npc-yiwu → char-wangjingchong (由char-wangjingchong任命)
+TerritoryStore.ts:227 [岗位变动] 相州 防御使: char-gen-33 → char-hanyunzhong (由system任命)
+TerritoryStore.ts:227 [岗位变动] 相州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+TerritoryStore.ts:227 [岗位变动] 云州 防御使: char-liguochang → char-zhangyunshen (由char-zhangyunshen任命)
+TerritoryStore.ts:227 [岗位变动] 青州 防御使: char-npc-pinglu → char-zhangyunshen (由char-zhangyunshen任命)
+TerritoryStore.ts:227 [岗位变动] 瀛州 防御使: char-zhangyunshen → char-zhang-jian (由char-zhangyunshen任命)
+TerritoryStore.ts:227 [岗位变动] 夏州 录事参军: char-gen-10 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 都畿道 节度判官: char-gen-11 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 都畿道 都知兵马使: char-gen-12 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 洛阳 录事参军: char-gen-13 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度判官: char-gen-15 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河东道 都知兵马使: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 太原 录事参军: char-gen-17 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 潞州 录事参军: char-gen-18 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河中 录事参军: char-gen-19 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 岭南道 节度判官: char-gen-70 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 岭南道 都知兵马使: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 广州 录事参军: char-gen-72 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 邕州 录事参军: char-gen-73 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 桂州 录事参军: char-gen-74 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 交州 录事参军: char-gen-75 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 陇右道 节度判官: char-gen-76 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 陇右道 都知兵马使: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 泾州 录事参军: char-gen-78 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 秦州 录事参军: char-gen-79 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河西道 节度判官: char-gen-80 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河西道 都知兵马使: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 沙州 录事参军: char-gen-82 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 夏州 录事参军: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 都畿道 节度判官: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 凤翔 防御使: char-ducong → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 都畿道 都知兵马使: 空缺 → char-ducong (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 洛阳 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 陕州 录事参军: 空缺 → char-npc-pinglu (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度判官: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 交州 防御使: char-gaopian → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河东道 都知兵马使: 空缺 → char-gaopian (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 太原 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潞州 录事参军: 空缺 → char-gen-12 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河中 录事参军: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 岭南道 节度判官: 空缺 → char-gen-77 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 郓州 防御使: char-npc-tianping → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 岭南道 都知兵马使: 空缺 → char-npc-tianping (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 广州 录事参军: 空缺 → char-gen-81 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 邕州 录事参军: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 桂州 录事参军: 空缺 → char-zhangzhifang (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 交州 录事参军: 空缺 → char-ct-lizheng (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 陇右道 节度判官: 空缺 → char-ct-zhoubao (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 宣州 刺史: char-npc-xuanshe → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 陇右道 都知兵马使: 空缺 → char-npc-xuanshe (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 泾州 录事参军: 空缺 → char-liguochang (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 洪州 录事参军: char-gen-64 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 秦州 录事参军: 空缺 → char-gen-64 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河西道 节度判官: 空缺 → char-ct-lufang (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 同州 防御使: char-npc-zhenguo → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河西道 都知兵马使: 空缺 → char-npc-zhenguo (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潭州 录事参军: char-gen-65 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 沙州 录事参军: 空缺 → char-gen-65 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 凤翔 防御使: 空缺 → char-gen-13 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 交州 防御使: 空缺 → char-gen-10 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 郓州 防御使: 空缺 → char-gen-78 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 宣州 刺史: 空缺 → char-gen-14 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 洪州 录事参军: 空缺 → char-gen-17 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 同州 防御使: 空缺 → char-gen-79 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潭州 录事参军: 空缺 → char-gen-18 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 都畿道 都知兵马使: char-ducong → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 许州 防御使: char-npc-zhongwu → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 都畿道 都知兵马使: 空缺 → char-npc-zhongwu (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 许州 防御使: 空缺 → char-gen-82 (由char-yizong任命)
+CharacterPanel.tsx:821 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-yizong">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-y...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<button>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+(anonymous) @ CharacterPanel.tsx:821
+FamilyTab @ CharacterPanel.tsx:808
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<FamilyTab>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+CharacterPanel @ CharacterPanel.tsx:433
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<CharacterPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+LeftPanel @ LeftPanel.tsx:13
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<LeftPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+GameLayout @ GameLayout.tsx:24
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+CharacterPanel.tsx:809 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1774
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<button>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+(anonymous) @ CharacterPanel.tsx:809
+FamilyTab @ CharacterPanel.tsx:808
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<FamilyTab>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+CharacterPanel @ CharacterPanel.tsx:433
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<CharacterPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+LeftPanel @ LeftPanel.tsx:13
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<LeftPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+GameLayout @ GameLayout.tsx:24
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+TerritoryStore.ts:227 [岗位变动] 河北道·幽州 节度使: char-zhangyunshen → char-zhang-jian (继承)
+TerritoryStore.ts:227 [岗位变动] 幽州 防御使: char-zhangyunshen → char-zhang-jian (继承)
+TerritoryStore.ts:227 [岗位变动] 云州 防御使: char-zhangyunshen → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 青州 防御使: char-zhangyunshen → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 都畿道 节度判官: char-ct-yushe → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 云州 防御使: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潭州 刺史: char-npc-hunan → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 青州 防御使: 空缺 → char-npc-hunan (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 都畿道 节度判官: 空缺 → char-ct-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潭州 刺史: 空缺 → char-gen-19 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 潞州 录事参军: char-gen-12 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河中 录事参军: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 宣州 刺史: char-gen-14 → char-yizong (由system任命)
+TerritoryStore.ts:227 [岗位变动] 洪州 录事参军: char-gen-17 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 潭州 刺史: char-gen-19 → char-yizong (由system任命)
+TerritoryStore.ts:227 [岗位变动] 潭州 录事参军: char-gen-18 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 岭南道 节度判官: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 广州 录事参军: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 邕州 录事参军: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 泾州 录事参军: char-liguochang → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 洛阳 录事参军: char-npc-yicheng → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 潞州 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 陕州 录事参军: char-npc-pinglu → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河中 录事参军: 空缺 → char-npc-pinglu (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 太原 录事参军: char-ct-cuiyin → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 洪州 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度判官: char-npc-zhaoyi → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 潭州 录事参军: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 岭南道 节度判官: 空缺 → char-gen-12 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 广州 录事参军: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 邕州 录事参军: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 泾州 录事参军: 空缺 → char-gen-77 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 洛阳 录事参军: 空缺 → char-gen-81 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 陕州 录事参军: 空缺 → char-liguochang (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 太原 录事参军: 空缺 → char-gen-14 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度判官: 空缺 → char-gen-17 (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 中央 兵部尚书: char-ct-xiaochu → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 中央 户部尚书: char-ct-peitan → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 中央 三司使: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 中央 户部尚书: 空缺 → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 中央 吏部尚书: char-liwei → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 中央 兵部尚书: 空缺 → char-liwei (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 中央 三司使: 空缺 → char-li-xuan (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 太原 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河中 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 中央 吏部尚书: 空缺 → char-zhengcongdang (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 山南西道 节度使: char-xiaoye → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 兴元 防御使: char-xiaoye → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 河东道 节度使: 空缺 → char-xiaoye (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 太原 防御使: 空缺 → char-xiaoye (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 夏州 录事参军: char-ct-liuzhan → 空缺 (未知)
+TerritoryStore.ts:227 [岗位变动] 山南西道 节度使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 兴元 防御使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:227 [岗位变动] 夏州 录事参军: 空缺 → char-gen-18 (由char-yizong任命)
+react-dom_client.js?v=5fd3b264:4243 Uncaught Error: Rendered fewer hooks than expected. This may be caused by an accidental early return statement.
+    at finishRenderingHooks (react-dom_client.js?v=5fd3b264:4243:36)
+    at renderWithHooks (react-dom_client.js?v=5fd3b264:4224:4)
+    at updateFunctionComponent (react-dom_client.js?v=5fd3b264:5569:16)
+    at beginWork (react-dom_client.js?v=5fd3b264:6140:20)
+    at runWithFiberInDEV (react-dom_client.js?v=5fd3b264:851:66)
+    at performUnitOfWork (react-dom_client.js?v=5fd3b264:8429:92)
+    at workLoopSync (react-dom_client.js?v=5fd3b264:8325:37)
+    at renderRootSync (react-dom_client.js?v=5fd3b264:8309:6)
+    at performWorkOnRoot (react-dom_client.js?v=5fd3b264:7994:27)
+    at performSyncWorkOnRoot (react-dom_client.js?v=5fd3b264:9067:4)
+finishRenderingHooks @ react-dom_client.js?v=5fd3b264:4243
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4224
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7994
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+react-dom_client.js?v=5fd3b264:5258 An error occurred in the <DeployDraftFlow> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+defaultOnUncaughtError @ react-dom_client.js?v=5fd3b264:5258
+logUncaughtError @ react-dom_client.js?v=5fd3b264:5287
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+lane.callback @ react-dom_client.js?v=5fd3b264:5315
+callCallback @ react-dom_client.js?v=5fd3b264:4095
+commitCallbacks @ react-dom_client.js?v=5fd3b264:4103
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+commitLayoutEffectOnFiber @ react-dom_client.js?v=5fd3b264:6986
+flushLayoutEffects @ react-dom_client.js?v=5fd3b264:8671
+commitRoot @ react-dom_client.js?v=5fd3b264:8584
+commitRootWhenReady @ react-dom_client.js?v=5fd3b264:8079
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:8051
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078

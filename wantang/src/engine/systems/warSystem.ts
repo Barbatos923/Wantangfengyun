@@ -2,7 +2,7 @@
 
 import type { GameDate } from '@engine/types.ts';
 import type { Campaign } from '@engine/military/types.ts';
-import { diffDays, getDaysInMonth } from '@engine/dateUtils.ts';
+import { getDaysInMonth } from '@engine/dateUtils.ts';
 import { EventPriority } from '@engine/types.ts';
 import { useCharacterStore } from '@engine/character/CharacterStore.ts';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore.ts';
@@ -399,7 +399,7 @@ export function runWarSystem(date: GameDate): void {
   // ===== 围城：开始 + 推进 + 城破 =====
   const terrStore = useTerritoryStore.getState();
 
-  // 1. idle 的行营如果在敌方领地，自动开始围城
+  // 1. idle 的行营如果在敌方领地，自动开始围城（或加入已有同战争围城）
   for (const campaign of useWarStore.getState().campaigns.values()) {
     if (campaign.status !== 'idle') continue;
     const war = warStore.wars.get(campaign.warId);
@@ -409,10 +409,21 @@ export function runWarSystem(date: GameDate): void {
     if (!terr) continue;
     const mySide = getWarSide(campaign.ownerId, war);
     const chars = useCharacterStore.getState().characters;
-    if (mySide && isEnemyTerritoryInWar(terr, mySide, war, chars) && terr.occupiedBy !== campaign.ownerId && !useWarStore.getState().getSiegeAtTerritory(campaign.locationId)) {
+    if (!mySide || !isEnemyTerritoryInWar(terr, mySide, war, chars) || terr.occupiedBy === campaign.ownerId) continue;
+
+    const existingSiege = useWarStore.getState().getSiegeAtTerritory(campaign.locationId);
+    if (!existingSiege) {
+      // 无围城 → 创建新围城
       useWarStore.getState().startSiege(war.id, campaign.id, campaign.locationId, date);
       useWarStore.getState().updateCampaign(campaign.id, { status: 'sieging' });
+    } else if (existingSiege.warId === war.id) {
+      // 同战争围城已存在 → 同阵营则加入合围
+      const siegeCamp = useWarStore.getState().campaigns.get(existingSiege.campaignId);
+      if (siegeCamp && getWarSide(siegeCamp.ownerId, war) === mySide) {
+        useWarStore.getState().updateCampaign(campaign.id, { status: 'sieging' });
+      }
     }
+    // 不同战争的围城 → 保持 idle
   }
 
   // 2. 推进围城进度 + 守军损耗
@@ -439,8 +450,15 @@ export function runWarSystem(date: GameDate): void {
     );
 
     const milAfter = useMilitaryStore.getState();
-    const troops = siegeUtils.calcCampaignTroops(campaign.armyIds, milAfter.armies, milAfter.battalions);
-    const siegeValue = siegeUtils.calcTotalSiegeValue(campaign.armyIds, milAfter.armies, milAfter.battalions);
+    // 合围：汇总同战争同位置所有 sieging 行营的兵力
+    const allArmyIds: string[] = [];
+    for (const c of useWarStore.getState().campaigns.values()) {
+      if (c.warId === siege.warId && c.locationId === siege.territoryId && c.status === 'sieging') {
+        allArmyIds.push(...c.armyIds);
+      }
+    }
+    const troops = siegeUtils.calcCampaignTroops(allArmyIds, milAfter.armies, milAfter.battalions);
+    const siegeValue = siegeUtils.calcTotalSiegeValue(allArmyIds, milAfter.armies, milAfter.battalions);
     const defenderTroops = siegeUtils.calcDefenderTroops(siege.territoryId, defenderId, milAfter.armies, milAfter.battalions);
     const monthlyProgress = siegeUtils.calcMonthlyProgress(troops, siegeValue, terr, defenderTroops);
     const dailyProgress = monthlyProgress / dim;
@@ -455,7 +473,17 @@ export function runWarSystem(date: GameDate): void {
       );
 
       terrStore.updateTerritory(siege.territoryId, { occupiedBy: campaign.ownerId });
-      useMilitaryStore.getState().transferArmiesAtTerritory(siege.territoryId, campaign.ownerId);
+      // 城破：解散该领地所有非攻方军队（守军溃散），不再转移给攻方
+      const milForDisband = useMilitaryStore.getState();
+      const armiesAtLocation = milForDisband.locationArmyIndex.get(siege.territoryId);
+      if (armiesAtLocation) {
+        for (const armyId of [...armiesAtLocation]) {
+          const army = milForDisband.armies.get(armyId);
+          if (army && army.ownerId !== campaign.ownerId) {
+            useMilitaryStore.getState().disbandArmy(armyId);
+          }
+        }
+      }
 
       // 战争分数：占领领地占主防御者总州数的比例（只看领袖领土，非全阵营）
       const warForScore = useWarStore.getState().wars.get(siege.warId);
@@ -497,7 +525,12 @@ export function runWarSystem(date: GameDate): void {
       });
 
       useWarStore.getState().endSiege(siege.id);
-      useWarStore.getState().updateCampaign(campaign.id, { status: 'idle' });
+      // 城破：所有参与合围的行营回到 idle
+      for (const c of useWarStore.getState().campaigns.values()) {
+        if (c.warId === siege.warId && c.locationId === siege.territoryId && c.status === 'sieging') {
+          useWarStore.getState().updateCampaign(c.id, { status: 'idle' });
+        }
+      }
     } else {
       useWarStore.getState().updateSiege(siege.id, { progress: newProgress });
     }
@@ -520,7 +553,12 @@ export function runWarSystem(date: GameDate): void {
       const chars = useCharacterStore.getState().characters;
       if (!mySide) continue;
 
-      if (isEnemyTerritoryInWar(currTerr, mySide, war, chars) && currTerr.occupiedBy !== campaign.ownerId) continue;
+      // 在敌方领地且未被己方占领 → 通常留下围城，但如果已有别的战争在围城则继续寻路
+      if (isEnemyTerritoryInWar(currTerr, mySide, war, chars) && currTerr.occupiedBy !== campaign.ownerId) {
+        const siegeHere = useWarStore.getState().getSiegeAtTerritory(campaign.locationId);
+        if (!siegeHere || siegeHere.warId === war.id) continue; // 无围城或本战争围城 → 留下
+        // 有别的战争的围城 → 不等待，继续寻路找下一个目标
+      }
 
       let bestTarget: string | null = null;
       let bestPath: string[] | null = null;
@@ -529,6 +567,9 @@ export function runWarSystem(date: GameDate): void {
       for (const t of territories.values()) {
         if (t.tier !== 'zhou') continue;
         if (!isEnemyTerritoryInWar(t, mySide, war, chars) || t.occupiedBy === campaign.ownerId) continue;
+        // 跳过已被其他战争围城的领地（去了也围不了）
+        const siegeThere = useWarStore.getState().getSiegeAtTerritory(t.id);
+        if (siegeThere && siegeThere.warId !== war.id) continue;
 
         const path = findPath(campaign.locationId, t.id, campaign.ownerId, territories, chars);
         if (path && path.length < bestLen) {
@@ -568,27 +609,4 @@ export function runWarSystem(date: GameDate): void {
     }
   }
 
-  // ===== 防守方战争分数累积 =====
-  {
-    const freshWarStore = useWarStore.getState();
-    for (const war of freshWarStore.wars.values()) {
-      if (war.status !== 'active') continue;
-      // 攻方阵营是否有行营在进攻
-      const attackerCampaigns = freshWarStore.getCampaignsByWar(war.id)
-        .filter((c) => isOnAttackerSide(c.ownerId, war));
-      const hasProgress = attackerCampaigns.some(
-        (c) => c.status === 'marching' || c.status === 'sieging',
-      );
-      const warDays = diffDays(war.startDate, date);
-      if (!hasProgress && warDays >= 60) {
-        const dim = getDaysInMonth(date.month);
-        const latestWar = useWarStore.getState().wars.get(war.id);
-        if (latestWar && latestWar.status === 'active') {
-          useWarStore.getState().updateWar(war.id, {
-            warScore: Math.max(-100, latestWar.warScore - 2 / dim),
-          });
-        }
-      }
-    }
-  }
 }

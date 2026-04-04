@@ -11,14 +11,14 @@ import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
 
-/** 找到角色士气最低的军队 */
-function findLowestMoraleArmy(actorId: string): {
+/** 找到角色所有需要赏赐的军队（士气 < 阈值），按士气升序 */
+function findArmiesNeedingReward(actorId: string, threshold: number): {
   armyId: string;
   avgMorale: number;
-} | null {
+}[] {
   const milStore = useMilitaryStore.getState();
   const armies = milStore.getArmiesByOwner(actorId);
-  let worst: { armyId: string; avgMorale: number } | null = null;
+  const result: { armyId: string; avgMorale: number }[] = [];
 
   for (const army of armies) {
     if (army.battalionIds.length === 0) continue;
@@ -30,19 +30,20 @@ function findLowestMoraleArmy(actorId: string): {
     }
     if (count === 0) continue;
     const avg = sum / count;
-    if (!worst || avg < worst.avgMorale) {
-      worst = { armyId: army.id, avgMorale: avg };
+    if (avg < threshold) {
+      result.push({ armyId: army.id, avgMorale: avg });
     }
   }
 
-  return worst;
+  result.sort((a, b) => a.avgMorale - b.avgMorale);
+  return result;
 }
 
 // ── 行为定义 ────────────────────────────────────────────
 
 interface RewardData {
-  armyId: string;
-  avgMorale: number;
+  armies: { armyId: string; avgMorale: number }[];
+  lowestMorale: number;
 }
 
 export const rewardBehavior: NpcBehavior<RewardData> = {
@@ -50,70 +51,68 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
   playerMode: 'skip',
 
   generateTask(actor: Character, ctx: NpcContext): BehaviorTaskResult<RewardData> | null {
-    if (!actor.isRuler) return null;
-
-    const worst = findLowestMoraleArmy(actor.id);
-    if (!worst) return null;
+    if (actor.resources.money <= 0) return null;
 
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
 
     const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
-    // 士气危险（< 30）→ 强制赏赐
-    if (worst.avgMorale < 30 && actor.resources.money > 0) {
-      return { data: { armyId: worst.armyId, avgMorale: worst.avgMorale }, weight: 100, forced: true };
+    // 危险军队（< 30）→ 强制赏赐全部
+    const critical = findArmiesNeedingReward(actor.id, 30);
+    if (critical.length > 0) {
+      return { data: { armies: critical, lowestMorale: critical[0].avgMorale }, weight: 100, forced: true };
     }
 
-    // 正常情况：低 weight 使大约一年赏赐一次（~8%/月）
+    // 正常情况：收集士气 < 50 的军队，低 weight 使大约一年赏赐一次
+    const needReward = findArmiesNeedingReward(actor.id, 50);
+    if (needReward.length === 0) return null;
+
     const modifiers: WeightModifier[] = [
       { label: '基础', add: 5 },
-
-      // 状态驱动
-      ...(worst.avgMorale < 40 ? [{ label: '士气偏低', add: 5 }] : []),
+      ...(needReward[0].avgMorale < 40 ? [{ label: '士气偏低', add: 5 }] : []),
       ...(isAtWar ? [{ label: '战时', add: 20 }] : []),
-
-      // 人格驱动
       { label: '体恤', add: personality.compassion * 5 },
       { label: '贪财', add: -personality.greed * 10 },
-
-      // 硬切
-      ...(actor.resources.money <= 0 ? [{ label: '资金不足', factor: 0 }] : []),
     ];
 
     const weight = calcWeight(modifiers);
     if (weight <= 0) return null;
 
-    return { data: { armyId: worst.armyId, avgMorale: worst.avgMorale }, weight };
+    return { data: { armies: needReward, lowestMorale: needReward[0].avgMorale }, weight };
   },
 
   executeAsNpc(actor: Character, data: RewardData, _ctx: NpcContext) {
-    const milStore = useMilitaryStore.getState();
-    const army = milStore.armies.get(data.armyId);
-    if (!army) return;
+    // 逐支赏赐，直到钱花完
+    for (const entry of data.armies) {
+      const fresh = useCharacterStore.getState().getCharacter(actor.id);
+      if (!fresh || fresh.resources.money <= 0) break;
 
-    // 计算军队总兵力
-    let totalStrength = 0;
-    for (const batId of army.battalionIds) {
-      const bat = milStore.battalions.get(batId);
-      if (bat) totalStrength += bat.currentStrength;
+      const milStore = useMilitaryStore.getState();
+      const army = milStore.armies.get(entry.armyId);
+      if (!army) continue;
+
+      let totalStrength = 0;
+      for (const batId of army.battalionIds) {
+        const bat = milStore.battalions.get(batId);
+        if (bat) totalStrength += bat.currentStrength;
+      }
+      if (totalStrength === 0) continue;
+
+      const money = fresh.resources.money;
+      // 按军队数量均分预算：基准 10 万贯 / 剩余军队数
+      const remaining = data.armies.indexOf(entry);
+      const armiesLeft = data.armies.length - remaining;
+      const BASE = 100000;
+      const totalBudget = money <= BASE
+        ? money
+        : Math.floor(BASE + (money - BASE) * 0.05);
+      const budget = Math.floor(totalBudget / armiesLeft);
+      if (budget <= 0) break;
+
+      const moraleGain = budget * 6 / (totalStrength * 5);
+      executeReward(actor.id, entry.armyId, budget, moraleGain);
     }
-    if (totalStrength === 0) return;
-
-    const fresh = useCharacterStore.getState().getCharacter(actor.id);
-    if (!fresh) return;
-    const money = fresh.resources.money;
-    if (money <= 0) return;
-
-    // 基准 10 万贯；钱多时多赏一点（超出部分的 5%）
-    const BASE = 100000;
-    const budget = money <= BASE
-      ? money  // 钱不够就全给
-      : Math.floor(BASE + (money - BASE) * 0.05);
-
-    // 公式与 UI 一致：moraleGain = amount × 6 / (totalStrength × 5)
-    const moraleGain = budget * 6 / (totalStrength * 5);
-    executeReward(actor.id, data.armyId, budget, moraleGain);
   },
 };
 

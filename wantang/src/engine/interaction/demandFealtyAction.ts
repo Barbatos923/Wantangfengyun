@@ -30,10 +30,11 @@ registerInteraction({
 
 function canDemandFealty(player: Character, target: Character): boolean {
   const terrStore = useTerritoryStore.getState();
+  const charStore = useCharacterStore.getState();
   const targetPosts = terrStore.getPostsByHolder(target.id);
   const playerPosts = terrStore.getPostsByHolder(player.id);
   const activeWars = useWarStore.getState().getActiveWars();
-  return canDemandFealtyPure(player, target, terrStore.territories, targetPosts, playerPosts, activeWars);
+  return canDemandFealtyPure(player, target, terrStore.territories, targetPosts, playerPosts, activeWars, charStore.characters);
 }
 
 // ── canDemandFealty 纯函数版（供 NPC Engine 使用） ────────
@@ -53,9 +54,23 @@ export function canDemandFealtyPure(
   targetPosts: Post[],
   playerPosts?: Post[],
   activeWars?: War[],
+  characters?: Map<string, Character>,
 ): boolean {
   if (!target.alive) return false;
+  if (player.id === target.id) return false;
   if (target.overlordId === player.id) return false;
+
+  // 防环：target 不能是 player 的效忠链上的祖先（否则会形成环）
+  if (characters) {
+    let current = player.overlordId;
+    const visited = new Set<string>();
+    while (current) {
+      if (current === target.id) return false;
+      if (visited.has(current)) break;
+      visited.add(current);
+      current = characters.get(current)?.overlordId;
+    }
+  }
 
   // 双方在同一战争中处于对立面时不可要求效忠
   if (activeWars?.some(w => {

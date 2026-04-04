@@ -8,6 +8,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
 import { getHeldPosts } from '@engine/official/postQueries';
+import { positionMap } from '@data/positions';
 
 // ── 外部可调用：增加崩溃进度（如战争结算） ─────────────────────────────────────
 
@@ -80,17 +81,51 @@ export function runEraSystem(_date: GameDate): void {
 
 function destroyEmperorPost(): void {
   const terrStore = useTerritoryStore.getState();
+  const charStore = useCharacterStore.getState();
+
+  // 找到皇帝 ID（销毁前获取）
+  const emperorId = findEmperorId(terrStore.territories, terrStore.centralPosts);
+
+  // 销毁皇帝岗位
   for (const t of terrStore.territories.values()) {
     if (t.tier === 'tianxia') {
       const ep = t.posts.find(p => p.templateId === 'pos-emperor');
       if (ep) {
         terrStore.removePost(ep.id);
-        useCharacterStore.getState().refreshIsRuler(
-          collectRulerIds(useTerritoryStore.getState().territories),
-        );
-        useTerritoryStore.getState().refreshExpectedLegitimacy();
       }
       break;
     }
   }
+
+  // 解除皇帝与有地臣属的效忠关系：节度使、诸侯王独立；无地京官仍效忠皇帝本人
+  if (emperorId) {
+    const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
+    charStore.batchMutate(chars => {
+      for (const [id, c] of chars) {
+        if (!c.alive || c.overlordId !== emperorId) continue;
+        if (rulerIds.has(id)) {
+          chars.set(id, { ...c, overlordId: undefined });
+        }
+      }
+    });
+  }
+
+  // 所有道级和国级的 grantsControl 主岗 → 辟署权 + 宗法继承（割据独立体制）
+  const freshTerrStore = useTerritoryStore.getState();
+  for (const t of freshTerrStore.territories.values()) {
+    if (t.tier !== 'dao' && t.tier !== 'guo') continue;
+    for (const post of t.posts) {
+      const tpl = positionMap.get(post.templateId);
+      if (!tpl?.grantsControl) continue;
+      freshTerrStore.updatePost(post.id, {
+        hasAppointRight: true,
+        successionLaw: 'clan',
+      });
+    }
+  }
+
+  useCharacterStore.getState().refreshIsRuler(
+    collectRulerIds(useTerritoryStore.getState().territories),
+  );
+  useTerritoryStore.getState().refreshExpectedLegitimacy();
 }

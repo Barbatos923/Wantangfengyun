@@ -134,17 +134,16 @@ export default function DeployDraftFlow({ visible, onOpen, onClose }: DeployDraf
     onOpen();
   }, [mapSelectionActive, mapSelectionResult, selectingIndex, selectingNewArmy, addingArmyId, armies, onOpen]);
 
-  if (!rulerId) return null;
-
   // 可用军队：ruler 名下，排除已在行营 + 已在方案中的
   const campaignArmyIds = useMemo(() => getCampaignArmyIds(), []);
   const entryArmyIds = useMemo(() => new Set(entries.map(e => e.armyId)), [entries]);
   const availableArmies = useMemo(() => {
+    if (!rulerId) return [];
     return useMilitaryStore.getState().getArmiesByOwner(rulerId)
       .filter(a => !campaignArmyIds.has(a.id) && !entryArmyIds.has(a.id));
   }, [rulerId, campaignArmyIds, entryArmyIds]);
 
-  if (!visible || isSelecting) return null;
+  if (!rulerId || !visible || isSelecting) return null;
 
   function handleRemoveEntry(index: number) {
     setEntries(prev => prev.filter((_, i) => i !== index));

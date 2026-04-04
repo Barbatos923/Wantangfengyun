@@ -58,7 +58,7 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
       // 纯函数版检查
       const targetPosts = getPostsByHolderFromCtx(target.id, ctx);
       const actorPosts = getPostsByHolderFromCtx(actor.id, ctx);
-      if (!canDemandFealtyPure(actor, target, ctx.territories, targetPosts, actorPosts, ctx.activeWars)) continue;
+      if (!canDemandFealtyPure(actor, target, ctx.territories, targetPosts, actorPosts, ctx.activeWars, ctx.characters)) continue;
 
       // 计算成功率
       const opinion = ctx.getOpinion(target.id, actor.id);

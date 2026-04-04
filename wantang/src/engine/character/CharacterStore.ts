@@ -105,6 +105,11 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       if (!existing) return state;
       chars.set(id, { ...existing, ...patch });
 
+      // DEBUG: 检测自我领主
+      if (patch.overlordId !== undefined && patch.overlordId === id) {
+        console.error(`[BUG] 自我领主！${existing.name}(${id}) overlordId 被设为自己`, new Error().stack);
+      }
+
       // 维护 vassalIndex
       let vassalIndex = state.vassalIndex;
       if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId) {
@@ -250,6 +255,13 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
     set((state) => {
       const chars = new Map(state.characters);
       mutator(chars);
+
+      // DEBUG: 检测自我领主
+      for (const c of chars.values()) {
+        if (c.overlordId === c.id) {
+          console.error(`[BUG] batchMutate 自我领主！${c.name}(${c.id})`, new Error().stack);
+        }
+      }
 
       // 重建 aliveSet 和 vassalIndex（O(n)，但只执行一次）
       const aliveSet = new Set<string>();

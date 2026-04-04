@@ -8,6 +8,7 @@ import { getDirectControlLimit, getVassals } from '@engine/official/postQueries'
 import { canGrantTerritory } from '@engine/official/appointValidation';
 import { executeAppoint } from '@engine/interaction';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
 
 // ── 辅助：从 ctx 快照获取直辖州 ────────────────────────────
@@ -120,12 +121,27 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
         vassalId: vassal.id,
         territoryName: grant.territory.name,
       },
-      weight: 100, // 超额：必定触发
+      weight: 100,
     };
   },
 
-  executeAsNpc(actor: Character, data: GrantTerritoryData, _ctx: NpcContext) {
-    executeAppoint(data.postId, data.vassalId, actor.id);
+  executeAsNpc(actor: Character, _data: GrantTerritoryData, ctx: NpcContext) {
+    // 一次性授出所有超额的州（不止一块）
+    const limit = getDirectControlLimit(actor);
+    const usedVassals = new Set<string>();
+    for (let i = 0; i < 20; i++) { // 安全上限
+      const directZhou = getControlledZhouFromCtx(actor.id, useTerritoryStore.getState().territories);
+      if (directZhou.length <= limit) break;
+
+      const vassal = pickBestVassal(actor, ctx);
+      if (!vassal || usedVassals.has(vassal.id)) break;
+      usedVassals.add(vassal.id);
+
+      const grant = pickZhouToGrant(actor, directZhou, useTerritoryStore.getState().territories);
+      if (!grant) break;
+
+      executeAppoint(grant.postId, vassal.id, actor.id);
+    }
   },
 };
 

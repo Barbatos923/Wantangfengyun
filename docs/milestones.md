@@ -261,8 +261,21 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ NPC 称王/称帝/篡夺行为（2026-04-05）：3 个新 NPC 行为完成王朝兴衰自动循环
 - ✅ TerritoryStore 扩展（2026-04-05）：`addPost()` / `removePost()` 方法
 - ✅ 岗位模板新增（2026-04-05）：`pos-guo-changshi`（国长史）
+- ✅ 自我领主防御（2026-04-05）：修复4处 overlordId=操作者 的自我领主bug；CharacterStore 加 DEBUG console.error 监测；demandFealtyPure 加防环检查；characterSystem 继承加自我领主防御
+- ✅ 同战争多行营合围（2026-04-05）：同阵营多行营共同参与围城，合算兵力；城破后所有参与行营回 idle；跨战争围城仍互斥
+- ✅ 行营AI跨战争寻路（2026-04-05）：idle行营在被其他战争围城的领地继续寻路；目标选择排除被其他战争围城的领地
+- ✅ 删除防守方惰性加分（2026-04-05）：移除战争分数中防守方惰性加分机制（bug多，100%占领后仍扣分）
+- ✅ 危世→乱世全面改革（2026-04-05）：销毁皇帝岗位 + 有地臣属解除效忠独立 + 所有道/国级 grantsControl 主岗改为辟署权+宗法继承（割据体制）
+- ✅ 铨选候选池修复（2026-04-05）：排除辟署权持有者；继承时高品不继承低品岗位；连锁铨选只选fresh候选人+接受underRank
+- ✅ 铨选草案去重（2026-04-05）：handleDraftSubmission 执行前按 appointeeId 去重
+- ✅ 铨选调动vacateOnly（2026-04-05）：executeDismiss 新增 vacateOnly 选项，防止罢免者接管 grantsControl 岗位
+- ✅ 赏赐行为改进（2026-04-05）：一次赏赐所有低士气军队；去除 isRuler 限制
+- ✅ 授予领地改进（2026-04-05）：executeAsNpc 一次授出所有超额州
+- ✅ 城破守军解散（2026-04-05）：城破后解散守军而非转移给攻方
+- ✅ DeployDraftFlow hooks修复（2026-04-05）：修复提前return导致React hooks数量变化的崩溃
 
 **待做（NPC-玩家同权收尾）：**
+- ⬜ 战争停战协议期限（战争结束后一定时间内不可再次宣战）
 - ⬜ NPC 罢免行为（`dismissBehavior`）：NPC 主动罢免不满/低能副岗官员
 - ⬜ NPC 政策行为（`policyBehavior`）：集权/放权决策
   - 正统性高+实力强 → 提高税率、收回辟署权、改流官制

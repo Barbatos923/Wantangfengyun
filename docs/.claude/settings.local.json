@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/桌面/Github上传/Wantangfengyun/wantang/**)",
+      "Bash(npx tsc:*)",
+      "Bash(pushd \"/d/桌面/Github上传/Wantangfengyun/wantang\")",
+      "Bash(npx --prefix \"../wantang\" tsc --noEmit --project \"../wantang/tsconfig.json\")",
+      "Bash(npx vitest:*)"
+    ]
+  }
+}

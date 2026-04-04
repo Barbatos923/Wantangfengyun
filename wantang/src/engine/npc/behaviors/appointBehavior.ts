@@ -47,10 +47,15 @@ export function planAppointments(npcId: string, sharedUsedIds?: Set<string>): Tr
       const legalId = resolveLegalAppointer(executorId, post);
       const candidates = generateCandidates(post, legalId);
 
-      let pick = candidates.find(c => !usedIds.has(c.character.id) && !c.underRank);
-      if (round > 1) {
-        const freshPick = candidates.find(c => !usedIds.has(c.character.id) && !c.underRank && c.tier === 'fresh');
-        if (freshPick) pick = freshPick;
+      let pick: typeof candidates[number] | undefined;
+      if (round === 1) {
+        // 第一轮：允许升调/平调/新授，优先品位匹配
+        pick = candidates.find(c => !usedIds.has(c.character.id) && !c.underRank);
+        // 品位匹配无人 → 接受品位不足的候选人（低品提拔）
+        if (!pick) pick = candidates.find(c => !usedIds.has(c.character.id));
+      } else {
+        // 连锁轮次：只选无岗位的新授候选人，防止无限升调链；接受 underRank
+        pick = candidates.find(c => !usedIds.has(c.character.id) && c.tier === 'fresh');
       }
       if (!pick) continue;
 

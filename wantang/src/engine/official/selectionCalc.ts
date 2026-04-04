@@ -144,6 +144,7 @@ export function generateCandidates(
     // 硬性前提
     if (!char.alive || !char.official) continue;
     if (char.id === appointerId) continue; // 法理主体（皇帝/辟署权持有人）不参与铨选
+    if (appointRightHolders.has(char.id)) continue; // 持有辟署权的角色不可被调走
     const isUnderRank = char.official.rankLevel < effectiveRank;
     // 效忠链必须指向法理主体（appointerId）
     if (!isVassalOf(char.id, appointerId, characters)) continue;

@@ -42,7 +42,7 @@ export function getDismissablePosts(
 export function executeDismiss(
   postId: string,
   dismisserId: string,
-  opts?: { skipOpinion?: boolean },
+  opts?: { skipOpinion?: boolean; vacateOnly?: boolean },
 ): void {
   const terrStore = useTerritoryStore.getState();
   const date = useTurnManager.getState().currentDate;
@@ -52,15 +52,26 @@ export function executeDismiss(
   const tpl = positionMap.get(post.templateId);
   const previousHolderId = post.holderId;
 
-  // 如果是领地主岗位(grantsControl)，罢免者自动接管
+  // 如果是领地主岗位(grantsControl)
   if (tpl?.grantsControl) {
-    terrStore.updatePost(postId, {
-      holderId: dismisserId,
-      appointedBy: 'system',
-      appointedDate: { year: date.year, month: date.month, day: date.day },
-    });
-    // 该岗位绑定的军队随岗位易手
-    useMilitaryStore.getState().syncArmyOwnersByPost(postId, dismisserId);
+    if (opts?.vacateOnly) {
+      // 铨选调动：仅清空，不让罢免者接管（后续 executeAppoint 立刻安排新人）
+      terrStore.updatePost(postId, {
+        holderId: null,
+        appointedBy: undefined,
+        appointedDate: undefined,
+      });
+    } else {
+      // 正常罢免：罢免者自动接管
+      console.warn(`[DEBUG executeDismiss] grantsControl接管: ${tpl?.name} → ${dismisserId}`, new Error().stack);
+      terrStore.updatePost(postId, {
+        holderId: dismisserId,
+        appointedBy: 'system',
+        appointedDate: { year: date.year, month: date.month, day: date.day },
+      });
+      // 该岗位绑定的军队随岗位易手
+      useMilitaryStore.getState().syncArmyOwnersByPost(postId, dismisserId);
+    }
   } else {
     // 普通岗位：清空
     terrStore.updatePost(postId, {
@@ -82,14 +93,16 @@ export function executeDismiss(
     });
   }
 
-  // 更新被罢免者 overlordId：回归罢免者人才池
-  if (previousHolderId) {
+  // 更新被罢免者 overlordId：回归罢免者人才池（前任是自己时跳过，如铨选调动皇帝自身）
+  // vacateOnly 时跳过：铨选调动只是腾岗，被调人立刻会在新岗位获得正确的 overlordId
+  if (previousHolderId && previousHolderId !== dismisserId && !opts?.vacateOnly) {
     const charStore = useCharacterStore.getState();
     charStore.updateCharacter(previousHolderId, { overlordId: dismisserId });
   }
 
   // 级联效忠：主岗易手时，法理下级主岗持有人 + 本领地副岗持有人的 overlordId 回退给接管者
-  if (previousHolderId && tpl?.grantsControl && post.territoryId) {
+  // vacateOnly 时跳过：新任者就任后 executeAppoint 会正确处理归附
+  if (previousHolderId && tpl?.grantsControl && post.territoryId && !opts?.vacateOnly) {
     const charStore = useCharacterStore.getState();
     const terrStoreForCascade = useTerritoryStore.getState();
     const terr = terrStoreForCascade.territories.get(post.territoryId);
@@ -119,10 +132,11 @@ export function executeDismiss(
         }
       }
 
-      // 批量更新
-      if (cascadeIds.length > 0) {
+      // 批量更新（排除 dismisser 自身防止自我领主）
+      const filteredCascadeIds = cascadeIds.filter(cid => cid !== dismisserId);
+      if (filteredCascadeIds.length > 0) {
         charStore.batchMutate(chars => {
-          for (const cid of cascadeIds) {
+          for (const cid of filteredCascadeIds) {
             const c = chars.get(cid);
             if (c) c.overlordId = dismisserId;
           }
@@ -132,7 +146,8 @@ export function executeDismiss(
   }
 
   // 治所联动：罢免道级 grantsControl 岗位时，一并罢免同人的治所刺史
-  if (previousHolderId && tpl?.grantsControl && post.territoryId) {
+  // vacateOnly 时跳过：executeAppoint 的治所联动会处理
+  if (previousHolderId && tpl?.grantsControl && post.territoryId && !opts?.vacateOnly) {
     const terrStoreNow = useTerritoryStore.getState();
     const dao = terrStoreNow.territories.get(post.territoryId);
     if (dao?.capitalZhouId) {

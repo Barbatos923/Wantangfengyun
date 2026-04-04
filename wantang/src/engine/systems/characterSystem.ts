@@ -82,9 +82,25 @@ export function runCharacterSystem(date: GameDate): void {
         }
         if (post.successionLaw === 'clan') {
           // 宗法：resolveHeir → 继承 / 绝嗣上交 / 空缺
-          const heir = resolveHeir(deadId, post, charStore.characters);
+          let heir = resolveHeir(deadId, post, charStore.characters);
+          // 继承人已持有更高品级的 grantsControl 岗位 → 视为放弃继承，走绝嗣上交
+          if (heir && positionMap.get(post.templateId)?.grantsControl) {
+            const postRank = positionMap.get(post.templateId)?.minRank ?? 0;
+            const heirPosts = terrStore.getPostsByHolder(heir);
+            const heirMaxRank = Math.max(0, ...heirPosts
+              .filter(p => positionMap.get(p.templateId)?.grantsControl)
+              .map(p => positionMap.get(p.templateId)?.minRank ?? 0));
+            if (heirMaxRank > postRank) heir = null;
+          }
           const receiver = heir ?? findParentAuthority(post, territories);
 
+          // DEBUG: 继承/上交接收人定位
+          if (receiver) {
+            const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
+            const terrName = post.territoryId ? territories.get(post.territoryId)?.name : '?';
+            const receiverChar = charStore.getCharacter(receiver);
+            console.log(`[继承] ${terrName} ${tplName}: 死者=${charStore.getCharacter(deadId)?.name} → receiver=${receiverChar?.name}(${receiver}) heir=${heir ? '宗法' : '绝嗣上交'}`);
+          }
           if (receiver) {
             terrStore.updatePost(post.id, {
               holderId: receiver,
@@ -202,8 +218,10 @@ export function runCharacterSystem(date: GameDate): void {
       }
 
       // 继承人的 overlordId 继承死者的效忠关系（皇帝→undefined，节度使→皇帝）
+      // 防御：避免自我领主（当死者 overlordId 恰好是继承人自己时，清空为 undefined）
       if (primaryHeir) {
-        charStore.updateCharacter(primaryHeir, { overlordId: deadChar.overlordId });
+        const inheritedOverlord = deadChar.overlordId === primaryHeir ? undefined : deadChar.overlordId;
+        charStore.updateCharacter(primaryHeir, { overlordId: inheritedOverlord });
       }
 
       // 三、好感继承：对死者的好感 × 0.5 转为对继承人的初始好感

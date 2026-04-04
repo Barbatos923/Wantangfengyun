@@ -135,7 +135,7 @@ export function executeAppoint(
       if (p.id !== postId) {
         const pTpl = positionMap.get(p.templateId);
         if (pTpl?.grantsControl) {
-          executeDismiss(p.id, appointerId, { skipOpinion: true });
+          executeDismiss(p.id, appointerId, { skipOpinion: true, vacateOnly: true });
         } else {
           ts.updatePost(p.id, { holderId: null, appointedBy: undefined, appointedDate: undefined });
         }
@@ -150,8 +150,8 @@ export function executeAppoint(
   // 0. 如果岗位已有人 → 先罢免前任
   const currentPost = terrStore.findPost(postId);
   const previousHolderId = currentPost?.holderId;
-  if (previousHolderId && previousHolderId !== appointeeId) {
-    // 好感减损
+  if (previousHolderId && previousHolderId !== appointeeId && previousHolderId !== appointerId) {
+    // 好感减损（前任是自己时跳过，如授予领地场景）
     const tpl = positionMap.get(currentPost!.templateId);
     if (tpl) {
       const penalty = -Math.floor(5 + (tpl.minRank / 29) * 25);
@@ -292,8 +292,8 @@ export function executeAppoint(
             charStore.getCharacter(capitalHolderId)?.overlordId === appointerId
           );
           if (canTakeCapital && capitalPost) {
-            // 清退治所前任（如有）
-            if (capitalPost.holderId) {
+            // 清退治所前任（如有，前任是自己时跳过）
+            if (capitalPost.holderId && capitalPost.holderId !== appointerId) {
               charStore.updateCharacter(capitalPost.holderId, { overlordId: appointerId });
             }
             const capitalUpdate: Record<string, unknown> = {
