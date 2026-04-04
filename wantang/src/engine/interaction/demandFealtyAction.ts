@@ -4,6 +4,7 @@ import type { Character } from '@engine/character/types';
 import type { Post, Territory } from '@engine/territory/types';
 import type { War } from '@engine/military/types';
 import type { Personality } from '@data/traits';
+import { getWarSide } from '@engine/military/warParticipantUtils';
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -56,12 +57,13 @@ export function canDemandFealtyPure(
   if (!target.alive) return false;
   if (target.overlordId === player.id) return false;
 
-  // 双方正在交战时不可要求效忠
-  if (activeWars?.some(w =>
-    w.status === 'active' &&
-    ((w.attackerId === player.id && w.defenderId === target.id) ||
-     (w.attackerId === target.id && w.defenderId === player.id)),
-  )) return false;
+  // 双方在同一战争中处于对立面时不可要求效忠
+  if (activeWars?.some(w => {
+    if (w.status !== 'active') return false;
+    const playerSide = getWarSide(player.id, w);
+    const targetSide = getWarSide(target.id, w);
+    return playerSide && targetSide && playerSide !== targetSide;
+  })) return false;
 
   // target 必须有 grantsControl 主岗位（控制领地的统治者）
   const mainPosts = targetPosts.filter(p => {

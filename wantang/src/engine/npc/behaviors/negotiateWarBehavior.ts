@@ -7,6 +7,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { calcPeaceProposalWeight, calcPeaceAcceptance } from '@engine/military/warCalc';
 import { settleWar } from '@engine/military/warSettlement';
 import { diffMonths } from '@engine/dateUtils';
+import { isWarLeader } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 行为定义 ────────────────────────────────────────────
@@ -31,7 +32,7 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
     let bestData: NegotiateData | null = null;
 
     for (const war of ctx.activeWars) {
-      if (war.attackerId !== actor.id && war.defenderId !== actor.id) continue;
+      if (!isWarLeader(actor.id, war)) continue; // 仅战争领袖可议和
 
       const isAttacker = war.attackerId === actor.id;
       const myScore = isAttacker ? war.warScore : -war.warScore;

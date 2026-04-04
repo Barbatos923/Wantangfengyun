@@ -132,7 +132,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
 
         {/* 主菜单（仅自己的行营可操作） */}
         {mode === 'main' && !isOwner && (
-          <p className="text-xs text-[var(--color-text-muted)] py-2">这是敌方行营，无法操作</p>
+          <p className="text-xs text-[var(--color-text-muted)] py-2">这不是我军行营，无法操作</p>
         )}
         {mode === 'main' && isOwner && (
           <div className="space-y-1.5">

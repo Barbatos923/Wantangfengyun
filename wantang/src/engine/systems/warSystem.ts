@@ -1,6 +1,7 @@
 // ===== 战争系统：行营推进/战斗/围城/战争分数 =====
 
 import type { GameDate } from '@engine/types.ts';
+import type { Campaign } from '@engine/military/types.ts';
 import { diffDays, getDaysInMonth } from '@engine/dateUtils.ts';
 import { EventPriority } from '@engine/types.ts';
 import { useCharacterStore } from '@engine/character/CharacterStore.ts';
@@ -16,28 +17,42 @@ import { getRealmZhouCount } from '@engine/official/postQueries.ts';
 import { findPath } from '@engine/military/marchCalc.ts';
 import { getArmyMarchSpeed } from '@engine/military/militaryCalc.ts';
 import { unitTypeMap } from '@data/unitTypes.ts';
+import {
+  isOnAttackerSide, isOnDefenderSide, getWarSide, getPrimaryEnemyId,
+} from '@engine/military/warParticipantUtils.ts';
 
-/** 判断一个州的控制者是否属于 enemyId 的势力（本人或其附庸） */
-function isEnemyTerritory(
+// ── 辅助函数 ─────────────────────────────────────────────
+
+/**
+ * 判断领地是否属于战争中己方的敌对阵营。
+ *
+ * 沿领地控制者的效忠链向上查找，找到第一个战争参与者后判断其阵营。
+ * 这样即使效忠链上层有对方参战者（如皇帝在守方但下级在攻方），
+ * 也能正确按最近参与者的阵营判断，不会误把己方领地当敌方。
+ */
+function isEnemyTerritoryInWar(
   territory: import('@engine/territory/types').Territory,
-  enemyId: string,
+  mySide: import('@engine/military/warParticipantUtils').WarSide,
+  war: import('@engine/military/types').War,
   characters: Map<string, import('@engine/character/types').Character>,
 ): boolean {
   const ctrl = siegeUtils.getTerritoryController(territory);
   if (!ctrl) return false;
-  // 沿效忠链上溯，看链上是否经过 enemyId
   let current = ctrl;
   const visited = new Set<string>();
   while (current) {
-    if (current === enemyId) return true;
+    const side = getWarSide(current, war);
+    if (side) return side !== mySide; // 找到参战者 → 判断是否敌方
     if (visited.has(current)) break;
     visited.add(current);
     const char = characters.get(current);
     if (!char?.overlordId) break;
     current = char.overlordId;
   }
-  return false;
+  return false; // 效忠链上无任何参战者 → 非敌方领地
 }
+
+// ── 主系统 ────────────────────────────────────────────────
 
 export function runWarSystem(date: GameDate): void {
   const warStore = useWarStore.getState();
@@ -58,7 +73,6 @@ export function runWarSystem(date: GameDate): void {
         armyIds: [...campaign.armyIds, ...arrived],
         incomingArmies: stillComing,
       });
-      // 移动到达军队的位置到行营所在地
       for (const armyId of arrived) {
         useMilitaryStore.getState().updateArmy(armyId, { locationId: campaign.locationId });
       }
@@ -66,7 +80,7 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // 记录行军前的行营位置，供行军后的交叉拦截检测使用
-  const marchStartLocations = new Map<string, string>(); // campaignId → 行军前所在州
+  const marchStartLocations = new Map<string, string>();
   for (const c of useWarStore.getState().campaigns.values()) {
     if (c.status === 'marching') {
       marchStartLocations.set(c.id, c.locationId);
@@ -85,7 +99,6 @@ export function runWarSystem(date: GameDate): void {
     }
     // 行军中：每日按 marchSpeed 累积推进
     else if (campaign.status === 'marching' && campaign.route.length > 0) {
-      // 计算行营行军速度（木桶效应：取所有军最慢速度）
       const milStore = useMilitaryStore.getState();
       let minSpeed = Infinity;
       for (const armyId of campaign.armyIds) {
@@ -96,7 +109,7 @@ export function runWarSystem(date: GameDate): void {
         }
       }
       if (minSpeed === Infinity) minSpeed = 1.0;
-      const dailyRate = minSpeed / 10; // marchSpeed=1.0 → 10天一格
+      const dailyRate = minSpeed / 10;
 
       let mp = campaign.marchProgress + dailyRate;
       let rp = campaign.routeProgress;
@@ -107,13 +120,11 @@ export function runWarSystem(date: GameDate): void {
       }
 
       if (rp >= campaign.route.length - 1) {
-        // 到达目的地
         const destId = campaign.route[campaign.route.length - 1];
         for (const armyId of campaign.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: destId });
         }
         if (!campaign.warId) {
-          // 调动行营：到达后自动解散，军队留在目标州
           useWarStore.getState().disbandCampaign(campaign.id);
         } else {
           useWarStore.getState().updateCampaign(campaign.id, {
@@ -126,7 +137,6 @@ export function runWarSystem(date: GameDate): void {
           });
         }
       } else if (rp !== campaign.routeProgress) {
-        // 推进了至少一格
         const nextLocId = campaign.route[rp];
         useWarStore.getState().updateCampaign(campaign.id, {
           locationId: nextLocId,
@@ -137,39 +147,38 @@ export function runWarSystem(date: GameDate): void {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: nextLocId });
         }
       } else {
-        // 仅累积 marchProgress，未到达下一格
         useWarStore.getState().updateCampaign(campaign.id, { marchProgress: mp });
       }
     }
   }
 
   // ===== 对向行军拦截（后置交叉检测）=====
-  // 在行军结算之后运行：仅当甲从 X→Y、乙从 Y→X 在同一天互换位置时触发。
-  // 相遇地点为防守方的原始位置（即攻方刚抵达处），随后由下方战斗检测自动触发战斗。
-  // 速度不一致时，快方会先抵达慢方所在州，由常规战斗检测处理；此处只捕获真正的"交叉"情形。
   {
     const interceptedCrossing = new Set<string>();
     for (const [campAId, fromA] of marchStartLocations) {
       if (interceptedCrossing.has(campAId)) continue;
       const campA = useWarStore.getState().campaigns.get(campAId);
-      if (!campA || campA.locationId === fromA) continue; // A 本轮未移动
+      if (!campA || campA.locationId === fromA) continue;
       const warA = warStore.wars.get(campA.warId);
       if (!warA || warA.status !== 'active') continue;
 
       for (const [campBId, fromB] of marchStartLocations) {
         if (campBId === campAId || interceptedCrossing.has(campBId)) continue;
         const campB = useWarStore.getState().campaigns.get(campBId);
-        if (!campB || campB.locationId === fromB) continue; // B 本轮未移动
-        if (campB.warId !== campA.warId || campB.ownerId === campA.ownerId) continue;
+        if (!campB || campB.locationId === fromB) continue;
+        // 同战争 + 不同阵营
+        if (campB.warId !== campA.warId) continue;
+        const sideA = getWarSide(campA.ownerId, warA);
+        const sideB = getWarSide(campB.ownerId, warA);
+        if (!sideA || !sideB || sideA === sideB) continue;
 
-        // 交叉条件：A 移到了 B 的起点，同时 B 移到了 A 的起点
         if (campA.locationId !== fromB || campB.locationId !== fromA) continue;
 
         interceptedCrossing.add(campAId);
         interceptedCrossing.add(campBId);
 
-        // 相遇在防守方的原始位置（攻方刚抵达处）
-        const meetLoc = campA.ownerId === warA.defenderId ? fromA : fromB;
+        // 相遇在防守方的原始位置
+        const meetLoc = isOnDefenderSide(campA.ownerId, warA) ? fromA : fromB;
 
         useWarStore.getState().updateCampaign(campA.id, {
           locationId: meetLoc, status: 'idle',
@@ -190,163 +199,207 @@ export function runWarSystem(date: GameDate): void {
     }
   }
 
-  // ===== 战斗检测：同一州的敌对行营（跳过溃败中的行营） =====
-  const processedBattles = new Set<string>();
-  for (const campaign of useWarStore.getState().campaigns.values()) {
-    if (campaign.status !== 'idle' && campaign.status !== 'marching') continue;
-    if (processedBattles.has(campaign.id)) continue;
+  // ===== 战斗检测：合兵方案 =====
+  // 同一州、同一战争的敌对阵营行营合并 armyIds 打一场
+  {
+    const processedBattles = new Set<string>();
 
-    // 有warId时检查战争是否活跃
-    const war = campaign.warId ? useWarStore.getState().wars.get(campaign.warId) : undefined;
-    if (campaign.warId && (!war || war.status !== 'active')) continue;
-
-    // 查找同一州的敌方行营（同战争或任意敌对）
-    let enemyCampaign: typeof campaign | undefined;
-    for (const other of useWarStore.getState().campaigns.values()) {
-      if (other.id === campaign.id || other.ownerId === campaign.ownerId) continue;
-      if (other.locationId !== campaign.locationId) continue;
-      if (processedBattles.has(other.id)) continue;
-      // 同战争的敌方，或双方都在战争中
-      if (campaign.warId && other.warId === campaign.warId) {
-        enemyCampaign = other;
-        break;
-      }
-      // 独立行营遇到敌方行营
-      if (!campaign.warId || !other.warId) {
-        enemyCampaign = other;
-        break;
-      }
+    // 按(warId, locationId)分组战斗就绪的行营
+    const groupKey = (c: Campaign) => `${c.warId}:${c.locationId}`;
+    const groups = new Map<string, Campaign[]>();
+    for (const campaign of useWarStore.getState().campaigns.values()) {
+      if (campaign.status !== 'idle' && campaign.status !== 'marching' && campaign.status !== 'sieging') continue;
+      if (!campaign.warId) continue;
+      const war = useWarStore.getState().wars.get(campaign.warId);
+      if (!war || war.status !== 'active') continue;
+      const key = groupKey(campaign);
+      let list = groups.get(key);
+      if (!list) { list = []; groups.set(key, list); }
+      list.push(campaign);
     }
-    if (!enemyCampaign) continue;
-    processedBattles.add(campaign.id);
-    processedBattles.add(enemyCampaign.id);
 
-    // 触发战斗（使用预设策略或AI自动选）
-    const milState = useMilitaryStore.getState();
-    const charState = useCharacterStore.getState();
-    const batsClone = new Map(milState.battalions);
+    for (const campaigns of groups.values()) {
+      if (campaigns.length < 2) continue;
+      const war = useWarStore.getState().wars.get(campaigns[0].warId)!;
 
-    const result = battleEngine.resolveBattle(
-      campaign.commanderId,
-      enemyCampaign.commanderId,
-      campaign.armyIds,
-      enemyCampaign.armyIds,
-      milState.armies,
-      batsClone,
-      charState.characters,
-      campaign.phaseStrategies as Record<string, string | undefined>,
-      enemyCampaign.phaseStrategies as Record<string, string | undefined>,
-    );
+      // 分成两阵营
+      const attackerCamps: Campaign[] = [];
+      const defenderCamps: Campaign[] = [];
+      for (const c of campaigns) {
+        if (processedBattles.has(c.id)) continue;
+        if (isOnAttackerSide(c.ownerId, war)) attackerCamps.push(c);
+        else if (isOnDefenderSide(c.ownerId, war)) defenderCamps.push(c);
+      }
+      if (attackerCamps.length === 0 || defenderCamps.length === 0) continue;
 
-    // 写回伤亡到 store
-    useMilitaryStore.getState().batchMutateBattalions((bats) => {
-      for (const [id, bat] of batsClone) {
-        const orig = bats.get(id);
-        if (orig && orig.currentStrength !== bat.currentStrength) {
-          bats.set(id, { ...orig, currentStrength: bat.currentStrength });
+      // 标记已处理
+      for (const c of attackerCamps) processedBattles.add(c.id);
+      for (const c of defenderCamps) processedBattles.add(c.id);
+
+      // 围城中的行营被拉入战斗前，先取消围城
+      for (const c of [...attackerCamps, ...defenderCamps]) {
+        if (c.status === 'sieging') {
+          for (const siege of useWarStore.getState().sieges.values()) {
+            if (siege.campaignId === c.id) {
+              useWarStore.getState().endSiege(siege.id);
+              break;
+            }
+          }
+          useWarStore.getState().updateCampaign(c.id, { status: 'idle' });
         }
       }
-    });
 
-    // 战争分数（-100~+100 单轴，正=攻方优势）
-    {
-      const winnerCampaignOwner = result.overallResult === 'attackerWin' ? campaign.ownerId : enemyCampaign.ownerId;
-      const delta = winnerCampaignOwner === war!.attackerId
-        ? result.warScoreChange   // 攻方赢 → 正
-        : -result.warScoreChange; // 防方赢 → 负
-      const newScore = Math.max(-100, Math.min(100, war!.warScore + delta));
-      useWarStore.getState().updateWar(war!.id, { warScore: newScore });
-    }
+      // 合并 armyIds
+      const attackerArmyIds: string[] = [];
+      for (const c of attackerCamps) attackerArmyIds.push(...c.armyIds);
+      const defenderArmyIds: string[] = [];
+      for (const c of defenderCamps) defenderArmyIds.push(...c.armyIds);
 
-    // 胜方行营保持idle
-    const winnerCampaign = result.overallResult === 'attackerWin' ? campaign : enemyCampaign;
-    useWarStore.getState().updateCampaign(winnerCampaign.id, { status: 'idle' });
+      // 选统帅：military 能力最高者
+      const charState = useCharacterStore.getState();
+      const pickCommander = (camps: Campaign[]) => {
+        let best = camps[0].commanderId;
+        let bestMil = -1;
+        for (const c of camps) {
+          const cmd = charState.characters.get(c.commanderId);
+          if (cmd && cmd.abilities.military > bestMil) {
+            bestMil = cmd.abilities.military;
+            best = c.commanderId;
+          }
+        }
+        return best;
+      };
+      const attackerCmd = pickCommander(attackerCamps);
+      const defenderCmd = pickCommander(defenderCamps);
 
-    // 败方行营撤退：寻找相邻的己方领地，找到则撤退，找不到则解散
-    const loserCampaign = result.overallResult === 'attackerWin' ? enemyCampaign : campaign;
-    const loserOwnerId = loserCampaign.ownerId;
+      // 合并策略（取第一个有预设策略的行营）
+      const pickStrategies = (camps: Campaign[]) => {
+        for (const c of camps) {
+          if (Object.keys(c.phaseStrategies).length > 0) return c.phaseStrategies;
+        }
+        return {};
+      };
 
-    // 败方若正在围城，撤退时取消围城
-    for (const siege of useWarStore.getState().sieges.values()) {
-      if (siege.campaignId === loserCampaign.id) {
-        useWarStore.getState().endSiege(siege.id);
-        break;
-      }
-    }
+      const milState = useMilitaryStore.getState();
+      const batsClone = new Map(milState.battalions);
 
-    let retreatTarget: string | null = null;
+      const result = battleEngine.resolveBattle(
+        attackerCmd,
+        defenderCmd,
+        attackerArmyIds,
+        defenderArmyIds,
+        milState.armies,
+        batsClone,
+        charState.characters,
+        pickStrategies(attackerCamps) as Record<string, string | undefined>,
+        pickStrategies(defenderCamps) as Record<string, string | undefined>,
+      );
 
-    // 从地图拓扑找相邻州
-    for (const edge of mapEdges) {
-      const neighborId = edge.from === loserCampaign.locationId ? edge.to
-        : edge.to === loserCampaign.locationId ? edge.from
-        : null;
-      if (!neighborId) continue;
-      const neighborTerr = useTerritoryStore.getState().territories.get(neighborId);
-      if (!neighborTerr) continue;
-      const controller = siegeUtils.getTerritoryController(neighborTerr);
-      if (controller === loserOwnerId) {
-        retreatTarget = neighborId;
-        break;
-      }
-    }
-
-    if (retreatTarget) {
-      // 撤退到相邻己方领地
-      useWarStore.getState().updateCampaign(loserCampaign.id, {
-        status: 'idle',
-        locationId: retreatTarget,
-        targetId: null,
-        route: [],
+      // 写回伤亡
+      useMilitaryStore.getState().batchMutateBattalions((bats) => {
+        for (const [id, bat] of batsClone) {
+          const orig = bats.get(id);
+          if (orig && orig.currentStrength !== bat.currentStrength) {
+            bats.set(id, { ...orig, currentStrength: bat.currentStrength });
+          }
+        }
       });
-      // 移动军队
-      for (const armyId of loserCampaign.armyIds) {
-        useMilitaryStore.getState().updateArmy(armyId, { locationId: retreatTarget });
+
+      // 战争分数
+      const winnerIsAttacker = result.overallResult === 'attackerWin';
+      const delta = winnerIsAttacker ? result.warScoreChange : -result.warScoreChange;
+      const newScore = Math.max(-100, Math.min(100, war.warScore + delta));
+      useWarStore.getState().updateWar(war.id, { warScore: newScore });
+
+      // 胜方行营保持 idle
+      const winnerCamps = winnerIsAttacker ? attackerCamps : defenderCamps;
+      for (const c of winnerCamps) {
+        useWarStore.getState().updateCampaign(c.id, { status: 'idle' });
       }
-    } else {
-      // 无处可退：将军队移回己方任意领地，再解散行营
-      let fallbackLocation: string | null = null;
-      for (const t of useTerritoryStore.getState().territories.values()) {
-        if (t.tier !== 'zhou') continue;
-        const ctrl = siegeUtils.getTerritoryController(t);
-        if (ctrl === loserOwnerId) { fallbackLocation = t.id; break; }
-      }
-      if (fallbackLocation) {
-        for (const armyId of loserCampaign.armyIds) {
-          useMilitaryStore.getState().updateArmy(armyId, { locationId: fallbackLocation });
+
+      // 败方所有行营统一撤退
+      const loserCamps = winnerIsAttacker ? defenderCamps : attackerCamps;
+      for (const loserCampaign of loserCamps) {
+        const loserOwnerId = loserCampaign.ownerId;
+
+        // 取消围城
+        for (const siege of useWarStore.getState().sieges.values()) {
+          if (siege.campaignId === loserCampaign.id) {
+            useWarStore.getState().endSiege(siege.id);
+            break;
+          }
+        }
+
+        let retreatTarget: string | null = null;
+        for (const edge of mapEdges) {
+          const neighborId = edge.from === loserCampaign.locationId ? edge.to
+            : edge.to === loserCampaign.locationId ? edge.from
+            : null;
+          if (!neighborId) continue;
+          const neighborTerr = useTerritoryStore.getState().territories.get(neighborId);
+          if (!neighborTerr) continue;
+          const controller = siegeUtils.getTerritoryController(neighborTerr);
+          if (controller === loserOwnerId) {
+            retreatTarget = neighborId;
+            break;
+          }
+        }
+
+        if (retreatTarget) {
+          useWarStore.getState().updateCampaign(loserCampaign.id, {
+            status: 'idle',
+            locationId: retreatTarget,
+            targetId: null,
+            route: [],
+          });
+          for (const armyId of loserCampaign.armyIds) {
+            useMilitaryStore.getState().updateArmy(armyId, { locationId: retreatTarget });
+          }
+        } else {
+          let fallbackLocation: string | null = null;
+          for (const t of useTerritoryStore.getState().territories.values()) {
+            if (t.tier !== 'zhou') continue;
+            const ctrl = siegeUtils.getTerritoryController(t);
+            if (ctrl === loserOwnerId) { fallbackLocation = t.id; break; }
+          }
+          if (fallbackLocation) {
+            for (const armyId of loserCampaign.armyIds) {
+              useMilitaryStore.getState().updateArmy(armyId, { locationId: fallbackLocation });
+            }
+          }
+          useWarStore.getState().disbandCampaign(loserCampaign.id);
         }
       }
-      useWarStore.getState().disbandCampaign(loserCampaign.id);
+
+      // 事件
+      const attackerChar = charState.characters.get(attackerCmd);
+      const defenderChar = charState.characters.get(defenderCmd);
+      const winnerName = winnerIsAttacker ? attackerChar?.name : defenderChar?.name;
+      const terrName = useTerritoryStore.getState().territories.get(attackerCamps[0].locationId)?.name ?? '';
+
+      useTurnManager.getState().addEvent({
+        id: `battle-${date.year}-${date.month}-${date.day}-${attackerCamps[0].locationId}`,
+        date,
+        type: '野战',
+        actors: [...attackerCamps.map(c => c.ownerId), ...defenderCamps.map(c => c.ownerId)],
+        territories: [attackerCamps[0].locationId],
+        description: `${terrName}之战！${winnerName ?? ''}获胜。攻方损失${result.totalAttackerLosses}，守方损失${result.totalDefenderLosses}`,
+        priority: EventPriority.Major,
+        payload: {
+          battleResult: result,
+          attackerCommanderId: attackerCmd,
+          defenderCommanderId: defenderCmd,
+          attackerArmyIds,
+          defenderArmyIds,
+        },
+      });
     }
-
-    // 事件
-    const attackerChar = charState.characters.get(campaign.commanderId);
-    const defenderChar = charState.characters.get(enemyCampaign.commanderId);
-    const winnerName = result.overallResult === 'attackerWin' ? attackerChar?.name : defenderChar?.name;
-    const terrName = useTerritoryStore.getState().territories.get(campaign.locationId)?.name ?? '';
-
-    useTurnManager.getState().addEvent({
-      id: `battle-${date.year}-${date.month}-${date.day}-${campaign.locationId}`,
-      date,
-      type: '野战',
-      actors: [campaign.ownerId, enemyCampaign.ownerId],
-      territories: [campaign.locationId],
-      description: `${terrName}之战！${winnerName ?? ''}获胜。攻方损失${result.totalAttackerLosses}，守方损失${result.totalDefenderLosses}`,
-      priority: EventPriority.Major,
-      payload: {
-        battleResult: result,
-        attackerCommanderId: campaign.commanderId,
-        defenderCommanderId: enemyCampaign.commanderId,
-        attackerArmyIds: campaign.armyIds,
-        defenderArmyIds: enemyCampaign.armyIds,
-      },
-    });
   }
 
   // ===== 围城：开始 + 推进 + 城破 =====
   const terrStore = useTerritoryStore.getState();
 
-  // 1. idle 的行营如果在敌方领地，自动开始围城（跳过溃败中的行营）
+  // 1. idle 的行营如果在敌方领地，自动开始围城
   for (const campaign of useWarStore.getState().campaigns.values()) {
     if (campaign.status !== 'idle') continue;
     const war = warStore.wars.get(campaign.warId);
@@ -354,10 +407,9 @@ export function runWarSystem(date: GameDate): void {
 
     const terr = useTerritoryStore.getState().territories.get(campaign.locationId);
     if (!terr) continue;
-    // 行营在敌方势力领地 → 开始围城（已占领的领地不再围城）
-    const enemyId = war.attackerId === campaign.ownerId ? war.defenderId : war.attackerId;
+    const mySide = getWarSide(campaign.ownerId, war);
     const chars = useCharacterStore.getState().characters;
-    if (isEnemyTerritory(terr, enemyId, chars) && terr.occupiedBy !== campaign.ownerId && !useWarStore.getState().getSiegeAtTerritory(campaign.locationId)) {
+    if (mySide && isEnemyTerritoryInWar(terr, mySide, war, chars) && terr.occupiedBy !== campaign.ownerId && !useWarStore.getState().getSiegeAtTerritory(campaign.locationId)) {
       useWarStore.getState().startSiege(war.id, campaign.id, campaign.locationId, date);
       useWarStore.getState().updateCampaign(campaign.id, { status: 'sieging' });
     }
@@ -372,13 +424,12 @@ export function runWarSystem(date: GameDate): void {
 
     const war = useWarStore.getState().wars.get(siege.warId);
     if (!war) continue;
-    const defenderId = war.attackerId === campaign.ownerId ? war.defenderId : war.attackerId;
+    const defenderId = getPrimaryEnemyId(campaign.ownerId, war) ?? war.defenderId;
 
     const milState = useMilitaryStore.getState();
 
     const dim = getDaysInMonth(date.month);
 
-    // 守军损耗（日结：月损耗率 / 当月天数）
     const defStats = siegeUtils.calcDefenderStats(siege.territoryId, defenderId, milState.armies, milState.battalions);
     const monthlyAttritionRate = siegeUtils.calcDefenderAttritionRate(defStats.avgElite, defStats.avgMorale);
     siegeUtils.applyDefenderAttrition(
@@ -387,7 +438,6 @@ export function runWarSystem(date: GameDate): void {
       useMilitaryStore.getState().batchMutateBattalions,
     );
 
-    // 重新获取 milState（损耗后数据已变）
     const milAfter = useMilitaryStore.getState();
     const troops = siegeUtils.calcCampaignTroops(campaign.armyIds, milAfter.armies, milAfter.battalions);
     const siegeValue = siegeUtils.calcTotalSiegeValue(campaign.armyIds, milAfter.armies, milAfter.battalions);
@@ -398,44 +448,44 @@ export function runWarSystem(date: GameDate): void {
 
     if (newProgress >= 100) {
       // 城破！
-      // a. 守军全灭
       siegeUtils.applyDefenderAttrition(
-        siege.territoryId, defenderId, 1.0, // 100% 损耗 = 全灭
+        siege.territoryId, defenderId, 1.0,
         useMilitaryStore.getState().armies, useMilitaryStore.getState().battalions,
         useMilitaryStore.getState().batchMutateBattalions,
       );
 
-      // b. 标记为占领（不转移控制权，战争结束后结算）
       terrStore.updateTerritory(siege.territoryId, { occupiedBy: campaign.ownerId });
-
-      // c. 驻军转移给占领者
       useMilitaryStore.getState().transferArmiesAtTerritory(siege.territoryId, campaign.ownerId);
 
-      // d. 战争分数：按占领领地占对方势力总州数的比例线性计算
+      // 战争分数：占领领地占主防御者总州数的比例（只看领袖领土，非全阵营）
       const warForScore = useWarStore.getState().wars.get(siege.warId);
       if (warForScore) {
-        const isAttacker = campaign.ownerId === warForScore.attackerId;
-        const enemyId = isAttacker ? warForScore.defenderId : warForScore.attackerId;
+        const attackerSide = isOnAttackerSide(campaign.ownerId, warForScore);
+        // 敌方领袖的领土规模作为分母
+        const enemyLeaderId = attackerSide ? warForScore.defenderId : warForScore.attackerId;
         const chars = useCharacterStore.getState().characters;
         const terrs = useTerritoryStore.getState().territories;
 
-        const enemyRealmSize = getRealmZhouCount(enemyId, chars, terrs);
+        const enemyRealmSize = getRealmZhouCount(enemyLeaderId, chars, terrs);
+        // 己方阵营所有人的占领数
+        const alliedIds = attackerSide
+          ? [warForScore.attackerId, ...warForScore.attackerParticipants]
+          : [warForScore.defenderId, ...warForScore.defenderParticipants];
+        const alliedOccupySet = new Set(alliedIds);
         let occupiedCount = 0;
         for (const t of terrs.values()) {
-          if (t.tier === 'zhou' && t.occupiedBy === campaign.ownerId) occupiedCount++;
+          if (t.tier === 'zhou' && t.occupiedBy && alliedOccupySet.has(t.occupiedBy)) occupiedCount++;
         }
         const occupyRatio = occupiedCount / Math.max(1, enemyRealmSize);
         const occupyScore = Math.round(occupyRatio * 100);
 
-        // 攻方占领 → 正分取 max，防方占领 → 负分取 min
-        const newWarScore = isAttacker
+        const newWarScore = attackerSide
           ? Math.max(warForScore.warScore, occupyScore)
           : Math.min(warForScore.warScore, -occupyScore);
         const clampedScore = Math.max(-100, Math.min(100, newWarScore));
         useWarStore.getState().updateWar(warForScore.id, { warScore: clampedScore });
       }
 
-      // f. 事件
       useTurnManager.getState().addEvent({
         id: `siege-fall-${date.year}-${date.month}-${date.day}-${siege.territoryId}`,
         date,
@@ -446,7 +496,6 @@ export function runWarSystem(date: GameDate): void {
         priority: EventPriority.Major,
       });
 
-      // g. 清理围城，行营恢复idle
       useWarStore.getState().endSiege(siege.id);
       useWarStore.getState().updateCampaign(campaign.id, { status: 'idle' });
     } else {
@@ -455,27 +504,23 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // ===== 行营 AI：idle 行营自动寻找下一个目标 =====
-  // 触发条件：
-  //   1. 在已占领的敌方领地（刚完成围城）→ 继续推进
-  //   2. 在己方领地 + 溃败冷却已结束 → 重新出击
-  // 不触发：溃败中 / 在未占领敌方领地（围城逻辑处理）
   {
     const ws = useWarStore.getState();
     const territories = useTerritoryStore.getState().territories;
     const aiPlayerId = useCharacterStore.getState().playerId;
     for (const campaign of ws.campaigns.values()) {
       if (campaign.status !== 'idle') continue;
-      if (campaign.ownerId === aiPlayerId) continue; // 玩家行营由玩家手动操作
+      if (campaign.ownerId === aiPlayerId) continue;
       const war = ws.wars.get(campaign.warId);
       if (!war || war.status !== 'active') continue;
 
       const currTerr = territories.get(campaign.locationId);
       if (!currTerr) continue;
-      const enemyId = war.attackerId === campaign.ownerId ? war.defenderId : war.attackerId;
+      const mySide = getWarSide(campaign.ownerId, war);
       const chars = useCharacterStore.getState().characters;
+      if (!mySide) continue;
 
-      // 在未占领的敌方领地 → 围城逻辑会处理，跳过
-      if (isEnemyTerritory(currTerr, enemyId, chars) && currTerr.occupiedBy !== campaign.ownerId) continue;
+      if (isEnemyTerritoryInWar(currTerr, mySide, war, chars) && currTerr.occupiedBy !== campaign.ownerId) continue;
 
       let bestTarget: string | null = null;
       let bestPath: string[] | null = null;
@@ -483,7 +528,7 @@ export function runWarSystem(date: GameDate): void {
 
       for (const t of territories.values()) {
         if (t.tier !== 'zhou') continue;
-        if (!isEnemyTerritory(t, enemyId, chars) || t.occupiedBy === campaign.ownerId) continue;
+        if (!isEnemyTerritoryInWar(t, mySide, war, chars) || t.occupiedBy === campaign.ownerId) continue;
 
         const path = findPath(campaign.locationId, t.id, campaign.ownerId, territories, chars);
         if (path && path.length < bestLen) {
@@ -493,7 +538,6 @@ export function runWarSystem(date: GameDate): void {
         }
       }
 
-      // 无目标时不打 log（由自动结算的"无领地"兜底处理）
       if (bestTarget && bestPath && bestPath.length > 1) {
         useWarStore.getState().setCampaignTarget(campaign.id, bestTarget, bestPath);
       }
@@ -501,16 +545,15 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // ===== 战争自动结算 =====
-  // 玩家参与的战争跳过自动结算，由玩家手动操作
+  // 玩家是战争领袖时跳过（由玩家手动操作），仅参战者不阻止自动结算
   const playerId = useCharacterStore.getState().playerId;
   for (const war of useWarStore.getState().wars.values()) {
     if (war.status !== 'active') continue;
-    if (war.attackerId === playerId || war.defenderId === playerId) continue;
+    if (playerId && (war.attackerId === playerId || war.defenderId === playerId)) continue;
 
     const chars = useCharacterStore.getState().characters;
     const terrs = useTerritoryStore.getState().territories;
 
-    // 兜底：任一方已无领地 → 白和（无领地变动，避免第三方无偿获得领土）
     const attackerRealm = getRealmZhouCount(war.attackerId, chars, terrs);
     const defenderRealm = getRealmZhouCount(war.defenderId, chars, terrs);
     if (defenderRealm === 0 || attackerRealm === 0) {
@@ -518,7 +561,6 @@ export function runWarSystem(date: GameDate): void {
       continue;
     }
 
-    // 分数达到 ±100 时强制结束
     if (war.warScore >= 100) {
       settleWar(war.id, 'attackerWin');
     } else if (war.warScore <= -100) {
@@ -527,21 +569,18 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // ===== 防守方战争分数累积 =====
-  // 注意：必须用 getState() 获取最新状态，前面的战斗/围城可能已更新 warScore
   {
     const freshWarStore = useWarStore.getState();
     for (const war of freshWarStore.wars.values()) {
       if (war.status !== 'active') continue;
-      // 检查攻方是否有行营在进攻
+      // 攻方阵营是否有行营在进攻
       const attackerCampaigns = freshWarStore.getCampaignsByWar(war.id)
-        .filter((c) => c.ownerId === war.attackerId);
+        .filter((c) => isOnAttackerSide(c.ownerId, war));
       const hasProgress = attackerCampaigns.some(
         (c) => c.status === 'marching' || c.status === 'sieging',
       );
-      // 跳过刚宣战还没来得及动员的战争（给60天缓冲）
       const warDays = diffDays(war.startDate, date);
       if (!hasProgress && warDays >= 60) {
-        // 攻方无进展，分数向防方倾斜（日结：-2/月 → -2/当月天数/天）
         const dim = getDaysInMonth(date.month);
         const latestWar = useWarStore.getState().wars.get(war.id);
         if (latestWar && latestWar.status === 'active') {

@@ -8,6 +8,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
+import { isWarParticipant } from './warParticipantUtils';
 import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
 
@@ -65,7 +66,7 @@ function emitWarEndEvent(war: War, result: War['result']): void {
     id: crypto.randomUUID(),
     date: { year: date.year, month: date.month, day: date.day },
     type: '战争结束',
-    actors: [war.attackerId, war.defenderId],
+    actors: [war.attackerId, ...war.attackerParticipants, war.defenderId, ...war.defenderParticipants],
     territories: war.targetTerritoryIds,
     description: `${attackerName}与${defenderName}的战争结束：${resultText}`,
     priority: EventPriority.Normal,
@@ -155,7 +156,7 @@ function clearOccupation(war: War): void {
 
   for (const terr of territories.values()) {
     if (!terr.occupiedBy) continue;
-    if (terr.occupiedBy !== war.attackerId && terr.occupiedBy !== war.defenderId) continue;
+    if (!isWarParticipant(terr.occupiedBy, war)) continue;
     terrStore.updateTerritory(terr.id, { occupiedBy: undefined });
   }
 }

@@ -7,6 +7,7 @@ import EventModal from '../components/EventModal';
 import MapPlaceholder from '../components/MapPlaceholder';
 import BottomBar from '../components/BottomBar';
 import LeftPanel from '../components/LeftPanel';
+import WarOverlay from '../components/WarOverlay';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
 
 const GameLayout: React.FC = () => {
@@ -31,6 +32,10 @@ const GameLayout: React.FC = () => {
           {/* Event toast overlaid right-center-low（事件卡片通知，右侧中心偏下） */}
           <div className="absolute right-2 z-10" style={{ bottom: '15%' }}>
             <EventToast />
+          </div>
+          {/* 战争悬浮图标（右下角） */}
+          <div className="absolute right-16 bottom-4 z-10">
+            <WarOverlay />
           </div>
           <MapPlaceholder />
         </div>

@@ -18,6 +18,9 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { useTurnManager } from '@engine/TurnManager';
 import { collectRulerIds } from '@engine/official/postQueries';
+import { useWarStore } from '@engine/military/WarStore';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { disbandParticipantCampaigns } from '@engine/interaction/withdrawWarAction';
 
 export function runCharacterSystem(date: GameDate): void {
   const charStore = useCharacterStore.getState();
@@ -280,6 +283,19 @@ export function runCharacterSystem(date: GameDate): void {
             description: `${deadChar.name}薨，后继无人，${deadChar.clan}一脉断绝`,
             priority: EventPriority.Major,
           });
+        }
+      }
+    }
+  }
+
+  // 死亡角色：从战争参战者中移除 + 解散行营
+  if (deadIds.length > 0) {
+    const warStore = useWarStore.getState();
+    for (const deadId of deadIds) {
+      for (const war of warStore.getActiveWars()) {
+        if (isWarParticipant(deadId, war)) {
+          disbandParticipantCampaigns(deadId, war.id);
+          warStore.removeParticipant(war.id, deadId);
         }
       }
     }

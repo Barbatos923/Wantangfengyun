@@ -17,6 +17,11 @@ interface NpcStoreState {
   addDeploymentDraft: (rulerId: string, entries: DeploymentEntry[]) => void;
   clearDeploymentDraft: (rulerId: string) => void;
 
+  /** 调兵驳回冷却：rulerId → 冷却截止日 */
+  deployRejectCooldowns: Map<string, GameDate>;
+  setDeployRejectCooldown: (rulerId: string, until: GameDate) => void;
+  isDeployCooldown: (rulerId: string, now: GameDate) => boolean;
+
   // ── 统一玩家任务队列 ──
   playerTasks: PlayerTask[];
   addPlayerTask: (task: PlayerTask) => void;
@@ -43,6 +48,19 @@ export const useNpcStore = create<NpcStoreState>((set, get) => ({
     drafts.delete(rulerId);
     return { deploymentDrafts: drafts };
   }),
+
+  // 调兵驳回冷却
+  deployRejectCooldowns: new Map(),
+  setDeployRejectCooldown: (rulerId, until) => set((s) => {
+    const cds = new Map(s.deployRejectCooldowns);
+    cds.set(rulerId, until);
+    return { deployRejectCooldowns: cds };
+  }),
+  isDeployCooldown: (rulerId, now) => {
+    const until = get().deployRejectCooldowns.get(rulerId);
+    if (!until) return false;
+    return !isDateReached(now, until);
+  },
 
   // 统一任务队列
   playerTasks: [],

@@ -8,6 +8,7 @@ import { evaluateAllCasusBelli } from '@engine/military/warCalc';
 import { executeDeclareWar } from '@engine/interaction';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取 defender 直接控制的州级领地 ID ────────────
@@ -30,7 +31,7 @@ function getControlledZhouIds(
 // ── 辅助：检查角色是否已在战争中 ────────────────────────
 
 function isAtWar(charId: string, activeWars: NpcContext['activeWars']): boolean {
-  return activeWars.some(w => w.attackerId === charId || w.defenderId === charId);
+  return activeWars.some(w => isWarParticipant(charId, w));
 }
 
 // ── 行为定义 ────────────────────────────────────────────

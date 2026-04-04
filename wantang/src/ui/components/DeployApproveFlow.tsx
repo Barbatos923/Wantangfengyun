@@ -7,7 +7,9 @@ import { Modal, ModalHeader, Button } from './base';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
+import { addDays } from '@engine/dateUtils';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { executeDeployEntry } from '@engine/npc/behaviors/deployApproveBehavior';
 import type { DeploymentEntry } from '@engine/military/deployCalc';
@@ -33,10 +35,20 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
   const mapSelectionResult = usePanelStore((s) => s.mapSelectionResult);
 
-  // 初始化本地副本
+  // 初始化本地副本，过滤掉已失效的 entries（军队不存在/已在行营/不再属于批准人）
   useEffect(() => {
     if (task) {
-      setEntries([...(task.data as { entries: DeploymentEntry[] }).entries]);
+      const raw = (task.data as { entries: DeploymentEntry[] }).entries;
+      const campaignArmyIds = new Set<string>();
+      for (const c of useWarStore.getState().campaigns.values()) {
+        for (const aid of c.armyIds) campaignArmyIds.add(aid);
+        for (const ia of c.incomingArmies) campaignArmyIds.add(ia.armyId);
+      }
+      const valid = raw.filter(e => {
+        const army = armies.get(e.armyId);
+        return army && army.ownerId === task.actorId && !campaignArmyIds.has(e.armyId);
+      });
+      setEntries(valid);
       setEditedIndices(new Set());
     }
   }, [task]);
@@ -95,6 +107,9 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
   }
 
   function handleReject() {
+    // 驳回后设置 6 个月（180 天）冷却
+    const now = useTurnManager.getState().currentDate;
+    useNpcStore.getState().setDeployRejectCooldown(actorId, addDays(now, 180));
     useNpcStore.getState().removePlayerTask(task!.id);
     onClose();
   }

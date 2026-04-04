@@ -11,6 +11,7 @@ import './centralizationAction';
 import './demandFealtyAction';
 import './transferVassalAction';
 import './revokeAction';
+import './joinWarAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -30,3 +31,5 @@ export {
 export { executeDeclareWar } from './declareWarAction';
 export { executeBuild } from './buildAction';
 export { getRevokablePosts, calcRevokeChance, previewRevokeChance, executeRevoke } from './revokeAction';
+export { executeJoinWar, getJoinableWars, getCallableWars, calcCallToArmsChance, executeCallToArms } from './joinWarAction';
+export type { JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from './joinWarAction';

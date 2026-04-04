@@ -6,6 +6,7 @@ import type { Character } from '@engine/character/types';
 import { ALL_BUILDINGS, type BuildingDef } from '@data/buildings';
 import { executeBuild } from '@engine/interaction/buildAction';
 import { positionMap } from '@data/positions';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
@@ -92,9 +93,7 @@ export const buildBehavior: NpcBehavior<BuildOption> = {
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
 
-    const isAtWar = ctx.activeWars.some(
-      w => w.attackerId === actor.id || w.defenderId === actor.id,
-    );
+    const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
     const modifiers: WeightModifier[] = [
       // 基础：和平种田

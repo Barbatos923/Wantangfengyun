@@ -12,6 +12,7 @@ import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { RECRUIT_COST_PER_SOLDIER, executeRecruit } from '@engine/interaction/militaryAction';
 import { ALL_UNIT_TYPES, unitTypeMap } from '@data/unitTypes';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 常量 ────────────────────────────────────────────────
@@ -151,9 +152,7 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const desiredBattalions = Math.max(2, controlledZhou.length * 2);
     const isBelowDesired = totalBattalions < desiredBattalions;
 
-    const isAtWar = ctx.activeWars.some(
-      w => w.attackerId === actor.id || w.defenderId === actor.id,
-    );
+    const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
     const moneyRatio = actor.resources.money / CONSCRIPT_MONEY_COST;
 

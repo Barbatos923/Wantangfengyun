@@ -6,6 +6,7 @@ import type { NpcBehavior, NpcContext, BehaviorTaskResult, PlayerTask } from '..
 import type { Character } from '@engine/character/types';
 import type { DeploymentEntry } from '@engine/military/deployCalc';
 import { useWarStore } from '@engine/military/WarStore';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useNpcStore } from '../NpcStore';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import { findPath } from '@engine/military/marchCalc';
@@ -29,6 +30,10 @@ interface DeployApproveData {
 export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): void {
   if (entry.fromLocationId === entry.targetLocationId) return;
 
+  // 校验军队仍然存在且归属正确
+  const army = useMilitaryStore.getState().getArmy(entry.armyId);
+  if (!army || army.ownerId !== rulerId) return;
+
   const territories = useTerritoryStore.getState().territories;
   const characters = useCharacterStore.getState().characters;
 
@@ -40,7 +45,12 @@ export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): voi
     territories,
     characters,
   );
-  if (!path) return; // 无法到达，跳过
+  if (!path) {
+    if (import.meta.env.DEV) {
+      console.warn(`[Deploy] No path: army ${entry.armyId} from ${entry.fromLocationId} to ${entry.targetLocationId}`);
+    }
+    return;
+  }
 
   // 创建调动行营
   executeCreateCampaign('', rulerId, [entry.armyId], entry.fromLocationId);

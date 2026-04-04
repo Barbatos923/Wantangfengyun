@@ -5,6 +5,7 @@ import { getDynamicTitle, getActualController } from '@engine/official/officialU
 import { ZHOU_POSITIONS, posById, ALL_EDGES } from '@data/mapTopology';
 import { voronoiCells, sharedEdges, realmOutlinePath } from '@data/mapVoronoi';
 import { useWarStore } from '@engine/military/WarStore';
+import { getWarSide } from '@engine/military/warParticipantUtils';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { computeMapDisplay } from '@engine/official/mapDisplay';
 
@@ -129,15 +130,29 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
 
   // 行营数据
   const campaignData = useWarStore((s) => s.campaigns);
+  const wars = useWarStore((s) => s.wars);
   const campaignsByLocation = useMemo(() => {
-    const m = new Map<string, { id: string; isPlayer: boolean; status: string }[]>();
+    const m = new Map<string, { id: string; relation: 'mine' | 'ally' | 'enemy' | 'neutral'; status: string }[]>();
     campaignData.forEach((c) => {
       let list = m.get(c.locationId);
       if (!list) { list = []; m.set(c.locationId, list); }
-      list.push({ id: c.id, isPlayer: c.ownerId === playerId, status: c.status });
+      let relation: 'mine' | 'ally' | 'enemy' | 'neutral' = 'neutral';
+      if (c.ownerId === playerId) {
+        relation = 'mine';
+      } else if (c.warId) {
+        const war = wars.get(c.warId);
+        if (war && playerId) {
+          const mySide = getWarSide(playerId, war);
+          const campSide = getWarSide(c.ownerId, war);
+          if (mySide && campSide) {
+            relation = mySide === campSide ? 'ally' : 'enemy';
+          }
+        }
+      }
+      list.push({ id: c.id, relation, status: c.status });
     });
     return m;
-  }, [campaignData, playerId]);
+  }, [campaignData, playerId, wars]);
 
   // ── 交互事件 ──
 
@@ -429,7 +444,10 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
             return camps.map((camp, idx) => {
               const cx = zhouPos.x + 20 + idx * 16;
               const cy = zhouPos.y - 14;
-              const color = camp.isPlayer ? '#d4a843' : '#c0392b';
+              const color = camp.relation === 'mine' ? '#d4a843'
+                : camp.relation === 'ally' ? '#27ae60'
+                : camp.relation === 'enemy' ? '#c0392b'
+                : '#7f8c8d';
               const marchChar = camp.status === 'marching' ? '→' : camp.status === 'sieging' ? '⊕' : '⚑';
               return (
                 <g

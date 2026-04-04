@@ -7,7 +7,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from './NpcStore';
-import { executeAppoint, executeDismiss } from '@engine/interaction';
+import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
 import { calcMaxActions } from '@engine/character/personalityUtils';
@@ -30,6 +30,9 @@ import './behaviors/transferVassalBehavior';
 import './behaviors/deployDraftBehavior';
 import './behaviors/deployApproveBehavior';
 import './behaviors/conscriptBehavior';
+import './behaviors/callToArmsBehavior';
+import './behaviors/joinWarBehavior';
+import './behaviors/withdrawWarBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 
@@ -145,6 +148,10 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       for (const entry of data.entries) {
         executeDismiss(entry.postId, entry.legalAppointerId);
       }
+    } else if (task.type === 'callToArms') {
+      // 召集参战超时 → 自动接受
+      const data = task.data as { warId: string; side: 'attacker' | 'defender' };
+      executeJoinWar(task.actorId, data.warId, data.side);
     } else {
       // 通用 behavior dispatch（用于未来 push-task 行为）
       const behavior = getAllBehaviors().find(b => b.id === task.type);

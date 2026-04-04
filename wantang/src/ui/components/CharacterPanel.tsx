@@ -20,8 +20,9 @@ import CentralizationFlow from './CentralizationFlow';
 import DeclareWarFlow from './DeclareWarFlow';
 import TransferVassalFlow from './TransferVassalFlow';
 import RevokeFlow from './RevokeFlow';
-import { executeDemandFealty, previewDemandFealty } from '@engine/interaction';
-import type { DemandFealtyResult, FealtyChanceResult } from '@engine/interaction';
+import { executeDemandFealty, previewDemandFealty, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms } from '@engine/interaction';
+import type { DemandFealtyResult, FealtyChanceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from '@engine/interaction';
+import { CASUS_BELLI_NAMES } from '@engine/military/types';
 
 // ── Constants ──────────────────────────────────────
 
@@ -86,6 +87,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const [activeInteraction, setActiveInteraction] = useState<string | null>(null);
   const [fealtyPreview, setFealtyPreview] = useState<FealtyChanceResult | null>(null);
   const [fealtyResult, setFealtyResult] = useState<DemandFealtyResult | null>(null);
+  const [ctaPreview, setCtaPreview] = useState<{ war: CallableWar; chance: CallToArmsChanceResult } | null>(null);
+  const [ctaResult, setCtaResult] = useState<CallToArmsResult | null>(null);
 
   const character = useCharacterStore((s) => s.characters.get(characterId));
   const playerId = useCharacterStore((s) => s.playerId);
@@ -531,6 +534,174 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />
+      )}
+
+      {activeInteraction === 'joinWar' && (() => {
+        const player = playerId ? useCharacterStore.getState().characters.get(playerId) : undefined;
+        const target = useCharacterStore.getState().characters.get(characterId);
+        const joinable = player && target ? getJoinableWars(player, target) : [];
+        const chars = useCharacterStore.getState().characters;
+        return (
+          <div className="fixed inset-0 z-50" onClick={() => setActiveInteraction(null)}>
+            <div
+              className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[280px]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
+                干涉战争 — {target?.name ?? ''}
+              </div>
+              {joinable.length === 0 ? (
+                <div className="text-xs text-[var(--color-text-muted)] py-2">无可干涉的战争</div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {joinable.map(({ war, targetSide }: JoinableWar) => {
+                    const attackerName = chars.get(war.attackerId)?.name ?? '?';
+                    const defenderName = chars.get(war.defenderId)?.name ?? '?';
+                    return (
+                      <div key={war.id} className="border border-[var(--color-border)] rounded px-3 py-2">
+                        <div className="text-xs mb-1">
+                          <span className="font-bold">{attackerName}</span>
+                          <span className="text-[var(--color-text-muted)]"> 对 </span>
+                          <span className="font-bold">{defenderName}</span>
+                          <span className="text-[var(--color-text-muted)]"> — {CASUS_BELLI_NAMES[war.casusBelli]}</span>
+                        </div>
+                        <div className="text-xs text-[var(--color-text-muted)] mb-1.5">
+                          战分：<span className={war.warScore > 0 ? 'text-[var(--color-accent-green)]' : war.warScore < 0 ? 'text-[var(--color-accent-red)]' : ''}>{war.warScore > 0 ? '+' : ''}{Math.round(war.warScore)}</span>
+                          {' · '}{target?.name}在{targetSide === 'attacker' ? '攻方' : '守方'}
+                        </div>
+                        <button
+                          className="w-full py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
+                          onClick={() => {
+                            executeJoinWar(playerId!, war.id, targetSide);
+                            setActiveInteraction(null);
+                          }}
+                        >
+                          加入{targetSide === 'attacker' ? '攻方' : '守方'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 召集参战：选择战争 */}
+      {activeInteraction === 'callToArms' && !ctaPreview && !ctaResult && (() => {
+        const player = playerId ? useCharacterStore.getState().characters.get(playerId) : undefined;
+        const target = useCharacterStore.getState().characters.get(characterId);
+        const callable = player && target ? getCallableWars(player, target) : [];
+        const chars = useCharacterStore.getState().characters;
+        return (
+          <div className="fixed inset-0 z-50" onClick={() => setActiveInteraction(null)}>
+            <div
+              className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[280px]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
+                召集参战 — {target?.name ?? ''}
+              </div>
+              {callable.length === 0 ? (
+                <div className="text-xs text-[var(--color-text-muted)] py-2">无可召集的战争</div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {callable.map(({ war, side }: CallableWar) => {
+                    const attackerName = chars.get(war.attackerId)?.name ?? '?';
+                    const defenderName = chars.get(war.defenderId)?.name ?? '?';
+                    return (
+                      <div key={war.id} className="border border-[var(--color-border)] rounded px-3 py-2">
+                        <div className="text-xs mb-1">
+                          <span className="font-bold">{attackerName}</span>
+                          <span className="text-[var(--color-text-muted)]"> 对 </span>
+                          <span className="font-bold">{defenderName}</span>
+                          <span className="text-[var(--color-text-muted)]"> — {CASUS_BELLI_NAMES[war.casusBelli]}</span>
+                        </div>
+                        <button
+                          className="w-full py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
+                          onClick={() => {
+                            const chance = calcCallToArmsChance(playerId!, characterId);
+                            setCtaPreview({ war: { war, side }, chance });
+                          }}
+                        >
+                          召集加入{side === 'attacker' ? '攻方' : '守方'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 召集参战：概率预览（第一个弹窗） */}
+      {ctaPreview && !ctaResult && (
+        <div className="fixed inset-0 z-50" onClick={() => { setCtaPreview(null); setActiveInteraction(null); }}>
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
+              召集参战 — {character?.name ?? ''}
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)] space-y-1">
+              <div>接受概率：<span className="text-[var(--color-text)] font-bold">{ctaPreview.chance.chance}%</span></div>
+              <div className="border-t border-[var(--color-border)] pt-1 mt-1">
+                <div>基础：{ctaPreview.chance.breakdown.base}</div>
+                <div>好感：{ctaPreview.chance.breakdown.opinion >= 0 ? '+' : ''}{ctaPreview.chance.breakdown.opinion}</div>
+                <div>荣誉：{ctaPreview.chance.breakdown.honor >= 0 ? '+' : ''}{ctaPreview.chance.breakdown.honor}</div>
+                <div>胆识：{ctaPreview.chance.breakdown.boldness >= 0 ? '+' : ''}{ctaPreview.chance.breakdown.boldness}</div>
+              </div>
+              <div className="text-[var(--color-accent-red)] mt-1">拒绝后好感 -30</div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button
+                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
+                onClick={() => { setCtaPreview(null); setActiveInteraction(null); }}
+              >
+                取消
+              </button>
+              <button
+                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] font-bold hover:opacity-80 transition-opacity"
+                onClick={() => {
+                  if (!playerId) return;
+                  const result = executeCallToArms(playerId, characterId, ctaPreview.war.war.id, ctaPreview.war.side);
+                  setCtaResult(result);
+                }}
+              >
+                召集
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 召集参战：结果弹窗（第二个弹窗） */}
+      {ctaResult && (
+        <div className="fixed inset-0 z-50" onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`text-sm font-bold mb-1 ${ctaResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
+              {ctaResult.success ? '召集成功' : '召集被拒'}
+            </div>
+            <div className="text-sm text-[var(--color-text)] mb-2">
+              {ctaResult.success
+                ? `${ctaResult.targetName}响应号召，加入战争`
+                : `${ctaResult.targetName}拒绝了召集（好感-30）`}
+            </div>
+            <button
+              className="mt-2 w-full px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
+              onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}
+            >
+              确定
+            </button>
+          </div>
+        </div>
       )}
 
       {fealtyPreview && !fealtyResult && (

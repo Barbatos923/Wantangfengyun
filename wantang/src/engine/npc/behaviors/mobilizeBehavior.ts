@@ -8,6 +8,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import { positionMap } from '@data/positions';
+import { isWarParticipant, isOnAttackerSide, isOnDefenderSide, getPrimaryEnemyId } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助函数 ────────────────────────────────────────────
@@ -18,7 +19,7 @@ function getUnmobilizedWars(actorId: string, ctx: NpcContext): War[] {
   const campaigns = warStore.campaigns;
 
   return ctx.activeWars.filter(war => {
-    if (war.attackerId !== actorId && war.defenderId !== actorId) return false;
+    if (!isWarParticipant(actorId, war)) return false;
     // 检查是否已有该角色的行营
     for (const camp of campaigns.values()) {
       if (camp.warId === war.id && camp.ownerId === actorId) return false;
@@ -54,8 +55,8 @@ export const mobilizeBehavior: NpcBehavior<MobilizeData> = {
     const wars = getUnmobilizedWars(actor.id, ctx);
     if (wars.length === 0) return null;
 
-    // 攻方：强制动员，必定出击
-    const attackWars = wars.filter(w => w.attackerId === actor.id);
+    // 攻方阵营：强制动员，必定出击
+    const attackWars = wars.filter(w => isOnAttackerSide(actor.id, w));
     if (attackWars.length > 0) {
       return {
         data: { wars: attackWars, isAttacker: true },
@@ -64,15 +65,16 @@ export const mobilizeBehavior: NpcBehavior<MobilizeData> = {
       };
     }
 
-    // 防守方：根据性格/兵力决定是否出城野战
-    const defenseWars = wars.filter(w => w.defenderId === actor.id);
+    // 防守方阵营：根据性格/兵力决定是否出城野战
+    const defenseWars = wars.filter(w => isOnDefenderSide(actor.id, w));
     if (defenseWars.length === 0) return null;
 
     const personality = ctx.personalityCache.get(actor.id)!;
     // 评估最危险的那场战争的兵力对比
     let worstRatio = Infinity;
     for (const war of defenseWars) {
-      const enemyStr = ctx.getMilitaryStrength(war.attackerId);
+      const enemyLeaderId = getPrimaryEnemyId(actor.id, war) ?? war.attackerId;
+      const enemyStr = ctx.getMilitaryStrength(enemyLeaderId);
       const myStr = ctx.getMilitaryStrength(actor.id);
       const ratio = enemyStr > 0 ? myStr / enemyStr : 2;
       if (ratio < worstRatio) worstRatio = ratio;

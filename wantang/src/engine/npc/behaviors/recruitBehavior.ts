@@ -6,6 +6,7 @@ import type { Character } from '@engine/character/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import { executeReplenish } from '@engine/interaction/militaryAction';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
@@ -67,9 +68,7 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
 
-    const isAtWar = ctx.activeWars.some(
-      w => w.attackerId === actor.id || w.defenderId === actor.id,
-    );
+    const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
     const modifiers: WeightModifier[] = [
       // 基础：和平补兵

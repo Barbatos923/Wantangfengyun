@@ -1,0 +1,385 @@
+[
+  {
+    "id": "guo-guanzhong",
+    "name": "关中",
+    "tier": "guo",
+    "notes": "大唐中央核心区，包含京畿及拱卫藩镇",
+    "children": [
+      {
+        "id": "dao-jingzhao",
+        "name": "京兆直辖",
+        "capitalZhouId": "zhou-changan",
+        "children": [
+          { "id": "zhou-changan", "name": "长安", "ck3Counties": ["c_jingzhao"], "basePop": 450000, "dev": 80 },
+          { "id": "zhou-huazhou", "name": "华州", "ck3Counties": ["c_huazhou"], "basePop": 120000, "dev": 60 },
+          { "id": "zhou-tongzhou", "name": "同州", "ck3Counties": ["c_tongzhou"], "basePop": 110000, "dev": 55 }
+        ]
+      },
+      {
+        "id": "dao-fengxiang",
+        "name": "凤翔",
+        "capitalZhouId": "zhou-fengxiang",
+        "children": [
+          { "id": "zhou-fengxiang", "name": "凤翔", "ck3Counties": ["c_fengxiang"], "basePop": 150000, "dev": 50 },
+          { "id": "zhou-longzhou", "name": "陇州", "ck3Counties": ["c_longzhou"], "basePop": 60000, "dev": 40 }
+        ]
+      },
+      {
+        "id": "dao-binning",
+        "name": "邠宁",
+        "capitalZhouId": "zhou-binzhou",
+        "children": [
+          { "id": "zhou-binzhou", "name": "邠州", "ck3Counties": ["c_binzhou"], "basePop": 80000, "dev": 45 },
+          { "id": "zhou-ningzhou", "name": "宁州", "ck3Counties": ["c_ningzhou"], "basePop": 70000, "dev": 40 },
+          { "id": "zhou-qingzhou-gn", "name": "庆州", "ck3Counties": ["c_qingzhou"], "basePop": 50000, "dev": 35 }
+        ]
+      },
+      {
+        "id": "dao-jingyuan",
+        "name": "泾原",
+        "capitalZhouId": "zhou-jingzhou",
+        "children": [
+          { "id": "zhou-jingzhou", "name": "泾州", "ck3Counties": ["c_jingzhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-yuanzhou", "name": "原州", "ck3Counties": ["c_yuanzhou"], "basePop": 60000, "dev": 35 }
+        ]
+      },
+      {
+        "id": "dao-shuofang",
+        "name": "朔方",
+        "capitalZhouId": "zhou-lingzhou",
+        "children": [
+          { "id": "zhou-lingzhou", "name": "灵州", "ck3Counties": ["c_lingzhou"], "basePop": 100000, "dev": 40 },
+          { "id": "zhou-yanzhou-gn", "name": "盐州", "ck3Counties": ["c_yanzhou"], "basePop": 50000, "dev": 30 },
+          { "id": "zhou-xiazhou", "name": "夏州", "ck3Counties": ["c_xiazhou"], "basePop": 70000, "dev": 35 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-zhongyuan",
+    "name": "中原",
+    "tier": "guo",
+    "notes": "天下枢纽，朱温崛起之四战之地",
+    "children": [
+      {
+        "id": "dao-xuanwu",
+        "name": "宣武",
+        "capitalZhouId": "zhou-bianzhou",
+        "children": [
+          { "id": "zhou-bianzhou", "name": "汴州", "ck3Counties": ["c_bianzhou"], "basePop": 400000, "dev": 75 },
+          { "id": "zhou-songzhou", "name": "宋州", "ck3Counties": ["c_songzhou"], "basePop": 180000, "dev": 65 },
+          { "id": "zhou-haozhou", "name": "毫州", "ck3Counties": ["c_haozhou"], "basePop": 120000, "dev": 55 },
+          { "id": "zhou-yinzhou", "name": "颍州", "ck3Counties": ["c_yinzhou"], "basePop": 110000, "dev": 50 },
+          { "id": "zhou-caozhou", "name": "曹州", "ck3Counties": ["c_caozhou"], "basePop": 130000, "dev": 55 }
+        ]
+      },
+      {
+        "id": "dao-zhongwu",
+        "name": "忠武",
+        "capitalZhouId": "zhou-xuchang",
+        "children": [
+          { "id": "zhou-xuchang", "name": "许州", "ck3Counties": ["c_henan"], "basePop": 200000, "dev": 60 },
+          { "id": "zhou-chenzhou", "name": "陈州", "ck3Counties": ["c_chenzhou"], "basePop": 140000, "dev": 50 },
+          { "id": "zhou-caizhou", "name": "蔡州", "ck3Counties": ["c_caizhou"], "basePop": 150000, "dev": 45 }
+        ]
+      },
+      {
+        "id": "dao-yicheng",
+        "name": "义成",
+        "capitalZhouId": "zhou-huazhou-sd",
+        "children": [
+          { "id": "zhou-huazhou-sd", "name": "滑州", "ck3Counties": ["c_huazhou_sd"], "basePop": 100000, "dev": 55 },
+          { "id": "zhou-puzhou", "name": "濮州", "ck3Counties": ["c_puzhou"], "basePop": 80000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-tianping",
+        "name": "天平",
+        "capitalZhouId": "zhou-yunzhou-sd",
+        "children": [
+          { "id": "zhou-yunzhou-sd", "name": "郓州", "ck3Counties": ["c_yunzhou_sd"], "basePop": 120000, "dev": 55 },
+          { "id": "zhou-qizhou", "name": "齐州", "ck3Counties": ["c_qizhou"], "basePop": 110000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-taining",
+        "name": "泰宁",
+        "capitalZhouId": "zhou-yanzhou-sd",
+        "children": [
+          { "id": "zhou-yanzhou-sd", "name": "兖州", "ck3Counties": ["c_yanzhou_sd"], "basePop": 130000, "dev": 55 },
+          { "id": "zhou-yiz州", "name": "沂州", "ck3Counties": ["c_yizhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-mizhou", "name": "密州", "ck3Counties": ["c_mizhou"], "basePop": 80000, "dev": 45 }
+        ]
+      },
+      {
+        "id": "dao-ganhua",
+        "name": "感化",
+        "capitalZhouId": "zhou-xuzhou",
+        "children": [
+          { "id": "zhou-xuzhou", "name": "徐州", "ck3Counties": ["c_xuzhou"], "basePop": 180000, "dev": 60 },
+          { "id": "zhou-suzhou-sd", "name": "宿州", "ck3Counties": ["c_suzhou_sd"], "basePop": 110000, "dev": 50 },
+          { "id": "zhou-sizhou", "name": "泗州", "ck3Counties": ["c_sizhou"], "basePop": 100000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-pinglu",
+        "name": "平卢",
+        "capitalZhouId": "zhou-qingzhou",
+        "children": [
+          { "id": "zhou-qingzhou", "name": "青州", "ck3Counties": ["c_qingzhou_sd"], "basePop": 160000, "dev": 60 },
+          { "id": "zhou-zizhou", "name": "淄州", "ck3Counties": ["c_zizhou"], "basePop": 90000, "dev": 50 },
+          { "id": "zhou-laizhou", "name": "莱州", "ck3Counties": ["c_laizhou"], "basePop": 80000, "dev": 45 },
+          { "id": "zhou-daizhou", "name": "登州", "ck3Counties": ["c_dengzhou"], "basePop": 70000, "dev": 40 },
+          { "id": "zhou-dizhou", "name": "棣州", "ck3Counties": ["c_dizhou"], "basePop": 70000, "dev": 40 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-hebei",
+    "name": "河朔",
+    "tier": "guo",
+    "notes": "河朔三镇，高度自治，大唐痼疾",
+    "children": [
+      {
+        "id": "dao-weibo",
+        "name": "魏博",
+        "capitalZhouId": "zhou-weizhou",
+        "children": [
+          { "id": "zhou-weizhou", "name": "魏州", "ck3Counties": ["c_weizhou"], "basePop": 250000, "dev": 65 },
+          { "id": "zhou-xiangzhou", "name": "相州", "ck3Counties": ["c_xiangzhou"], "basePop": 140000, "dev": 55 },
+          { "id": "zhou-beizhou", "name": "贝州", "ck3Counties": ["c_beizhou"], "basePop": 120000, "dev": 55 },
+          { "id": "zhou-bozhou", "name": "博州", "ck3Counties": ["c_bozhou"], "basePop": 90000, "dev": 50 },
+          { "id": "zhou-weizhou-hb", "name": "卫州", "ck3Counties": ["c_weizhou_hb"], "basePop": 80000, "dev": 50 },
+          { "id": "zhou-zhanzhou", "name": "澶州", "ck3Counties": ["c_zhanzhou"], "basePop": 80000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-chengde",
+        "name": "成德",
+        "capitalZhouId": "zhou-zhenzhou",
+        "children": [
+          { "id": "zhou-zhenzhou", "name": "镇州", "ck3Counties": ["c_zhenzhou"], "basePop": 180000, "dev": 60 },
+          { "id": "zhou-jizhou-hb", "name": "冀州", "ck3Counties": ["c_jizhou_hb"], "basePop": 110000, "dev": 50 },
+          { "id": "zhou-zhaozhou", "name": "赵州", "ck3Counties": ["c_zhaozhou"], "basePop": 100000, "dev": 50 },
+          { "id": "zhou-shenzhou", "name": "深州", "ck3Counties": ["c_shenzhou"], "basePop": 80000, "dev": 45 }
+        ]
+      },
+      {
+        "id": "dao-lulong",
+        "name": "卢龙",
+        "capitalZhouId": "zhou-youzhou",
+        "children": [
+          { "id": "zhou-youzhou", "name": "幽州", "ck3Counties": ["c_youzhou"], "basePop": 200000, "dev": 55 },
+          { "id": "zhou-zhuozhou", "name": "涿州", "ck3Counties": ["c_zhuozhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-yingzhou-hb", "name": "瀛州", "ck3Counties": ["c_yingzhou_hb"], "basePop": 100000, "dev": 45 },
+          { "id": "zhou-mozhou", "name": "莫州", "ck3Counties": ["c_mozhou"], "basePop": 80000, "dev": 40 },
+          { "id": "zhou-guizhou-hb", "name": "妫州", "ck3Counties": ["c_guizhou_hb"], "basePop": 60000, "dev": 35 },
+          { "id": "zhou-jizhou-ln", "name": "蓟州", "ck3Counties": ["c_jizhou_ln"], "basePop": 70000, "dev": 40 }
+        ]
+      },
+      {
+        "id": "dao-yiwu",
+        "name": "义武",
+        "capitalZhouId": "zhou-dingzhou",
+        "children": [
+          { "id": "zhou-dingzhou", "name": "定州", "ck3Counties": ["c_dingzhou"], "basePop": 100000, "dev": 50 },
+          { "id": "zhou-yizhou-hb", "name": "易州", "ck3Counties": ["c_yizhou_hb"], "basePop": 80000, "dev": 45 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-hedong",
+    "name": "河东",
+    "tier": "guo",
+    "notes": "沙陀根据地，李克用雄踞之地",
+    "children": [
+      {
+        "id": "dao-hedong",
+        "name": "河东",
+        "capitalZhouId": "zhou-taiyuan",
+        "children": [
+          { "id": "zhou-taiyuan", "name": "太原", "ck3Counties": ["c_taiyuan"], "basePop": 280000, "dev": 65 },
+          { "id": "zhou-xinzhou", "name": "忻州", "ck3Counties": ["c_xinzhou"], "basePop": 80000, "dev": 45 },
+          { "id": "zhou-daizhou", "name": "代州", "ck3Counties": ["c_daizhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-lanzhou", "name": "岚州", "ck3Counties": ["c_lanzhou"], "basePop": 70000, "dev": 40 },
+          { "id": "zhou-fenzhou", "name": "汾州", "ck3Counties": ["c_fenzhou"], "basePop": 100000, "dev": 50 },
+          { "id": "zhou-shuozhou", "name": "朔州", "ck3Counties": ["c_shuozhou"], "basePop": 60000, "dev": 35 },
+          { "id": "zhou-yunzhou-hd", "name": "云州", "ck3Counties": ["c_yunzhou_hd"], "basePop": 110000, "dev": 40 }
+        ]
+      },
+      {
+        "id": "dao-hezhong",
+        "name": "河中",
+        "capitalZhouId": "zhou-puzhou",
+        "children": [
+          { "id": "zhou-puzhou", "name": "蒲州", "ck3Counties": ["c_puzhou_hd"], "basePop": 150000, "dev": 55 },
+          { "id": "zhou-shanzhou", "name": "陕州", "ck3Counties": ["c_shanzhou"], "basePop": 100000, "dev": 50 },
+          { "id": "zhou-jiangzhou", "name": "绛州", "ck3Counties": ["c_jiangzhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-jiezhou", "name": "解州", "ck3Counties": ["c_jiezhou"], "basePop": 70000, "dev": 45 }
+        ]
+      },
+      {
+        "id": "dao-zhaoyi",
+        "name": "昭义",
+        "capitalZhouId": "zhou-luzhou",
+        "children": [
+          { "id": "zhou-luzhou", "name": "潞州", "ck3Counties": ["c_luzhou"], "basePop": 120000, "dev": 50 },
+          { "id": "zhou-zezhou", "name": "泽州", "ck3Counties": ["c_zezhou"], "basePop": 90000, "dev": 45 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-dongnan",
+    "name": "东南",
+    "tier": "guo",
+    "notes": "天下血包，财赋支撑",
+    "children": [
+      {
+        "id": "dao-huainan",
+        "name": "淮南",
+        "capitalZhouId": "zhou-yangzhou",
+        "children": [
+          { "id": "zhou-yangzhou", "name": "扬州", "ck3Counties": ["c_yangzhou"], "basePop": 350000, "dev": 85 },
+          { "id": "zhou-chuzhou", "name": "楚州", "ck3Counties": ["c_chuzhou"], "basePop": 140000, "dev": 60 },
+          { "id": "zhou-hezhou", "name": "和州", "ck3Counties": ["c_hezhou"], "basePop": 110000, "dev": 55 },
+          { "id": "zhou-luzhou-hn", "name": "庐州", "ck3Counties": ["c_luzhou_hn"], "basePop": 130000, "dev": 55 },
+          { "id": "zhou-shouzhou", "name": "寿州", "ck3Counties": ["c_shouzhou"], "basePop": 150000, "dev": 55 },
+          { "id": "zhou-guangzhou-hn", "name": "光州", "ck3Counties": ["c_guangzhou_hn"], "basePop": 100000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-zhenhai",
+        "name": "镇海",
+        "capitalZhouId": "zhou-runzhou",
+        "children": [
+          { "id": "zhou-runzhou", "name": "润州", "ck3Counties": ["c_runzhou"], "basePop": 160000, "dev": 70 },
+          { "id": "zhou-suzhou", "name": "苏州", "ck3Counties": ["c_suzhou"], "basePop": 220000, "dev": 75 },
+          { "id": "zhou-hangzhou", "name": "杭州", "ck3Counties": ["c_hangzhou"], "basePop": 210000, "dev": 75 },
+          { "id": "zhou-changzhou", "name": "常州", "ck3Counties": ["c_changzhou"], "basePop": 130000, "dev": 65 },
+          { "id": "zhou-huzhou", "name": "湖州", "ck3Counties": ["c_huzhou"], "basePop": 120000, "dev": 65 }
+        ]
+      },
+      {
+        "id": "dao-zhedong",
+        "name": "浙东",
+        "capitalZhouId": "zhou-yuezhou",
+        "children": [
+          { "id": "zhou-yuezhou", "name": "越州", "ck3Counties": ["c_yuezhou"], "basePop": 180000, "dev": 65 },
+          { "id": "zhou-wuzhou", "name": "婺州", "ck3Counties": ["c_wuzhou"], "basePop": 110000, "dev": 55 },
+          { "id": "zhou-mingzhou", "name": "明州", "ck3Counties": ["c_mingzhou"], "basePop": 100000, "dev": 60 },
+          { "id": "zhou-taizhou", "name": "台州", "ck3Counties": ["c_taizhou"], "basePop": 80000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-jiangnanxi",
+        "name": "江南西",
+        "capitalZhouId": "zhou-hongzhou",
+        "children": [
+          { "id": "zhou-hongzhou", "name": "洪州", "ck3Counties": ["c_hongzhou"], "basePop": 150000, "dev": 55 },
+          { "id": "zhou-jiangzhou-jx", "name": "江州", "ck3Counties": ["c_jiangzhou_jx"], "basePop": 110000, "dev": 50 },
+          { "id": "zhou-xuanzhou", "name": "宣州", "ck3Counties": ["c_xuanzhou"], "basePop": 120000, "dev": 60 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-jingshu",
+    "name": "荆蜀",
+    "tier": "guo",
+    "notes": "山川险固，自成一派",
+    "children": [
+      {
+        "id": "dao-jingnan",
+        "name": "荆南",
+        "capitalZhouId": "zhou-jiangling",
+        "children": [
+          { "id": "zhou-jiangling", "name": "江陵", "ck3Counties": ["c_jiangling"], "basePop": 160000, "dev": 60 },
+          { "id": "zhou-ezhou", "name": "鄂州", "ck3Counties": ["c_ezhou"], "basePop": 110000, "dev": 55 },
+          { "id": "zhou-yuezhou-jn", "name": "岳州", "ck3Counties": ["c_yuezhou_jn"], "basePop": 90000, "dev": 50 }
+        ]
+      },
+      {
+        "id": "dao-hunan",
+        "name": "湖南",
+        "capitalZhouId": "zhou-tanzhou",
+        "children": [
+          { "id": "zhou-tanzhou", "name": "潭州", "ck3Counties": ["c_tanzhou"], "basePop": 120000, "dev": 50 },
+          { "id": "zhou-xiangzhou-hn", "name": "湘州", "ck3Counties": ["c_hengyang"], "basePop": 90000, "dev": 45 }
+        ]
+      },
+      {
+        "id": "dao-shannandong",
+        "name": "山南东",
+        "capitalZhouId": "zhou-xiangyang",
+        "children": [
+          { "id": "zhou-xiangyang", "name": "襄阳", "ck3Counties": ["c_xiangyang"], "basePop": 180000, "dev": 60 },
+          { "id": "zhou-suizhou-sn", "name": "随州", "ck3Counties": ["c_suizhou"], "basePop": 90000, "dev": 45 },
+          { "id": "zhou-dengzhou-sn", "name": "邓州", "ck3Counties": ["c_dengzhou_sn"], "basePop": 110000, "dev": 50 },
+          { "id": "zhou-junzhou", "name": "均州", "ck3Counties": ["c_junzhou"], "basePop": 60000, "dev": 40 }
+        ]
+      },
+      {
+        "id": "dao-xichuan",
+        "name": "西川",
+        "capitalZhouId": "zhou-chengdu",
+        "children": [
+          { "id": "zhou-chengdu", "name": "成都", "ck3Counties": ["c_chengdu"], "basePop": 380000, "dev": 80 },
+          { "id": "zhou-shuzhou", "name": "蜀州", "ck3Counties": ["c_shuzhou"], "basePop": 100000, "dev": 60 },
+          { "id": "zhou-pengzhou", "name": "彭州", "ck3Counties": ["c_pengzhou"], "basePop": 90000, "dev": 55 },
+          { "id": "zhou-hanzhou", "name": "汉州", "ck3Counties": ["c_hanzhou"], "basePop": 90000, "dev": 55 }
+        ]
+      },
+      {
+        "id": "dao-dongchuang",
+        "name": "东川",
+        "capitalZhouId": "zhou-zizhou",
+        "children": [
+          { "id": "zhou-zizhou", "name": "梓州", "ck3Counties": ["c_zizhou_sc"], "basePop": 140000, "dev": 60 },
+          { "id": "zhou-mianzhou", "name": "绵州", "ck3Counties": ["c_mianzhou"], "basePop": 110000, "dev": 55 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-lingnan",
+    "name": "岭南",
+    "tier": "guo",
+    "notes": "极南之地，海洋贸易",
+    "children": [
+      {
+        "id": "dao-lingnan",
+        "name": "岭南",
+        "capitalZhouId": "zhou-guangzhou",
+        "children": [
+          { "id": "zhou-guangzhou", "name": "广州", "ck3Counties": ["c_guangzhou"], "basePop": 180000, "dev": 65 },
+          { "id": "zhou-yongzhou-ln", "name": "邕州", "ck3Counties": ["c_yongzhou"], "basePop": 80000, "dev": 40 },
+          { "id": "zhou-guizhou-ln", "name": "桂州", "ck3Counties": ["c_guizhou"], "basePop": 70000, "dev": 40 },
+          { "id": "zhou-rongzhou", "name": "容州", "ck3Counties": ["c_rongzhou"], "basePop": 60000, "dev": 35 },
+          { "id": "zhou-jiaozhou", "name": "交州", "ck3Counties": ["c_annans"], "basePop": 100000, "dev": 45 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "guo-xibei",
+    "name": "西北",
+    "tier": "guo",
+    "notes": "河西走廊，回归之路",
+    "children": [
+      {
+        "id": "dao-guiyi",
+        "name": "归义",
+        "capitalZhouId": "zhou-shazhou",
+        "children": [
+          { "id": "zhou-shazhou", "name": "沙州", "ck3Counties": ["c_shazhou"], "basePop": 60000, "dev": 45 },
+          { "id": "zhou-guazhou", "name": "瓜州", "ck3Counties": ["c_guazhou"], "basePop": 40000, "dev": 35 },
+          { "id": "zhou-ganzhou", "name": "甘州", "ck3Counties": ["c_ganzhou"], "basePop": 50000, "dev": 35 },
+          { "id": "zhou-suzhou-ly", "name": "肃州", "ck3Counties": ["c_suzhou_ly"], "basePop": 40000, "dev": 30 }
+        ]
+      }
+    ]
+  }
+]

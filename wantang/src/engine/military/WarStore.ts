@@ -19,6 +19,8 @@ interface WarState {
   endWar(warId: string, result: War['result']): void;
   getActiveWars(): War[];
   getWarsByCharacter(charId: string): War[];
+  addParticipant(warId: string, charId: string, side: 'attacker' | 'defender'): void;
+  removeParticipant(warId: string, charId: string): void;
 
   // 行营
   createCampaign(
@@ -62,6 +64,8 @@ export const useWarStore = create<WarState>()((set, get) => ({
       id: crypto.randomUUID(),
       attackerId,
       defenderId,
+      attackerParticipants: [],
+      defenderParticipants: [],
       casusBelli,
       targetTerritoryIds,
       warScore: 0,
@@ -97,11 +101,47 @@ export const useWarStore = create<WarState>()((set, get) => ({
   getWarsByCharacter(charId) {
     const result: War[] = [];
     for (const war of get().wars.values()) {
-      if (war.attackerId === charId || war.defenderId === charId) {
+      if (
+        war.attackerId === charId || war.defenderId === charId ||
+        war.attackerParticipants.includes(charId) ||
+        war.defenderParticipants.includes(charId)
+      ) {
         result.push(war);
       }
     }
     return result;
+  },
+
+  addParticipant(warId, charId, side) {
+    set((state) => {
+      const war = state.wars.get(warId);
+      if (!war || war.status !== 'active') return {};
+      // 不能把领袖加入参战者列表（防止 attackerId 出现在 defenderParticipants 等异常）
+      if (charId === war.attackerId || charId === war.defenderId) return {};
+      // 不能重复加入
+      if (war.attackerParticipants.includes(charId) || war.defenderParticipants.includes(charId)) return {};
+      const wars = new Map(state.wars);
+      if (side === 'attacker') {
+        wars.set(warId, { ...war, attackerParticipants: [...war.attackerParticipants, charId] });
+      } else {
+        wars.set(warId, { ...war, defenderParticipants: [...war.defenderParticipants, charId] });
+      }
+      return { wars };
+    });
+  },
+
+  removeParticipant(warId, charId) {
+    set((state) => {
+      const war = state.wars.get(warId);
+      if (!war) return {};
+      const wars = new Map(state.wars);
+      wars.set(warId, {
+        ...war,
+        attackerParticipants: war.attackerParticipants.filter(id => id !== charId),
+        defenderParticipants: war.defenderParticipants.filter(id => id !== charId),
+      });
+      return { wars };
+    });
   },
 
   // ── 行营 ────────────────────────────────────────────────────────────────

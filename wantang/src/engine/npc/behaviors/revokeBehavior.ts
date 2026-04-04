@@ -6,12 +6,13 @@ import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
 import { positionMap } from '@data/positions';
 import { executeRevoke } from '@engine/interaction';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助：判断角色是否在战争中 ──────────────────────────────
 
 function isAtWar(charId: string, activeWars: NpcContext['activeWars']): boolean {
-  return activeWars.some(w => w.attackerId === charId || w.defenderId === charId);
+  return activeWars.some(w => isWarParticipant(charId, w));
 }
 
 // ── 辅助：获取臣属持有的 grantsControl 岗位 ──────────────────

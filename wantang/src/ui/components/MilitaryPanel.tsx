@@ -5,6 +5,9 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { settleWar } from '@engine/military/warSettlement';
+import { isWarParticipant, isOnAttackerSide, isWarLeader } from '@engine/military/warParticipantUtils';
+import { executeWithdrawWar } from '@engine/interaction/withdrawWarAction';
+import { executeJoinWar } from '@engine/interaction/joinWarAction';
 import { calcPeaceAcceptance } from '@engine/military/warCalc';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { useTurnManager } from '@engine/TurnManager';
@@ -755,7 +758,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                   ? Array.from(wars.values()).filter(
                       (w) =>
                         w.status === 'active' &&
-                        (w.attackerId === playerId || w.defenderId === playerId),
+                        isWarParticipant(playerId, w),
                     )
                   : [];
 
@@ -766,7 +769,21 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                   for (const ia of c.incomingArmies) armiesInCampaigns.add(ia.armyId);
                 }
 
-                if (activeWars.length === 0) {
+                // 臣属参与但玩家未参与的战争
+                const vassalWars = playerId
+                  ? Array.from(wars.values()).filter(w => {
+                      if (w.status !== 'active') return false;
+                      if (isWarParticipant(playerId, w)) return false;
+                      // 检查直属臣属是否参与
+                      const allIds = [w.attackerId, ...w.attackerParticipants, w.defenderId, ...w.defenderParticipants];
+                      return allIds.some(id => {
+                        const c = characters.get(id);
+                        return c?.alive && c.overlordId === playerId;
+                      });
+                    })
+                  : [];
+
+                if (activeWars.length === 0 && vassalWars.length === 0) {
                   return (
                     <p className="text-center text-[var(--color-text-muted)] py-6 text-sm">
                       当前无进行中的战争
@@ -774,7 +791,8 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                   );
                 }
 
-                return activeWars.map((war: War) => {
+                return (<>
+                {activeWars.map((war: War) => {
                   const defenderName =
                     characters.get(war.defenderId)?.name ?? war.defenderId;
                   const casusBelliName = CASUS_BELLI_NAMES[war.casusBelli];
@@ -790,6 +808,10 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       t.posts.some((p) => p.holderId === war.defenderId),
                   );
 
+                  const myScore = isOnAttackerSide(playerId!, war)
+                    ? war.warScore
+                    : -war.warScore;
+
                   return (
                     <div
                       key={war.id}
@@ -803,8 +825,8 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           </span>
                           <div className="flex items-center gap-2 text-xs">
                             <span className="text-[var(--color-text-muted)]">战争分数</span>
-                            <span className={`font-bold ${war.warScore > 0 ? 'text-[var(--color-accent-green)]' : war.warScore < 0 ? 'text-[var(--color-accent-red)]' : 'text-[var(--color-text-muted)]'}`}>
-                              {war.warScore > 0 ? '+' : ''}{war.warScore}
+                            <span className={`font-bold ${myScore > 0 ? 'text-[var(--color-accent-green)]' : myScore < 0 ? 'text-[var(--color-accent-red)]' : 'text-[var(--color-text-muted)]'}`}>
+                              {myScore > 0 ? '+' : ''}{Math.round(myScore)}
                             </span>
                           </div>
                         </div>
@@ -818,9 +840,21 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                         )}
                       </div>
 
-                      {/* 和谈/投降按钮 */}
+                      {/* 参战方 */}
+                      {(war.attackerParticipants.length > 0 || war.defenderParticipants.length > 0) && (
+                        <div className="px-3 py-1.5 text-xs text-[var(--color-text-muted)] flex gap-4 border-b border-[var(--color-border)]">
+                          {war.attackerParticipants.length > 0 && (
+                            <span>攻方同盟：{war.attackerParticipants.map(id => characters.get(id)?.name ?? '?').join('、')}</span>
+                          )}
+                          {war.defenderParticipants.length > 0 && (
+                            <span>守方同盟：{war.defenderParticipants.map(id => characters.get(id)?.name ?? '?').join('、')}</span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 和谈/投降/退出按钮 */}
                       {(() => {
-                        const isAttacker = war.attackerId === playerId;
+                        const isAttacker = isOnAttackerSide(playerId!, war);
                         const myScore = isAttacker ? war.warScore : -war.warScore;
                         const canForce = myScore >= 100;
                         const canSurrender = myScore <= -100;
@@ -848,6 +882,22 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                         const peaceTooltip = peaceResult
                           ? Object.entries(peaceResult.breakdown).map(([k, v]) => `${k}: ${v > 0 ? '+' : ''}${v}`).join('\n') + `\n——\n总分: ${peaceResult.score} / 需要: ${peaceResult.threshold}`
                           : '';
+
+                        const amLeader = isWarLeader(playerId!, war);
+
+                        // 参战者（非领袖）只能退出
+                        if (!amLeader) {
+                          return (
+                            <div className="flex gap-2 px-3 py-2 border-t border-[var(--color-border)]">
+                              <button
+                                onClick={() => executeWithdrawWar(playerId!, war.id)}
+                                className="flex-1 py-1.5 rounded border border-[var(--color-accent-red,#e74c3c)] text-xs font-bold text-[var(--color-accent-red,#e74c3c)] hover:bg-[var(--color-accent-red,#e74c3c)]/10 transition-colors"
+                              >
+                                退出战争（好感-20）
+                              </button>
+                            </div>
+                          );
+                        }
 
                         return (
                           <div className="flex gap-2 px-3 py-2 border-t border-[var(--color-border)]">
@@ -1096,7 +1146,47 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       </div>
                     </div>
                   );
-                });
+                })}
+
+                {/* 臣属的战争（玩家可干涉） */}
+                {vassalWars.length > 0 && (
+                  <div className="mt-3">
+                    <div className="text-xs text-[var(--color-text-muted)] mb-1 font-bold">臣属的战争</div>
+                    {vassalWars.map(w => {
+                      const attackerName = characters.get(w.attackerId)?.name ?? '?';
+                      const defenderName = characters.get(w.defenderId)?.name ?? '?';
+                      const cbName = CASUS_BELLI_NAMES[w.casusBelli];
+                      // 找到玩家的臣属在哪一方
+                      const allIds = [w.attackerId, ...w.attackerParticipants, w.defenderId, ...w.defenderParticipants];
+                      const vassalOnAttacker = allIds.some(id => {
+                        const c = characters.get(id);
+                        return c?.alive && c.overlordId === playerId && (id === w.attackerId || w.attackerParticipants.includes(id));
+                      });
+                      return (
+                        <div key={w.id} className="rounded border border-[var(--color-border)] px-3 py-2 mb-1 flex items-center justify-between">
+                          <div className="text-xs">
+                            <span className="font-bold text-[var(--color-text)]">{attackerName}</span>
+                            <span className="text-[var(--color-text-muted)]"> 对 </span>
+                            <span className="font-bold text-[var(--color-text)]">{defenderName}</span>
+                            <span className="text-[var(--color-text-muted)]"> — {cbName}</span>
+                            <span className={`ml-2 font-bold ${w.warScore > 0 ? 'text-[var(--color-accent-green)]' : w.warScore < 0 ? 'text-[var(--color-accent-red)]' : 'text-[var(--color-text-muted)]'}`}>
+                              {w.warScore > 0 ? '+' : ''}{Math.round(w.warScore)}
+                            </span>
+                          </div>
+                          <div className="flex gap-1">
+                            <button
+                              className="px-2 py-1 rounded text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
+                              onClick={() => { executeJoinWar(playerId!, w.id, vassalOnAttacker ? 'attacker' : 'defender'); }}
+                            >
+                              加入{vassalOnAttacker ? '攻方' : '守方'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                </>);
               })()}
 
               {/* 调动行营（不依附战争） */}

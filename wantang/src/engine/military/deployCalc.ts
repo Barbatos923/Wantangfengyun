@@ -52,8 +52,10 @@ export function getArmyHomeTerritory(
   return best;
 }
 
-/** 构建州级邻接表 */
+/** 构建州级邻接表（模块级缓存，ALL_EDGES 为静态数据只需构建一次） */
+let _zhouAdjCache: Map<string, string[]> | null = null;
 function buildZhouAdjacency(): Map<string, string[]> {
+  if (_zhouAdjCache) return _zhouAdjCache;
   const adj = new Map<string, string[]>();
   for (const edge of ALL_EDGES) {
     let fromList = adj.get(edge.from);
@@ -64,6 +66,7 @@ function buildZhouAdjacency(): Map<string, string[]> {
     if (!toList) { toList = []; adj.set(edge.to, toList); }
     toList.push(edge.from);
   }
+  _zhouAdjCache = adj;
   return adj;
 }
 

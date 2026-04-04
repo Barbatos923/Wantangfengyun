@@ -5,6 +5,9 @@ import { useTurnManager } from '@engine/TurnManager';
 import { getPendingVacancies, resolveAppointAuthority } from '@engine/official/selectionUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from '@engine/npc/NpcStore';
+import { useWarStore } from '@engine/military/WarStore';
+import { CASUS_BELLI_NAMES } from '@engine/military/types';
+import { executeJoinWar } from '@engine/interaction/joinWarAction';
 import type { Post } from '@engine/territory/types';
 import SelectionFlow from './SelectionFlow';
 import TransferPlanFlow from './TransferPlanFlow';
@@ -25,6 +28,9 @@ const AlertBar: React.FC = () => {
   const appointApproveTask = useMemo(() => playerTasks.find(t => t.type === 'appoint-approve') ?? null, [playerTasks]);
   const reviewTask = useMemo(() => playerTasks.find(t => t.type === 'review') ?? null, [playerTasks]);
   const deployApproveTask = useMemo(() => playerTasks.find(t => t.type === 'deploy-approve') ?? null, [playerTasks]);
+  const callToArmsTasks = useMemo(() => playerTasks.filter(t => t.type === 'callToArms'), [playerTasks]);
+  const characters = useCharacterStore((s) => s.characters);
+  const wars = useWarStore((s) => s.wars);
   const territories = useTerritoryStore((s) => s.territories);
   const centralPosts = useTerritoryStore((s) => s.centralPosts);
 
@@ -78,7 +84,7 @@ const AlertBar: React.FC = () => {
     }
   }, [anyModalOpen]);
 
-  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && standingTasks.length === 0 && draftPosts.length === 0) return null;
+  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && standingTasks.length === 0 && draftPosts.length === 0 && callToArmsTasks.length === 0) return null;
 
   return (
     <>
@@ -139,6 +145,30 @@ const AlertBar: React.FC = () => {
             <span>{(deployApproveTask.data as { entries: unknown[] }).entries.length}项调兵待审批</span>
           </div>
         )}
+        {/* 召集参战 */}
+        {callToArmsTasks.map(task => {
+          const data = task.data as { warId: string; side: 'attacker' | 'defender'; summonerId: string };
+          const summoner = characters.get(data.summonerId);
+          const war = wars.get(data.warId);
+          const enemyName = war ? characters.get(war.attackerId === data.summonerId ? war.defenderId : war.attackerId)?.name ?? '?' : '?';
+          const cbName = war ? CASUS_BELLI_NAMES[war.casusBelli] : '';
+          return (
+            <div key={task.id} className="flex items-center gap-1 bg-red-500/20 text-red-400 px-2.5 py-1 rounded text-xs border border-red-500/40">
+              <span>{summoner?.name ?? '?'}召集你参加对{enemyName}的{cbName}</span>
+              <button
+                className="ml-1 px-1.5 py-0.5 rounded bg-[var(--color-accent-green)]/30 text-[var(--color-accent-green)] hover:bg-[var(--color-accent-green)]/50"
+                onClick={() => { executeJoinWar(task.actorId, data.warId, data.side); useNpcStore.getState().removePlayerTask(task.id); }}
+              >接受</button>
+              <button
+                className="px-1.5 py-0.5 rounded bg-[var(--color-accent-red)]/30 text-[var(--color-accent-red)] hover:bg-[var(--color-accent-red)]/50"
+                onClick={() => {
+                  useCharacterStore.getState().setOpinion(task.actorId, data.summonerId, { reason: '拒绝参战', value: -30, decayable: true });
+                  useNpcStore.getState().removePlayerTask(task.id);
+                }}
+              >拒绝(-30)</button>
+            </div>
+          );
+        })}
         {/* 直辖空缺（非审批链，如辟署权域内空缺） */}
         {directPosts.length > 0 && (
           <div

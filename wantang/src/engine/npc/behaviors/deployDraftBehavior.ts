@@ -52,6 +52,9 @@ export const deployDraftBehavior: NpcBehavior<DeployDraftData> = {
 
     const { rulerId } = result;
 
+    // 驳回冷却期内不生成新草案
+    if (useNpcStore.getState().isDeployCooldown(rulerId, ctx.date)) return null;
+
     // 如果已有待批草案，不重复生成
     const existing = useNpcStore.getState().deploymentDrafts.get(rulerId);
     if (existing && existing.length > 0) return null;

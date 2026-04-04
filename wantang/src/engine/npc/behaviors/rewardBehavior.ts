@@ -6,6 +6,7 @@ import type { Character } from '@engine/character/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { executeReward } from '@engine/interaction/militaryAction';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
@@ -57,9 +58,7 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
 
-    const isAtWar = ctx.activeWars.some(
-      w => w.attackerId === actor.id || w.defenderId === actor.id,
-    );
+    const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
     // 士气危险（< 30）→ 强制赏赐
     if (worst.avgMorale < 30 && actor.resources.money > 0) {

@@ -93,6 +93,8 @@ export interface War {
   id: string;
   attackerId: string;
   defenderId: string;
+  attackerParticipants: string[]; // 攻方参战者（不含 attackerId 本身）
+  defenderParticipants: string[]; // 守方参战者（不含 defenderId 本身）
   casusBelli: CasusBelli;
   targetTerritoryIds: string[];
   warScore: number; // -100~+100，正=攻方优势，负=防方优势
