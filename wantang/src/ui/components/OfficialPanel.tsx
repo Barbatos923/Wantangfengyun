@@ -29,14 +29,14 @@ function getHeirCandidates(
   // 1. 子嗣
   for (const cid of player.family.childrenIds) {
     const c = characters.get(cid);
-    if (c?.alive) result.push({ char: c, label: '子嗣' });
+    if (c?.alive && c.gender === '男') result.push({ char: c, label: '子嗣' });
   }
 
-  // 2. 同族附庸（排除已加入的子嗣）
+  // 2. 同族男性附庸（排除已加入的子嗣）
   const childSet = new Set(player.family.childrenIds);
   for (const c of characters.values()) {
     if (!c.alive || c.id === playerId || childSet.has(c.id)) continue;
-    if (c.clan !== player.clan) continue;
+    if (c.clan !== player.clan || c.gender !== '男') continue;
     if (isVassalOf(c.id, playerId, characters)) {
       result.push({ char: c, label: '族人' });
     }

@@ -943,7 +943,7 @@
     "birthYear": 813,
     "clan": "郑",
     "family": {
-      "childrenIds": []
+      "childrenIds": ["char-zheng-yanqiu"]
     },
     "abilities": {
       "military": 14,
@@ -1030,7 +1030,7 @@
     "birthYear": 830,
     "clan": "王",
     "family": {
-      "childrenIds": []
+      "childrenIds": ["char-wang-chongwen"]
     },
     "abilities": {
       "military": 14,
@@ -1072,7 +1072,7 @@
     "birthYear": 820,
     "clan": "韩",
     "family": {
-      "childrenIds": []
+      "childrenIds": ["char-han-junxiong"]
     },
     "abilities": {
       "military": 16,
@@ -1158,7 +1158,7 @@
     "birthYear": 815,
     "clan": "崔",
     "family": {
-      "childrenIds": []
+      "childrenIds": ["char-cui-zhihe"]
     },
     "abilities": {
       "military": 10,
@@ -7158,6 +7158,175 @@
     "official": {
       "rankLevel": 3,
       "virtue": 568,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-zheng-yanqiu",
+    "name": "郑延球",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 840,
+    "clan": "郑",
+    "family": {
+      "fatherId": "char-zhengcongdang",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 14,
+      "strategy": 10,
+      "diplomacy": 12,
+      "scholarship": 14
+    },
+    "traitIds": [
+      "trait-honest",
+      "trait-edu-scholarship-1"
+    ],
+    "health": 82,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 20000,
+      "prestige": 10,
+      "legitimacy": 30
+    },
+    "relationships": [],
+    "overlordId": "char-zhengcongdang",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 300,
+      "isCivil": true
+    }
+  },
+  {
+    "id": "char-wang-chongwen",
+    "name": "王崇文",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 855,
+    "clan": "王",
+    "family": {
+      "fatherId": "char-wangjingchong",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 12,
+      "administration": 8,
+      "strategy": 10,
+      "diplomacy": 6,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-edu-military-1"
+    ],
+    "health": 90,
+    "stress": 5,
+    "alive": true,
+    "resources": {
+      "money": 8000,
+      "grain": 15000,
+      "prestige": 8,
+      "legitimacy": 25
+    },
+    "relationships": [],
+    "overlordId": "char-wangjingchong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 8,
+      "virtue": 200,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-han-junxiong",
+    "name": "韩君雄",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 845,
+    "clan": "韩",
+    "family": {
+      "fatherId": "char-hanyunzhong",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 14,
+      "administration": 6,
+      "strategy": 12,
+      "diplomacy": 8,
+      "scholarship": 4
+    },
+    "traitIds": [
+      "trait-brave",
+      "trait-ambitious",
+      "trait-edu-military-1"
+    ],
+    "health": 88,
+    "stress": 10,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 18000,
+      "prestige": 12,
+      "legitimacy": 28
+    },
+    "relationships": [],
+    "overlordId": "char-hanyunzhong",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 250,
+      "isCivil": false
+    }
+  },
+  {
+    "id": "char-cui-zhihe",
+    "name": "崔知和",
+    "courtesy": "",
+    "gender": "男",
+    "birthYear": 842,
+    "clan": "崔",
+    "family": {
+      "fatherId": "char-cuiyanzeng",
+      "childrenIds": []
+    },
+    "abilities": {
+      "military": 8,
+      "administration": 12,
+      "strategy": 10,
+      "diplomacy": 14,
+      "scholarship": 12
+    },
+    "traitIds": [
+      "trait-just",
+      "trait-edu-diplomacy-1"
+    ],
+    "health": 85,
+    "stress": 12,
+    "alive": true,
+    "resources": {
+      "money": 10000,
+      "grain": 20000,
+      "prestige": 10,
+      "legitimacy": 28
+    },
+    "relationships": [],
+    "overlordId": "char-cuiyanzeng",
+    "isPlayer": false,
+    "isRuler": false,
+    "title": "",
+    "official": {
+      "rankLevel": 10,
+      "virtue": 320,
       "isCivil": true
     }
   }

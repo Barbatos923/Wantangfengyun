@@ -13,7 +13,8 @@ import {
 } from '@engine/character/characterUtils.ts';
 import { clamp } from '@engine/utils.ts';
 import { randInt } from '@engine/random.ts';
-import { resolveHeir, findParentAuthority } from '@engine/character/successionUtils';
+import { resolveHeir, findParentAuthority, selectDesignatedHeir } from '@engine/character/successionUtils';
+import { calcPersonality } from '@engine/character/personalityUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { useTurnManager } from '@engine/TurnManager';
@@ -386,6 +387,46 @@ export function runCharacterSystem(date: GameDate): void {
         }
       }
     });
+  }
+
+  // ===== 4. NPC 留后指定（半年一次：正月/七月） =====
+  if (date.month === 1 || date.month === 7) {
+    const territories = terrStore.territories;
+    const chars = charStore.characters;
+
+    for (const charId of charStore.aliveSet) {
+      const char = chars.get(charId);
+      if (!char || char.isPlayer || !char.isRuler) continue;
+
+      // 每角色只算一次
+      const personality = calcPersonality(char);
+      const bestHeir = selectDesignatedHeir(char, chars, personality.boldness, personality.honor, date.year);
+
+      const posts = terrStore.getPostsByHolder(charId);
+      for (const post of posts) {
+        const tpl = positionMap.get(post.templateId);
+        if (!tpl?.grantsControl || post.successionLaw !== 'clan') continue;
+        if (bestHeir === post.designatedHeirId) continue;
+
+        const heirName = bestHeir ? chars.get(bestHeir)?.name : '无';
+        const terrName = post.territoryId ? territories.get(post.territoryId)?.name : '?';
+        const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
+        console.log(`[留后] ${char.name}（${terrName}${tplName}）指定留后：${heirName}`);
+        terrStore.updatePost(post.id, { designatedHeirId: bestHeir });
+
+        // 治所联动
+        if (post.territoryId) {
+          const territory = territories.get(post.territoryId);
+          if (territory?.capitalZhouId) {
+            const capZhou = territories.get(territory.capitalZhouId);
+            const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+            if (capPost && capPost.holderId === charId && capPost.designatedHeirId !== bestHeir) {
+              terrStore.updatePost(capPost.id, { designatedHeirId: bestHeir });
+            }
+          }
+        }
+      }
+    }
   }
 }
 

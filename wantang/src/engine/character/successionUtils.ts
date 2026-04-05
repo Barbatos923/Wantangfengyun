@@ -44,17 +44,17 @@ export function resolveHeir(
     if (heir?.alive) return post.designatedHeirId;
   }
 
-  // 2. 最年长存活子嗣
+  // 2. 最年长存活男性子嗣
   const children = dead.family.childrenIds
     .map(id => characters.get(id))
-    .filter((c): c is Character => !!c && c.alive)
+    .filter((c): c is Character => !!c && c.alive && c.gender === '男')
     .sort((a, b) => a.birthYear - b.birthYear); // 升序 = 最年长优先
   if (children.length > 0) return children[0].id;
 
-  // 3. 同族 + overlordId 链指向死者
+  // 3. 同族男性 + overlordId 链指向死者
   const clanMembers: Character[] = [];
   for (const c of characters.values()) {
-    if (!c.alive || c.id === deadCharId || c.clan !== dead.clan) continue;
+    if (!c.alive || c.id === deadCharId || c.clan !== dead.clan || c.gender !== '男') continue;
     if (isVassalOf(c.id, deadCharId, characters)) {
       clanMembers.push(c);
     }
@@ -63,6 +63,93 @@ export function resolveHeir(
   if (clanMembers.length > 0) return clanMembers[0].id;
 
   return null;
+}
+
+// ── NPC 留后评分 ──────────────────────────────────────────────────────────────
+
+/**
+ * 留后候选人评分（纯函数）。
+ *
+ * score = age × 3 + totalAbility × abilityFactor
+ *
+ * abilityFactor = clamp((boldness - honor + 2) / 4, 0, 1)
+ *   传统（honor=+1, boldness=-1）→ 0，纯看年龄
+ *   中性（均=0）                 → 0.5
+ *   胆大（boldness=+1, honor=-1）→ 1.0，能力权重最大
+ *
+ * 备注：嫡出权重待家庭/生育系统完善后加入。
+ */
+export function scoreHeirCandidate(
+  candidate: Character,
+  rulerBoldness: number,
+  rulerHonor: number,
+  currentYear: number,
+): number {
+  const age = currentYear - candidate.birthYear;
+  const { military, administration, strategy, diplomacy, scholarship } = candidate.abilities;
+  const totalAbility = military + administration + strategy + diplomacy + scholarship;
+  const abilityFactor = Math.max(0, Math.min(1, (rulerBoldness - rulerHonor + 2) / 4));
+  return age * 3 + totalAbility * abilityFactor;
+}
+
+/**
+ * NPC 选择最佳留后（纯函数）。
+ * 规则：有子嗣则只考虑子嗣，无子嗣才考虑同族附庸。
+ * 备注：宗族判定目前用 clan 相同，待家族系统完善后细化。
+ */
+export function selectDesignatedHeir(
+  ruler: Character,
+  characters: Map<string, Character>,
+  rulerBoldness: number,
+  rulerHonor: number,
+  currentYear: number,
+): string | null {
+  // 1. 男性子嗣优先
+  const children = ruler.family.childrenIds
+    .map(id => characters.get(id))
+    .filter((c): c is Character => !!c && c.alive && c.gender === '男');
+
+  if (children.length > 0) {
+    return pickBestCandidate(children, rulerBoldness, rulerHonor, currentYear);
+  }
+
+  // 2. 无男性子嗣 → 同族男性附庸
+  const clanVassals: Character[] = [];
+  for (const c of characters.values()) {
+    if (!c.alive || c.id === ruler.id || c.clan !== ruler.clan || c.gender !== '男') continue;
+    if (isVassalOf(c.id, ruler.id, characters)) {
+      clanVassals.push(c);
+    }
+  }
+
+  if (clanVassals.length > 0) {
+    return pickBestCandidate(clanVassals, rulerBoldness, rulerHonor, currentYear);
+  }
+
+  return null;
+}
+
+/** 从候选人中选出评分最高者，同分取年长 */
+function pickBestCandidate(
+  candidates: Character[],
+  boldness: number,
+  honor: number,
+  currentYear: number,
+): string {
+  let bestId = candidates[0].id;
+  let bestScore = scoreHeirCandidate(candidates[0], boldness, honor, currentYear);
+  let bestBirth = candidates[0].birthYear;
+
+  for (let i = 1; i < candidates.length; i++) {
+    const score = scoreHeirCandidate(candidates[i], boldness, honor, currentYear);
+    if (score > bestScore || (score === bestScore && candidates[i].birthYear < bestBirth)) {
+      bestId = candidates[i].id;
+      bestScore = score;
+      bestBirth = candidates[i].birthYear;
+    }
+  }
+
+  return bestId;
 }
 
 /**
