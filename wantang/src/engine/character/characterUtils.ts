@@ -4,6 +4,8 @@ import type { Abilities, Character } from './types';
 import { ALL_TRAITS, traitMap, type TraitDef, type TraitCategory } from '@data/traits';
 import { randInt, random, shuffle } from '@engine/random.ts';
 import { calcLegitimacyOpinion } from '@engine/official/legitimacyCalc';
+import { CENTRALIZATION_OPINION } from '@engine/interaction/centralizationAction';
+import type { PolicyOpinionEntry } from '@engine/territory/TerritoryStore';
 
 /** 限制值在min~max之间 */
 function clamp(value: number, min: number, max: number): number {
@@ -155,7 +157,12 @@ export function getEffectiveAbilities(character: Character): Abilities {
  * 计算角色A对角色B的基础好感度（纯函数）。
  * @param bExpectedLeg B 的预期正统性（最高岗位 baseLegitimacy），null 表示无官职
  */
-export function calculateBaseOpinion(a: Character, b: Character, bExpectedLeg: number | null): number {
+export function calculateBaseOpinion(
+  a: Character,
+  b: Character,
+  bExpectedLeg: number | null,
+  aPolicyOpinion?: PolicyOpinionEntry | null,
+): number {
   let opinion = 0;
 
   const aTraits = a.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as TraitDef[];
@@ -211,6 +218,22 @@ export function calculateBaseOpinion(a: Character, b: Character, bExpectedLeg: n
     }
   }
 
+  // 政策好感（实时计算，A 是臣属、B 是领主时生效）
+  if (a.overlordId === b.id) {
+    // 赋税等级（A 的 centralization）
+    const taxLevel = a.centralization ?? 2;
+    opinion += CENTRALIZATION_OPINION[taxLevel] ?? 0;
+
+    // 回拨率（B 的 redistributionRate）
+    const redistRate = b.redistributionRate ?? 0;
+    opinion += Math.floor((redistRate - 60) / 10) * 5;
+
+    // 岗位相关（从缓存读取）
+    if (aPolicyOpinion) {
+      opinion += aPolicyOpinion.appointRight + aPolicyOpinion.succession + aPolicyOpinion.type;
+    }
+  }
+
   // 事件累积好感度
   const rel = a.relationships.find((r) => r.targetId === b.id);
   if (rel) {
@@ -232,7 +255,7 @@ export interface OpinionBreakdownEntry {
  * 计算角色A对角色B的好感度分项明细（纯函数）。
  * @param bExpectedLeg B 的预期正统性，null 表示无官职
  */
-export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: number | null): OpinionBreakdownEntry[] {
+export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: number | null, aPolicyOpinion?: PolicyOpinionEntry | null): OpinionBreakdownEntry[] {
   const entries: OpinionBreakdownEntry[] = [];
 
   const aTraits = a.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as TraitDef[];
@@ -301,6 +324,23 @@ export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: nu
       } else if (bLeg.absoluteValue < 0) {
         entries.push({ label: '名器尽失', value: bLeg.absoluteValue });
       }
+    }
+  }
+
+  // 政策好感（A 是臣属、B 是领主时）
+  if (a.overlordId === b.id) {
+    const taxLevel = a.centralization ?? 2;
+    const taxVal = CENTRALIZATION_OPINION[taxLevel] ?? 0;
+    if (taxVal !== 0) entries.push({ label: `赋税等级（${taxLevel}级）`, value: taxVal });
+
+    const redistRate = b.redistributionRate ?? 0;
+    const redistVal = Math.floor((redistRate - 60) / 10) * 5;
+    if (redistVal !== 0) entries.push({ label: `回拨率（${redistRate}%）`, value: redistVal });
+
+    if (aPolicyOpinion) {
+      if (aPolicyOpinion.appointRight !== 0) entries.push({ label: '辟署权', value: aPolicyOpinion.appointRight });
+      if (aPolicyOpinion.succession !== 0) entries.push({ label: '宗法继承', value: aPolicyOpinion.succession });
+      if (aPolicyOpinion.type !== 0) entries.push({ label: '军事职类', value: aPolicyOpinion.type });
     }
   }
 

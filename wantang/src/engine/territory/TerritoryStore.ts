@@ -3,6 +3,18 @@ import type { Territory, Construction, Post } from './types';
 import { positionMap } from '@data/positions';
 import { getHeldPosts } from '@engine/official/postQueries';
 import { getBaseLegitimacy, getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
+import {
+  APPOINT_RIGHT_OPINION,
+  CLAN_SUCCESSION_OPINION,
+  MILITARY_TYPE_OPINION,
+} from '@engine/interaction/centralizationAction';
+
+/** 岗位相关政策好感缓存条目（辟署权/继承法/职类） */
+export interface PolicyOpinionEntry {
+  appointRight: number;  // 辟署权好感
+  succession: number;    // 继承法好感
+  type: number;          // 职类好感
+}
 
 // ===== 索引构建辅助 =====
 
@@ -58,6 +70,7 @@ interface TerritoryStoreState {
   holderIndex: Map<string, string[]>;        // holderId → postId[] (O(1) 查找)
   controllerIndex: Map<string, Set<string>>; // controllerId → Set<territoryId>
   expectedLegitimacy: Map<string, number>;   // charId → 最高岗位 baseLegitimacy
+  policyOpinionCache: Map<string, PolicyOpinionEntry>; // charId → 岗位相关政策好感
 
   // 初始化
   initTerritories: (terrs: Territory[]) => void;
@@ -77,6 +90,10 @@ interface TerritoryStoreState {
   refreshExpectedLegitimacy: () => void;
   updateExpectedLegitimacy: (charId: string) => void;
 
+  // 政策好感缓存（辟署权/继承法/职类）
+  refreshPolicyOpinionCache: () => void;
+  updateCharPolicyCache: (charId: string) => void;
+
   // 修改
   updateTerritory: (id: string, patch: Partial<Territory>) => void;
   updatePost: (postId: string, patch: Partial<Post>) => void;
@@ -93,6 +110,7 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
   holderIndex: new Map(),
   controllerIndex: new Map(),
   expectedLegitimacy: new Map(),
+  policyOpinionCache: new Map(),
 
   initTerritories: (terrs) => {
     const map = new Map<string, Territory>();
@@ -102,12 +120,14 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
     const indexes = buildIndexes(map, get().centralPosts);
     set({ territories: map, ...indexes });
     get().refreshExpectedLegitimacy();
+    get().refreshPolicyOpinionCache();
   },
 
   initCentralPosts: (posts) => {
     const indexes = buildIndexes(get().territories, posts);
     set({ centralPosts: posts, ...indexes });
     get().refreshExpectedLegitimacy();
+    get().refreshPolicyOpinionCache();
   },
 
   getTerritory: (id) => get().territories.get(id),
@@ -186,6 +206,82 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
     set({ expectedLegitimacy: newMap });
   },
 
+  // 全量重建政策好感缓存（岗位遍历，取每角色最高值）
+  refreshPolicyOpinionCache: () => {
+    const { territories } = get();
+    const cache = new Map<string, PolicyOpinionEntry>();
+
+    for (const terr of territories.values()) {
+      for (const post of terr.posts) {
+        if (!post.holderId) continue;
+        const tpl = positionMap.get(post.templateId);
+        if (!tpl?.grantsControl) continue;
+        const tier = terr.tier;
+
+        const existing = cache.get(post.holderId) ?? { appointRight: 0, succession: 0, type: 0 };
+
+        if (post.hasAppointRight) {
+          existing.appointRight = Math.max(existing.appointRight, APPOINT_RIGHT_OPINION[tier] ?? 0);
+        }
+        if (post.successionLaw === 'clan') {
+          existing.succession = Math.max(existing.succession, CLAN_SUCCESSION_OPINION[tier] ?? 0);
+        }
+        if (tpl.territoryType === 'military') {
+          existing.type = Math.max(existing.type, MILITARY_TYPE_OPINION);
+        }
+
+        cache.set(post.holderId, existing);
+      }
+    }
+    set({ policyOpinionCache: cache });
+  },
+
+  // 单角色增量更新政策好感缓存（O(K)，K=角色持有岗位数）
+  updateCharPolicyCache: (charId) => {
+    const { territories, holderIndex, policyOpinionCache } = get();
+    const newCache = new Map(policyOpinionCache);
+    const postIds = holderIndex.get(charId);
+
+    if (!postIds || postIds.length === 0) {
+      if (newCache.has(charId)) {
+        newCache.delete(charId);
+        set({ policyOpinionCache: newCache });
+      }
+      return;
+    }
+
+    let appointRight = 0;
+    let succession = 0;
+    let type = 0;
+
+    for (const pid of postIds) {
+      const post = get().postIndex.get(pid);
+      if (!post?.territoryId) continue;
+      const tpl = positionMap.get(post.templateId);
+      if (!tpl?.grantsControl) continue;
+      const terr = territories.get(post.territoryId);
+      if (!terr) continue;
+      const tier = terr.tier;
+
+      if (post.hasAppointRight) {
+        appointRight = Math.max(appointRight, APPOINT_RIGHT_OPINION[tier] ?? 0);
+      }
+      if (post.successionLaw === 'clan') {
+        succession = Math.max(succession, CLAN_SUCCESSION_OPINION[tier] ?? 0);
+      }
+      if (tpl.territoryType === 'military') {
+        type = Math.max(type, MILITARY_TYPE_OPINION);
+      }
+    }
+
+    if (appointRight === 0 && succession === 0 && type === 0) {
+      newCache.delete(charId);
+    } else {
+      newCache.set(charId, { appointRight, succession, type });
+    }
+    set({ policyOpinionCache: newCache });
+  },
+
   updateTerritory: (id, patch) => {
     set((state) => {
       const terrs = new Map(state.territories);
@@ -198,6 +294,16 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
 
   // 更新岗位 + 增量更新索引
   updatePost: (postId, patch) => {
+    const oldPost = get().postIndex.get(postId);
+    if (!oldPost) return;
+
+    // 判断是否需要刷新政策好感缓存
+    const needsPolicyCacheRefresh =
+      (patch.holderId !== undefined && patch.holderId !== oldPost.holderId) ||
+      (patch.hasAppointRight !== undefined && patch.hasAppointRight !== oldPost.hasAppointRight) ||
+      (patch.successionLaw !== undefined && patch.successionLaw !== oldPost.successionLaw) ||
+      (patch.templateId !== undefined && patch.templateId !== oldPost.templateId);
+
     set((state) => {
       const oldPost = state.postIndex.get(postId);
       if (!oldPost) return state;
@@ -314,6 +420,19 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
 
       return state;
     });
+
+    // 政策好感缓存增量更新（set 之后，索引已更新）
+    if (needsPolicyCacheRefresh && positionMap.get(oldPost.templateId)?.grantsControl) {
+      if (patch.holderId !== undefined && patch.holderId !== oldPost.holderId) {
+        // holderId 变更：刷新新旧两个角色
+        if (oldPost.holderId) get().updateCharPolicyCache(oldPost.holderId);
+        if (patch.holderId) get().updateCharPolicyCache(patch.holderId);
+      } else {
+        // 属性变更（hasAppointRight/successionLaw/templateId）：刷新当前持有人
+        const currentHolder = get().postIndex.get(postId)?.holderId;
+        if (currentHolder) get().updateCharPolicyCache(currentHolder);
+      }
+    }
   },
 
   // 向领地添加新岗位 + 增量更新索引
@@ -362,10 +481,17 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
 
       return { territories: terrs, postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
     });
+
+    // 新岗位有持有人且 grantsControl → 刷新持有人缓存
+    if (post.holderId && positionMap.get(post.templateId)?.grantsControl) {
+      get().updateCharPolicyCache(post.holderId);
+    }
   },
 
   // 从领地移除岗位 + 增量清理索引
   removePost: (postId) => {
+    const removedPost = get().postIndex.get(postId);
+
     set((state) => {
       const oldPost = state.postIndex.get(postId);
       if (!oldPost) return state;
@@ -430,6 +556,11 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
 
       return { postIndex: newPostIndex, holderIndex: newHolderIndex, controllerIndex: newControllerIndex };
     });
+
+    // 岗位移除后刷新旧持有人的政策好感缓存
+    if (removedPost?.holderId && positionMap.get(removedPost.templateId)?.grantsControl) {
+      get().updateCharPolicyCache(removedPost.holderId);
+    }
   },
 
   startConstruction: (territoryId, construction) => {

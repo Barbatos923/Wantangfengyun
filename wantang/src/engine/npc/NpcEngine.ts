@@ -37,6 +37,11 @@ import './behaviors/createKingdomBehavior';
 import './behaviors/createEmperorBehavior';
 import './behaviors/usurpBehavior';
 import './behaviors/dismissBehavior';
+import './behaviors/adjustTaxBehavior';
+import './behaviors/adjustTypeBehavior';
+import './behaviors/adjustAppointRightBehavior';
+import './behaviors/adjustSuccessionBehavior';
+import './behaviors/adjustRedistributionBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

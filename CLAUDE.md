@@ -38,7 +38,7 @@ src/
 │   ├── military/                      # MilitaryStore/WarStore + 战斗/行军/围城/结算
 │   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/剥夺领地/篡夺/集权等）
 │   ├── decision/                      # 决议系统（称王/称帝/建镇/销毁头衔）
-│   ├── npc/                           # NPC Engine 框架 + 21 个行为模块
+│   ├── npc/                           # NPC Engine 框架 + 26 个行为模块
 │   └── systems/                       # 月结管线各 System（9 个）
 ├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
 ├── ui/                                # React UI 层（只读 Store + 调用 interaction）
@@ -64,7 +64,7 @@ src/
 各 Store **维护预计算索引**以支持 O(1) 查询，**查询时必须优先使用索引，禁止全量遍历**。
 
 - **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `refreshIsRuler()`
-- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存 + `addPost()` / `removePost()`
+- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存 + `policyOpinionCache` 缓存 + `addPost()` / `removePost()`
 - **MilitaryStore**：`armies` / `battalions` Map + `ownerArmyIndex` + `locationArmyIndex` + `syncArmyOwnersByPost()`
 - **WarStore**：`wars` / `campaigns` / `sieges` 三个 Map
 - **NpcStore**：`playerTasks` 队列 + 旧字段（`TODO(phase6-cleanup)`）
@@ -149,6 +149,16 @@ src/
 - `engine/` 下的 Calc 模块必须是**纯函数**，不得调用 `getState()`
 - Utils 文件是便捷包装层，允许读 Store 后委派给纯函数
 
+### 好感系统双轨制
+好感（opinion）系统只有两种类型，**禁止使用 `setOpinion` + `decayable: false` 模式存储状态好感**：
+- **实时计算**（不存储在 relationships 中）：在 `calculateBaseOpinion` 中根据当前状态实时算出
+  - 特质/亲属/外交/正统性：从 Character 字段直接计算
+  - 政策好感（赋税等级/回拨率/辟署权/继承法/职类）：赋税和回拨率从 Character 字段计算，岗位相关从 `policyOpinionCache` 读取
+  - `policyOpinionCache`（TerritoryStore）：预计算每角色的辟署权/继承法/职类好感值。**无需手动刷新**——`updatePost`/`addPost`/`removePost` 在检测到 grantsControl 岗位的 `holderId`/`hasAppointRight`/`successionLaw`/`templateId` 变更时自动增量更新（`updateCharPolicyCache`），仅刷新受影响角色。全量 `refreshPolicyOpinionCache()` 只在 `initTerritories`/`initCentralPosts` 时调用一次
+- **事件存储**（`addOpinion`, `decayable: true`）：一次性事件触发，逐月衰减到消失
+  - 如：授予职位 +20、罢免 -20、拒绝效忠 -30、剥夺领地 -30
+  - 使用 `addOpinion` 追加（可叠加同 reason）
+
 ### 层级隔离（engine ↛ ui）
 - **`engine/` 禁止 import `@ui/` 的任何模块**，依赖方向只能是 `ui/ → engine/`
 - NPC 行为需要通知玩家时，使用 `engine/storyEventBus.ts`（Zustand store）推送纯数据事件，UI 层（`EventModal.tsx`）订阅渲染
@@ -177,7 +187,7 @@ src/
 
 ## 六、NPC Engine（已日结化）
 
-- 21 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺
+- 26 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺 / 罢免 / 调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
 - `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
 - `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
@@ -213,64 +223,22 @@ src/
 
 ## 八、当前开发阶段
 
-**NPC Engine 日结化已完成，交互系统和通知系统已重构，效忠关系级联机制已完善，头衔创建/篡夺/销毁系统已完成。**
-
-核心循环、继承、铨选、考课、正统性、NPC Engine（21 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
+核心循环、继承、铨选、考课、正统性、NPC Engine（26 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
-- **自我领主防御**（2026-04-05）：修复4处 overlordId=操作者 的自我领主bug（appointAction 罢免前任/治所清退、dismissAction 被罢免者回归/级联效忠）；CharacterStore 加 DEBUG console.error 监测；demandFealtyPure 加防环检查；characterSystem 继承加自我领主防御
-- **同战争多行营合围**（2026-04-05）：同战争同阵营的多个行营共同参与围城，合算兵力计算进度；城破后所有参与行营回 idle；跨战争围城仍互斥
-- **行营AI跨战争寻路**（2026-04-05）：idle行营在被其他战争围城的领地不再傻等，继续寻路找下一个目标；目标选择排除被其他战争围城的领地
-- **删除防守方惰性加分**（2026-04-05）：移除战争分数中防守方惰性加分机制（bug多，100%占领后仍扣分）
-- **危世→乱世全面改革**（2026-04-05）：销毁皇帝岗位 + 有地臣属解除效忠独立 + 所有道/国级 grantsControl 主岗改为辟署权+宗法继承（割据体制）
-- **铨选候选池修复**（2026-04-05）：排除持有辟署权的角色不进入候选池；继承时高品角色不继承低品岗位；铨选连锁(round>1)只选fresh候选人+接受underRank，防止无限升调链
-- **铨选草案去重**（2026-04-05）：handleDraftSubmission 执行前按 appointeeId 去重，防止同人在多岗位间弹跳
-- **铨选调动vacateOnly**（2026-04-05）：executeDismiss 新增 vacateOnly 选项，铨选调动时不让罢免者接管 grantsControl 岗位，防止皇帝通过铨选调动获得大量领地
-- **赏赐行为改进**（2026-04-05）：一次赏赐所有低士气军队（不再逐支）；去除 isRuler 限制，非统治者也能赏赐自己的军队
-- **授予领地改进**（2026-04-05）：executeAsNpc 一次授出所有超额州（循环授出）
-- **城破守军解散**（2026-04-05）：城破后解散守军而非转移给攻方，防止攻方白得大量军队引发后续士气/私兵问题
-- **DeployDraftFlow hooks修复**（2026-04-05）：修复提前return导致React hooks数量变化的崩溃
-- **决议系统**（`engine/decision/`）：框架（Decision 接口 + registry）+ 4 个决议（称王/建镇/称帝/销毁头衔）
-  - 称王：guo 级，控制 50% 法理州，可选体制/继承法/辟署权，创建时一并生成国司马+国长史副岗
-  - 建镇：dao 级，控制 50% 法理州 + 治所州，治所失陷后重建节度使/观察使
-  - 称帝：乱世限定，控制 80% 全国州，触发乱世→治世
-  - 销毁头衔：guo 级，非唯一主岗
-  - 控制比例统一以州为最小单位（`calcRealmControlRatio` 递归收集法理 zhou）
-  - UI：SideMenu"决议"按钮 → DecisionPanel 列表 → DecisionDetailModal 详情弹窗
-- **篡夺头衔交互**（`usurpPostAction`）：guo+dao 级，控制 50% 法理州，dao 需控制治所州，好感-40，本领地副岗归附
-- **治所州失陷联动**：战争转移治所州 → 自动销毁父道主岗 + 副岗清空 + 军队变私兵；`executeAppoint` 不再强覆盖被敌方占领的治所
-- **时代钩子**：危世→乱世自动销毁皇帝岗位（`eraSystem.ts`）
-- **NPC 称王/称帝/篡夺行为**（3 个）：`createKingdomBehavior`（guo+dao 通用）/ `createEmperorBehavior` / `usurpBehavior`
-- **岗位模板新增**：`pos-guo-changshi`（国长史，国级行政副岗）
-- **TerritoryStore 扩展**：`addPost()` / `removePost()` 方法，含完整索引增量更新
-- **效忠关系级联更新**：主岗易手时自动级联更新法理下级和本领地副岗的 overlordId；铨选调动通过 `executeDismiss(skipOpinion: true)` 复用级联逻辑且无好感惩罚；铨选新任主岗者 overlordId 自动指向法理上级
-- **NPC 转移臣属行为**（`transferVassalBehavior`）：节度使及以上主动将法理下级臣属转给对应的下级领主，品级 >= 17 触发
-- **要求效忠权重调整**：基础权重 0→50，荣誉感改为正向修正（维护体制秩序）
-- **NPC 授予领地行为**（`grantTerritoryBehavior`）：直辖超额时自动授予臣属，受赠者按好感(60%)+属性总和(40%)评分
-- **NPC 剥夺领地行为**（`revokeBehavior`）+ 玩家交互（`revokeAction` + `RevokeFlow`）：对仇敌臣属剥夺领地，有成功率判定（`calcRevokeChance`），失败触发免费独立战争
-- **罢免/剥夺分离**：罢免（dismiss）仅限非 grantsControl 岗位（京官/地方副岗），剥夺（revoke）针对 grantsControl 岗位（有风险）；罢免条件改为"臣属"而非"你任命的"
-- **通知系统三层重构**：
-  - 顶部通知栏（AlertBar）：仅行政任务（铨选/审批/考课）
-  - 侧边栏通知（EventToast）：CK3 风格右侧卡片流，羊皮纸材质，头像集成，边框颜色编码，入场动画
-  - 中心弹出框（EventModal）：重大决策事件框架（角色卡+叙事+决策按钮+hover预览），SideMenu"活动"按钮可触发虚拟测试事件
-- **事件系统改进**：事件在引擎层无条件记录（作为 AI 史书史料），UI 层按与玩家关联度筛选显示（`getDisplayRelevance`）；新增宣战/战争结束事件
-- **notificationStore**：管理已清除事件 ID + 中心弹出框事件队列
-- **征兵/补员金钱消耗**（2026-04-04）：征兵和补员新增金钱成本（每兵 20 贯），`RECRUIT_COST_PER_SOLDIER` 常量
-- **NPC 征兵行为**（`conscriptBehavior`）：NPC 自主新建营扩军，基于性格/财政/粮草净收入决策，粮草评估使用轻量 `estimateNetGrain` 纯函数（领地粮产出 - 军费粮耗）
-- **调兵草拟人四级拆分**（2026-04-04）：`resolveDeployDrafter` 重写，直接检测 4 个专职草拟人岗位（兵部尚书→皇帝 / 国司马→王 / 都知兵马使→节度使 / 录事参军→刺史），ruler 不再自己兼任草拟人
-- **岗位调整**（2026-04-04）：新增 `pos-guo-sima`（国司马，国级军务副岗）；删除 `pos-sima`（州级司马）和 `pos-zhangshi`（州级长史），州级副岗仅保留录事参军
-- **NpcContext 扩展**：新增 `armies`、`battalions`、`controllerIndex` 快照字段，军事相关 behavior 的 `generateTask` 可通过 ctx 获取军事数据
-- **多方参战系统**（2026-04-04）：War 扩展 `attackerParticipants`/`defenderParticipants`；`warParticipantUtils.ts` 8个纯函数替换全部二元判断；合兵战斗方案（同阵营行营合并 armyIds）；3个新 NPC 行为（召集/干涉/退出）+ 3个新交互（joinWar/callToArms/withdrawWar）；角色交互面板支持"召集参战"（二级弹窗）和"干涉战争"；AlertBar 集成召集通知（超时自动接受）；MilitaryPanel 显示参战者列表+退出按钮+臣属战争区域；角色死亡自动清理；`isEnemyTerritoryInWar` 修复效忠链阵营误判；围城中行营可被援军拉入战斗
-- **战争 UI**（2026-04-04）：`WarOverlay` 右下角虎符悬浮图标+展开详情面板（双方头像/战分条/兵力/盟友/操作按钮）；战分显示改为我方视角（+绿-红）；地图行营颜色四态（我军金/友军绿/敌军红/中立灰）；CampaignPopup 文案修正
-- **性能优化**（2026-04-04）：`buildZhouAdjacency` 模块级缓存（静态拓扑数据只构建一次）；`DeployApproveFlow` 打开时过滤已失效 entries
-- **调兵执行校验**（2026-04-04）：`executeDeployEntry` 执行前校验军队存在性和归属；驳回调兵方案后 180 天冷却
+- **NPC 政策行为 + 好感实时化重构**（2026-04-05）：5 个政策 NPC 行为（调税/调职类/调辟署权/调继承法/调回拨率）；好感系统重构为双轨制（实时计算+事件存储）；`policyOpinionCache` 自维护（updatePost/addPost/removePost 自动增量更新）；通用讨好评估 `evaluateAppeasementTargets`；权限校验 `hasAuthorityOverPost`；道/州职类独立（删除 childIds 级联）
+- **NPC 罢免行为 + StoryEvent 下沉**（2026-04-05）：dismissBehavior 完成；StoryEvent 类型移至 engine 层
+- **自我领主防御**（2026-04-05）：修复4处自我领主 bug + CharacterStore DEBUG 监测
+- **决议系统**（2026-04-05）：4 个决议（称王/建镇/称帝/销毁）+ 篡夺交互 + 治所联动 + 3 个 NPC 行为 + 时代钩子
+- **多方参战系统**（2026-04-04）：召集/干涉/退出 + 合兵战斗 + 战争 UI（WarOverlay）+ 地图行营四色
+- **效忠级联 + 铨选修复**（2026-04-05）：级联更新、铨选候选池/草案去重/vacateOnly、调兵草拟人四级拆分
+- **战争 Bug 修复**（2026-04-05）：多行营合围、跨战争寻路、城破守军解散、防守方惰性加分删除
+- **通知系统三层重构**：AlertBar（行政）/ EventToast（CK3 侧栏）/ EventModal（重大决策）
 
-### 尚未完成（NPC-玩家同权收尾，当前优先）
-- 战争停战协议期限（战争结束后一定时间内不可再次宣战）
-- NPC 罢免行为（`dismissBehavior`）：主动罢免不满/低能副岗官员
-- NPC 政策行为（`policyBehavior`）：集权/放权决策，正统性驱动（皇帝让权叙事）
-- NPC 军事编制 AI（`militarySystem` 内通用函数）：建军/换将/调营/裁营
-- NPC 指定继承人（`characterSystem` 内扩展）：根据性格偏好选择继承人
+### 尚未完成（当前优先）
+- 战争停战协议期限
+- NPC 军事编制 AI（建军/换将/调营/裁营）
+- NPC 指定继承人（性格偏好选择）
 
 ### 尚未完成（后续系统）
 - 铨选调动时法理下级刺史的可选转移（CK3 风格，玩家可选是否同时转给新任者）

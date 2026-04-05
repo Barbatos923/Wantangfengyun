@@ -112,8 +112,9 @@ export function previewRevokeChance(
   const target = charStore.getCharacter(targetId);
   if (!revoker || !target) return 50;
 
-  const bExpectedLeg = useTerritoryStore.getState().expectedLegitimacy.get(revokerId) ?? null;
-  const opinion = calculateBaseOpinion(target, revoker, bExpectedLeg);
+  const terrState = useTerritoryStore.getState();
+  const bExpectedLeg = terrState.expectedLegitimacy.get(revokerId) ?? null;
+  const opinion = calculateBaseOpinion(target, revoker, bExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
   const personality = calcPersonality(target);
 
   return calcRevokeChance(
@@ -149,7 +150,7 @@ export function executeRevoke(
 
   // 计算好感：target 对 revoker 的好感
   const bExpectedLeg = terrStore.expectedLegitimacy.get(revokerId) ?? null;
-  const opinion = calculateBaseOpinion(target, revoker, bExpectedLeg);
+  const opinion = calculateBaseOpinion(target, revoker, bExpectedLeg, terrStore.policyOpinionCache.get(targetId) ?? null);
 
   // 计算性格
   const personality = calcPersonality(target);

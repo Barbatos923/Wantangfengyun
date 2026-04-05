@@ -21,8 +21,8 @@ export function buildNpcContext(): NpcContext {
   const milState = useMilitaryStore.getState();
   const warState = useWarStore.getState();
 
-  const { characters } = charState;
-  const { territories, centralPosts, expectedLegitimacy, controllerIndex, postIndex, holderIndex } = terrState;
+  const { characters, vassalIndex } = charState;
+  const { territories, centralPosts, expectedLegitimacy, controllerIndex, postIndex, holderIndex, policyOpinionCache } = terrState;
   const { armies, battalions } = milState;
 
   // ── 预计算缓存 ──
@@ -56,7 +56,8 @@ export function buildNpcContext(): NpcContext {
       return 0;
     }
     const bExpectedLeg = expectedLegitimacy.get(bId) ?? null;
-    const value = calculateBaseOpinion(a, b, bExpectedLeg);
+    const aPolicyOp = policyOpinionCache.get(aId) ?? null;
+    const value = calculateBaseOpinion(a, b, bExpectedLeg, aPolicyOp);
     innerMap.set(bId, value);
     return value;
   }
@@ -93,6 +94,7 @@ export function buildNpcContext(): NpcContext {
     expectedLegitimacyCache: expectedLegitimacy,
     getOpinion,
     getMilitaryStrength,
+    vassalIndex,
     armies,
     battalions,
     controllerIndex,

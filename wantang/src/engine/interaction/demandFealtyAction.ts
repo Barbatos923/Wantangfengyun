@@ -202,8 +202,9 @@ export function previewDemandFealty(
   const target = charStore.getCharacter(targetId);
   if (!player || !target) return { chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 } };
 
-  const playerExpectedLeg = useTerritoryStore.getState().expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg);
+  const terrState = useTerritoryStore.getState();
+  const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);
@@ -220,8 +221,9 @@ export function executeDemandFealty(
   const target = charStore.getCharacter(targetId);
   if (!player || !target) return { success: false, chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 } };
 
-  const playerExpectedLeg2 = useTerritoryStore.getState().expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg2);
+  const terrState2 = useTerritoryStore.getState();
+  const playerExpectedLeg2 = terrState2.expectedLegitimacy.get(playerId) ?? null;
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg2, terrState2.policyOpinionCache.get(targetId) ?? null);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);

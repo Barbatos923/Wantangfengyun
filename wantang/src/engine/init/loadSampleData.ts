@@ -31,40 +31,6 @@ export function loadSampleData(): void {
   const battalions = createAllBattalions();
   useMilitaryStore.getState().initMilitary(armies, battalions);
 
-  // 初始化赋税等级和回拨好感
-  const charStore = useCharacterStore.getState();
-  const CENTRALIZATION_OPINION: Record<number, number> = { 1: 10, 2: 0, 3: -10, 4: -20 };
-  for (const c of characters) {
-    if (c.overlordId) {
-      const level = c.centralization ?? 2;
-      const opinion = CENTRALIZATION_OPINION[level] ?? 0;
-      if (opinion !== 0) {
-        charStore.setOpinion(c.id, c.overlordId, {
-          reason: '赋税等级',
-          value: opinion,
-          decayable: false,
-        });
-      }
-    }
-  }
-  // 回拨好感：以60%为基准，每10%偏移±5
-  for (const c of characters) {
-    if (c.redistributionRate !== undefined) {
-      const opinion = Math.floor((c.redistributionRate - 60) / 10) * 5;
-      if (opinion !== 0) {
-        const vassals = characters.filter(v => v.overlordId === c.id);
-        for (const v of vassals) {
-          charStore.setOpinion(v.id, c.id, {
-            reason: '回拨率',
-            value: opinion,
-            decayable: false,
-          });
-        }
-      }
-    }
-  }
-
-
   // 初始化玩家 ledger
   const player = useCharacterStore.getState().getPlayer();
   if (player) {

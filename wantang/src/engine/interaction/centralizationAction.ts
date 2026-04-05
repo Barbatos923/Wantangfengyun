@@ -8,17 +8,26 @@ import { refreshPlayerLedger } from './appointAction';
 import type { CentralizationLevel, Post, Territory } from '@engine/territory/types';
 
 // 军/民模板切换映射
-const MILITARY_TO_CIVIL: Record<string, string> = {
+export const MILITARY_TO_CIVIL: Record<string, string> = {
   'pos-jiedushi': 'pos-guancha-shi',
   'pos-fangyu-shi': 'pos-cishi',
 };
-const CIVIL_TO_MILITARY: Record<string, string> = {
+export const CIVIL_TO_MILITARY: Record<string, string> = {
   'pos-guancha-shi': 'pos-jiedushi',
   'pos-cishi': 'pos-fangyu-shi',
 };
 
+// ── 状态好感值表（持有人→上级） ──────────────────────────────────────────────
+
+/** 辟署权好感：guo +40, dao +20, zhou +10 */
+export const APPOINT_RIGHT_OPINION: Record<string, number> = { guo: 40, dao: 20, zhou: 10 };
+/** 宗法继承好感：guo +30, dao +15, zhou +5 */
+export const CLAN_SUCCESSION_OPINION: Record<string, number> = { guo: 30, dao: 15, zhou: 5 };
+/** 军事职类好感：固定 +5 */
+export const MILITARY_TYPE_OPINION = 5;
+
 // 赋税等级 → 好感修正：1级=+10, 2级=0, 3级=-10, 4级=-20
-const CENTRALIZATION_OPINION: Record<number, number> = { 1: 10, 2: 0, 3: -10, 4: -20 };
+export const CENTRALIZATION_OPINION: Record<number, number> = { 1: 10, 2: 0, 3: -10, 4: -20 };
 
 /** 注册集权调整交互 */
 registerInteraction({
@@ -26,7 +35,7 @@ registerInteraction({
   name: '调整权责',
   icon: '⚖️',
   canShow: (_player, target) => {
-    return target.overlordId === _player.id;
+    return target.overlordId === _player.id && target.isRuler;
   },
   paramType: 'centralization',
 });
@@ -34,7 +43,7 @@ registerInteraction({
 // ── 执行函数 ─────────────────────────────────────────────────────────────────
 
 /** 变更赋税等级 */
-export function executeTaxChange(targetId: string, playerId: string, delta: number): void {
+export function executeTaxChange(targetId: string, _playerId: string, delta: number): void {
   const charStore = useCharacterStore.getState();
   const target = charStore.characters.get(targetId);
   if (!target) return;
@@ -42,11 +51,6 @@ export function executeTaxChange(targetId: string, playerId: string, delta: numb
   const newLevel = Math.max(1, Math.min(4, currentLevel + delta)) as CentralizationLevel;
   if (newLevel === currentLevel) return;
   charStore.updateCharacter(targetId, { centralization: newLevel });
-  charStore.setOpinion(targetId, playerId, {
-    reason: '赋税等级',
-    value: CENTRALIZATION_OPINION[newLevel] ?? 0,
-    decayable: false,
-  });
   refreshPlayerLedger();
 }
 
@@ -65,12 +69,7 @@ export function executeToggleType(postId: string, territoryId: string): void {
   const newType = isMilitary ? 'civil' as const : 'military' as const;
   terrStore.updatePost(post.id, { templateId: newTemplateId });
   terrStore.updateTerritory(territoryId, { territoryType: newType });
-  const terr = terrStore.getTerritory(territoryId);
-  if (terr && terr.tier === 'dao' && terr.childIds) {
-    for (const childId of terr.childIds) {
-      terrStore.updateTerritory(childId, { territoryType: newType });
-    }
-  }
+
   refreshPlayerLedger();
 }
 
@@ -92,6 +91,7 @@ export function executeToggleSuccession(
     const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
     if (capPost) terrStore.updatePost(capPost.id, patch);
   }
+
 }
 
 /** 切换辟署权 */
@@ -99,7 +99,9 @@ export function executeToggleAppointRight(postId: string): void {
   const terrStore = useTerritoryStore.getState();
   const post = terrStore.findPost(postId);
   if (!post) return;
-  terrStore.updatePost(postId, { hasAppointRight: !post.hasAppointRight });
+  const newValue = !post.hasAppointRight;
+  terrStore.updatePost(postId, { hasAppointRight: newValue });
+
 }
 
 /** 变更回拨率 */
@@ -111,15 +113,6 @@ export function executeRedistributionChange(playerId: string, delta: number): vo
   const newRate = Math.max(0, Math.min(100, currentRate + delta));
   if (newRate === currentRate) return;
   charStore.updateCharacter(playerId, { redistributionRate: newRate });
-  const opinion = Math.floor((newRate - 60) / 10) * 5;
-  for (const c of charStore.characters.values()) {
-    if (!c.alive || c.overlordId !== playerId) continue;
-    charStore.setOpinion(c.id, playerId, {
-      reason: '回拨率',
-      value: opinion,
-      decayable: false,
-    });
-  }
   refreshPlayerLedger();
 }
 

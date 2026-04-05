@@ -5,6 +5,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { getEffectiveAbilities, calculateBaseOpinion } from '@engine/character/characterUtils';
+import type { PolicyOpinionEntry } from '@engine/territory/TerritoryStore';
 import { traitMap } from '@data/traits';
 import { usePanelStore } from '@ui/stores/panelStore';
 import type { Character } from '@engine/character/types';
@@ -53,7 +54,8 @@ const Avatar: React.FC<AvatarProps> = ({ char, mainChar, label, size, onClick })
   if (!char) return null;
   // mainChar here is the player character — show opinion toward player (hide for dead)
   const bExpectedLeg = useTerritoryStore(s => s.expectedLegitimacy.get(mainChar?.id ?? '') ?? null);
-  const opinion = mainChar && char.id !== mainChar.id && char.alive ? calculateBaseOpinion(char, mainChar, bExpectedLeg) : null;
+  const aPolicyOp = useTerritoryStore(s => s.policyOpinionCache.get(char.id) ?? null);
+  const opinion = mainChar && char.id !== mainChar.id && char.alive ? calculateBaseOpinion(char, mainChar, bExpectedLeg, aPolicyOp) : null;
   const sizeClass = size === 'lg' ? 'w-14 h-14 text-lg' : 'w-10 h-10 text-sm';
 
   return (
@@ -97,6 +99,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
   const expectedLegitimacy = useTerritoryStore((s) => s.expectedLegitimacy);
+  const policyCache = useTerritoryStore((s) => s.policyOpinionCache);
   const currentYear = useTurnManager((s) => s.currentDate.year);
   const { pushCharacter, openTerritoryModal, goBack, goToPlayer, close, togglePin } = usePanelStore();
   const pinned = usePanelStore((s) => s.pinned);
@@ -184,7 +187,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
             </div>
             <div className="text-[10px] text-[var(--color-text-muted)] leading-tight">本人</div>
             {playerChar && character.id !== playerId && character.alive && (() => {
-              const op = calculateBaseOpinion(character, playerChar, expectedLegitimacy.get(playerChar.id) ?? null);
+              const op = calculateBaseOpinion(character, playerChar, expectedLegitimacy.get(playerChar.id) ?? null, policyCache.get(character.id) ?? null);
               return (
                 <button
                   className={`text-[10px] font-bold hover:underline cursor-pointer ${op >= 0 ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}
@@ -437,6 +440,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
               expectedLegMap={expectedLegitimacy}
+              policyCache={policyCache}
             />
           )}
           {activeTab === 'relations' && (
@@ -447,6 +451,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
               expectedLegMap={expectedLegitimacy}
+              policyCache={policyCache}
             />
           )}
           {activeTab === 'retainers' && (
@@ -457,6 +462,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
               expectedLegMap={expectedLegitimacy}
+              policyCache={policyCache}
             />
           )}
           {activeTab === 'vassals' && (
@@ -467,6 +473,7 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               playerChar={playerChar}
               onShowOpinion={(from, toward) => setOpinionPopup({ from, toward })}
               expectedLegMap={expectedLegitimacy}
+              policyCache={policyCache}
             />
           )}
         </div>
@@ -788,9 +795,10 @@ interface TabProps {
   playerChar?: Character;
   onShowOpinion?: (from: Character, toward: Character) => void;
   expectedLegMap: Map<string, number>;
+  policyCache: Map<string, PolicyOpinionEntry>;
 }
 
-const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
+const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap, policyCache }) => {
   const entries: { label: string; char: Character | undefined }[] = [
     { label: '父', char: character.family.fatherId ? characters.get(character.family.fatherId) : undefined },
     { label: '母', char: character.family.motherId ? characters.get(character.family.motherId) : undefined },
@@ -820,13 +828,13 @@ const FamilyTab: React.FC<TabProps> = ({ character, characters, onClickChar, pla
             {playerChar && char!.id !== playerChar.id && char!.alive && (
               <button
                 className="text-[10px] font-bold cursor-pointer hover:underline"
-                style={{ color: calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null) >= 0 ? 'var(--color-accent-green)' : 'var(--color-accent-red)' }}
+                style={{ color: calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null, policyCache.get(char!.id) ?? null) >= 0 ? 'var(--color-accent-green)' : 'var(--color-accent-red)' }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onShowOpinion?.(char!, playerChar);
                 }}
               >
-                {calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null) >= 0 ? '+' : ''}{calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null)}
+                {calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null, policyCache.get(char!.id) ?? null) >= 0 ? '+' : ''}{calculateBaseOpinion(char!, playerChar, expectedLegMap.get(playerChar.id) ?? null, policyCache.get(char!.id) ?? null)}
               </button>
             )}
           </div>
@@ -864,7 +872,7 @@ const RelationsTab: React.FC<TabProps> = ({ character, characters, onClickChar }
   );
 };
 
-const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
+const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap, policyCache }) => {
   // 廷臣 = 效忠于你（overlordId）但没有由你任命岗位的人
   const subordinates = getSubordinates(character.id, characters);
   const subordinateIds = new Set(subordinates.map(s => s.id));
@@ -882,7 +890,7 @@ const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, pl
   return (
     <div className="space-y-1">
       {courtiers.map((courtier) => {
-        const opinion = playerChar && courtier.id !== playerChar.id ? calculateBaseOpinion(courtier, playerChar, expectedLegMap.get(playerChar.id) ?? null) : null;
+        const opinion = playerChar && courtier.id !== playerChar.id ? calculateBaseOpinion(courtier, playerChar, expectedLegMap.get(playerChar.id) ?? null, policyCache.get(courtier.id) ?? null) : null;
         return (
           <button
             key={courtier.id}
@@ -912,7 +920,7 @@ const VassalsTab: React.FC<TabProps> = ({ character, characters, onClickChar, pl
   );
 };
 
-const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap }) => {
+const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, playerChar, onShowOpinion, expectedLegMap, policyCache }) => {
   const territories = useTerritoryStore((s) => s.territories);
   const subs = getSubordinates(character.id, characters);
 
@@ -931,7 +939,7 @@ const RetainersTab: React.FC<TabProps> = ({ character, characters, onClickChar, 
             return terrName ? `${terrName}${tplName}` : tplName;
           })
           .join('、');
-        const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar, expectedLegMap.get(playerChar.id) ?? null) : null;
+        const opinion = playerChar && sub.id !== playerChar.id ? calculateBaseOpinion(sub, playerChar, expectedLegMap.get(playerChar.id) ?? null, policyCache.get(sub.id) ?? null) : null;
         return (
           <button
             key={sub.id}

@@ -30,12 +30,12 @@ interface DeployDraftFlowProps {
 /** 从 store 构建简易 getOpinion（无缓存，草拟界面调用次数少） */
 function makeGetOpinion() {
   const chars = useCharacterStore.getState().characters;
-  const expectedLeg = useTerritoryStore.getState().expectedLegitimacy;
+  const terrState = useTerritoryStore.getState();
   return (aId: string, bId: string): number => {
     const a = chars.get(aId);
     const b = chars.get(bId);
     if (!a || !b) return 0;
-    return calculateBaseOpinion(a, b, expectedLeg.get(bId) ?? null);
+    return calculateBaseOpinion(a, b, terrState.expectedLegitimacy.get(bId) ?? null, terrState.policyOpinionCache.get(aId) ?? null);
   };
 }
 

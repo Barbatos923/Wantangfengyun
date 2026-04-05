@@ -8,6 +8,7 @@ import {
   executeToggleAppointRight,
 } from '@engine/interaction';
 import { positionMap } from '@data/positions';
+import { hasAuthorityOverPost } from '@engine/npc/policyCalc';
 
 import type { Post } from '@engine/territory/types';
 
@@ -50,19 +51,10 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
     }
   }
 
-  // ── 玩家是否能设置某领地岗位的辟署权 ──
-  function playerCanSetAppointRight(territoryId: string): boolean {
+  // ── 玩家是否能设置某领地岗位的辟署权/继承法/职类 ──
+  function playerCanSetPolicy(territoryId: string): boolean {
     if (!playerId) return false;
-    const terr = territories.get(territoryId);
-    let parentId = terr?.parentId;
-    while (parentId) {
-      const parent = territories.get(parentId);
-      if (!parent) return false;
-      const appointPost = parent.posts.find(p => p.hasAppointRight && p.holderId === playerId);
-      if (appointPost) return true;
-      parentId = parent.parentId;
-    }
-    return false;
+    return hasAuthorityOverPost(playerId, territoryId, territories);
   }
 
   return (
@@ -101,8 +93,8 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                     ? !!({ 'pos-jiedushi': true, 'pos-fangyu-shi': true } as Record<string, boolean>)[entry.post.templateId]
                     : !!({ 'pos-guancha-shi': true, 'pos-cishi': true } as Record<string, boolean>)[entry.post.templateId];
                   const isClan = entry.post.successionLaw === 'clan';
-                  const canToggleAppoint = entry.post.territoryId
-                    ? playerCanSetAppointRight(entry.post.territoryId)
+                  const canSetPolicy = entry.post.territoryId
+                    ? playerCanSetPolicy(entry.post.territoryId)
                     : false;
 
                   return (
@@ -120,7 +112,7 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                       {/* 按钮行 */}
                       <div className="flex flex-wrap gap-1.5">
                         {/* 职类 */}
-                        {canToggleType && (
+                        {canToggleType && canSetPolicy && (
                           <button
                             onClick={() => executeToggleType(entry.post.id, entry.territoryId)}
                             className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${
@@ -133,7 +125,7 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                           </button>
                         )}
                         {/* 继承法 */}
-                        <button
+                        {canSetPolicy && <button
                           onClick={() => executeToggleSuccession(entry.post.id, entry.capitalZhouId, territories)}
                           className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${
                             isClan
@@ -142,9 +134,9 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                           }`}
                         >
                           {isClan ? '世袭 → 流官' : '流官 → 世袭'}
-                        </button>
+                        </button>}
                         {/* 辟署权 */}
-                        {canToggleAppoint && (
+                        {canSetPolicy && (
                           <button
                             onClick={() => executeToggleAppointRight(entry.post.id)}
                             className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${

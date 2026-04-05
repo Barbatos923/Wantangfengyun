@@ -96,10 +96,10 @@ export function calcCallToArmsChance(
   if (!target) return { chance: 50, breakdown: { base: 60, opinion: 0, honor: 0, boldness: 0 } };
 
   const personality = calcPersonality(target);
-  const expLegMap = useTerritoryStore.getState().expectedLegitimacy;
+  const terrState = useTerritoryStore.getState();
   const summoner = charStore.getCharacter(summonerId);
   if (!summoner) return { chance: 50, breakdown: { base: 60, opinion: 0, honor: 0, boldness: 0 } };
-  const opinion = calculateBaseOpinion(target, summoner, expLegMap.get(summonerId) ?? null);
+  const opinion = calculateBaseOpinion(target, summoner, terrState.expectedLegitimacy.get(summonerId) ?? null, terrState.policyOpinionCache.get(targetId) ?? null);
 
   const base = 60;
   const opinionMod = Math.round(opinion);
