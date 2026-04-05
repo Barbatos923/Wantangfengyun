@@ -1,27 +1,23 @@
 # CLAUDE.md — 《晚唐风云》项目指南
 
-> 本文件供 Claude Code 在会话开始时读取，避免为小任务而全量扫描代码库。
 > **开始任务前先读本文件，再只读取与任务直接相关的文件。**
+> 详细参考资料见 `docs/reference/`，开发进度见 `docs/milestones.md`。
 
 ---
 
 ## 一、项目概述
 
-晚唐（约 867 AD）历史策略模拟单机游戏，灵感来自 CK3，聚焦中国历史特色（官职体系、藩镇割据、兵变、史书叙事）。
+晚唐（约 867 AD）历史策略模拟单机游戏，灵感来自 CK3。
 
 | 项目 | 值 |
 |---|---|
 | 技术栈 | Vite 8 + React 19 + TypeScript 5.9 (strict) + Zustand 5 + TailwindCSS 4 |
-| 存储 | IndexedDB（`idb` 库），数据库名 `wantang-db`，三张表：saves / chronicles / events |
-| 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts`，存档时序列化种子 |
-| 地图 | `d3-delaunay` Voronoi 多边形 + SVG clipPath 疆域裁剪 |
-| 测试 | `vitest`，**只测纯函数**，不测 Store 状态流转；`npx vitest run` 当前 16 个文件 352 个测试 |
-| 构建 | `pnpm build`（tsc -b && vite build），产物纯静态 |
-| 开发 | `pnpm dev` |
-| 测试命令 | `npx vitest run` |
+| 存储 | IndexedDB（`idb` 库），`wantang-db`，三张表 |
+| 构建 | `pnpm build` / 开发 `pnpm dev` / 测试 `npx vitest run`（16 文件 352 测试） |
 | 路径别名 | `@` → `src/`，`@engine` → `src/engine/`，`@data` → `src/data/`，`@ui` → `src/ui/` |
-| 工作目录 | `D:\桌面\Github上传\Wantangfengyun`（即 Git 仓库根目录） |
-| 文档 | `docs/` 目录：GDD-v2.0（权威设计案）、milestones.md（进度）、design/（活跃方案）、archive/（历史文档）、reference/（参考资料） |
+| 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts` |
+| 地图 | `d3-delaunay` Voronoi + SVG clipPath |
+| 数据规模 | ~160 角色、72 领地、41 军队、366 营 |
 
 ---
 
@@ -29,304 +25,123 @@
 
 ```
 src/
-├── engine/                            # 游戏引擎层（与 UI 完全解耦）
-│   ├── types.ts / random.ts / utils.ts / TurnManager.ts / settlement.ts / storage.ts
-│   ├── init/loadSampleData.ts         # 开局数据组装
-│   ├── character/                     # CharacterStore + 工具 + 生成器 + 继承
-│   ├── territory/                     # TerritoryStore + 工具
-│   ├── official/                      # 官职：经济/铨选/正统性/地图着色/岗位查询
-│   ├── military/                      # MilitaryStore/WarStore + 战斗/行军/围城/结算
-│   ├── interaction/                   # 玩家交互 Action（任命/罢免/宣战/剥夺领地/篡夺/集权等）
-│   ├── decision/                      # 决议系统（称王/称帝/建镇/销毁头衔）
-│   ├── npc/                           # NPC Engine 框架 + 26 个行为模块
-│   └── systems/                       # 月结管线各 System（9 个）
-├── data/                              # 纯静态数据（JSON + 定义表 + 索引，禁止放逻辑）
-├── ui/                                # React UI 层（只读 Store + 调用 interaction）
-│   ├── components/                    # GameMap / CampaignPopup / MapPlaceholder / EventToast / EventModal 等 ~30 个
-│   │   └── base/                      # 基础组件库：Modal / ModalHeader / Button
-│   ├── layouts/ / hooks/ / panels/ / stores/
-└── __tests__/
-    ├── data/                          # 数据完整性（positions / ranks / buildings / traits / map）
-    ├── engine/                        # 纯函数（dateUtils / territoryUtils / battleEngine /
-    │                                  #         economyCalc / reviewSystem / selectionCalc）
-    └── phase*.test.ts                 # 重构安全网（已有 3 个，锁定数据契约和正统性公式）
+├── engine/          # 游戏引擎（与 UI 解耦）
+│   ├── character/   # CharacterStore + 工具 + 生成器 + 继承
+│   ├── territory/   # TerritoryStore + 工具
+│   ├── official/    # 官职：经济/铨选/正统性/岗位查询/postTransfer原子操作
+│   ├── military/    # MilitaryStore/WarStore + 战斗/行军/围城/结算
+│   ├── interaction/ # 玩家交互 Action（任命/罢免/宣战/调任/剥夺/篡夺等）
+│   ├── decision/    # 决议系统（称王/称帝/建镇/销毁头衔）
+│   ├── npc/         # NPC Engine 框架 + 28 个行为模块
+│   └── systems/     # 月结管线各 System（9 个）
+├── data/            # 纯静态数据（JSON + 定义表，禁止放逻辑）
+├── ui/              # React UI 层（只读 Store + 调用 interaction）
+│   └── components/base/  # Modal / ModalHeader / Button
+└── __tests__/       # 纯函数 + 数据完整性测试
 ```
-
-### 测试原则
-- **测什么**：纯函数（Calc 模块、dateUtils、territoryUtils、reviewSystem、selectionCalc）和静态数据完整性
-- **不测什么**：Store 状态流转、结算管线顺序、NPC 决策（依赖随机 + 完整游戏状态，ROI 低）
-- 每个测试必须写**具体期望数值**，禁止只写 `toBeGreaterThan(0)`，确保公式被无意修改时能立刻报警
 
 ---
 
 ## 三、核心 Store 与索引
 
-各 Store **维护预计算索引**以支持 O(1) 查询，**查询时必须优先使用索引，禁止全量遍历**。
+各 Store **维护预计算索引**，**查询时必须优先使用索引，禁止全量遍历**。
 
 - **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `refreshIsRuler()`
-- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` 缓存 + `policyOpinionCache` 缓存 + `addPost()` / `removePost()`
-- **MilitaryStore**：`armies` / `battalions` Map + `ownerArmyIndex` + `locationArmyIndex` + `syncArmyOwnersByPost()`
-- **WarStore**：`wars` / `campaigns` / `sieges` 三个 Map
-- **NpcStore**：`playerTasks` 队列 + 旧字段（`TODO(phase6-cleanup)`）
+- **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` + `policyOpinionCache`
+- **MilitaryStore**：`armies`/`battalions` Map + `ownerArmyIndex` + `locationArmyIndex`
+- **WarStore**：`wars`/`campaigns`/`sieges` 三个 Map
+- **NpcStore**：`playerTasks` 队列
 
 ---
 
-## 四、日结/月结双层结算管线
+## 四、日结/月结结算管线
 
-时间系统采用**日结驱动**（现实平年日历，365天/年），各系统按不同频率触发。
+入口：`TurnManager.ts` → `settlement.ts`（禁止在此写业务逻辑）
 
-入口：`TurnManager.ts` → `settlement.ts`
+**日结**：`warSystem`（行军/战斗/围城）→ `NpcEngine`（非月初）
+**月结**（严格顺序）：characterSystem → NpcEngine → populationSystem(年) → socialSystem → economySystem → militarySystem → eraSystem → buildingSystem
 
-### 日结管线（每日触发，dailyCallback）
-- `warSystem` — 行军（marchSpeed 累积器）/战斗/围城/战争分数
-- `NpcEngine`（非月初）— NPC 日结决策（daily 行为每天检测，monthly-slot 行为按哈希槽位+品级分档）
-
-### 月结管线（每月初 day===1 触发，monthlyCallback），严格顺序：
-1. `characterSystem` — 健康/死亡/继承（必须最先）
-2. `NpcEngine` — NPC 决策（月初在 characterSystem 之后，保证继承先完成）
-3. `populationSystem` — 年度人口（仅 month===1）
-4. `socialSystem` — 好感/领地漂移/晋升
-5. `economySystem` — 经济/破产
-6. `militarySystem` — 征兵池/士气/兵变
-7. `eraSystem` — 时代进度
-8. `buildingSystem` — 建筑施工
-
-### 日期工具
-- `dateUtils.ts`：`getDaysInMonth` / `toAbsoluteDay` / `addDays` / `diffDays` / `diffMonths` 等
-- 禁止手写 `(y2-y1)*12+(m2-m1)` 日期算术，必须用 `dateUtils`
-
-**规则**：不要在 `settlement.ts` 中直接写业务逻辑，应当新建 System 或 NpcBehavior。
+日期工具用 `dateUtils.ts`，禁止手写日期算术。
 
 ---
 
 ## 五、关键架构约定（必须遵守）
 
-### 岗位变动原子操作（`official/postTransfer.ts`）
-
-所有岗位持有人变更**必须通过 `postTransfer.ts` 的原子操作组合**，禁止内联写 `updatePost` + `syncArmyOwnersByPost` + 级联逻辑。
-
-#### 原子操作清单
-
-| 操作 | 函数 | 说明 |
-|------|------|------|
-| 就任 | `seatPost(postId, holderId, appointedBy, date, extra?)` | 设置 holderId + appointedBy + appointedDate |
-| 空缺 | `vacatePost(postId)` | 清空 holderId/appointedBy/appointedDate |
-| 军队跟随 | `syncArmyForPost(postId, newOwnerId)` | 岗位绑定军队 owner 转给新持有人 |
-| 军队脱离 | `detachArmiesFromPost(postId)` | 岗位绑定军队变私兵（postId → null） |
-| 副岗归附 | `cascadeSecondaryOverlord(terrId, newOverlordId, prevHolderId?)` | 同领地副岗持有人 overlordId → 新主岗持有人；prevHolderId 可选，不传则无条件更新（战争强制归附） |
-| 法理下级回退 | `cascadeChildOverlord(terrId, newOverlordId, prevHolderId)` | 法理下级主岗持有人中 overlordId===prevHolderId 的 → 回退给 newOverlordId |
-| 治所就任 | `capitalZhouSeat(daoTerrId, holderId, appointedBy, date, opts?)` | 道级→治所刺史联动就任；opts.checkCanTake=true 时检查治所是否可接管；opts.oldHolderId 约束仅旧人手中才联动 |
-| 治所空缺 | `capitalZhouVacate(daoTerrId, oldHolderId?)` | 道级→治所刺史联动空缺 |
-| 治所失陷 | `checkCapitalZhouLost(transferredTerrIds)` | 检查被转移的州是否为某道治所→销毁道级主岗 |
-| 销毁主岗 | `destroyMainPost(postId, terrId)` | 清空副岗 + 军队变私兵 + removePost |
-| 查询可转移下级 | `getTransferableChildren(terrId, newHolderId)` | 返回法理直接下级中 overlordId!=newHolderId 的主岗持有人列表 |
-| 转移下级 | `transferChildren(charIds, newOverlordId)` | 批量设置 overlordId（玩家勾选后调用） |
-| 自动转移下级 | `autoTransferChildrenAfterAppoint(postId)` | 任命后自动转移所有可转移法理下级（NPC 用） |
-| 独立辟署权 | `ensureAppointRight(charId)` | 独立统治者自动获得辟署权（overlordId→undefined 时调用） |
-| 缓存刷新 | `refreshPostCaches(charIds?, fullRefresh?)` | refreshIsRuler + updateExpectedLegitimacy + refreshPlayerLedger |
-| 玩家账本 | `refreshPlayerLedger()` | 重算玩家月度收支（也从 appointAction re-export 保持兼容） |
-
-#### 各场景调用的原子操作
-
-| 场景 | seatPost | vacatePost | syncArmy | cascadeSecondary | cascadeChild | capitalZhou | refreshCaches |
-|------|----------|------------|----------|-----------------|--------------|-------------|---------------|
-| **考课罢免**（vacateOnly） | | `vacatePost` | | | | | `refreshPostCaches` |
-| **正常罢免**（剥夺领地成功） | `seatPost(dismisser)` | | `syncArmyForPost` | `cascadeSecondary(dismisser, prev)` | `cascadeChild(dismisser, prev)` | `capitalZhouSeat(dismisser)` | `refreshPostCaches` |
-| **铨选任命** | `seatPost(appointee)` | | `syncArmyForPost` | `cascadeSecondary(appointee)` | 可选转移（deJure：任命者+前任臣属） | `capitalZhouSeat(checkCanTake)` | `refreshPostCaches` |
-| **直接任命** | `seatPost(appointee)` | | `syncArmyForPost` | `cascadeSecondary(appointee)` | 可选转移（仅任命者臣属） | `capitalZhouSeat(checkCanTake)` | `refreshPostCaches` |
-| **篡夺** | `seatPost(actor)` | | `syncArmyForPost` | `cascadeSecondary(actor)` | 不执行 | `capitalZhouSeat(oldHolder)` | `refreshPostCaches` |
-| **继承** | `seatPost(heir)` | `vacatePost`（流官） | `syncArmyForPost` | | | `capitalZhouSeat`/`Vacate` | `refreshPostCaches(full)` |
-| **战争结算** | `seatPost(attacker)` | | `syncArmyForPost` | `cascadeSecondary(attacker)`（无条件） | 不执行 | `checkCapitalZhouLost` | `refreshPostCaches(full)` |
-| **创建头衔** | （addPost） | | `syncArmyForPost` | | | `capitalZhouSeat` | `refreshPostCaches(full)` |
-| **销毁头衔** | | | | | | | `destroyMainPost` + `refreshPostCaches` |
-| **调任**（外放内调） | `seatPost(京官)` | 非目标岗`executeDismiss(skipOpinion)` + 目标岗`vacateOnly` | `syncArmyForPost` | `cascadeSecondary(京官)` | `cascadeChild(京官, 有地者)` | 非目标随dismiss + 目标`capitalZhouSeat` | `refreshPostCaches` |
-| **皇帝销毁**（eraSystem） | | | | | | | `removePost` + `refreshPostCaches(full)` |
+### 岗位变动原子操作
+所有岗位变更**必须通过 `postTransfer.ts` 原子操作**，禁止内联 `updatePost` + 级联。
+详细操作清单和各场景调用表见 **`docs/reference/post-transfer-table.md`**。
 
 ### 治所州联动
-道级领地的 `capitalZhouId` 治所州是道的附属品：
-- **任命道级主岗** → 自动授予治所州刺史（仅当治所空缺或仍在任命方势力内）
-- **罢免道级主岗** → 自动罢免治所州刺史
-- **继承道级主岗** → 治所州跟随继承（仅当治所 holderId === deadId）
-- **铨选候选池** → 跳过治所州（不单独铨选）
-- **治所州被战争占领** → 自动销毁父道主岗 + 清空副岗 + 军队变私兵
-- **道级篡夺/创建** → 必须控制治所州作为前置条件
-
-### 效忠关系级联
-主岗（grantsControl）易手时，效忠关系按场景不同分别级联：
-
-#### 副岗持有人（`cascadeSecondaryOverlord`）
-- **正常罢免**：overlordId 原指向被罢免者的 → 回退给 dismisserId（有 prevHolderId 约束）
-- **任命/篡夺**：overlordId → 新持有人（无 prevHolderId 约束，无条件归附）
-- **战争结算**：强制 overlordId → 攻方（无条件）
-- **考课罢免（vacateOnly）**：不级联（由后续 executeAppoint 处理）
-
-#### 法理下级主岗持有人（`cascadeChildOverlord`）
-- **正常罢免**：overlordId 原指向被罢免者的 → 回退给 dismisserId
-- **铨选任命**（deJure 模式）：递归所有法理后代，任命者臣属 + 前任（vacatedHolderId）臣属可选转移，其他领主臣属不动
-- **直接任命**：递归所有法理后代，仅任命者自己的臣属可转移
-- **篡夺/战争结算**：不级联
-- **考课罢免（vacateOnly）**：不级联，vacatePost 记录 vacatedHolderId 供后续铨选使用
-
-#### 被任命者自身的 overlordId
-- **铨选调动**（`vacateOldPost=true`）：沿 parentId 找法理上级主岗持有人
-- **直接任命**（`vacateOldPost=false`）：直接 = appointerId
-- **副岗任命**：= 本领地 grantsControl 主岗持有人
-
-### 私兵继承
-- `postId: null` 的军队不受 `syncArmyOwnersByPost` 管理
-- owner 死亡时：有继承人 → 转给 primaryHeir；绝嗣 → disbandArmy 解散
-
-### 皇帝查找
-- 皇帝岗位在 `tianxia` 领地上，**不在 `centralPosts` 数组里**
-- 必须用 `findEmperorId(territories, centralPosts)`
-
-### 铨选语义
-- 候选人池效忠链指向**法理主体**，不指向经办人
-- `executeDismiss` 的 `dismisserId` 传**法理主体**，不传经办人
-
-### 纯函数分离
-- `engine/` 下的 Calc 模块必须是**纯函数**，不得调用 `getState()`
-- Utils 文件是便捷包装层，允许读 Store 后委派给纯函数
+道级 `capitalZhouId` 治所州随道级主岗联动（任命/罢免/继承/战争/铨选跳过/篡夺前置）。
+**注意**：`capitalZhouSeat` 不自带 `cascadeSecondaryOverlord`，需调用方手动补充。
 
 ### 好感系统双轨制
-好感（opinion）系统只有两种类型，**禁止使用 `setOpinion` + `decayable: false` 模式存储状态好感**：
-- **实时计算**（不存储在 relationships 中）：在 `calculateBaseOpinion` 中根据当前状态实时算出
-  - 特质/亲属/外交/正统性：从 Character 字段直接计算
-  - 政策好感（赋税等级/回拨率/辟署权/继承法/职类）：赋税和回拨率从 Character 字段计算，岗位相关从 `policyOpinionCache` 读取
-  - `policyOpinionCache`（TerritoryStore）：预计算每角色的辟署权/继承法/职类好感值。**无需手动刷新**——`updatePost`/`addPost`/`removePost` 在检测到 grantsControl 岗位的 `holderId`/`hasAppointRight`/`successionLaw`/`templateId` 变更时自动增量更新（`updateCharPolicyCache`），仅刷新受影响角色。全量 `refreshPolicyOpinionCache()` 只在 `initTerritories`/`initCentralPosts` 时调用一次
-- **事件存储**（`addOpinion`, `decayable: true`）：一次性事件触发，逐月衰减到消失
-  - 如：授予职位 +20、罢免 -20、拒绝效忠 -30、剥夺领地 -30
-  - 使用 `addOpinion` 追加（可叠加同 reason）
+- **实时计算**：`calculateBaseOpinion` 从状态算出（特质/亲属/正统性/政策），`policyOpinionCache` 自维护
+- **事件存储**：`addOpinion(decayable: true)` 一次性事件，逐月衰减
+- **禁止** `setOpinion` + `decayable: false`
 
-### 层级隔离（engine ↛ ui）
-- **`engine/` 禁止 import `@ui/` 的任何模块**，依赖方向只能是 `ui/ → engine/`
-- NPC 行为需要通知玩家时，使用 `engine/storyEventBus.ts`（Zustand store）推送纯数据事件，UI 层（`EventModal.tsx`）订阅渲染
-- `StoryEvent` / `StoryEventOption` / `StoryEventEffect` 类型定义在 `engine/storyEventBus.ts`，**不在 UI 层**
-- 新增 NPC 行为如需玩家决策/通知弹窗，统一调用 `useStoryEventBus.getState().pushStoryEvent(event)`
+### 层级隔离
+- `engine/` **禁止** import `@ui/`，通知玩家用 `storyEventBus.ts`
+- `ui/` 不写游戏逻辑，只读 Store + 调用 interaction
 
 ### UI 组件规范
-- 新建弹窗/流程组件**必须使用** `base/` 基础组件：`<Modal>`、`<ModalHeader>`、`<Button>`
-- `Modal` size：`sm`=max-w-sm / `md`=max-w-md / `lg`=max-w-lg / `xl`=max-w-4xl
-- `Button` variant：`default`（默认）/ `primary`（金色确认）/ `danger`（红色警告）/ `ghost`（无边框）/ `icon`（圆形图标）
-- 颜色、字号、圆角、阴影均通过 `index.css` 的 CSS 变量控制，**禁止在组件内硬编码颜色值**
-- 新弹窗禁止直接写 `fixed inset-0 bg-black/50` 遮罩，统一用 `<Modal>`
+- 弹窗用 `<Modal>` + `<ModalHeader>` + `<Button>`，禁止硬编码颜色/遮罩
+
+### 纯函数分离
+- `engine/` 下 Calc 模块必须是纯函数，不调 `getState()`
+- Utils 是包装层，允许读 Store 委派给纯函数
 
 ### 自我领主防御
-所有 `updateCharacter(X, { overlordId: Y })` 或 `batchMutate` 中 `c.overlordId = Y` 的赋值，**必须确保 X !== Y**（角色不能成为自己的领主）。典型危险场景：罢免前任回归人才池、治所清退、级联效忠回退——当操作者恰好就是被操作者时会触发。`CharacterStore` 中有 DEBUG `console.error` 监测。
-
-### 考课罢免
-- 考课罢免 grantsControl 岗位必须用 `executeDismiss(postId, appointerId, { vacateOnly: true })`
-- 三处统一：`reviewBehavior.ts`（NPC自动）/ `NpcEngine.ts`（玩家超时）/ `ReviewPlanFlow.tsx`（玩家手动）
-- 原因：正常罢免路径会让罢免者自动接管，导致皇帝/节度使直辖膨胀
+`updateCharacter(X, { overlordId: Y })` 必须确保 `X !== Y`。CharacterStore 有 DEBUG 监测。
 
 ### 辟署权与权限
-- **独立统治者自动辟署权**：角色变独立（`overlordId → undefined`）时，`ensureAppointRight` 为其所有 grantsControl 主岗授予 `hasAppointRight`。三个调用点：独立宣战（`declareWarAction`）、继承断链（`characterSystem`）、乱世进入（`eraSystem`）
-- **剥夺领地需辟署权**：`getRevokablePosts` 和 NPC `revokeBehavior` 校验 `resolveLegalAppointer(player, post) === player`，没有辟署权不能剥夺下属领地
-- **直接任命不需辟署权**：统治者可以把自己控制的领地封给臣属（封出自己的东西 vs 从别人手里抢，性质不同）
-- **铨选由辟署权路由**：`resolveAppointAuthority` 优先返回辟署权持有人，无辟署权才走朝廷（吏部/宰相/皇帝）
-- **考课由辟署权路由**：皇帝触发评分，但罢免权由 `resolveAppointAuthority` 分派给辟署权持有人
+- 独立统治者自动辟署权（`ensureAppointRight`，三个调用点）
+- 剥夺领地需辟署权；直接任命不需辟署权
+- 铨选/考课由辟署权路由（`resolveAppointAuthority`）
 
-### 授予领地约束
-- `canGrantTerritory` 禁止授出治所州（治所与道级主岗绑定，授出会导致治所分离）
-- `transferVassalBehavior` 的 receiver 品级必须**严格高于** vassal 品级（防止同级节度使互转）
+### 考课罢免
+grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`，三处统一。
 
 ### 其他规则
-- 批量操作**必须用 `batchMutate`**，禁止循环 `setState`
-- ID 生成**必须用 `crypto.randomUUID()`**，禁止自增计数器
-- `data/` 只存纯数据和索引，不放逻辑
-- `ui/` 不写游戏逻辑，只读 Store + 调用 interaction
-- `canShow()` 必须是廉价纯布尔判断
+- 批量操作用 `batchMutate`，禁止循环 `setState`
+- ID 用 `crypto.randomUUID()`
+- `data/` 只存数据；`canShow()` 必须廉价
 - 不引入新 npm 依赖（除非用户授权）
+- 皇帝用 `findEmperorId(territories, centralPosts)` 查找（不在 centralPosts 里）
+- 铨选 `dismisserId` 传法理主体，不传经办人
+- `canGrantTerritory` 禁止授出治所州
+- `transferVassalBehavior` receiver 品级严格高于 vassal
 
 ---
 
-## 六、NPC Engine（已日结化）
+## 六、NPC Engine（28 个行为，已日结化）
 
-- 28 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺 / 罢免 / 皇帝调任 / 宰相调任 / 调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率
-- `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
-- `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
-- `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
-- `maxActions` = `clamp(0, 3, round(1 + energy × 4))`，品级<9 上限 1
-- **哈希槽位调度**：`hash(actorId + ':' + behaviorId) % 28 + 1` 决定月内执行日
-- **品级分档频率**：王公(25+) 2次/月，节度使(17-24) 1次/月，刺史(12-16) 1次/2月，县令(0-11) 1次/3月
-- 新增行为：实现 `NpcBehavior` → `registerBehavior()` → 自动调度，默认从 playerMode 推断 schedule
-- **军事编制 AI**（`militaryAI.ts`，在 `militarySystem` 月结中调用，不走 NpcBehavior）：
-  - 建军：每 3 州 1 支军队（上限 10），选无己方军队驻扎的州
-  - 换将：commanderId 空缺自动补缺 + military 高 10+ 点时优化替换
-  - 调营：营数差距 >= 3 时从多的转弱营到少的
-  - 裁营：空壳营（strength < 100）直接解散 + 净粮草为负时裁弱营（每月最多 2 个）
-  - 跳过玩家，玩家手动管理军队
+行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠 | 政策：调税/调职类/调辟署权/调继承法/调回拨率 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
+
+- `playerMode`：`push-task` / `skip` / `auto-execute` / `standing`
+- `schedule`：`daily`（默认 push-task）/ `monthly-slot`（哈希槽位+品级分档）
+- 新增行为：`NpcBehavior` → `registerBehavior()` → 自动调度
+- 军事编制 AI（`militaryAI.ts`，militarySystem 中调用，跳过玩家）
 
 ---
 
-## 七、战争系统要点
+## 七、战争系统
 
-- **多方参战**：War 含 `attackerParticipants` / `defenderParticipants` 数组，两阵营联盟制；工具函数在 `warParticipantUtils.ts`；所有二元判断已替换
-- **召集参战**（`callToArmsBehavior`）：战争领袖 daily 召集直属臣属，NPC 按好感(1:1)/荣誉决定接受(基础60)或拒绝(-30好感)，玩家 push-task 通知（超时自动接受）；玩家可通过角色交互"召集参战"主动发起（二级弹窗：概率预览→结果）
-- **干涉战争**（`joinWarBehavior`）：NPC 领主 monthly-slot 主动加入臣属战争同一方，权重受好感/荣誉/兵力驱动；玩家通过角色交互"干涉战争"发起（`playerMode: skip`）
-- **退出战争**（`withdrawWarBehavior`）：参战者（非领袖）评估退出，保守权重；退出解散行营+好感-20
-- **合兵方案**：同一位置同阵营的多个行营合并 armyIds 打一场 `resolveBattle`，统帅取 military 最高者，败方统一撤退；围城中的行营被援军拉入战斗时自动解除围城
-- **领地阵营判定**（`isEnemyTerritoryInWar`）：沿效忠链找到第一个战争参与者判断阵营，避免高层领主在对方导致下级领地误判
-- **战分占领**：占领战分分母只看主防御者（war.defenderId）领土，分子统计己方阵营所有人的占领；战斗战分由行营归属自然归阵营
-- **角色死亡**：自动从参战者列表移除 + 解散行营
-- **宣战理由**：武力兼并（危世仅辟署权持有者可用，治世不可见）/ 法理宣称 / 独立
-- **独立战争**：宣战即脱离效忠，败北恢复
-- **关隘通行**：己方/臣属控制或己方占领 → 通行；被敌方占领 → 阻隔（即使原控制者是己方）
-- **行营 AI**：寻路→行军→围城→推进→撤退→重新出击，玩家行营跳过 AI
-- **战斗触发**：同一州的同战争敌对行营自动交战（含围城中行营），无战争关系不交战
-- **地图行营颜色**：金色=我军，绿色=友军，红色=敌军，灰色=中立
-- **战争悬浮图标**（`WarOverlay`）：右下角虎符图标 + 我方视角战分；点击展开详情面板（双方头像+战分条+兵力+盟友+和谈/投降/退出按钮）；多场战争可切换
-- **调兵驳回冷却**：驳回调兵方案后 180 天冷却，冷却期内不生成新草案
-- **对向行军拦截**：后置交叉检测（行军结算之后），仅当甲从 X→Y、乙从 Y→X **同一天互换位置**时触发，相遇在防守方原始位置；速度不一致时由常规战斗检测接手（`warSystem.ts`）
-- **地图行军 UI**：CK3 风格，在地图上点击选目的地，金色虚线显示路径
-- **停战协议**：战争结束后双方领袖 2 年（730 天）停战；违反额外 -30 名望 -20 正统性；NPC 权重 -20 基本不违反；WarStore.truces Map + 月结自动清理过期
-- **宣战权重平衡**：CB 基础权重分开（独立 -18、兼并 -3、法理 +2）；好感系数按 CB 差异化（独立 ×-0.5、法理 ×-0.2、兼并 ×-0.15）；成本公式 `|prestige|×0.5 + |legitimacy|×4` 重视正统性
+详见 **`docs/reference/war-system.md`**。要点：多方参战、合兵战斗、停战协议、CB 权重平衡、行营 AI、关隘通行。
 
 ---
 
 ## 八、当前开发阶段
 
-核心循环、继承、铨选、考课、正统性、NPC Engine（28 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
-
-### 最近完成
-- **外放内调（调任）交互**（2026-04-06）：京官↔有地臣属调任，有地者可拒绝（发动独立战争，类似剥夺领地）。品级匹配三档（五品以下↔州、五品到三品↔道、三品到一品↔国）。有地者交出所有领地只身入京，京官继承领地/臣属/军队/副岗。无好感变化。NPC 皇帝行为（制衡地方：长期任职/低好感/强军力加分，理性/多疑/勤奋性格加分）。NPC 宰相行为（忠诚型制衡 + 自私型政斗外放政敌）。宰相提案→StoryEvent 皇帝审批。新文件：`reassignCalc.ts`/`reassignAction.ts`/`ReassignFlow.tsx`/`reassignBehavior.ts`
-- **交互 canShow / 适用对象审查 + 辟署权修复**（2026-04-06）：逐场景审查所有岗位变动的对象条件（考课罢免/正常罢免/剥夺领地/铨选/直接任命/篡夺/继承/创建头衔/销毁头衔/皇帝销毁）。修复：(1) `ensureAppointRight` 统一入口——独立统治者自动获得辟署权（独立宣战/继承断链/乱世进入三处调用）；(2) 剥夺领地需辟署权校验（`getRevokablePosts` + NPC `revokeBehavior`）；(3) 独立统治者绝嗣兜底——臣属全部独立并获得辟署权；(4) eraSystem 去掉重复的 `hasAppointRight: true`，改由 `ensureAppointRight` 统一处理
-- **法理下级可选转移**（2026-04-05）：铨选/直接任命 grantsControl 岗位后，递归遍历所有法理后代（国→道→州），玩家可勾选转移（TransferChildrenFlow 弹窗，默认全选），NPC 自动全转移。铨选模式（deJure）：任命者的臣属 + 前任（vacatedHolderId）的臣属均可转移，其他领主的臣属不动；直接任命模式：仅转移任命者自己的臣属。新增 Post.vacatedHolderId 字段记录考课前任。好感：新任者对任命者+转授法理臣属好感（累加，公式同转移臣属）
-- **岗位变动原子操作重构**（2026-04-05）：新建 `official/postTransfer.ts` 提取 8 个原子操作（seatPost/vacatePost/syncArmyForPost/cascadeSecondaryOverlord/cascadeChildOverlord/capitalZhouSeat/capitalZhouVacate/destroyMainPost/refreshPostCaches）；改写 dismissAction/appointAction/usurpPostAction/warSettlement/characterSystem/destroyTitleDecision/createKingdomDecision/eraSystem 8 个文件，消除内联重复的副岗级联/治所联动/缓存刷新代码；`refreshPlayerLedger` 从 appointAction 迁移到 postTransfer，appointAction 保留 re-export 兼容
-- **NPC/皇帝直辖膨胀修复 + 转移臣属品级校验**（2026-04-05）：考课罢免 grantsControl 岗位改用 vacateOnly（避免罢免者自动接管）；`canGrantTerritory` 排除治所州（治所与道级主岗绑定不可单独授出）；`calcMaxActions` 最小值 0→1、基线 1→2、上限 3→4（知足特质不再瘫痪）；`transferVassalBehavior` 增加品级检查（receiver 品级必须严格高于 vassal）
-- **NPC 留后指定 + 停战协议 + 宣战权重平衡**（2026-04-05）：半年一次性格偏好选留后（年龄大权重+能力小权重，boldness/honor 调节，男性限定）；2 年停战协议（违反额外 -30 名望 -20 正统性，NPC 权重 -20）；人物栏新增当前战争（含战分）+ 外交（停战协议）；宣战权重分 CB 差异化（独立基础 -18、法理 +2、好感系数按 CB 分开、成本公式 `|prestige|×0.5 + |legitimacy|×4` 重视正统性）
-- **NPC 军事编制 AI**（2026-04-05）：`militaryAI.ts` 在 militarySystem 月结中自动执行（建军/换将/调营/裁营）；`estimateNetGrain` 提取到 militaryCalc.ts 共用；MilitaryStore ID 生成修复为 `crypto.randomUUID()`
-- **NPC 政策行为 + 好感实时化重构**（2026-04-05）：5 个政策行为 + 好感双轨制（实时计算+事件存储）+ `policyOpinionCache` 自维护 + 权限校验 `hasAuthorityOverPost` + 道/州职类独立
-- **NPC 罢免行为 + StoryEvent 下沉**（2026-04-05）
-- **决议系统 + 篡夺 + 头衔系统**（2026-04-05）
-- **多方参战系统**（2026-04-04）：召集/干涉/退出 + 合兵战斗 + 战争 UI + 地图行营四色
-- **效忠级联 + 铨选修复 + 通知系统三层重构**（2026-04-04~05）
+Phase 6（谋略+派系+事件）92%。详细进度见 `docs/milestones.md`。
 
 ### 尚未完成（当前优先）
-- 独立统治者可修改自己领地的继承法和辟署权（集权交互扩展）
+- 独立统治者修改继承法/辟署权（集权交互扩展）
 
 ### 尚未完成（后续系统）
-- 存档/读档 UI（底层已实现）
-- AI 史书（GameEvent → 大模型生成史书文本，事件 payload 需结构化补充）
-- 生育系统（宗法继承长期运转基础）
-- 人才自然生成（进士及第/举孝廉）
-- 非宗法皇位更替（禅让/篡位/权臣拥立）
-- 权知机制
-- 谋略/派系系统
-- 地图增强：选中领主高亮、封臣名标签、效忠链箭头、地图管理器（右下角）
-- 行营AI目标选择优化（都统性格+攻守态势）
-- 强力CB（一次宣战多个领地）
-- NPC Engine 旧 UI 兼容层清理（`TODO(phase6-cleanup)`）
+- 存档/读档 UI | AI 史书 | 生育系统 | 人才自然生成 | 非宗法皇位更替
+- 权知机制 | 谋略/派系 | 地图增强 | 行营AI优化 | 强力CB
 
----
-
-## 九、数据规模
-
-| 实体 | 当前 |
-|------|------|
-| 角色 | ~160（79 史实 + ~80 随机生成） |
-| 领地 | 72（1 天下 + 5 国 + 17 道 + 49 州） |
-| 军队 | 41 |
-| 营 | 366 |
-
-军事经济基准：1 牙兵 = 2 斛粮/月，征兵/补员 = 20 贯/兵
+### 测试原则
+- **测纯函数**（Calc/dateUtils/territoryUtils），**不测** Store 流转/NPC 决策
+- 必须写**具体期望数值**，禁止 `toBeGreaterThan(0)`
