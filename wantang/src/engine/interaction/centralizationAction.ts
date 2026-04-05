@@ -116,11 +116,31 @@ export function executeRedistributionChange(playerId: string, delta: number): vo
   refreshPlayerLedger();
 }
 
-/** 指定继承人 */
-export function executeDesignateHeir(postId: string, heirId: string | null, capitalPostId?: string): void {
+/** 指定继承人（留后唯一：所有宗法岗位共享同一继承人） */
+export function executeDesignateHeir(postId: string, heirId: string | null): void {
   const terrStore = useTerritoryStore.getState();
-  terrStore.updatePost(postId, { designatedHeirId: heirId });
-  if (capitalPostId) {
-    terrStore.updatePost(capitalPostId, { designatedHeirId: heirId });
+  const post = terrStore.findPost(postId);
+  if (!post?.holderId) return;
+
+  const allPosts = terrStore.getPostsByHolder(post.holderId);
+  const territories = terrStore.territories;
+
+  for (const p of allPosts) {
+    if (p.successionLaw !== 'clan') continue;
+    const tpl = positionMap.get(p.templateId);
+    if (!tpl?.grantsControl) continue;
+    terrStore.updatePost(p.id, { designatedHeirId: heirId });
+
+    // 治所联动
+    if (p.territoryId) {
+      const terr = territories.get(p.territoryId);
+      if (terr?.capitalZhouId) {
+        const capZhou = territories.get(terr.capitalZhouId);
+        const capPost = capZhou?.posts.find(cp => positionMap.get(cp.templateId)?.grantsControl);
+        if (capPost && capPost.holderId === post.holderId) {
+          terrStore.updatePost(capPost.id, { designatedHeirId: heirId });
+        }
+      }
+    }
   }
 }

@@ -9,6 +9,7 @@ import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
 import { getHeldPosts } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
+import { refreshPostCaches, ensureAppointRight } from '@engine/official/postTransfer';
 
 // ── 外部可调用：增加崩溃进度（如战争结算） ─────────────────────────────────────
 
@@ -110,22 +111,24 @@ function destroyEmperorPost(): void {
     });
   }
 
-  // 所有道级和国级的 grantsControl 主岗 → 辟署权 + 宗法继承（割据独立体制）
+  // 所有道级和国级的 grantsControl 主岗 → 宗法继承（割据独立体制）
   const freshTerrStore = useTerritoryStore.getState();
   for (const t of freshTerrStore.territories.values()) {
     if (t.tier !== 'dao' && t.tier !== 'guo') continue;
     for (const post of t.posts) {
       const tpl = positionMap.get(post.templateId);
       if (!tpl?.grantsControl) continue;
-      freshTerrStore.updatePost(post.id, {
-        hasAppointRight: true,
-        successionLaw: 'clan',
-      });
+      freshTerrStore.updatePost(post.id, { successionLaw: 'clan' });
     }
   }
 
-  useCharacterStore.getState().refreshIsRuler(
-    collectRulerIds(useTerritoryStore.getState().territories),
-  );
-  useTerritoryStore.getState().refreshExpectedLegitimacy();
+  // 独立统治者自动获得辟署权（通过统一入口）
+  const charStore2 = useCharacterStore.getState();
+  for (const [id, c] of charStore2.characters) {
+    if (c.alive && c.overlordId === undefined && c.isRuler) {
+      ensureAppointRight(id);
+    }
+  }
+
+  refreshPostCaches(undefined, true);
 }

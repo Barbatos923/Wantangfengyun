@@ -11,6 +11,8 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
+import { findAppointRightHolder } from '@engine/character/successionUtils';
+import { findEmperorId } from '@engine/official/postQueries';
 import { registerBehavior } from './index';
 
 // ── 辅助：判断角色是否在战争中 ──────────────────────────────
@@ -23,6 +25,7 @@ function isAtWar(charId: string, activeWars: NpcContext['activeWars']): boolean 
 
 function getVassalControlPosts(
   vassalId: string,
+  actorId: string,
   ctx: NpcContext,
 ): Post[] {
   const postIds = ctx.holderIndex.get(vassalId);
@@ -32,7 +35,17 @@ function getVassalControlPosts(
     const p = ctx.postIndex.get(pid);
     if (!p) continue;
     const tpl = positionMap.get(p.templateId);
-    if (tpl?.grantsControl) posts.push(p);
+    if (!tpl?.grantsControl) continue;
+    // 剥夺领地需要辟署权：actor 必须是该岗位的法理任命人
+    if (p.territoryId) {
+      const rightHolder = findAppointRightHolder(p.territoryId, ctx.territories);
+      if (rightHolder && rightHolder !== actorId) continue;
+      if (!rightHolder) {
+        const emperor = findEmperorId(ctx.territories, ctx.centralPosts);
+        if (emperor !== actorId) continue;
+      }
+    }
+    posts.push(p);
   }
   return posts;
 }
@@ -66,8 +79,8 @@ export const revokeBehavior: NpcBehavior<RevokeData> = {
       if (!vassal.alive || vassal.id === actor.id) continue;
       if (vassal.overlordId !== actor.id) continue;
 
-      // 获取臣属持有的 grantsControl 岗位
-      const controlPosts = getVassalControlPosts(vassal.id, ctx);
+      // 获取臣属持有的 grantsControl 岗位（需 actor 有辟署权）
+      const controlPosts = getVassalControlPosts(vassal.id, actor.id, ctx);
       if (controlPosts.length === 0) continue;
 
       // 好感条件：对该臣属不满

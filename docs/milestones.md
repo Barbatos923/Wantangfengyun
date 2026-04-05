@@ -238,6 +238,21 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 好感系数按 CB 差异化：独立 ×-0.5、法理 ×-0.2、兼并 ×-0.15
 - ✅ 成本公式重视正统性：`cbCost = |prestige|×0.5 + |legitimacy|×4`
 
+**交互 canShow / 适用对象审查 + 辟署权修复**（2026-04-06）：
+- ✅ 逐场景审查 10 个岗位变动场景的对象条件（考课罢免/正常罢免/剥夺领地/铨选/直接任命/篡夺/继承/创建头衔/销毁头衔/皇帝销毁）
+- ✅ `ensureAppointRight`（`postTransfer.ts`）：独立统治者自动获得辟署权，三个调用点（独立宣战/继承断链/乱世进入）
+- ✅ 剥夺领地辟署权校验：`getRevokablePosts`（玩家）+ `revokeBehavior`（NPC）均需操作者为法理任命人
+- ✅ `eraSystem` 去掉重复的 `hasAppointRight: true`，改由 `ensureAppointRight` 统一处理
+- ✅ 独立统治者绝嗣兜底：臣属全部独立 + `ensureAppointRight`
+- ✅ 确认直接任命不需辟署权（封出自己的领地不需要额外权限）
+
+**岗位变动原子操作重构 + 法理下级可选转移**（2026-04-05）：
+- ✅ `postTransfer.ts`：8 个原子操作 + 8 场景审查，5 处代码修复（cascadeChildOverlord 递归化、promoteOverlordIfNeeded、直接任命禁止替换、留后唯一+UI、AppointFlow 自持岗位可授出）
+- ✅ 法理下级可选转移：递归所有法理后代（国→道→州），铨选模式（deJure）任命者+前任臣属可转移、直接任命仅转移自己臣属
+- ✅ `Post.vacatedHolderId`：vacateOnly 时记录前任，供铨选法理转移判定
+- ✅ `TransferChildrenFlow.tsx`：玩家勾选弹窗（默认全选），NPC 自动全转移
+- ✅ 好感：新任者对任命者 +转授法理臣属（公式同转移臣属，累加）
+
 **NPC 直辖膨胀修复 + 转移臣属品级校验**（2026-04-05）：
 - ✅ 考课罢免 grantsControl 岗位改用 `vacateOnly: true`（三处：reviewBehavior / NpcEngine / ReviewPlanFlow）
 - ✅ `canGrantTerritory` 排除治所州（治所与道级主岗绑定，不可单独授出）

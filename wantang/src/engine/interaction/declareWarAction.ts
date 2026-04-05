@@ -6,6 +6,7 @@ import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
+import { ensureAppointRight } from '@engine/official/postTransfer';
 
 registerInteraction({
   id: 'declareWar',
@@ -65,6 +66,7 @@ export function executeDeclareWar(
     if (attacker?.overlordId === targetId) {
       useWarStore.getState().updateWar(war.id, { previousOverlordId: targetId });
       useCharacterStore.getState().updateCharacter(playerId, { overlordId: undefined });
+      ensureAppointRight(playerId);
     }
   }
 }

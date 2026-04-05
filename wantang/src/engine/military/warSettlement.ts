@@ -11,8 +11,16 @@ import type { War } from './types';
 import { TRUCE_DURATION_DAYS } from './types';
 import { isWarParticipant } from './warParticipantUtils';
 import { toAbsoluteDay } from '@engine/dateUtils';
-import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
+import { findEmperorId } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
+import {
+  seatPost,
+  syncArmyForPost,
+  cascadeSecondaryOverlord,
+  checkCapitalZhouLost,
+  refreshPostCaches,
+  promoteOverlordIfNeeded,
+} from '@engine/official/postTransfer';
 
 /**
  * 结束战争并按宣战理由分派结算。
@@ -89,42 +97,39 @@ function settleTerritorialWar(war: War, result: War['result']): void {
   if (result !== 'attackerWin') return; // 和谈/防方胜：无领地变动
 
   const terrStore = useTerritoryStore.getState();
-  const charStore = useCharacterStore.getState();
-  const milStore = useMilitaryStore.getState();
-  const territories = terrStore.territories;
+  const date = useTurnManager.getState().currentDate;
 
   for (const targetId of war.targetTerritoryIds) {
-    const terr = territories.get(targetId);
+    const terr = terrStore.territories.get(targetId);
     if (!terr) continue;
 
     // 转移主岗
     const mainPost = terr.posts.find((p) => positionMap.get(p.templateId)?.grantsControl === true);
     if (mainPost) {
-      terrStore.updatePost(mainPost.id, {
-        holderId: war.attackerId,
-        appointedBy: war.attackerId,
-      });
-      milStore.syncArmyOwnersByPost(mainPost.id, war.attackerId);
+      seatPost(mainPost.id, war.attackerId, war.attackerId, date);
+      syncArmyForPost(mainPost.id, war.attackerId);
     }
 
-    // 副岗持有人效忠关系转给攻方
-    for (const post of terr.posts) {
-      if (post === mainPost) continue; // 主岗已处理
-      if (!post.holderId) continue;
-      const holder = charStore.characters.get(post.holderId);
-      if (!holder || !holder.alive) continue;
-      if (holder.overlordId === war.attackerId) continue; // 已效忠攻方
-      charStore.updateCharacter(post.holderId, { overlordId: war.attackerId });
-    }
+    // 副岗持有人效忠关系强制转给攻方（无 prevHolderId 约束）
+    cascadeSecondaryOverlord(targetId, war.attackerId);
   }
 
   // 治所州被占 → 销毁父道主岗
   checkCapitalZhouLost(war.targetTerritoryIds);
 
-  // 领地转手后刷新缓存
-  useTerritoryStore.getState().refreshExpectedLegitimacy();
-  const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
-  useCharacterStore.getState().refreshIsRuler(rulerIds);
+  // 效忠链提升（攻方可能通过战争获得更高层级领地）
+  const TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
+  let maxTierRank = 0;
+  for (const tId of war.targetTerritoryIds) {
+    const t = terrStore.territories.get(tId);
+    if (t) maxTierRank = Math.max(maxTierRank, TIER_RANK[t.tier] ?? 0);
+  }
+  if (maxTierRank > 0) {
+    promoteOverlordIfNeeded(war.attackerId, maxTierRank);
+  }
+
+  // 领地转手后刷新缓存（全量刷新正统性）
+  refreshPostCaches(undefined, true);
 }
 
 // ── 独立战争结算 ────────────────────────────────────────────────────────
@@ -213,67 +218,5 @@ function disbandCampaigns(warId: string): void {
     }
 
     useWarStore.getState().disbandCampaign(campaign.id);
-  }
-}
-
-/**
- * 治所州失陷检查：若被转移的领地是某道的治所州，且新控制者不再是道主岗持有者，
- * 则销毁该道的 grantsControl 主岗。
- */
-function checkCapitalZhouLost(transferredTerritoryIds: string[]): void {
-  const terrStore = useTerritoryStore.getState();
-  const territories = terrStore.territories;
-
-  // 建立 capitalZhouId → daoId 反向映射
-  const capitalToDao = new Map<string, string>();
-  for (const t of territories.values()) {
-    if (t.tier === 'dao' && t.capitalZhouId) {
-      capitalToDao.set(t.capitalZhouId, t.id);
-    }
-  }
-
-  for (const tId of transferredTerritoryIds) {
-    const daoId = capitalToDao.get(tId);
-    if (!daoId) continue;
-
-    const dao = terrStore.territories.get(daoId);
-    if (!dao) continue;
-
-    const daoMainPost = dao.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
-    if (!daoMainPost?.holderId) continue;
-
-    // 治所州的新控制者
-    const capitalZhou = terrStore.territories.get(tId);
-    if (!capitalZhou) continue;
-    const capitalPost = capitalZhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
-    const newCapitalHolder = capitalPost?.holderId ?? null;
-
-    // 治所州已不在道主岗持有者手中 → 销毁道主岗 + 清空副岗
-    if (newCapitalHolder !== daoMainPost.holderId) {
-      const milStore = useMilitaryStore.getState();
-
-      // 先清空所有副岗
-      const freshDao = useTerritoryStore.getState().territories.get(daoId);
-      if (freshDao) {
-        for (const p of freshDao.posts) {
-          if (p.id === daoMainPost.id) continue;
-          if (p.holderId) {
-            useTerritoryStore.getState().updatePost(p.id, {
-              holderId: null, appointedBy: undefined, appointedDate: undefined,
-            });
-          }
-        }
-      }
-
-      // 主岗绑定军队变为私兵（postId → null，保留原 owner）
-      for (const army of milStore.armies.values()) {
-        if (army.postId === daoMainPost.id) {
-          milStore.updateArmy(army.id, { postId: null });
-        }
-      }
-
-      // 移除主岗
-      useTerritoryStore.getState().removePost(daoMainPost.id);
-    }
   }
 }

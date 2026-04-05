@@ -18,6 +18,12 @@ import { positionMap } from '@data/positions';
 import { rankMap } from '@data/ranks';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import type { TransferEntry } from '@engine/npc/types';
+import {
+  getTransferableChildren,
+  autoTransferChildrenAfterAppoint,
+} from '@engine/official/postTransfer';
+import type { TransferableChild } from '@engine/official/postTransfer';
+import TransferChildrenFlow from './TransferChildrenFlow';
 
 interface SelectionFlowProps {
   vacantPosts: Post[];
@@ -286,6 +292,15 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
   // 已确认的 postId 集合
   const [confirmed, setConfirmed] = useState<Set<string>>(new Set());
 
+  // 法理下级转移弹窗状态
+  const [transferState, setTransferState] = useState<{
+    newHolderId: string;
+    appointerId: string;
+    children: TransferableChild[];
+    /** 转移弹窗关闭后的回调（用于继续连锁扫描等） */
+    onDone: () => void;
+  } | null>(null);
+
   function getCandidatesForPost(post: Post): CandidateEntry[] {
     const executorId = resolveAppointAuthority(post);
     if (!executorId) return [];
@@ -419,10 +434,32 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
     const entry = candidates.find(c => c.character.id === candidateId);
     const vacateOldPost = entry?.tier === 'promote' || entry?.tier === 'transfer';
 
+    // 铨选模式：在 executeAppoint 之前读取前任 holderId（seatPost 后会被覆盖上下文）
+    const postTpl = positionMap.get(post.templateId);
+    const prevHolderId = (postTpl?.grantsControl && post.territoryId)
+      ? (useTerritoryStore.getState().findPost(post.id)?.vacatedHolderId ?? null)
+      : null;
+
     executeAppoint(post.id, candidateId, legalId, vacateOldPost);
 
     const newConfirmed = new Set(confirmed).add(post.id);
     setConfirmed(newConfirmed);
+
+    // 检查法理下级可选转移
+    if (postTpl?.grantsControl && post.territoryId) {
+      const children = getTransferableChildren(post.territoryId, candidateId, legalId, true, prevHolderId);
+      if (children.length > 0) {
+        setTransferState({
+          newHolderId: candidateId,
+          appointerId: legalId,
+          children,
+          onDone: () => {
+            if (vacateOldPost) rescanVacancies(currentPosts);
+          },
+        });
+        return; // 等待转移弹窗关闭后再继续
+      }
+    }
 
     // 升调/平调可能产生新空缺，立即扫描
     if (vacateOldPost) {
@@ -447,6 +484,8 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
       const vacateOldPost = entry?.tier === 'promote' || entry?.tier === 'transfer';
 
       executeAppoint(post.id, candidateId, legalId, vacateOldPost);
+      // 全部确认模式：自动转移法理下级
+      autoTransferChildrenAfterAppoint(post.id, legalId, true);
       confirmed.add(post.id);
     }
     setConfirmed(new Set(confirmed));
@@ -482,6 +521,22 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
 
   const pendingPosts = currentPosts.filter(p => !confirmed.has(p.id));
   const confirmableCount = pendingPosts.filter(p => (selections.get(p.id) ?? null) !== null).length;
+
+  // 法理下级转移弹窗
+  if (transferState) {
+    return (
+      <TransferChildrenFlow
+        newHolderId={transferState.newHolderId}
+        appointerId={transferState.appointerId}
+        children={transferState.children}
+        onClose={() => {
+          const { onDone } = transferState;
+          setTransferState(null);
+          onDone();
+        }}
+      />
+    );
+  }
 
   return (
     <Modal size="xl" onOverlayClick={onClose}>

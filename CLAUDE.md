@@ -101,21 +101,45 @@ src/
 
 ## 五、关键架构约定（必须遵守）
 
-### 岗位变动三连
-所有修改 `grantsControl` 岗位 `holderId` 的地方，**必须配套**：
-1. `syncArmyOwnersByPost(postId, newHolderId)` — 军队跟随岗位转移
-2. `refreshIsRuler(collectRulerIds(territories))` — 刷新统治者标记
-3. （如适用）`refreshExpectedLegitimacy()` — 正统性缓存
+### 岗位变动原子操作（`official/postTransfer.ts`）
 
-当前已在 8 处配套：`appointAction` / `dismissAction` / `revokeAction`（剥夺成功时调用 dismissAction）/ `characterSystem`（继承）/ `warSettlement` / `usurpPostAction`（篡夺）/ `createKingdomDecision`（创建岗位）/ `destroyTitleDecision`（销毁岗位）
+所有岗位持有人变更**必须通过 `postTransfer.ts` 的原子操作组合**，禁止内联写 `updatePost` + `syncArmyOwnersByPost` + 级联逻辑。
 
-### 岗位销毁清理
-销毁 grantsControl 主岗时，**必须配套**：
-1. 同领地副岗 `holderId` 全部清空
-2. 绑定军队 `postId → null`（变私兵，保留原 owner）
-3. 三连刷新（refreshIsRuler + refreshExpectedLegitimacy）
+#### 原子操作清单
 
-当前已在 3 处配套：`warSettlement`（治所失陷）/ `destroyTitleDecision`（决议销毁）/ `eraSystem`（皇帝自动销毁，tianxia 无副岗/军队）
+| 操作 | 函数 | 说明 |
+|------|------|------|
+| 就任 | `seatPost(postId, holderId, appointedBy, date, extra?)` | 设置 holderId + appointedBy + appointedDate |
+| 空缺 | `vacatePost(postId)` | 清空 holderId/appointedBy/appointedDate |
+| 军队跟随 | `syncArmyForPost(postId, newOwnerId)` | 岗位绑定军队 owner 转给新持有人 |
+| 军队脱离 | `detachArmiesFromPost(postId)` | 岗位绑定军队变私兵（postId → null） |
+| 副岗归附 | `cascadeSecondaryOverlord(terrId, newOverlordId, prevHolderId?)` | 同领地副岗持有人 overlordId → 新主岗持有人；prevHolderId 可选，不传则无条件更新（战争强制归附） |
+| 法理下级回退 | `cascadeChildOverlord(terrId, newOverlordId, prevHolderId)` | 法理下级主岗持有人中 overlordId===prevHolderId 的 → 回退给 newOverlordId |
+| 治所就任 | `capitalZhouSeat(daoTerrId, holderId, appointedBy, date, opts?)` | 道级→治所刺史联动就任；opts.checkCanTake=true 时检查治所是否可接管；opts.oldHolderId 约束仅旧人手中才联动 |
+| 治所空缺 | `capitalZhouVacate(daoTerrId, oldHolderId?)` | 道级→治所刺史联动空缺 |
+| 治所失陷 | `checkCapitalZhouLost(transferredTerrIds)` | 检查被转移的州是否为某道治所→销毁道级主岗 |
+| 销毁主岗 | `destroyMainPost(postId, terrId)` | 清空副岗 + 军队变私兵 + removePost |
+| 查询可转移下级 | `getTransferableChildren(terrId, newHolderId)` | 返回法理直接下级中 overlordId!=newHolderId 的主岗持有人列表 |
+| 转移下级 | `transferChildren(charIds, newOverlordId)` | 批量设置 overlordId（玩家勾选后调用） |
+| 自动转移下级 | `autoTransferChildrenAfterAppoint(postId)` | 任命后自动转移所有可转移法理下级（NPC 用） |
+| 独立辟署权 | `ensureAppointRight(charId)` | 独立统治者自动获得辟署权（overlordId→undefined 时调用） |
+| 缓存刷新 | `refreshPostCaches(charIds?, fullRefresh?)` | refreshIsRuler + updateExpectedLegitimacy + refreshPlayerLedger |
+| 玩家账本 | `refreshPlayerLedger()` | 重算玩家月度收支（也从 appointAction re-export 保持兼容） |
+
+#### 各场景调用的原子操作
+
+| 场景 | seatPost | vacatePost | syncArmy | cascadeSecondary | cascadeChild | capitalZhou | refreshCaches |
+|------|----------|------------|----------|-----------------|--------------|-------------|---------------|
+| **考课罢免**（vacateOnly） | | `vacatePost` | | | | | `refreshPostCaches` |
+| **正常罢免**（剥夺领地成功） | `seatPost(dismisser)` | | `syncArmyForPost` | `cascadeSecondary(dismisser, prev)` | `cascadeChild(dismisser, prev)` | `capitalZhouSeat(dismisser)` | `refreshPostCaches` |
+| **铨选任命** | `seatPost(appointee)` | | `syncArmyForPost` | `cascadeSecondary(appointee)` | 可选转移（deJure：任命者+前任臣属） | `capitalZhouSeat(checkCanTake)` | `refreshPostCaches` |
+| **直接任命** | `seatPost(appointee)` | | `syncArmyForPost` | `cascadeSecondary(appointee)` | 可选转移（仅任命者臣属） | `capitalZhouSeat(checkCanTake)` | `refreshPostCaches` |
+| **篡夺** | `seatPost(actor)` | | `syncArmyForPost` | `cascadeSecondary(actor)` | 不执行 | `capitalZhouSeat(oldHolder)` | `refreshPostCaches` |
+| **继承** | `seatPost(heir)` | `vacatePost`（流官） | `syncArmyForPost` | | | `capitalZhouSeat`/`Vacate` | `refreshPostCaches(full)` |
+| **战争结算** | `seatPost(attacker)` | | `syncArmyForPost` | `cascadeSecondary(attacker)`（无条件） | 不执行 | `checkCapitalZhouLost` | `refreshPostCaches(full)` |
+| **创建头衔** | （addPost） | | `syncArmyForPost` | | | `capitalZhouSeat` | `refreshPostCaches(full)` |
+| **销毁头衔** | | | | | | | `destroyMainPost` + `refreshPostCaches` |
+| **皇帝销毁**（eraSystem） | | | | | | | `removePost` + `refreshPostCaches(full)` |
 
 ### 治所州联动
 道级领地的 `capitalZhouId` 治所州是道的附属品：
@@ -127,11 +151,25 @@ src/
 - **道级篡夺/创建** → 必须控制治所州作为前置条件
 
 ### 效忠关系级联
-主岗（grantsControl）易手时，效忠关系自动级联更新：
-- **离任级联**（`executeDismiss`）：法理下级主岗持有人 + 本领地副岗持有人的 `overlordId` 回退给接管者（dismisserId）
-- **就任级联**（`executeAppoint`）：本领地副岗持有人自动归附新任者；法理下级刺史**不自动**转移，由就任者通过要求效忠收服
-- **铨选调动**（`vacateOldPost=true`）：旧 grantsControl 岗位走 `executeDismiss(skipOpinion: true)` 复用级联且无好感惩罚；新任者 overlordId 沿 parentId 找法理上级主岗持有人
-- **单独任命**（`vacateOldPost` 为 false）：新任者 overlordId 直接指向 appointerId（保持现状）
+主岗（grantsControl）易手时，效忠关系按场景不同分别级联：
+
+#### 副岗持有人（`cascadeSecondaryOverlord`）
+- **正常罢免**：overlordId 原指向被罢免者的 → 回退给 dismisserId（有 prevHolderId 约束）
+- **任命/篡夺**：overlordId → 新持有人（无 prevHolderId 约束，无条件归附）
+- **战争结算**：强制 overlordId → 攻方（无条件）
+- **考课罢免（vacateOnly）**：不级联（由后续 executeAppoint 处理）
+
+#### 法理下级主岗持有人（`cascadeChildOverlord`）
+- **正常罢免**：overlordId 原指向被罢免者的 → 回退给 dismisserId
+- **铨选任命**（deJure 模式）：递归所有法理后代，任命者臣属 + 前任（vacatedHolderId）臣属可选转移，其他领主臣属不动
+- **直接任命**：递归所有法理后代，仅任命者自己的臣属可转移
+- **篡夺/战争结算**：不级联
+- **考课罢免（vacateOnly）**：不级联，vacatePost 记录 vacatedHolderId 供后续铨选使用
+
+#### 被任命者自身的 overlordId
+- **铨选调动**（`vacateOldPost=true`）：沿 parentId 找法理上级主岗持有人
+- **直接任命**（`vacateOldPost=false`）：直接 = appointerId
+- **副岗任命**：= 本领地 grantsControl 主岗持有人
 
 ### 私兵继承
 - `postId: null` 的军队不受 `syncArmyOwnersByPost` 管理
@@ -179,6 +217,13 @@ src/
 - 考课罢免 grantsControl 岗位必须用 `executeDismiss(postId, appointerId, { vacateOnly: true })`
 - 三处统一：`reviewBehavior.ts`（NPC自动）/ `NpcEngine.ts`（玩家超时）/ `ReviewPlanFlow.tsx`（玩家手动）
 - 原因：正常罢免路径会让罢免者自动接管，导致皇帝/节度使直辖膨胀
+
+### 辟署权与权限
+- **独立统治者自动辟署权**：角色变独立（`overlordId → undefined`）时，`ensureAppointRight` 为其所有 grantsControl 主岗授予 `hasAppointRight`。三个调用点：独立宣战（`declareWarAction`）、继承断链（`characterSystem`）、乱世进入（`eraSystem`）
+- **剥夺领地需辟署权**：`getRevokablePosts` 和 NPC `revokeBehavior` 校验 `resolveLegalAppointer(player, post) === player`，没有辟署权不能剥夺下属领地
+- **直接任命不需辟署权**：统治者可以把自己控制的领地封给臣属（封出自己的东西 vs 从别人手里抢，性质不同）
+- **铨选由辟署权路由**：`resolveAppointAuthority` 优先返回辟署权持有人，无辟署权才走朝廷（吏部/宰相/皇帝）
+- **考课由辟署权路由**：皇帝触发评分，但罢免权由 `resolveAppointAuthority` 分派给辟署权持有人
 
 ### 授予领地约束
 - `canGrantTerritory` 禁止授出治所州（治所与道级主岗绑定，授出会导致治所分离）
@@ -243,6 +288,9 @@ src/
 核心循环、继承、铨选、考课、正统性、NPC Engine（26 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
+- **交互 canShow / 适用对象审查 + 辟署权修复**（2026-04-06）：逐场景审查所有岗位变动的对象条件（考课罢免/正常罢免/剥夺领地/铨选/直接任命/篡夺/继承/创建头衔/销毁头衔/皇帝销毁）。修复：(1) `ensureAppointRight` 统一入口——独立统治者自动获得辟署权（独立宣战/继承断链/乱世进入三处调用）；(2) 剥夺领地需辟署权校验（`getRevokablePosts` + NPC `revokeBehavior`）；(3) 独立统治者绝嗣兜底——臣属全部独立并获得辟署权；(4) eraSystem 去掉重复的 `hasAppointRight: true`，改由 `ensureAppointRight` 统一处理
+- **法理下级可选转移**（2026-04-05）：铨选/直接任命 grantsControl 岗位后，递归遍历所有法理后代（国→道→州），玩家可勾选转移（TransferChildrenFlow 弹窗，默认全选），NPC 自动全转移。铨选模式（deJure）：任命者的臣属 + 前任（vacatedHolderId）的臣属均可转移，其他领主的臣属不动；直接任命模式：仅转移任命者自己的臣属。新增 Post.vacatedHolderId 字段记录考课前任。好感：新任者对任命者+转授法理臣属好感（累加，公式同转移臣属）
+- **岗位变动原子操作重构**（2026-04-05）：新建 `official/postTransfer.ts` 提取 8 个原子操作（seatPost/vacatePost/syncArmyForPost/cascadeSecondaryOverlord/cascadeChildOverlord/capitalZhouSeat/capitalZhouVacate/destroyMainPost/refreshPostCaches）；改写 dismissAction/appointAction/usurpPostAction/warSettlement/characterSystem/destroyTitleDecision/createKingdomDecision/eraSystem 8 个文件，消除内联重复的副岗级联/治所联动/缓存刷新代码；`refreshPlayerLedger` 从 appointAction 迁移到 postTransfer，appointAction 保留 re-export 兼容
 - **NPC/皇帝直辖膨胀修复 + 转移臣属品级校验**（2026-04-05）：考课罢免 grantsControl 岗位改用 vacateOnly（避免罢免者自动接管）；`canGrantTerritory` 排除治所州（治所与道级主岗绑定不可单独授出）；`calcMaxActions` 最小值 0→1、基线 1→2、上限 3→4（知足特质不再瘫痪）；`transferVassalBehavior` 增加品级检查（receiver 品级必须严格高于 vassal）
 - **NPC 留后指定 + 停战协议 + 宣战权重平衡**（2026-04-05）：半年一次性格偏好选留后（年龄大权重+能力小权重，boldness/honor 调节，男性限定）；2 年停战协议（违反额外 -30 名望 -20 正统性，NPC 权重 -20）；人物栏新增当前战争（含战分）+ 外交（停战协议）；宣战权重分 CB 差异化（独立基础 -18、法理 +2、好感系数按 CB 分开、成本公式 `|prestige|×0.5 + |legitimacy|×4` 重视正统性）
 - **NPC 军事编制 AI**（2026-04-05）：`militaryAI.ts` 在 militarySystem 月结中自动执行（建军/换将/调营/裁营）；`estimateNetGrain` 提取到 militaryCalc.ts 共用；MilitaryStore ID 生成修复为 `crypto.randomUUID()`
@@ -253,10 +301,10 @@ src/
 - **效忠级联 + 铨选修复 + 通知系统三层重构**（2026-04-04~05）
 
 ### 尚未完成（当前优先）
-- 铨选调动时法理下级刺史的可选转移（CK3 风格，玩家可选是否同时转给新任者）
+- "调任"交互：零好感成本岗位互调，适用皇帝/独立统治者/辟署权持有者/宰相
+- 独立统治者可修改自己领地的继承法和辟署权（集权交互扩展）
 
 ### 尚未完成（后续系统）
-- 铨选调动时法理下级刺史的可选转移（CK3 风格，玩家可选是否同时转给新任者）
 - 存档/读档 UI（底层已实现）
 - AI 史书（GameEvent → 大模型生成史书文本，事件 payload 需结构化补充）
 - 生育系统（宗法继承长期运转基础）

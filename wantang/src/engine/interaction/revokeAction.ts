@@ -15,6 +15,7 @@ import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { random } from '@engine/random';
+import { resolveLegalAppointer } from '@engine/official/selectionUtils';
 
 /** 注册剥夺领地交互 */
 registerInteraction({
@@ -37,7 +38,9 @@ export function getRevokablePosts(
   const posts = terrStore.getPostsByHolder(target.id);
   return posts.filter(p => {
     const tpl = positionMap.get(p.templateId);
-    return tpl?.grantsControl === true;
+    if (!tpl?.grantsControl) return false;
+    // 剥夺领地需要辟署权：操作者必须是该岗位的法理任命人
+    return resolveLegalAppointer(player.id, p) === player.id;
   });
 }
 

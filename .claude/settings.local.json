@@ -72,7 +72,8 @@
       "Bash(find /d/桌面/CC/wantang/src/engine/official -name *selection* -o -name *appoint*)",
       "Bash(/dev/null:*)",
       "Bash(find:*)",
-      "WebFetch(domain:www.anthropic.com)"
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(ls *.json)"
     ]
   }
 }

@@ -1,7 +1,7 @@
-// ===== 任命职位流程（层级折叠 + 状态显示 + 替换确认）=====
+// ===== 任命职位流程（层级折叠 + 状态显示）=====
 
 import { useState, useMemo } from 'react';
-import { Modal, ModalHeader, Button } from './base';
+import { Modal, ModalHeader } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { getAppointablePosts, executeAppoint } from '@engine/interaction';
@@ -12,6 +12,9 @@ import { childInstitutions } from '@data/institutions';
 import { getEffectiveMinRank } from '@engine/official/selectionUtils';
 import type { Post, Territory } from '@engine/territory/types';
 import type { Institution } from '@engine/official/types';
+import { getTransferableChildren } from '@engine/official/postTransfer';
+import type { TransferableChild } from '@engine/official/postTransfer';
+import TransferChildrenFlow from './TransferChildrenFlow';
 
 // ── 一级机构显示顺序（六部作为尚书省子机构，不单独列出）──
 const INSTITUTION_ORDER: Institution[] = [
@@ -36,7 +39,13 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
   const [expandedGuos, setExpandedGuos] = useState<Set<string>>(new Set());
   const [expandedDaos, setExpandedDaos] = useState<Set<string>>(new Set());
   const [expandedInsts, setExpandedInsts] = useState<Set<string>>(new Set());
-  const [confirmPost, setConfirmPost] = useState<Post | null>(null); // 替换确认
+  // 法理下级转移弹窗
+  const [transferState, setTransferState] = useState<{
+    newHolderId: string;
+    appointerId: string;
+    children: TransferableChild[];
+  } | null>(null);
+  // 任命只能对空缺岗位，替换须先走罢免/剥夺流程
 
   if (!player || !target) return null;
 
@@ -118,7 +127,10 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
     const isOccupied = !!holderChar;
 
     const check = canAppointToPost(player!, target!, post);
-    const disabled = !check.ok;
+    // 已占岗位禁止直接替换——须先走罢免/剥夺领地流程（自己持有的岗位可以直接授予）
+    const isHeldByPlayer = post.holderId === player!.id;
+    const occupiedReason = isOccupied && !isHeldByPlayer ? '需先罢免现任' : undefined;
+    const disabled = !check.ok || (isOccupied && !isHeldByPlayer);
 
     return (
       <button
@@ -126,12 +138,17 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
         disabled={disabled}
         onClick={() => {
           if (disabled) return;
-          if (isOccupied) {
-            setConfirmPost(post); // 需要确认替换
-          } else {
-            executeAppoint(post.id, targetId, player!.id);
-            onClose();
+          executeAppoint(post.id, targetId, player!.id);
+          // 检查法理下级可选转移
+          const postTpl = positionMap.get(post.templateId);
+          if (postTpl?.grantsControl && post.territoryId) {
+            const children = getTransferableChildren(post.territoryId, targetId, player!.id);
+            if (children.length > 0) {
+              setTransferState({ newHolderId: targetId, appointerId: player!.id, children });
+              return;
+            }
           }
+          onClose();
         }}
         className={`w-full flex items-center justify-between px-3 py-2 rounded border text-left transition-colors ${
           disabled
@@ -149,8 +166,8 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
         </div>
         <div className="flex flex-col items-end gap-0.5 shrink-0">
           <span className="text-xs text-[var(--color-text-muted)]">{rankLabel}</span>
-          {check.reason && (
-            <span className="text-xs text-[var(--color-accent-red)]">{check.reason}</span>
+          {(occupiedReason || check.reason) && (
+            <span className="text-xs text-[var(--color-accent-red)]">{occupiedReason ?? check.reason}</span>
           )}
         </div>
       </button>
@@ -177,37 +194,18 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
     );
   }
 
-  // ── 替换确认弹窗 ──
-  if (confirmPost) {
-    const tpl = positionMap.get(confirmPost.templateId);
-    const holderChar = confirmPost.holderId ? characters.get(confirmPost.holderId) : undefined;
-    const terrName = confirmPost.territoryId ? territories.get(confirmPost.territoryId)?.name : undefined;
-    const postLabel = terrName ? `${terrName}${tpl?.name}` : (tpl?.name ?? confirmPost.id);
-
+  // ── 法理下级转移弹窗 ──
+  if (transferState) {
     return (
-      <Modal size="sm" onOverlayClick={() => setConfirmPost(null)}>
-        <ModalHeader title="确认替换" onClose={() => setConfirmPost(null)} />
-        <div className="p-5 flex flex-col gap-4">
-          <p className="text-sm text-[var(--color-text)]">
-            将 <span className="font-bold text-[var(--color-accent-gold)]">{holderChar?.name}</span> 从
-            <span className="font-bold"> {postLabel}</span> 罢免，改任
-            <span className="font-bold text-[var(--color-accent-gold)]"> {target.name}</span>？
-          </p>
-          <div className="flex gap-2 justify-end">
-            <Button variant="default" size="sm" onClick={() => setConfirmPost(null)}>取消</Button>
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => {
-                executeAppoint(confirmPost.id, targetId, player!.id);
-                onClose();
-              }}
-            >
-              确认替换
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <TransferChildrenFlow
+        newHolderId={transferState.newHolderId}
+        appointerId={transferState.appointerId}
+        children={transferState.children}
+        onClose={() => {
+          setTransferState(null);
+          onClose();
+        }}
+      />
     );
   }
 

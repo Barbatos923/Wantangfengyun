@@ -5,13 +5,19 @@ import type { Post } from '@engine/territory/types';
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
-import { collectRulerIds } from '@engine/official/postQueries';
 import { EventPriority } from '@engine/types';
 import { canUsurpPost, calcRealmControlRatio, calcPostManageCost } from '@engine/official/postManageCalc';
+import {
+  seatPost,
+  syncArmyForPost,
+  cascadeSecondaryOverlord,
+  capitalZhouSeat,
+  refreshPostCaches,
+  promoteOverlordIfNeeded,
+} from '@engine/official/postTransfer';
 
 /** 注册篡夺交互 */
 registerInteraction({
@@ -91,72 +97,44 @@ export function executeUsurp(postId: string, actorId: string): void {
   const territory = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
   const tpl = positionMap.get(post.templateId);
 
-  // 扣除资源
+  // ── 扣除资源 ──
   const tier = territory?.tier ?? 'dao';
   const cost = calcPostManageCost('usurp', tier);
   charStore.addResources(actorId, { money: -cost.money, prestige: -cost.prestige });
 
-  // 更新岗位持有人
-  terrStore.updatePost(postId, {
-    holderId: actorId,
-    appointedBy: actorId,
-    appointedDate: { year: date.year, month: date.month, day: date.day },
-  });
+  // ── 岗位易手 ──
+  seatPost(postId, actorId, actorId, date);
 
-  // 篡夺者好感惩罚
+  // ── 好感惩罚 ──
   charStore.addOpinion(oldHolderId, actorId, {
     reason: '篡夺者',
     value: -40,
     decayable: true,
   });
 
-  // 本领地副岗持有人归附新持有者（与 executeAppoint 级联逻辑一致）
-  if (territory) {
-    const freshTerr = useTerritoryStore.getState().territories.get(territory.id);
-    if (freshTerr) {
-      const cascadeIds: string[] = [];
-      for (const p of freshTerr.posts) {
-        if (positionMap.get(p.templateId)?.grantsControl) continue;
-        if (!p.holderId || p.holderId === actorId) continue;
-        const holder = charStore.getCharacter(p.holderId);
-        if (holder?.alive && holder.overlordId !== actorId) {
-          cascadeIds.push(p.holderId);
-        }
-      }
-      if (cascadeIds.length > 0) {
-        charStore.batchMutate(chars => {
-          for (const cid of cascadeIds) {
-            const c = chars.get(cid);
-            if (c) c.overlordId = actorId;
-          }
-        });
-      }
-    }
+  // ── 副岗持有人归附篡夺者 ──
+  if (post.territoryId) {
+    cascadeSecondaryOverlord(post.territoryId, actorId);
   }
 
-  // 道级篡夺：治所州联动转移（仅当治所仍在旧持有者手中）
-  if (territory && territory.tier === 'dao' && territory.capitalZhouId) {
-    const capZhou = useTerritoryStore.getState().territories.get(territory.capitalZhouId);
-    if (capZhou) {
-      const capPost = capZhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
-      if (capPost && capPost.holderId === oldHolderId) {
-        useTerritoryStore.getState().updatePost(capPost.id, {
-          holderId: actorId,
-          appointedBy: actorId,
-          appointedDate: { year: date.year, month: date.month, day: date.day },
-        });
-        useMilitaryStore.getState().syncArmyOwnersByPost(capPost.id, actorId);
-      }
-    }
+  // ── 治所联动（仅当治所仍在旧持有者手中） ──
+  if (post.territoryId) {
+    capitalZhouSeat(post.territoryId, actorId, actorId, date, {
+      oldHolderId,
+    });
   }
 
-  // 配套三连
-  useMilitaryStore.getState().syncArmyOwnersByPost(postId, actorId);
-  charStore.refreshIsRuler(collectRulerIds(useTerritoryStore.getState().territories));
-  useTerritoryStore.getState().updateExpectedLegitimacy(actorId);
-  useTerritoryStore.getState().updateExpectedLegitimacy(oldHolderId);
+  // ── 军队 ──
+  syncArmyForPost(postId, actorId);
 
-  // 记录事件
+  // ── 效忠链提升（篡夺后与原 overlord 平级则上溯） ──
+  const TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
+  promoteOverlordIfNeeded(actorId, TIER_RANK[tier] ?? 0);
+
+  // ── 缓存 ──
+  refreshPostCaches([actorId, oldHolderId]);
+
+  // ── 记录事件 ──
   const actorName = charStore.getCharacter(actorId)?.name ?? '';
   const oldHolderName = charStore.getCharacter(oldHolderId)?.name ?? '';
   useTurnManager.getState().addEvent({

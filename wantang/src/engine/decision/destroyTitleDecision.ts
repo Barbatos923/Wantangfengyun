@@ -4,13 +4,12 @@ import { registerDecision } from './registry';
 import type { DecisionTarget } from './types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
-import { collectRulerIds } from '@engine/official/postQueries';
 import { canDestroyPost, calcPostManageCost } from '@engine/official/postManageCalc';
 import { EventPriority } from '@engine/types';
 import type { Post } from '@engine/territory/types';
+import { destroyMainPost, refreshPostCaches } from '@engine/official/postTransfer';
 
 // ── 查询辅助 ──────────────────────────────────────────────────
 
@@ -61,32 +60,15 @@ export function executeDestroyTitle(actorId: string, postId: string): void {
     }
   }
 
-  // 清空同领地副岗
+  // 清空副岗 + 军队变私兵 + 移除主岗
   if (territory) {
-    for (const p of territory.posts) {
-      if (p.id === postId) continue;
-      if (p.holderId) {
-        terrStore.updatePost(p.id, {
-          holderId: null, appointedBy: undefined, appointedDate: undefined,
-        });
-      }
-    }
+    destroyMainPost(postId, territory.id);
+  } else {
+    terrStore.removePost(postId);
   }
 
-  // 绑定军队变为私兵（postId → null，保留原 owner）
-  const milStore = useMilitaryStore.getState();
-  for (const army of milStore.armies.values()) {
-    if (army.postId === postId) {
-      milStore.updateArmy(army.id, { postId: null });
-    }
-  }
-
-  // 移除主岗
-  terrStore.removePost(postId);
-
-  // 配套三连
-  charStore.refreshIsRuler(collectRulerIds(useTerritoryStore.getState().territories));
-  useTerritoryStore.getState().updateExpectedLegitimacy(actorId);
+  // 缓存刷新
+  refreshPostCaches([actorId]);
 
   // 记录事件
   useTurnManager.getState().addEvent({

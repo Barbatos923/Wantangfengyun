@@ -8,13 +8,18 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
-import { getActualController, getHeldPosts, calculateMonthlyLedger } from '@engine/official/officialUtils';
+import { getActualController, getHeldPosts } from '@engine/official/officialUtils';
 import { getHighestBaseLegitimacy, getRankLegitimacyCap } from '@engine/official/legitimacyCalc';
 import { getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
-import { useLedgerStore } from '@engine/official/LedgerStore';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
-import { collectRulerIds } from '@engine/official/postQueries';
 import { executeDismiss } from './dismissAction';
+import {
+  seatPost,
+  vacatePost,
+  syncArmyForPost,
+  cascadeSecondaryOverlord,
+  capitalZhouSeat,
+  refreshPostCaches,
+} from '@engine/official/postTransfer';
 
 /** 注册任命交互 */
 registerInteraction({
@@ -106,28 +111,17 @@ function collectPostsInSubtree(
   }
 }
 
-/** 任命/罢免后立即重算玩家 ledger */
-export function refreshPlayerLedger(): void {
-  const charStore = useCharacterStore.getState();
-  const playerId = charStore.playerId;
-  if (!playerId) return;
-  const player = charStore.getCharacter(playerId);
-  if (!player) return;
-  const territories = useTerritoryStore.getState().territories;
-  const characters = charStore.characters;
-  const ledger = calculateMonthlyLedger(player, territories, characters);
-  useLedgerStore.getState().updatePlayerLedger(ledger);
-}
+// refreshPlayerLedger 已迁移至 postTransfer.ts，此处 re-export 保持向后兼容
+export { refreshPlayerLedger } from '@engine/official/postTransfer';
 
-/** 执行任命：统一流程，零特殊分支 */
+/** 执行任命：统一流程 */
 export function executeAppoint(
   postId: string,
   appointeeId: string,
   appointerId: string,
   vacateOldPost?: boolean,
 ): void {
-  // 升调/平调：先清空候选人的当前岗位
-  // grantsControl 岗位走 executeDismiss 以级联更新法理臣属效忠关系，skipOpinion 跳过好感惩罚
+  // ── 升调/平调：先清空候选人的当前岗位 ──
   if (vacateOldPost) {
     const ts = useTerritoryStore.getState();
     const currentPosts = ts.getPostsByHolder(appointeeId);
@@ -137,7 +131,7 @@ export function executeAppoint(
         if (pTpl?.grantsControl) {
           executeDismiss(p.id, appointerId, { skipOpinion: true, vacateOnly: true });
         } else {
-          ts.updatePost(p.id, { holderId: null, appointedBy: undefined, appointedDate: undefined });
+          vacatePost(p.id);
         }
       }
     }
@@ -147,11 +141,10 @@ export function executeAppoint(
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
-  // 0. 如果岗位已有人 → 先罢免前任
+  // ── 0. 如果岗位已有人 → 先处理前任 ──
   const currentPost = terrStore.findPost(postId);
   const previousHolderId = currentPost?.holderId;
   if (previousHolderId && previousHolderId !== appointeeId && previousHolderId !== appointerId) {
-    // 好感减损（前任是自己时跳过，如授予领地场景）
     const tpl = positionMap.get(currentPost!.templateId);
     if (tpl) {
       const penalty = -Math.floor(5 + (tpl.minRank / 29) * 25);
@@ -161,30 +154,24 @@ export function executeAppoint(
         decayable: true,
       });
     }
-    // overlordId 回归任命者
     charStore.updateCharacter(previousHolderId, { overlordId: appointerId });
   }
 
-  // 1. 设置岗位
+  // ── 1. 设置岗位 ──
   const post = terrStore.findPost(postId);
   const appointee = charStore.getCharacter(appointeeId);
-  const baselineUpdate: Record<string, unknown> = {
-    holderId: appointeeId,
-    appointedBy: appointerId,
-    appointedDate: { year: date.year, month: date.month, day: date.day },
-  };
-  // 流官岗位：重置考课基线（任期从此刻起算）
+  const extra: Partial<Post> = {};
   if (post?.successionLaw === 'bureaucratic') {
     const terr = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
-    baselineUpdate.reviewBaseline = {
+    extra.reviewBaseline = {
       population: terr?.basePopulation ?? 0,
       virtue: appointee?.official?.virtue ?? 0,
       date: { year: date.year, month: date.month, day: date.day },
     };
   }
-  terrStore.updatePost(postId, baselineUpdate);
+  seatPost(postId, appointeeId, appointerId, date, extra);
 
-  // 2. 确保效忠关系
+  // ── 2. 确保效忠关系 ──
   let effectiveOverlord = appointerId;
   if (post) {
     const postTpl = positionMap.get(post.templateId);
@@ -209,41 +196,21 @@ export function executeAppoint(
   }
   charStore.updateCharacter(appointeeId, { overlordId: effectiveOverlord });
 
-  // 3. 该岗位绑定的军队随岗位转移给被任命者
-  useMilitaryStore.getState().syncArmyOwnersByPost(postId, appointeeId);
+  // ── 3. 军队随岗位转移 ──
+  syncArmyForPost(postId, appointeeId);
 
-  // 3.5 就任主岗时：本领地副岗持有人归附新任者
+  // ── 4. 副岗持有人归附新任者 ──
   if (post) {
     const postTpl = positionMap.get(post.templateId);
     if (postTpl?.grantsControl && post.territoryId) {
-      const terr = terrStore.territories.get(post.territoryId);
-      if (terr) {
-        const cascadeIds: string[] = [];
-        for (const p of terr.posts) {
-          if (positionMap.get(p.templateId)?.grantsControl) continue;
-          if (!p.holderId || p.holderId === appointeeId) continue;
-          const holder = charStore.getCharacter(p.holderId);
-          if (holder?.alive && holder.overlordId !== appointeeId) {
-            cascadeIds.push(p.holderId);
-          }
-        }
-        if (cascadeIds.length > 0) {
-          charStore.batchMutate(chars => {
-            for (const cid of cascadeIds) {
-              const c = chars.get(cid);
-              if (c) c.overlordId = appointeeId;
-            }
-          });
-        }
-      }
+      cascadeSecondaryOverlord(post.territoryId, appointeeId);
     }
   }
 
-  // 4. 好感修正：被任命者对任命者好感增加（按品级，可衰减）
+  // ── 5. 好感修正 ──
   if (post) {
     const tpl = positionMap.get(post.templateId);
     if (tpl) {
-      // minRank 1~29，映射到好感 +5~+30
       const opinion = Math.floor(5 + (tpl.minRank / 29) * 25);
       charStore.addOpinion(appointeeId, appointerId, {
         reason: `授予${tpl.name}`,
@@ -253,7 +220,7 @@ export function executeAppoint(
     }
   }
 
-  // 5. 正统性刷新：任命后刷新至岗位 baseLegitimacy（受品位 Cap 约束）
+  // ── 6. 正统性刷新 ──
   {
     const freshAppointee = charStore.getCharacter(appointeeId);
     if (freshAppointee) {
@@ -272,61 +239,36 @@ export function executeAppoint(
     }
   }
 
-  // 6. 治所联动：道级 grantsControl 岗位 → 自动任命治所刺史
+  // ── 7. 治所联动 ──
   if (post) {
     const postTpl = positionMap.get(post.templateId);
     if (postTpl?.grantsControl && post.territoryId) {
+      const capitalExtra: Partial<Post> = {};
+      // 治所流官也需要重置考课基线
       const dao = terrStore.territories.get(post.territoryId);
       if (dao?.capitalZhouId) {
         const capitalZhou = terrStore.territories.get(dao.capitalZhouId);
         if (capitalZhou) {
-          const capitalPost = capitalZhou.posts.find(p => {
-            const t = positionMap.get(p.templateId);
-            return t?.grantsControl === true;
-          });
-          // 仅当治所刺史空缺或仍由任命方势力控制时才联动（被敌方占领的治所不强覆盖）
-          const capitalHolderId = capitalPost?.holderId ?? null;
-          const canTakeCapital = capitalPost && capitalPost.holderId !== appointeeId && (
-            !capitalHolderId ||
-            capitalHolderId === appointerId ||
-            charStore.getCharacter(capitalHolderId)?.overlordId === appointerId
-          );
-          if (canTakeCapital && capitalPost) {
-            // 清退治所前任（如有，前任是自己时跳过）
-            if (capitalPost.holderId && capitalPost.holderId !== appointerId) {
-              charStore.updateCharacter(capitalPost.holderId, { overlordId: appointerId });
-            }
-            const capitalUpdate: Record<string, unknown> = {
-              holderId: appointeeId,
-              appointedBy: appointerId,
-              appointedDate: { year: date.year, month: date.month, day: date.day },
+          const capPost = capitalZhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
+          if (capPost?.successionLaw === 'bureaucratic') {
+            capitalExtra.reviewBaseline = {
+              population: capitalZhou.basePopulation,
+              virtue: appointee?.official?.virtue ?? 0,
+              date: { year: date.year, month: date.month, day: date.day },
             };
-            if (capitalPost.successionLaw === 'bureaucratic') {
-              capitalUpdate.reviewBaseline = {
-                population: capitalZhou.basePopulation,
-                virtue: appointee?.official?.virtue ?? 0,
-                date: { year: date.year, month: date.month, day: date.day },
-              };
-            }
-            terrStore.updatePost(capitalPost.id, capitalUpdate);
-            useMilitaryStore.getState().syncArmyOwnersByPost(capitalPost.id, appointeeId);
           }
         }
       }
+      capitalZhouSeat(post.territoryId, appointeeId, appointerId, date, {
+        checkCanTake: true,
+        appointerId,
+        extra: capitalExtra,
+      });
     }
   }
 
-  // 7. 立即重算玩家 ledger
-  refreshPlayerLedger();
-
-  // 8. 更新正统性预期缓存
-  useTerritoryStore.getState().updateExpectedLegitimacy(appointeeId);
-  if (previousHolderId && previousHolderId !== appointeeId) {
-    useTerritoryStore.getState().updateExpectedLegitimacy(previousHolderId);
-  }
-
-  // 9. 刷新 isRuler（岗位持有人变化）
-  const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
-  useCharacterStore.getState().refreshIsRuler(rulerIds);
-
+  // ── 8. 缓存刷新 ──
+  const affectedIds = [appointeeId];
+  if (previousHolderId && previousHolderId !== appointeeId) affectedIds.push(previousHolderId);
+  refreshPostCaches(affectedIds);
 }

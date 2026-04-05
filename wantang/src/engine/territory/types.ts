@@ -59,6 +59,11 @@ export interface Post {
   };
   /** 上次考课获得的加成（上等 +20，中等 0） */
   reviewBonus?: number;
+
+  // ===== 铨选辅助 =====
+  /** vacateOnly 时记录前任持有人 ID，seatPost 时自动清除。
+   *  用于铨选时判定哪些法理下级可跟随新任者转移。 */
+  vacatedHolderId?: string | null;
 }
 
 /** 领地完整数据 */

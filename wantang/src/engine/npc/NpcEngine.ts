@@ -9,6 +9,7 @@ import { findEmperorId } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { useNpcStore } from './NpcStore';
 import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
+import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
 import { calcMaxActions } from '@engine/character/personalityUtils';
@@ -50,6 +51,7 @@ import './behaviors/adjustRedistributionBehavior';
 export function executeTransferPlan(plan: TransferPlan): void {
   for (const entry of plan.entries) {
     executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+    autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
   }
 }
 
@@ -138,6 +140,7 @@ function handleDraftSubmission(date: GameDate): void {
     }
     for (const entry of deduped.values()) {
       executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+      autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
     }
   }
   npcStore.setDraftPlan(null);
@@ -155,6 +158,7 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       const data = task.data as { entries: TransferPlan['entries'] };
       for (const entry of data.entries) {
         executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+        autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
       }
     } else if (task.type === 'review') {
       // 玩家超时未处理考课 → 自动执行所有罢免

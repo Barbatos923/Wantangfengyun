@@ -18,10 +18,18 @@ import { calcPersonality } from '@engine/character/personalityUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { useTurnManager } from '@engine/TurnManager';
-import { collectRulerIds } from '@engine/official/postQueries';
 import { useWarStore } from '@engine/military/WarStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { disbandParticipantCampaigns } from '@engine/interaction/withdrawWarAction';
+import {
+  seatPost,
+  vacatePost,
+  syncArmyForPost,
+  capitalZhouSeat,
+  capitalZhouVacate,
+  refreshPostCaches,
+  ensureAppointRight,
+} from '@engine/official/postTransfer';
 
 export function runCharacterSystem(date: GameDate): void {
   const charStore = useCharacterStore.getState();
@@ -103,46 +111,22 @@ export function runCharacterSystem(date: GameDate): void {
             console.log(`[继承] ${terrName} ${tplName}: 死者=${charStore.getCharacter(deadId)?.name} → receiver=${receiverChar?.name}(${receiver}) heir=${heir ? '宗法' : '绝嗣上交'}`);
           }
           if (receiver) {
-            terrStore.updatePost(post.id, {
-              holderId: receiver,
-              appointedBy: heir ? 'succession' : 'escheat',
-              appointedDate: { year: date.year, month: date.month, day: date.day },
-            });
-            milStore.syncArmyOwnersByPost(post.id, receiver);
+            const appointedBy = heir ? 'succession' : 'escheat';
+            seatPost(post.id, receiver, appointedBy, date);
+            syncArmyForPost(post.id, receiver);
 
             // 治所联动：道级岗位继承时，治所一并转给继承人
             if (post.territoryId) {
-              const dao = territories.get(post.territoryId);
-              if (dao?.capitalZhouId) {
-                const capZhou = territories.get(dao.capitalZhouId);
-                const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-                if (capPost && capPost.holderId === deadId) {
-                  terrStore.updatePost(capPost.id, {
-                    holderId: receiver,
-                    appointedBy: heir ? 'succession' : 'escheat',
-                    appointedDate: { year: date.year, month: date.month, day: date.day },
-                  });
-                  milStore.syncArmyOwnersByPost(capPost.id, receiver);
-                }
-              }
+              capitalZhouSeat(post.territoryId, receiver, appointedBy, date, {
+                oldHolderId: deadId,
+              });
             }
           } else {
-            terrStore.updatePost(post.id, {
-              holderId: null, appointedBy: undefined, appointedDate: undefined,
-            });
+            vacatePost(post.id);
 
             // 治所联动：道级岗位无人继承时，治所也空缺
             if (post.territoryId) {
-              const dao = territories.get(post.territoryId);
-              if (dao?.capitalZhouId) {
-                const capZhou = territories.get(dao.capitalZhouId);
-                const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-                if (capPost && capPost.holderId === deadId) {
-                  terrStore.updatePost(capPost.id, {
-                    holderId: null, appointedBy: undefined, appointedDate: undefined,
-                  });
-                }
-              }
+              capitalZhouVacate(post.territoryId, deadId);
             }
           }
 
@@ -151,22 +135,11 @@ export function runCharacterSystem(date: GameDate): void {
 
         } else {
           // 流官 / 副岗：一律空缺
-          terrStore.updatePost(post.id, {
-            holderId: null, appointedBy: undefined, appointedDate: undefined,
-          });
+          vacatePost(post.id);
 
           // 治所联动：道级流官空缺时，治所也空缺
           if (positionMap.get(post.templateId)?.grantsControl && post.territoryId) {
-            const dao = territories.get(post.territoryId);
-            if (dao?.capitalZhouId) {
-              const capZhou = territories.get(dao.capitalZhouId);
-              const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-              if (capPost && capPost.holderId === deadId) {
-                terrStore.updatePost(capPost.id, {
-                  holderId: null, appointedBy: undefined, appointedDate: undefined,
-                });
-              }
-            }
+            capitalZhouVacate(post.territoryId, deadId);
           }
 
           // grantsControl 主岗位记录名称，稍后汇总发事件
@@ -216,6 +189,20 @@ export function runCharacterSystem(date: GameDate): void {
             }
           }
         });
+      } else {
+        // 独立统治者绝嗣：臣属全部独立
+        const freedIds: string[] = [];
+        charStore.batchMutate(chars => {
+          for (const [id, c] of chars) {
+            if (c.overlordId === deadId && c.alive) {
+              chars.set(id, { ...c, overlordId: undefined });
+              freedIds.push(id);
+            }
+          }
+        });
+        for (const fid of freedIds) {
+          ensureAppointRight(fid);
+        }
       }
 
       // 继承人的 overlordId 继承死者的效忠关系（皇帝→undefined，节度使→皇帝）
@@ -223,6 +210,9 @@ export function runCharacterSystem(date: GameDate): void {
       if (primaryHeir) {
         const inheritedOverlord = deadChar.overlordId === primaryHeir ? undefined : deadChar.overlordId;
         charStore.updateCharacter(primaryHeir, { overlordId: inheritedOverlord });
+        if (inheritedOverlord === undefined) {
+          ensureAppointRight(primaryHeir);
+        }
       }
 
       // 三、好感继承：对死者的好感 × 0.5 转为对继承人的初始好感
@@ -320,12 +310,9 @@ export function runCharacterSystem(date: GameDate): void {
     }
   }
 
-  // 死亡/继承完成后刷新缓存
+  // 死亡/继承完成后刷新缓存（全量）
   if (deadIds.length > 0) {
-    useTerritoryStore.getState().refreshExpectedLegitimacy();
-    // 岗位持有人变化 → 刷新 isRuler
-    const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
-    useCharacterStore.getState().refreshIsRuler(rulerIds);
+    refreshPostCaches(undefined, true);
   }
 
   // ===== 2. 角色压力结算（批量） =====
@@ -429,4 +416,3 @@ export function runCharacterSystem(date: GameDate): void {
     }
   }
 }
-

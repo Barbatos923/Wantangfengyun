@@ -54,7 +54,7 @@ const TABS: { key: TabKey; label: string }[] = [
 
 const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('status');
-  const [heirPickerPost, setHeirPickerPost] = useState<Post | null>(null);
+  const [showHeirPicker, setShowHeirPicker] = useState(false);
 
   const playerId = useCharacterStore((s) => s.playerId);
   const player = useCharacterStore((s) => (playerId ? s.characters.get(playerId) : undefined));
@@ -71,6 +71,15 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
   const nextThreshold = nextRankDef?.virtueThreshold ?? rankDef?.virtueThreshold ?? 1;
   const virtueProgress = Math.min(1, nextThreshold > 0 ? virtue / nextThreshold : 1);
   const salary = player ? calculateSalary(player) : { money: 0, grain: 0 };
+
+  // 留后（唯一）：取第一个宗法 grantsControl 岗位的 designatedHeirId
+  const firstClanPost = heldPosts.find(p =>
+    p.successionLaw === 'clan' && positionMap.get(p.templateId)?.grantsControl,
+  );
+  const hasClanPost = !!firstClanPost;
+  const currentHeirChar = firstClanPost?.designatedHeirId
+    ? characters.get(firstClanPost.designatedHeirId) : undefined;
+  const heirAlive = currentHeirChar?.alive;
 
   // ── Tab 3 helpers: 官署（效忠于玩家的角色，按有地/无地分组）──
   const vassalsWithLand: Character[] = [];
@@ -169,6 +178,44 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                     )}
                   </div>
 
+                  {/* Heir — 留后唯一 */}
+                  {hasClanPost && (
+                    <div className="px-3 py-3 rounded border border-[var(--color-border)]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-[var(--color-text-muted)]">我的继承人</span>
+                        <button
+                          className={`text-xs px-2 py-0.5 rounded border transition-colors ${
+                            heirAlive
+                              ? 'text-[var(--color-accent-gold)] border-[var(--color-accent-gold)]/40 hover:bg-[var(--color-accent-gold)]/10'
+                              : 'text-[var(--color-text-muted)] border-[var(--color-border)] hover:text-[var(--color-text)]'
+                          }`}
+                          onClick={() => setShowHeirPicker(!showHeirPicker)}
+                        >
+                          {heirAlive ? currentHeirChar!.name : '未指定'}
+                        </button>
+                      </div>
+                      {showHeirPicker && player && firstClanPost && (
+                        <div className="mt-2">
+                          <HeirPicker
+                            post={firstClanPost}
+                            playerId={player.id}
+                            characters={characters}
+                            currentDate={undefined}
+                            onSelect={(charId) => {
+                              executeDesignateHeir(firstClanPost.id, charId);
+                              setShowHeirPicker(false);
+                            }}
+                            onClear={() => {
+                              executeDesignateHeir(firstClanPost.id, null);
+                              setShowHeirPicker(false);
+                            }}
+                            onClose={() => setShowHeirPicker(false)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Positions */}
                   <div>
                     <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-2 uppercase tracking-wide">
@@ -183,17 +230,6 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                           if (!posDef) return null;
                           const territoryName = post.territoryId
                             ? territories.get(post.territoryId)?.name
-                            : undefined;
-                          const isClan = post.successionLaw === 'clan';
-                          const heirChar = post.designatedHeirId ? characters.get(post.designatedHeirId) : undefined;
-                          const heirAlive = heirChar?.alive;
-                          // 治所州主岗：由道级联动，继承人只读
-                          const isCapitalZhou = !!(post.territoryId && posDef.grantsControl
-                            && Array.from(territories.values()).some(t => t.tier === 'dao' && t.capitalZhouId === post.territoryId));
-                          // 道级岗位：找到其治所州主岗 ID，用于联动
-                          const daoTerr = post.territoryId ? territories.get(post.territoryId) : undefined;
-                          const capitalPostId = (daoTerr?.tier === 'dao' && daoTerr.capitalZhouId && posDef.grantsControl)
-                            ? territories.get(daoTerr.capitalZhouId)?.posts.find(p => positionMap.get(p.templateId)?.grantsControl)?.id
                             : undefined;
                           return (
                             <div
@@ -210,42 +246,7 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                                     {territoryName && ` · ${territoryName}`}
                                   </span>
                                 </div>
-                                {isClan && isCapitalZhou && heirAlive && (
-                                  <span className="text-xs px-2 py-0.5 rounded border shrink-0 ml-2 text-[var(--color-text-muted)] border-[var(--color-border)]">
-                                    继承人: {heirChar!.name}（随道级）
-                                  </span>
-                                )}
-                                {isClan && !isCapitalZhou && (
-                                  <button
-                                    className={`text-xs px-2 py-0.5 rounded border shrink-0 ml-2 transition-colors ${
-                                      heirAlive
-                                        ? 'text-[var(--color-accent-gold)] border-[var(--color-accent-gold)]/40 hover:bg-[var(--color-accent-gold)]/10'
-                                        : 'text-[var(--color-text-muted)] border-[var(--color-border)] hover:text-[var(--color-text)]'
-                                    }`}
-                                    onClick={() => setHeirPickerPost(heirPickerPost?.id === post.id ? null : post)}
-                                  >
-                                    {heirAlive ? `继承人: ${heirChar!.name}` : '指定继承人'}
-                                  </button>
-                                )}
                               </div>
-                              {/* 继承人选人面板 */}
-                              {heirPickerPost?.id === post.id && player && (
-                                <HeirPicker
-                                  post={post}
-                                  playerId={player.id}
-                                  characters={characters}
-                                  currentDate={undefined}
-                                  onSelect={(charId) => {
-                                    executeDesignateHeir(post.id, charId, capitalPostId);
-                                    setHeirPickerPost(null);
-                                  }}
-                                  onClear={() => {
-                                    executeDesignateHeir(post.id, null, capitalPostId);
-                                    setHeirPickerPost(null);
-                                  }}
-                                  onClose={() => setHeirPickerPost(null)}
-                                />
-                              )}
                             </div>
                           );
                         })}

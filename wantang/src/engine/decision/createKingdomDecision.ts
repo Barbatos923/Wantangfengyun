@@ -5,16 +5,15 @@ import type { DecisionTarget } from './types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { EventPriority } from '@engine/types';
-import { collectRulerIds } from '@engine/official/postQueries';
 import {
   canCreatePost,
   calcRealmControlRatio,
   calcPostManageCost,
 } from '@engine/official/postManageCalc';
 import type { Post, TerritoryTier } from '@engine/territory/types';
+import { syncArmyForPost, capitalZhouSeat, refreshPostCaches, promoteOverlordIfNeeded } from '@engine/official/postTransfer';
 
 // ── 确定领地对应的 grantsControl 模板 ID ─────────────────────
 
@@ -88,26 +87,16 @@ export function executeCreateKingdom(
     }
   }
 
-  // dao 级：自动授予治所州（复用任命的治所联动）
-  if (territory.tier === 'dao' && territory.capitalZhouId) {
-    const capitalZhou = terrStore.territories.get(territory.capitalZhouId);
-    if (capitalZhou) {
-      const capPost = capitalZhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
-      if (capPost && capPost.holderId !== actorId) {
-        useTerritoryStore.getState().updatePost(capPost.id, {
-          holderId: actorId,
-          appointedBy: actorId,
-          appointedDate: { year: date.year, month: date.month, day: date.day },
-        });
-        useMilitaryStore.getState().syncArmyOwnersByPost(capPost.id, actorId);
-      }
-    }
+  // dao 级：自动授予治所州
+  if (territory.tier === 'dao') {
+    capitalZhouSeat(territoryId, actorId, actorId, date);
   }
 
-  // 配套三连
-  useMilitaryStore.getState().syncArmyOwnersByPost(newPost.id, actorId);
-  charStore.refreshIsRuler(collectRulerIds(useTerritoryStore.getState().territories));
-  useTerritoryStore.getState().refreshExpectedLegitimacy();
+  // 军队 + 效忠链提升 + 缓存
+  syncArmyForPost(newPost.id, actorId);
+  const TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
+  promoteOverlordIfNeeded(actorId, TIER_RANK[territory.tier] ?? 0);
+  refreshPostCaches(undefined, true);
 
   // 记录事件
   const eventType = territory.tier === 'guo' ? '称王' : '建镇';

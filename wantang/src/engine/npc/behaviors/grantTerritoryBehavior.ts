@@ -7,6 +7,7 @@ import { positionMap } from '@data/positions';
 import { getDirectControlLimit, getVassals } from '@engine/official/postQueries';
 import { canGrantTerritory } from '@engine/official/appointValidation';
 import { executeAppoint } from '@engine/interaction';
+import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
@@ -141,6 +142,7 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
       if (!grant) break;
 
       executeAppoint(grant.postId, vassal.id, actor.id);
+      autoTransferChildrenAfterAppoint(grant.postId, actor.id);
     }
   },
 };
