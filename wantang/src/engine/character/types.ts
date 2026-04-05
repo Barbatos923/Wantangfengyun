@@ -94,4 +94,5 @@ export interface Character {
 
   // 交互冷却（absoluteDay）
   lastDemandFealtyDay?: number;
+  lastDemandRightsDay?: number;
 }

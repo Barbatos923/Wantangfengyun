@@ -14,6 +14,7 @@ import './revokeAction';
 import './joinWarAction';
 import './usurpPostAction';
 import './reassignAction';
+import './demandRightsAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -45,3 +46,13 @@ export {
   getCentralCandidates,
 } from '@engine/official/reassignCalc';
 export type { ReassignCandidate } from '@engine/official/reassignCalc';
+export {
+  getDemandablePosts,
+  getDemandablePostsFromCtx,
+  canDemandRightsPure,
+  calcDemandRightsChance,
+  previewDemandRights,
+  executeDemandRights,
+  DEMAND_RIGHTS_COOLDOWN_DAYS,
+} from './demandRightsAction';
+export type { DemandableRight, DemandablePost, DemandRightsChanceResult, DemandRightsResult } from './demandRightsAction';
