@@ -1,0 +1,535 @@
+ Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+ Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+autoseed @ seedrandom.js?v=5fd3b264:517
+seedrandom @ seedrandom.js?v=5fd3b264:440
+(anonymous) @ random.ts:3
+ [政策] 清海使 → 高骈：赋税 一般(2) → 放任(1)
+ [军编] 杜悰：凤翔军 补将 → 刘远恩（military=17）
+ [军编] 郑从谠：河东军 补将 → 李国昌（military=28）
+ [军编] 张允伸：卢龙军 补将 → 张允伸（military=23）
+ [军编] 王景崇：成德军 补将 → 王景崇（military=19）
+ [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+ [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-1288）
+ [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=712）
+ [军编] 拓跋思恭：定难军 补将 → 拓跋思恭（military=26）
+ [军编] 拓跋思恭：财政裁营 定难军铁骑第1营（strength=1000，净粮草=-5196）
+ [军编] 拓跋思恭：财政裁营 定难军铁骑第2营（strength=1000，净粮草=-2696）
+ [军编] 崔彦曾：淮南军 补将 → 裴远恩（military=13）
+ [军编] 刘潼：西川军 补将 → 刘潼（military=12）
+ [军编] 萧邺：兴元军 补将 → 杜远恩（military=12）
+ [军编] 卢潘：朔方军 补将 → 卢潘（military=21）
+ [军编] 李弘甫：泾原军 补将 → 李弘甫（military=21）
+ [军编] 张淮深：归义军 补将 → 张淮深（military=24）
+ [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+ [军编] 孙谠：遂州军 补将 → 孙谠（military=10）
+ [军编] 高骈：安南军 补将 → 高骈（military=30）
+ [军编] 李国昌：沙陀骑 补将 → 李国昌（military=28）
+ [军编] 邠宁使：邠宁军 补将 → 拓跋思恭（military=26）
+ [军编] 同华使：同华军 补将 → 吴远恩（military=12）
+ [军编] 陕虢使：陕虢军 补将 → 陕虢使（military=10）
+ [军编] 昭义使：昭义军 补将 → 昭义使（military=17）
+ [军编] 义武使：义武军 补将 → 义武使（military=16）
+ [军编] 宣武使：建军「汴州军」驻汴州
+ [军编] 宣武使：汴州军 补将 → 宣武使（military=18）
+ [军编] 义成使：义成军 补将 → 义成使（military=11）
+ [军编] 天平使：天平军 补将 → 天平使（military=10）
+ [军编] 泰宁使：泰宁军 补将 → 泰宁使（military=15）
+ [军编] 武宁使：建军「徐州军」驻徐州
+ [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+ [军编] 平卢使：建军「青州军」驻青州
+ [军编] 平卢使：青州军 补将 → 蔡远恩（military=17）
+ [军编] 忠武使：忠武军 补将 → 忠武使（military=11）
+ [军编] 奉国使：奉国军 补将 → 奉国使（military=16）
+ [军编] 山南东使：山南东道军 补将 → 武昌使（military=16）
+ [军编] 荆南使：荆南军 补将 → 荆南使（military=10）
+ [军编] 武昌使：武昌军 补将 → 武昌使（military=16）
+ [军编] 镇海使：镇海军 补将 → 温远恩（military=16）
+ [军编] 镇东使：镇东军 补将 → 严远恩（military=17）
+ [军编] 威武使：威武军 补将 → 威武使（military=15）
+ [军编] 宣歙使：宣歙军 补将 → 王承恩（military=14）
+ [军编] 镇南使：镇南军 补将 → 陈承恩（military=17）
+ [军编] 湖南使：湖南军 补将 → 湖南使（military=10）
+ [军编] 东川使：东川军 补将 → 东川使（military=11）
+ [军编] 清海使：清海军 补将 → 高骈（military=30）
+ [军编] 岭南西使：岭南西道军 补将 → 岭南西使（military=16）
+ [军编] 静江使：静江军 补将 → 静江使（military=10）
+ [军编] 天水使：天水军 补将 → 天水使（military=17）
+ [军编] 拓跋思恭：财政裁营 定难军轻骑第1营（strength=1000，净粮草=-189）
+ [军编] 拓跋思恭：财政裁营 定难军轻骑第2营（strength=1000，净粮草=2011）
+ [战争] 宣战：韩允中 → 义成使（武力兼并）
+ [政策] 宣武使 → 义成使：赋税 一般(2) → 放任(1)
+ [政策] 邠宁使 → 同华使：赋税 一般(2) → 放任(1)
+ [岗位变动] 滑州 防御使: char-npc-yicheng → char-hanyunzhong (由char-hanyunzhong任命)
+ [战争] 结束：韩允中 vs 义成使（武力兼并）→ 韩允中获胜
+ [岗位变动] 滑州 防御使: char-hanyunzhong → char-han-junxiong (由char-hanyunzhong任命)
+ [军编] 韩君雄：建军「滑州军」驻滑州
+ [军编] 韩君雄：滑州军 补将 → 韩君雄（military=20）
+ [留后] 郑从谠（河东道节度使）指定留后：郑延球
+ [留后] 张允伸（河北道·幽州节度使）指定留后：张简会
+ [留后] 张允伸（幽州防御使）指定留后：张简会
+ [留后] 张允伸（瀛州防御使）指定留后：张简会
+ [留后] 王景崇（河北道·成德节度使）指定留后：王崇文
+ [留后] 王景崇（镇州防御使）指定留后：王崇文
+ [留后] 王景崇（冀州防御使）指定留后：王崇文
+ [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+ [留后] 韩允中（魏州防御使）指定留后：韩君雄
+ [留后] 韩允中（相州防御使）指定留后：韩君雄
+ [留后] 崔彦曾（淮南道观察使）指定留后：崔知和
+ [留后] 刘潼（剑南道观察使）指定留后：无
+ [留后] 萧邺（山南西道节度使）指定留后：无
+ [留后] 李弘甫（陇右道节度使）指定留后：无
+ [留后] 张淮深（河西道节度使）指定留后：无
+ [留后] 邠宁使（关内道节度使）指定留后：无
+ [留后] 宣武使（河南道观察使）指定留后：无
+ [留后] 山南东使（山南东道观察使）指定留后：无
+ [留后] 镇海使（江南东道观察使）指定留后：无
+ [留后] 镇南使（江南西道观察使）指定留后：无
+ [留后] 清海使（岭南道观察使）指定留后：无
+ [政策] 宣武使 → 天平使：赋税 一般(2) → 放任(1)
+ [战争] 宣战：高骈 → 清海使（独立）
+ [政策] 宣武使 → 忠武使：赋税 一般(2) → 放任(1)
+ [军编] 岭南西使：建军「邕州军」驻邕州
+ [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+ [军编] 静江使：建军「桂州军」驻桂州
+ [军编] 静江使：桂州军 补将 → 静江使（military=10）
+ [战争] 宣战：卢潘 → 邠宁使（独立）
+ [政策] 宣武使 → 泰宁使：赋税 一般(2) → 放任(1)
+ [军编] 贾惟庆：建军「坊州军」驻坊州
+ [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+ [战争] 宣战：王景崇 → 义武使（武力兼并）
+ [战争] 结束：高骈 vs 清海使（独立）→ 高骈获胜
+ [军编] 清海使：建军「广州军」驻广州
+ [军编] 清海使：广州军 补将 → 岭南西使（military=16）
+ [战争] 宣战：张允伸 → 平卢使（武力兼并）
+ [留后] 宣武使（河南道观察使）指定留后：韩君雄
+ [岗位变动] 定州 防御使: char-npc-yiwu → char-wangjingchong (由char-wangjingchong任命)
+ [战争] 结束：王景崇 vs 义武使（武力兼并）→ 王景崇获胜
+ [战争] 结束：卢潘 vs 邠宁使（独立）→ 邠宁使获胜
+ [岗位变动] 青州 防御使: char-npc-pinglu → char-zhangyunshen (由char-zhangyunshen任命)
+ [战争] 结束：张允伸 vs 平卢使（武力兼并）→ 张允伸获胜
+ [政策] 清海使 → 岭南西使：赋税 一般(2) → 放任(1)
+ [政策] 邠宁使 → 卢潘：赋税 一般(2) → 放任(1)
+ [政策] 宣武使 → 奉国使：赋税 一般(2) → 放任(1)
+ [战争] 宣战：静江使 → 清海使（独立）
+ [战争] 宣战：韩允中 → 昭义使（武力兼并）
+ [岗位变动] 河北道·魏博 都知兵马使: char-gen-31 → 空缺 (未知)
+ [战争] 结束：静江使 vs 清海使（独立）→ 清海使获胜
+ [岗位变动] 河北道·魏博 都知兵马使: 空缺 → char-gen-31 (由char-hanyunzhong任命)
+ [政策] 镇南使 → 湖南使：赋税 一般(2) → 放任(1)
+ [岗位变动] 凤翔 防御使: char-ducong → 空缺 (未知)
+ [岗位变动] 潞州 防御使: char-npc-zhaoyi → char-hanyunzhong (由char-hanyunzhong任命)
+ [战争] 结束：韩允中 vs 昭义使（武力兼并）→ 韩允中获胜
+ [岗位变动] 相州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+ [岗位变动] 凤翔 防御使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+ [军编] 刘瞻：凤翔军 补将 → 刘远恩（military=17）
+ [军编] 石远恩：建军「相州军」驻相州
+ [军编] 石远恩：相州军 补将 → 石远恩（military=14）
+ [留后] 石远恩（相州防御使）指定留后：无
+ [岗位变动] 凤翔 防御使: char-ct-liuzhan → char-yizong (由system任命)
+ [岗位变动] 夏州 录事参军: char-gen-10 → 空缺 (未知)
+ [岗位变动] 都畿道 节度判官: char-gen-11 → 空缺 (未知)
+ [岗位变动] 都畿道 都知兵马使: char-gen-12 → 空缺 (未知)
+ [岗位变动] 洛阳 录事参军: char-gen-13 → 空缺 (未知)
+ [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+ [岗位变动] 河东道 节度判官: char-gen-15 → 空缺 (未知)
+ [岗位变动] 河东道 都知兵马使: char-gen-16 → 空缺 (未知)
+ [岗位变动] 太原 录事参军: char-gen-17 → 空缺 (未知)
+ [岗位变动] 潞州 录事参军: char-gen-18 → 空缺 (未知)
+ [岗位变动] 河中 录事参军: char-gen-19 → 空缺 (未知)
+ [岗位变动] 岭南道 节度判官: char-gen-70 → 空缺 (未知)
+ [岗位变动] 岭南道 都知兵马使: char-gen-71 → 空缺 (未知)
+ [岗位变动] 广州 录事参军: char-gen-72 → 空缺 (未知)
+ [岗位变动] 邕州 录事参军: char-gen-73 → 空缺 (未知)
+ [岗位变动] 桂州 录事参军: char-gen-74 → 空缺 (未知)
+ [岗位变动] 交州 录事参军: char-gen-75 → 空缺 (未知)
+ [岗位变动] 陇右道 节度判官: char-gen-76 → 空缺 (未知)
+ [岗位变动] 陇右道 都知兵马使: char-gen-77 → 空缺 (未知)
+ [岗位变动] 泾州 录事参军: char-gen-78 → 空缺 (未知)
+ [岗位变动] 秦州 录事参军: char-gen-79 → 空缺 (未知)
+ [岗位变动] 河西道 节度判官: char-gen-80 → 空缺 (未知)
+ [岗位变动] 河西道 都知兵马使: char-gen-81 → 空缺 (未知)
+ [岗位变动] 沙州 录事参军: char-gen-82 → 空缺 (未知)
+ [岗位变动] 夏州 录事参军: 空缺 → char-ct-liuzhan (由char-yizong任命)
+ [岗位变动] 都畿道 节度判官: 空缺 → char-ct-yushe (由char-yizong任命)
+ [岗位变动] 郓州 防御使: char-npc-tianping → 空缺 (未知)
+ [岗位变动] 都畿道 都知兵马使: 空缺 → char-npc-tianping (由char-yizong任命)
+ [岗位变动] 洛阳 录事参军: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+ [岗位变动] 陕州 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+ [岗位变动] 河东道 节度判官: 空缺 → char-npc-pinglu (由char-yizong任命)
+ [岗位变动] 宣州 刺史: char-npc-xuanshe → 空缺 (未知)
+ [岗位变动] 河东道 都知兵马使: 空缺 → char-npc-xuanshe (由char-yizong任命)
+ [岗位变动] 太原 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+ [岗位变动] 潞州 录事参军: 空缺 → char-gen-12 (由char-yizong任命)
+ [岗位变动] 河中 录事参军: 空缺 → char-gen-16 (由char-yizong任命)
+ [岗位变动] 岭南道 节度判官: 空缺 → char-gen-77 (由char-yizong任命)
+ [岗位变动] 同州 防御使: char-npc-zhenguo → 空缺 (未知)
+ [岗位变动] 岭南道 都知兵马使: 空缺 → char-npc-zhenguo (由char-yizong任命)
+ [岗位变动] 广州 录事参军: 空缺 → char-gen-81 (由char-yizong任命)
+ [岗位变动] 邕州 录事参军: 空缺 → char-gen-71 (由char-yizong任命)
+ [岗位变动] 桂州 录事参军: 空缺 → char-zhangzhifang (由char-yizong任命)
+ [岗位变动] 交州 录事参军: 空缺 → char-ct-lizheng (由char-yizong任命)
+ [岗位变动] 陇右道 节度判官: 空缺 → char-ct-zhoubao (由char-yizong任命)
+ [岗位变动] 许州 防御使: char-npc-zhongwu → 空缺 (未知)
+ [岗位变动] 陇右道 都知兵马使: 空缺 → char-npc-zhongwu (由char-yizong任命)
+ [岗位变动] 洪州 录事参军: char-gen-64 → 空缺 (未知)
+ [岗位变动] 泾州 录事参军: 空缺 → char-gen-64 (由char-yizong任命)
+ [岗位变动] 潭州 录事参军: char-gen-65 → 空缺 (未知)
+ [岗位变动] 秦州 录事参军: 空缺 → char-gen-65 (由char-yizong任命)
+ [岗位变动] 河西道 节度判官: 空缺 → char-ct-lufang (由char-yizong任命)
+ [岗位变动] 潭州 刺史: char-npc-hunan → 空缺 (未知)
+ [岗位变动] 河西道 都知兵马使: 空缺 → char-npc-hunan (由char-yizong任命)
+ [岗位变动] 成都 录事参军: char-gen-68 → 空缺 (未知)
+ [岗位变动] 沙州 录事参军: 空缺 → char-gen-68 (由char-yizong任命)
+ [岗位变动] 郓州 防御使: 空缺 → char-gen-13 (由char-yizong任命)
+ [岗位变动] 宣州 刺史: 空缺 → char-gen-10 (由char-yizong任命)
+ [岗位变动] 同州 防御使: 空缺 → char-gen-78 (由char-yizong任命)
+ [岗位变动] 许州 防御使: 空缺 → char-gen-79 (由char-yizong任命)
+ [岗位变动] 洪州 录事参军: 空缺 → char-gen-14 (由char-yizong任命)
+ [岗位变动] 潭州 录事参军: 空缺 → char-gen-17 (由char-yizong任命)
+ [岗位变动] 潭州 刺史: 空缺 → char-gen-19 (由char-yizong任命)
+ [岗位变动] 成都 录事参军: 空缺 → char-gen-73 (由char-yizong任命)
+ [军编] 静江使：桂州军 换将 → 张直方（military=30，原静江使=10）
+ [军编] 孙远恩：宣歙军 补将 → 孙远恩（military=14）
+ [军编] 马远恩：天平军 补将 → 马远恩（military=17）
+ [军编] 郭远恩：湖南军 补将 → 郭远恩（military=10）
+ [军编] 罗承恩：同华军 补将 → 罗承恩（military=13）
+ [军编] 郭承恩：忠武军 补将 → 郭承恩（military=14）
+ [战争] 宣战：张允伸 → 王景崇（deJureClaim）
+ [岗位变动] 定州 防御使: char-wangjingchong → char-zhangyunshen (由char-zhangyunshen任命)
+ [战争] 结束：张允伸 vs 王景崇（法理宣称）→ 张允伸获胜
+ [岗位变动] 瀛州 防御使: char-zhangyunshen → char-zhang-jian (由char-zhangyunshen任命)
+ [军编] 唐懿宗：凤翔军 补将 → 韩允中（military=25）
+ [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军重步第2营（strength=1000，净粮草=-33667）
+ [军编] 唐懿宗：财政裁营 神策军重步第3营（strength=1000，净粮草=-31667）
+ [军编] 张简会：建军「瀛州军」驻瀛州
+ [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+ [留后] 唐懿宗（京畿道观察使）指定留后：李儇
+ [留后] 唐懿宗（长安刺史）指定留后：李儇
+ [留后] 唐懿宗（都畿道观察使）指定留后：李儇
+ [留后] 唐懿宗（洛阳刺史）指定留后：李儇
+ [留后] 张简会（瀛州防御使）指定留后：无
+ [军编] 唐懿宗：调营 神策军重步第4营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军重步第5营（strength=1000，净粮草=-28495）
+ [军编] 唐懿宗：财政裁营 神策军铁骑第1营（strength=1000，净粮草=-25995）
+ [军编] 唐懿宗：调营 神策军铁骑第2营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军铁骑第3营（strength=1000，净粮草=-22421）
+ [军编] 唐懿宗：财政裁营 神策军铁骑第4营（strength=1000，净粮草=-19921）
+ [军编] 唐懿宗：调营 神策军弓弩第1营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军弓弩第2营（strength=1000，净粮草=-16935）
+ [军编] 唐懿宗：财政裁营 神策军弓弩第3营（strength=1000，净粮草=-14935）
+ [军编] 唐懿宗：调营 神策军轻步第1营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军轻步第2营（strength=1000，净粮草=-12029）
+ [军编] 唐懿宗：财政裁营 神策军轻骑第营（strength=1000，净粮草=-9829）
+ [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军重步第2营（strength=1000，净粮草=-6998）
+ [军编] 唐懿宗：财政裁营 神策军重步第3营（strength=1000，净粮草=-4998）
+ [军编] 唐懿宗：调营 神策军重步第4营 从神策军 → 凤翔军
+ [军编] 唐懿宗：财政裁营 神策军重步第5营（strength=1000，净粮草=-2235）
+ [军编] 唐懿宗：财政裁营 神策军铁骑第1营（strength=1000，净粮草=265）
+ [军编] 唐懿宗：调营 神策军铁骑第2营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策军铁骑第3营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策军铁骑第4营 从神策军 → 凤翔军
+ [军编] 罗承恩：财政裁营 同华军重步第营（strength=1000，净粮草=1744）
+ [军编] 唐懿宗：调营 神策军弓弩第1营 从神策军 → 凤翔军
+ [军编] 清海使：广州军 换将 → 高骈（military=30，原岭南西使=16）
+ [战争] 宣战：高骈 → 清海使（独立）
+ [军编] 唐懿宗：调营 神策军弓弩第2营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策军弓弩第3营 从神策军 → 凤翔军
+ [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=1917）
+ [军编] 岭南西使：建军「邕州军」驻邕州
+ [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+ [政策] 宣武使 → 马远恩：赋税 一般(2) → 放任(1)
+ [军编] 唐懿宗：调营 神策军轻步第1营 从神策军 → 凤翔军
+ [军编] 静江使：建军「桂州军」驻桂州
+ [军编] 静江使：桂州军 补将 → 张直方（military=30）
+ [军编] 唐懿宗：调营 神策军轻步第2营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策军轻骑第营 从神策军 → 凤翔军
+ [军编] 郭承恩：财政裁营 忠武军重步第1营（strength=1000，净粮草=1745）
+ [战争] 结束：高骈 vs 清海使（独立）→ 高骈获胜
+ [政策] 清海使 → 静江使：赋税 一般(2) → 放任(1)
+ [军编] 唐懿宗：调营 神策重步第6营 从神策军 → 凤翔军
+ [军编] 清海使：建军「广州军」驻广州
+ [军编] 清海使：广州军 补将 → 岭南西使（military=16）
+ [军编] 唐懿宗：调营 神策铁骑第7营 从神策军 → 凤翔军
+ [军编] 罗承恩：财政裁营 同华军弓弩第营（strength=1000，净粮草=1836）
+ [军编] 唐懿宗：调营 神策弓弩第7营 从神策军 → 凤翔军
+ [军编] 郭远恩：财政裁营 湖南军重步第营（strength=1000，净粮草=1971）
+ [岗位变动] 相州 防御使: char-gen-33 → char-hanyunzhong (由system任命)
+ [岗位变动] 相州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+ [军编] 唐懿宗：调营 神策轻步第7营 从神策军 → 凤翔军
+ [战争] 宣战：镇海使 → 孙远恩（deJureClaim）
+ [军编] 唐懿宗：调营 神策轻骑第7营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策重步第7营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策铁骑第8营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策弓弩第8营 从神策军 → 凤翔军
+ [战争] 宣战：镇东使 → 镇海使（独立）
+ [军编] 唐懿宗：调营 神策轻步第8营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策轻骑第8营 从神策军 → 凤翔军
+ [军编] 郭承恩：财政裁营 忠武军重步第2营（strength=1000，净粮草=1970）
+ [军编] 唐懿宗：调营 神策重步第8营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策铁骑第9营 从神策军 → 凤翔军
+ [岗位变动] 宣州 刺史: char-gen-10 → char-npc-zhenhai (由char-npc-zhenhai任命)
+ [战争] 结束：镇海使 vs 孙远恩（法理宣称）→ 镇海使获胜
+ [军编] 唐懿宗：调营 神策弓弩第9营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策轻步第9营 从神策军 → 凤翔军
+ [军编] 唐懿宗：调营 神策轻骑第9营 从神策军 → 凤翔军
+ [岗位变动] 潞州 录事参军: char-gen-12 → 空缺 (未知)
+ [岗位变动] 河中 录事参军: char-gen-16 → 空缺 (未知)
+ [岗位变动] 洪州 录事参军: char-gen-14 → 空缺 (未知)
+ [岗位变动] 潭州 刺史: char-gen-19 → char-yizong (由system任命)
+ [岗位变动] 潭州 录事参军: char-gen-17 → 空缺 (未知)
+ [岗位变动] 成都 录事参军: char-gen-73 → 空缺 (未知)
+ [岗位变动] 岭南道 节度判官: char-gen-77 → 空缺 (未知)
+ [岗位变动] 广州 录事参军: char-gen-81 → 空缺 (未知)
+ [岗位变动] 邕州 录事参军: char-gen-71 → 空缺 (未知)
+ [军编] 唐懿宗：湖南军 补将 → 张淮深（military=24）
+ [军编] 唐懿宗：调营 神策重步第9营 从神策军 → 湖南军
+ [军编] 镇海使：建军「润州军」驻润州
+ [军编] 镇海使：润州军 补将 → 温远恩（military=16）
+ [岗位变动] 夏州 录事参军: char-ct-liuzhan → 空缺 (未知)
+ [岗位变动] 潞州 录事参军: 空缺 → char-ct-liuzhan (由char-yizong任命)
+ [岗位变动] 都畿道 节度判官: char-ct-yushe → 空缺 (未知)
+ [岗位变动] 河中 录事参军: 空缺 → char-ct-yushe (由char-yizong任命)
+ [岗位变动] 陕州 录事参军: char-npc-yicheng → 空缺 (未知)
+ [岗位变动] 洪州 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+ [岗位变动] 洛阳 录事参军: char-npc-zhaoyi → 空缺 (未知)
+ [岗位变动] 潭州 录事参军: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+ [岗位变动] 河东道 节度判官: char-npc-pinglu → 空缺 (未知)
+ [岗位变动] 成都 录事参军: 空缺 → char-npc-pinglu (由char-yizong任命)
+ [岗位变动] 岭南道 节度判官: 空缺 → char-gen-16 (由char-yizong任命)
+ [岗位变动] 太原 录事参军: char-ct-cuiyin → 空缺 (未知)
+ [岗位变动] 广州 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+ [岗位变动] 邕州 录事参军: 空缺 → char-gen-77 (由char-yizong任命)
+ [岗位变动] 夏州 录事参军: 空缺 → char-gen-81 (由char-yizong任命)
+ [岗位变动] 都畿道 节度判官: 空缺 → char-gen-71 (由char-yizong任命)
+ [岗位变动] 陕州 录事参军: 空缺 → char-gen-14 (由char-yizong任命)
+ [岗位变动] 洛阳 录事参军: 空缺 → char-gen-17 (由char-yizong任命)
+ [岗位变动] 河东道 节度判官: 空缺 → char-gen-19 (由char-yizong任命)
+ [岗位变动] 太原 录事参军: 空缺 → char-gen-73 (由char-yizong任命)
+ [军编] 唐懿宗：调营 神策铁骑第10营 从神策军 → 湖南军
+ [岗位变动] 中央 兵部尚书: char-ct-xiaochu → 空缺 (未知)
+ [军编] 唐懿宗：调营 神策弓弩第10营 从神策军 → 湖南军
+ [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=1997）
+ [岗位变动] 中央 三司使: char-ct-peizhao → 空缺 (未知)
+ [岗位变动] 中央 兵部尚书: 空缺 → char-ct-peizhao (由char-yizong任命)
+ [岗位变动] 中央 三司使: 空缺 → char-gen-10 (由char-yizong任命)
+ [军编] 唐懿宗：调营 神策轻步第10营 从神策军 → 湖南军
+ [军编] 马远恩：财政裁营 天平军重步第1营（strength=1000，净粮草=1961）
+ [军编] 唐懿宗：调营 神策轻骑第10营 从神策军 → 湖南军
+ [岗位变动] 交州 录事参军: char-ct-lizheng → 空缺 (未知)
+ [岗位变动] 泾州 录事参军: char-gen-64 → 空缺 (未知)
+ [岗位变动] 交州 录事参军: 空缺 → char-gen-64 (由char-yizong任命)
+ [岗位变动] 泾州 录事参军: 空缺 → char-ct-zhaoyi (由char-yizong任命)
+ [军编] 唐懿宗：调营 神策重步第10营 从神策军 → 湖南军
+ [战争] 宣战：郑从谠 → 韩允中（deJureClaim）
+warSettlement.ts:73 [战争] 结束：镇东使 vs 镇海使（独立）→ 镇东使获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策铁骑第11营 从神策军 → 湖南军
+militaryAI.ts:38 [军编] 威武使：建军「福州军」驻福州
+militaryAI.ts:93 [军编] 威武使：福州军 补将 → 威武使（military=15）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策弓弩第11营 从神策军 → 湖南军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻步第11营 从神策军 → 湖南军
+militaryAI.ts:38 [军编] 石远恩：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 石远恩：相州军 补将 → 石远恩（military=14）
+TerritoryStore.ts:324 [岗位变动] 潞州 防御使: char-hanyunzhong → char-zhengcongdang (由char-zhengcongdang任命)
+warSettlement.ts:73 [战争] 结束：郑从谠 vs 韩允中（法理宣称）→ 郑从谠获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻骑第11营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军重步第5营（strength=988，净粮草=-23739）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军铁骑第1营（strength=988，净粮草=-21269）
+declareWarAction.ts:49 [战争] 宣战：拓跋思恭 → 唐懿宗（独立）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策重步第11营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军铁骑第2营（strength=988，净粮草=-18798）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军铁骑第3营（strength=988，净粮草=-16328）
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 罗承恩：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策铁骑第12营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军弓弩第1营（strength=988，净粮草=-14352）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军弓弩第2营（strength=988，净粮草=-12376）
+militaryAI.ts:210 [军编] 罗承恩：财政裁营 同华军轻步第营（strength=1000，净粮草=1979）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策弓弩第12营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军弓弩第3营（strength=988，净粮草=-10817）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军轻步第1营（strength=988，净粮草=-8841）
+warSettlement.ts:73 [战争] 结束：拓跋思恭 vs 唐懿宗（独立）→ 拓跋思恭获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻步第12营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军轻步第2营（strength=988，净粮草=-6864）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军轻骑第营（strength=988，净粮草=-4691）
+militaryAI.ts:38 [军编] 卢潘：建军「灵州军」驻灵州
+militaryAI.ts:93 [军编] 卢潘：灵州军 补将 → 卢潘（military=21）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻骑第12营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=988，净粮草=-2714）
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=988，净粮草=-738）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策重步第12营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=988，净粮草=1239）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策铁骑第13营 从神策军 → 湖南军
+declareWarAction.ts:49 [战争] 宣战：李国昌 → 唐懿宗（独立）
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 贾惟庆：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策弓弩第13营 从神策军 → 湖南军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻步第13营 从神策军 → 湖南军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策轻骑第13营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军轻步第1营（strength=501，净粮草=-1406）
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军轻步第2营（strength=501，净粮草=-404）
+warSettlement.ts:73 [战争] 结束：李国昌 vs 唐懿宗（独立）→ 唐懿宗获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策重步第13营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军轻骑兵第24营（strength=501，净粮草=-2508）
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军弓箭手第25营（strength=501，净粮草=-1506）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策铁骑第14营 从神策军 → 湖南军
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军轻步兵第26营（strength=501，净粮草=-503）
+militaryAI.ts:210 [军编] 王景崇：财政裁营 成德军轻步兵第27营（strength=501，净粮草=499）
+militaryAI.ts:148 [军编] 唐懿宗：调营 凤翔军重步第营 从凤翔军 → 湖南军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策弓弩第14营 从神策军 → 湖南军
+militaryAI.ts:148 [军编] 唐懿宗：调营 凤翔军弓弩第营 从凤翔军 → 湖南军
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: char-ct-peitan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 兵部尚书: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: 空缺 → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 兵部尚书: 空缺 → char-li-xuan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-liwei → 空缺 (未知)
+appointAction.ts:154 
+[DEBUG 铨选调动] === 调动前 ===
+appointAction.ts:155 被调人: 郑从谠(char-z)
+appointAction.ts:156 旧岗: 节度使 @ 河东道 → 新岗: 吏部尚书 @ ?
+appointAction.ts:157 旧领地法理下级刺史:
+appointAction.ts:158   - 郑从谠(char-z) overlordId=char-y [太原]
+  - 郑从谠(char-z) overlordId=char-y [潞州]
+  - 郑从谠(char-z) overlordId=char-y [河中]
+  - 李国昌(char-l) overlordId=char-z [云州]
+TerritoryStore.ts:324 [岗位变动] 河东道 节度使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 太原 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-zhengcongdang (由char-yizong任命)
+appointAction.ts:391 
+[DEBUG 铨选调动] === 调动后：旧领地 河东道 ===
+appointAction.ts:392 当前主岗持有人: 空缺(null)
+appointAction.ts:394 ⚠️ 孤儿下级（overlordId 仍指向被调走的 郑从谠）:
+appointAction.ts:395   - 李国昌(char-l) overlordId=char-z [云州]
+TerritoryStore.ts:324 [岗位变动] 河东道 节度使: 空缺 → char-ct-fangxuan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 太原 防御使: 空缺 → char-ct-fangxuan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: char-ct-yushe → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 防御使: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: char-ct-liuzhan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 防御使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: 空缺 → char-gen-74 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: 空缺 → char-gen-82 (由char-yizong任命)
+react-dom_client.js?v=5fd3b264:1773 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-zheng...">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-z...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+react-dom_client.js?v=5fd3b264:1775 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1774
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+militaryAI.ts:38 [军编] 于琮：建军「潞州军」驻潞州
+militaryAI.ts:93 [军编] 于琮：潞州军 补将 → 唐承恩（military=12）
+militaryAI.ts:38 [军编] 刘瞻：建军「河中军」驻河中
+militaryAI.ts:93 [军编] 刘瞻：河中军 补将 → 胡承恩（military=9）
+militaryAI.ts:93 [军编] 房宣：河东军 补将 → 宣歙使（military=10）
+militaryAI.ts:210 [军编] 房宣：财政裁营 河东军重步第1营（strength=1000，净粮草=-37476）
+militaryAI.ts:210 [军编] 房宣：财政裁营 河东军重步第2营（strength=1000，净粮草=-35476）
+characterSystem.ts:414 [留后] 房宣（河东道节度使）指定留后：无
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: char-gen-17 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: char-gen-19 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 太原 防御使: char-ct-fangxuan → char-yizong (由system任命)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: char-gen-73 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: char-gen-82 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 防御使: char-ct-liuzhan → char-yizong (由system任命)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: char-gen-74 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: char-ct-cuiyin → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: char-npc-yicheng → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: 空缺 → char-gen-77 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 录事参军: char-npc-zhaoyi → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 成都 录事参军: char-npc-pinglu → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: 空缺 → char-npc-pinglu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 殿中侍御史: char-gen-98 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: 空缺 → char-gen-98 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: 空缺 → char-gen-81 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: char-gen-65 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: 空缺 → char-gen-65 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: 空缺 → char-gen-14 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 录事参军: 空缺 → char-gen-17 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 成都 录事参军: 空缺 → char-gen-19 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 殿中侍御史: 空缺 → char-gen-73 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: 空缺 → char-gen-74 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 山南西道 节度使: char-xiaoye → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 兴元 防御使: char-xiaoye → 空缺 (未知)
+appointAction.ts:154 
+[DEBUG 铨选调动] === 调动前 ===
+appointAction.ts:155 被调人: 崔彦曾(char-c)
+appointAction.ts:156 旧岗: 观察使 @ 淮南道 → 新岗: 节度使 @ 山南西道
+appointAction.ts:157 旧领地法理下级刺史:
+appointAction.ts:158   - 崔彦曾(char-c) overlordId=char-y [扬州]
+TerritoryStore.ts:324 [岗位变动] 淮南道 观察使: char-cuiyanzeng → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 扬州 刺史: char-cuiyanzeng → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 山南西道 节度使: 空缺 → char-cuiyanzeng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 兴元 防御使: 空缺 → char-cuiyanzeng (由char-yizong任命)
+appointAction.ts:391 
+[DEBUG 铨选调动] === 调动后：旧领地 淮南道 ===
+appointAction.ts:392 当前主岗持有人: 空缺(null)
+appointAction.ts:402   (无下级)
+TerritoryStore.ts:324 [岗位变动] 淮南道 观察使: 空缺 → char-gen-82 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 扬州 刺史: 空缺 → char-gen-82 (由char-yizong任命)

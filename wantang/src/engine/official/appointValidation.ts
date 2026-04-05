@@ -104,6 +104,17 @@ export function canGrantTerritory(
   if (territory.tier !== 'zhou') return { ok: false, reason: '只能授出州级领地' };
   if (getActualController(territory) !== granter.id) return { ok: false, reason: '非直辖领地' };
 
+  // 治所州不能单独授出（与道级主岗绑定，授出会导致治所分离）
+  for (const [, t] of territories) {
+    if (t.tier === 'dao' && t.capitalZhouId === territoryId) {
+      const daoMainPost = t.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+      if (daoMainPost?.holderId === granter.id) {
+        return { ok: false, reason: '治所州与道级主岗绑定，不可单独授出' };
+      }
+      break;
+    }
+  }
+
   const directZhou = getDirectControlledZhou(granter, territories);
   if (directZhou.length <= 1) return { ok: false, reason: '不能授出最后一个直辖州' };
 

@@ -51,11 +51,11 @@ export function calcPersonality(character: Character): Personality {
  *
  * maxActions = clamp(0, 3, round(1 + energy × 4))
  *
- * energy ≈ -0.35 → 0 次行动（怠政型）
- * energy ≈  0.00 → 1 次行动（普通）
- * energy ≈ +0.25 → 2 次行动（勤勉型）
- * energy ≈ +0.50 → 3 次行动（天才+野心）
+ * energy ≈ -0.35 → 1 次行动（怠政型）
+ * energy ≈  0.00 → 2 次行动（普通）
+ * energy ≈ +0.25 → 3 次行动（勤勉型）
+ * energy ≈ +0.50 → 4 次行动（天才+野心）
  */
 export function calcMaxActions(personality: Personality): number {
-  return clamp(Math.round(1 + personality.energy * 4), 0, 3);
+  return clamp(Math.round(2 + personality.energy * 4), 1, 4);
 }

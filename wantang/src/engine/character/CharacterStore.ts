@@ -110,6 +110,13 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         console.error(`[BUG] 自我领主！${existing.name}(${id}) overlordId 被设为自己`, new Error().stack);
       }
 
+      // 追踪 overlordId 变化（仅 isRuler 角色）
+      if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId && existing.isRuler) {
+        const oldOverlord = existing.overlordId ? chars.get(existing.overlordId)?.name ?? existing.overlordId : '无';
+        const newOverlord = patch.overlordId ? chars.get(patch.overlordId)?.name ?? patch.overlordId : '无';
+        console.log(`[overlord变更] ${existing.name}(${id.slice(0,8)}) overlord: ${oldOverlord} → ${newOverlord}`);
+      }
+
       // 维护 vassalIndex
       let vassalIndex = state.vassalIndex;
       if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId) {

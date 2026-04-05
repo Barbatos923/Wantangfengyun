@@ -48,7 +48,11 @@ function findTransferPairs(actorId: string, ctx: NpcContext): TransferPair[] {
         const controller = ctx.characters.get(controllerId);
         if (!controller?.alive || controller.overlordId !== actorId) continue;
 
+        // 品级检查：receiver 品级必须严格高于 vassal（不能同级节度使互转）
         const receiverRank = ctx.rankLevelCache.get(controllerId) ?? 0;
+        const vassalRank = ctx.rankLevelCache.get(char.id) ?? 0;
+        if (receiverRank <= vassalRank) continue;
+
         pairs.push({ vassalId: char.id, receiverId: controllerId, receiverRank });
         break; // 该臣属已找到归属，跳出岗位循环
       }

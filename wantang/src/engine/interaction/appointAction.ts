@@ -328,4 +328,5 @@ export function executeAppoint(
   // 9. 刷新 isRuler（岗位持有人变化）
   const rulerIds = collectRulerIds(useTerritoryStore.getState().territories);
   useCharacterStore.getState().refreshIsRuler(rulerIds);
+
 }

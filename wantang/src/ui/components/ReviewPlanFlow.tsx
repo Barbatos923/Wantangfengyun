@@ -37,7 +37,9 @@ export default function ReviewPlanFlow({ onClose }: ReviewPlanFlowProps) {
 
   function handleApprove() {
     for (const entry of plan!.entries) {
-      executeDismiss(entry.postId, entry.legalAppointerId);
+      const post = useTerritoryStore.getState().findPost(entry.postId);
+      const tpl = post ? positionMap.get(post.templateId) : null;
+      executeDismiss(entry.postId, entry.legalAppointerId, tpl?.grantsControl ? { vacateOnly: true } : undefined);
     }
     if (task) useNpcStore.getState().removePlayerTask(task.id);
     onClose();

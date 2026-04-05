@@ -175,6 +175,15 @@ src/
 ### 自我领主防御
 所有 `updateCharacter(X, { overlordId: Y })` 或 `batchMutate` 中 `c.overlordId = Y` 的赋值，**必须确保 X !== Y**（角色不能成为自己的领主）。典型危险场景：罢免前任回归人才池、治所清退、级联效忠回退——当操作者恰好就是被操作者时会触发。`CharacterStore` 中有 DEBUG `console.error` 监测。
 
+### 考课罢免
+- 考课罢免 grantsControl 岗位必须用 `executeDismiss(postId, appointerId, { vacateOnly: true })`
+- 三处统一：`reviewBehavior.ts`（NPC自动）/ `NpcEngine.ts`（玩家超时）/ `ReviewPlanFlow.tsx`（玩家手动）
+- 原因：正常罢免路径会让罢免者自动接管，导致皇帝/节度使直辖膨胀
+
+### 授予领地约束
+- `canGrantTerritory` 禁止授出治所州（治所与道级主岗绑定，授出会导致治所分离）
+- `transferVassalBehavior` 的 receiver 品级必须**严格高于** vassal 品级（防止同级节度使互转）
+
 ### 其他规则
 - 批量操作**必须用 `batchMutate`**，禁止循环 `setState`
 - ID 生成**必须用 `crypto.randomUUID()`**，禁止自增计数器
@@ -234,6 +243,7 @@ src/
 核心循环、继承、铨选、考课、正统性、NPC Engine（26 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
+- **NPC/皇帝直辖膨胀修复 + 转移臣属品级校验**（2026-04-05）：考课罢免 grantsControl 岗位改用 vacateOnly（避免罢免者自动接管）；`canGrantTerritory` 排除治所州（治所与道级主岗绑定不可单独授出）；`calcMaxActions` 最小值 0→1、基线 1→2、上限 3→4（知足特质不再瘫痪）；`transferVassalBehavior` 增加品级检查（receiver 品级必须严格高于 vassal）
 - **NPC 留后指定 + 停战协议 + 宣战权重平衡**（2026-04-05）：半年一次性格偏好选留后（年龄大权重+能力小权重，boldness/honor 调节，男性限定）；2 年停战协议（违反额外 -30 名望 -20 正统性，NPC 权重 -20）；人物栏新增当前战争（含战分）+ 外交（停战协议）；宣战权重分 CB 差异化（独立基础 -18、法理 +2、好感系数按 CB 分开、成本公式 `|prestige|×0.5 + |legitimacy|×4` 重视正统性）
 - **NPC 军事编制 AI**（2026-04-05）：`militaryAI.ts` 在 militarySystem 月结中自动执行（建军/换将/调营/裁营）；`estimateNetGrain` 提取到 militaryCalc.ts 共用；MilitaryStore ID 生成修复为 `crypto.randomUUID()`
 - **NPC 政策行为 + 好感实时化重构**（2026-04-05）：5 个政策行为 + 好感双轨制（实时计算+事件存储）+ `policyOpinionCache` 自维护 + 权限校验 `hasAuthorityOverPost` + 道/州职类独立

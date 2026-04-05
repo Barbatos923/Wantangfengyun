@@ -233,6 +233,8 @@ export function executeDemandFealty(
   const roll = random() * 100;
   const success = roll < chance;
 
+  console.log(`[要求效忠] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
+
   if (success) {
     charStore.updateCharacter(targetId, { overlordId: playerId });
     charStore.addOpinion(targetId, playerId, {

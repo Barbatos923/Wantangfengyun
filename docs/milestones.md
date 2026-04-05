@@ -238,6 +238,13 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 好感系数按 CB 差异化：独立 ×-0.5、法理 ×-0.2、兼并 ×-0.15
 - ✅ 成本公式重视正统性：`cbCost = |prestige|×0.5 + |legitimacy|×4`
 
+**NPC 直辖膨胀修复 + 转移臣属品级校验**（2026-04-05）：
+- ✅ 考课罢免 grantsControl 岗位改用 `vacateOnly: true`（三处：reviewBehavior / NpcEngine / ReviewPlanFlow）
+- ✅ `canGrantTerritory` 排除治所州（治所与道级主岗绑定，不可单独授出）
+- ✅ `calcMaxActions` 下限 0→1、基线 1→2、上限 3→4（知足特质 energy=-0.35 不再导致 maxActions=0）
+- ✅ `transferVassalBehavior.findTransferPairs` 增加品级检查（receiver 品级 > vassal 品级，防止同级节度使互转）
+- ✅ `[overlord变更]` 永久日志：isRuler 角色 overlordId 变化时打印（CharacterStore.updateCharacter）
+
 **待做（新系统）：**
 - 谋略系统（个人计谋 + 政治计谋，成功率积累）
 - 活动系统（宴会/狩猎/压力释放）

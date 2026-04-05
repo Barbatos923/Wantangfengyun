@@ -6,6 +6,7 @@ import type { ReviewEntry } from '@engine/systems/reviewSystem';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { findEmperorId } from '@engine/official/postQueries';
+import { positionMap } from '@data/positions';
 import { useNpcStore } from './NpcStore';
 import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
 import { buildNpcContext } from './NpcContext';
@@ -159,7 +160,9 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       // 玩家超时未处理考课 → 自动执行所有罢免
       const data = task.data as { entries: ReviewEntry[] };
       for (const entry of data.entries) {
-        executeDismiss(entry.postId, entry.legalAppointerId);
+        const post = useTerritoryStore.getState().findPost(entry.postId);
+        const tpl = post ? positionMap.get(post.templateId) : null;
+        executeDismiss(entry.postId, entry.legalAppointerId, tpl?.grantsControl ? { vacateOnly: true } : undefined);
       }
     } else if (task.type === 'callToArms') {
       // 召集参战超时 → 自动接受

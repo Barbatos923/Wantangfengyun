@@ -96,9 +96,11 @@ export function runReview(date: GameDate): void {
     }
   }
 
-  // NPC 自动罢免
+  // NPC 自动罢免（grantsControl 岗位用 vacateOnly，避免罢免者自动接管导致直辖膨胀）
   for (const entry of autoEntries) {
-    executeDismiss(entry.postId, entry.legalAppointerId);
+    const post = useTerritoryStore.getState().findPost(entry.postId);
+    const tpl = post ? positionMap.get(post.templateId) : null;
+    executeDismiss(entry.postId, entry.legalAppointerId, tpl?.grantsControl ? { vacateOnly: true } : undefined);
   }
 
   // 玩家审批 → 创建统一 PlayerTask
