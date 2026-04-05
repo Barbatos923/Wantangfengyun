@@ -125,6 +125,8 @@ export interface NpcContext {
   armies: Map<string, Army>;
   battalions: Map<string, Battalion>;
   controllerIndex: Map<string, Set<string>>;  // controllerId → Set<territoryId>
+  postIndex: Map<string, Post>;               // postId → Post
+  holderIndex: Map<string, string[]>;         // holderId → postId[]
 
   // 战争状态
   activeWars: War[];

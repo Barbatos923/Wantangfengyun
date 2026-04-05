@@ -3,7 +3,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { traitMap } from '@data/traits';
-import { useNotificationStore, type StoryEventOption } from '@ui/stores/notificationStore';
+import { useStoryEventBus, type StoryEventOption } from '@engine/storyEventBus';
 import { usePanelStore } from '@ui/stores/panelStore';
 
 // ── 角色卡片 ──────────────────────────────────────────────
@@ -143,8 +143,8 @@ function OptionButton({ option, onSelect }: { option: StoryEventOption; onSelect
 // ── 主组件 ────────────────────────────────────────────────
 
 const EventModal: React.FC = () => {
-  const queue = useNotificationStore((s) => s.storyEventQueue);
-  const popStoryEvent = useNotificationStore((s) => s.popStoryEvent);
+  const queue = useStoryEventBus((s) => s.storyEventQueue);
+  const popStoryEvent = useStoryEventBus((s) => s.popStoryEvent);
 
   const event = queue[0];
   if (!event) return null;

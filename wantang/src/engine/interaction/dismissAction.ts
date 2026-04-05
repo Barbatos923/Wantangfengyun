@@ -63,7 +63,6 @@ export function executeDismiss(
       });
     } else {
       // 正常罢免：罢免者自动接管
-      console.warn(`[DEBUG executeDismiss] grantsControl接管: ${tpl?.name} → ${dismisserId}`, new Error().stack);
       terrStore.updatePost(postId, {
         holderId: dismisserId,
         appointedBy: 'system',
@@ -93,11 +92,19 @@ export function executeDismiss(
     });
   }
 
-  // 更新被罢免者 overlordId：回归罢免者人才池（前任是自己时跳过，如铨选调动皇帝自身）
+  // 更新被罢免者 overlordId：仅 grantsControl 岗位罢免时处理
+  // 非 grantsControl（副岗/京官）罢免不改变效忠关系——丢副职不等于换领主
   // vacateOnly 时跳过：铨选调动只是腾岗，被调人立刻会在新岗位获得正确的 overlordId
-  if (previousHolderId && previousHolderId !== dismisserId && !opts?.vacateOnly) {
-    const charStore = useCharacterStore.getState();
-    charStore.updateCharacter(previousHolderId, { overlordId: dismisserId });
+  // 仍持有其他 grantsControl 岗位时不改变 overlordId——仍是统治者，现有效忠关系有效
+  if (previousHolderId && previousHolderId !== dismisserId && tpl?.grantsControl && !opts?.vacateOnly) {
+    const terrStoreNow = useTerritoryStore.getState();
+    const remainingControlPosts = terrStoreNow.getPostsByHolder(previousHolderId)
+      .filter(p => p.id !== postId && positionMap.get(p.templateId)?.grantsControl);
+    if (remainingControlPosts.length === 0) {
+      // 彻底无领地：回归罢免者人才池
+      const charStore = useCharacterStore.getState();
+      charStore.updateCharacter(previousHolderId, { overlordId: dismisserId });
+    }
   }
 
   // 级联效忠：主岗易手时，法理下级主岗持有人 + 本领地副岗持有人的 overlordId 回退给接管者

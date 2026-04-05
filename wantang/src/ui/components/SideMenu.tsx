@@ -4,7 +4,7 @@ import OfficialPanel from './OfficialPanel';
 import GovernmentPanel from './GovernmentPanel';
 import MilitaryPanel from './MilitaryPanel';
 import DecisionPanel from './DecisionPanel';
-import { useNotificationStore, type StoryEvent } from '@ui/stores/notificationStore';
+import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { usePanelStore } from '@ui/stores/panelStore';
 
@@ -86,7 +86,7 @@ const SideMenu: React.FC = () => {
             },
           ],
         };
-        useNotificationStore.getState().pushStoryEvent(testEvent);
+        useStoryEventBus.getState().pushStoryEvent(testEvent);
       }
     } else {
       console.log(`[SideMenu] Clicked: ${label}`);

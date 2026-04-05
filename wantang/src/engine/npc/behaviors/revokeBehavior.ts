@@ -9,8 +9,8 @@ import { executeRevoke, executeDismiss, executeDeclareWar } from '@engine/intera
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
-import { useNotificationStore } from '@ui/stores/notificationStore';
-import type { StoryEvent } from '@ui/stores/notificationStore';
+import { useStoryEventBus } from '@engine/storyEventBus';
+import type { StoryEvent } from '@engine/storyEventBus';
 import { registerBehavior } from './index';
 
 // ── 辅助：判断角色是否在战争中 ──────────────────────────────
@@ -19,20 +19,20 @@ function isAtWar(charId: string, activeWars: NpcContext['activeWars']): boolean 
   return activeWars.some(w => isWarParticipant(charId, w));
 }
 
-// ── 辅助：获取臣属持有的 grantsControl 岗位 ──────────────────
+// ── 辅助：获取臣属持有的 grantsControl 岗位（利用 holderIndex O(1) 查询） ──
 
 function getVassalControlPosts(
   vassalId: string,
   ctx: NpcContext,
 ): Post[] {
+  const postIds = ctx.holderIndex.get(vassalId);
+  if (!postIds) return [];
   const posts: Post[] = [];
-  for (const t of ctx.territories.values()) {
-    for (const p of t.posts) {
-      if (p.holderId === vassalId) {
-        const tpl = positionMap.get(p.templateId);
-        if (tpl?.grantsControl) posts.push(p);
-      }
-    }
+  for (const pid of postIds) {
+    const p = ctx.postIndex.get(pid);
+    if (!p) continue;
+    const tpl = positionMap.get(p.templateId);
+    if (tpl?.grantsControl) posts.push(p);
   }
   return posts;
 }
@@ -170,7 +170,7 @@ export const revokeBehavior: NpcBehavior<RevokeData> = {
           },
         ],
       };
-      useNotificationStore.getState().pushStoryEvent(event);
+      useStoryEventBus.getState().pushStoryEvent(event);
       return;
     }
 

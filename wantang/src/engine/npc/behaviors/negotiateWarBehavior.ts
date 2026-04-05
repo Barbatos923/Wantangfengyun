@@ -8,8 +8,8 @@ import { calcPeaceProposalWeight, calcPeaceAcceptance } from '@engine/military/w
 import { settleWar } from '@engine/military/warSettlement';
 import { diffMonths } from '@engine/dateUtils';
 import { isWarLeader } from '@engine/military/warParticipantUtils';
-import { useNotificationStore } from '@ui/stores/notificationStore';
-import type { StoryEvent } from '@ui/stores/notificationStore';
+import { useStoryEventBus } from '@engine/storyEventBus';
+import type { StoryEvent } from '@engine/storyEventBus';
 import { registerBehavior } from './index';
 
 // ── 行为定义 ────────────────────────────────────────────
@@ -101,7 +101,7 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
           },
         ],
       };
-      useNotificationStore.getState().pushStoryEvent(event);
+      useStoryEventBus.getState().pushStoryEvent(event);
       return;
     }
 

@@ -6,8 +6,8 @@ import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
 import { canDemandFealtyPure, calcFealtyChance, executeDemandFealty } from '@engine/interaction';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { useNotificationStore } from '@ui/stores/notificationStore';
-import type { StoryEvent } from '@ui/stores/notificationStore';
+import { useStoryEventBus } from '@engine/storyEventBus';
+import type { StoryEvent } from '@engine/storyEventBus';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取角色持有的岗位（从 Context 快照） ─────────
@@ -143,7 +143,7 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
           },
         ],
       };
-      useNotificationStore.getState().pushStoryEvent(event);
+      useStoryEventBus.getState().pushStoryEvent(event);
       return;
     }
 

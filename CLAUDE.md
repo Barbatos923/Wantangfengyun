@@ -149,6 +149,12 @@ src/
 - `engine/` 下的 Calc 模块必须是**纯函数**，不得调用 `getState()`
 - Utils 文件是便捷包装层，允许读 Store 后委派给纯函数
 
+### 层级隔离（engine ↛ ui）
+- **`engine/` 禁止 import `@ui/` 的任何模块**，依赖方向只能是 `ui/ → engine/`
+- NPC 行为需要通知玩家时，使用 `engine/storyEventBus.ts`（Zustand store）推送纯数据事件，UI 层（`EventModal.tsx`）订阅渲染
+- `StoryEvent` / `StoryEventOption` / `StoryEventEffect` 类型定义在 `engine/storyEventBus.ts`，**不在 UI 层**
+- 新增 NPC 行为如需玩家决策/通知弹窗，统一调用 `useStoryEventBus.getState().pushStoryEvent(event)`
+
 ### UI 组件规范
 - 新建弹窗/流程组件**必须使用** `base/` 基础组件：`<Modal>`、`<ModalHeader>`、`<Button>`
 - `Modal` size：`sm`=max-w-sm / `md`=max-w-md / `lg`=max-w-lg / `xl`=max-w-4xl
