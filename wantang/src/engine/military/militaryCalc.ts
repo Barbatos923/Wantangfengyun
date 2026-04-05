@@ -6,6 +6,7 @@ import type { Battalion, Army, UnitTypeDef } from './types';
 import { unitTypeMap } from '@data/unitTypes';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
+import { getTributeRatio } from '@engine/official/economyCalc';
 
 // ===== 兵役人口 =====
 
@@ -147,8 +148,8 @@ export function getTotalMilitaryMaintenance(
 // ===== 粮草估算 =====
 
 /**
- * 轻量估算角色月粮草净收入：领地粮产出 - 军费粮耗。
- * 不计算贡奉/薪俸等小项，避免调用完整 calculateMonthlyLedger。
+ * 轻量估算角色月粮草净收入：领地粮产出 + 臣属贡奉 - 向上级缴纳 - 军费粮耗。
+ * 传入 tributeCtx 时计算贡奉收支，否则仅算领地产出（向后兼容）。
  */
 export function estimateNetGrain(
   actor: Character,
@@ -156,14 +157,43 @@ export function estimateNetGrain(
   armies: Map<string, Army>,
   battalions: Map<string, Battalion>,
   ownerArmyIndex?: Map<string, Set<string>>,
+  tributeCtx?: {
+    characters: Map<string, Character>;
+    territories: Map<string, Territory>;
+    getControlledZhou: (charId: string) => Territory[];
+  },
 ): number {
   const abilities = getEffectiveAbilities(actor);
   let grainIncome = 0;
   for (const t of controlledZhou) {
     grainIncome += calculateMonthlyIncome(t, abilities).grain;
   }
+
+  // 臣属贡奉收入 + 向上级缴纳支出
+  let tributeNet = 0;
+  if (tributeCtx) {
+    // 臣属贡奉收入
+    for (const vassal of tributeCtx.characters.values()) {
+      if (!vassal.alive || vassal.overlordId !== actor.id) continue;
+      const vassalAbilities = getEffectiveAbilities(vassal);
+      const vassalZhou = tributeCtx.getControlledZhou(vassal.id);
+      let vassalGrain = 0;
+      for (const t of vassalZhou) {
+        vassalGrain += calculateMonthlyIncome(t, vassalAbilities).grain;
+      }
+      const ratio = getTributeRatio(vassal.centralization ?? 2, vassalZhou[0]?.territoryType ?? 'civil');
+      tributeNet += vassalGrain * ratio;
+    }
+
+    // 向上级缴纳
+    if (actor.overlordId) {
+      const myRatio = getTributeRatio(actor.centralization ?? 2, controlledZhou[0]?.territoryType ?? 'civil');
+      tributeNet -= grainIncome * myRatio;
+    }
+  }
+
   const { grain: grainCost } = getTotalMilitaryMaintenance(
     actor.id, armies, battalions, unitTypeMap, ownerArmyIndex,
   );
-  return grainIncome - grainCost;
+  return grainIncome + tributeNet - grainCost;
 }

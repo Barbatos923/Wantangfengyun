@@ -11,6 +11,7 @@ import { getAvailableRecruits, estimateNetGrain } from '@engine/military/militar
 import { RECRUIT_COST_PER_SOLDIER, executeRecruit } from '@engine/interaction/militaryAction';
 import { ALL_UNIT_TYPES } from '@data/unitTypes';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { getControlledZhou as getControlledZhouPure } from '@engine/official/postQueries';
 import { registerBehavior } from './index';
 
 // ── 常量 ────────────────────────────────────────────────
@@ -135,7 +136,11 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const moneyRatio = actor.resources.money / CONSCRIPT_MONEY_COST;
 
     // 粮草评估：轻量估算月净粮草，判断征兵后是否仍为正
-    const netGrain = estimateNetGrain(actor, controlledZhou, ctx.armies, ctx.battalions);
+    const netGrain = estimateNetGrain(actor, controlledZhou, ctx.armies, ctx.battalions, undefined, {
+      characters: ctx.characters,
+      territories: ctx.territories,
+      getControlledZhou: (cid) => getControlledZhouPure(cid, ctx.territories),
+    });
     const netGrainAfter = netGrain - AVG_GRAIN_PER_BATTALION;
 
     const modifiers: WeightModifier[] = [
@@ -188,7 +193,11 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
       // 粮草检查：用最新 Store 状态实时判断征兵后净粮草是否为正
       const controlledZhou = getControlledZhou(actor.id, ctx);
       const netGrain = estimateNetGrain(
-        actor, controlledZhou, milStore.armies, milStore.battalions,
+        actor, controlledZhou, milStore.armies, milStore.battalions, undefined, {
+          characters: ctx.characters,
+          territories: ctx.territories,
+          getControlledZhou: (cid) => getControlledZhouPure(cid, ctx.territories),
+        },
       );
       if (netGrain - AVG_GRAIN_PER_BATTALION < 0) break;
 

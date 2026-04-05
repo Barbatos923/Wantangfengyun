@@ -184,7 +184,13 @@ function aiDisbandBattalions(
   // 2. 财政裁减：净粮草为负时裁弱营
   // 重新获取最新状态（空壳营已裁）
   const freshArmies = milStore.getArmiesByOwner(char.id);
-  let netGrain = estimateNetGrain(char, controlledZhou, milStore.armies, milStore.battalions, milStore.ownerArmyIndex);
+  const terrStore = useTerritoryStore.getState();
+  const charStore = useCharacterStore.getState();
+  let netGrain = estimateNetGrain(char, controlledZhou, milStore.armies, milStore.battalions, milStore.ownerArmyIndex, {
+    characters: charStore.characters,
+    territories: terrStore.territories,
+    getControlledZhou: (cid) => getControlledZhou(cid, terrStore.territories),
+  });
 
   if (netGrain >= 0) return;
 
