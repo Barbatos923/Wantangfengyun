@@ -114,24 +114,32 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
       // 对每个可用理由单独计算 weight，取最高的 (目标, 理由) 组合
       for (const cb of affordableEvals) {
-        const cbCost = Math.abs(cb.cost.prestige) + Math.abs(cb.cost.legitimacy);
+        const cbCost = Math.abs(cb.cost.prestige) * 0.5 + Math.abs(cb.cost.legitimacy) * 4;
 
         // ── 理由专属人格偏好 ──
         const cbModifiers: WeightModifier[] = [];
         switch (cb.id) {
           case 'independence':
-            // 忠诚的人不愿背叛领主；大胆的人敢于独立
+            // 独立战争需要极强动机才会发起
+            cbModifiers.push({ label: '独立基础', add: -15 });
             cbModifiers.push({ label: '忠诚抑制', add: -personality.honor * 15 });
             cbModifiers.push({ label: '独立渴望', add: personality.boldness * 5 });
+            // 好感影响大：对领主的仇恨是独立核心动机（opinion × -0.5）
+            cbModifiers.push({ label: '好感', add: -opinion * 0.5 });
             break;
           case 'annexation':
             // 贪婪/野心驱动领土扩张；好战者更积极
             cbModifiers.push({ label: '领土野心', add: personality.greed * 10 });
             cbModifiers.push({ label: '好战', add: personality.boldness * 5 });
+            // 好感影响小：兼并主要看利益不看感情（opinion × -0.15）
+            cbModifiers.push({ label: '好感', add: -opinion * 0.15 });
             break;
           case 'deJureClaim':
-            // 法理宣称：理性的人更倾向用合法手段
+            // 法理宣称：有法理依据，更容易发起
+            cbModifiers.push({ label: '法理基础', add: 5 });
             cbModifiers.push({ label: '法理执念', add: personality.rationality * 5 });
+            // 好感影响中等：有法理依据，感情影响适中（opinion × -0.2）
+            cbModifiers.push({ label: '好感', add: -opinion * 0.2 });
             break;
         }
 
@@ -145,13 +153,6 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
           // 理由专属偏好
           ...cbModifiers,
-
-          // 好感驱动
-          ...(opinion < -10
-            ? [{ label: '仇恨', add: (Math.abs(opinion) - 10) * 0.3 }]
-            : opinion > 10 && opinion <= 20
-              ? [{ label: '好感抑制', add: -(opinion - 10) * 0.5 }]
-              : []),
 
           // 兵力对比
           ...(ratio >= 2 ? [{ label: '兵力碾压', add: 5 }]
