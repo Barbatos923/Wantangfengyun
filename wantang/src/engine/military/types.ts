@@ -78,6 +78,7 @@ export interface WarContext {
   era: Era;
   territories: Map<string, Territory>;
   characters: Map<string, Character>;
+  hasTruce?: boolean; // 双方是否处于停战期
 }
 
 /** 单条宣战理由的判定结果 */
@@ -86,6 +87,7 @@ export interface CasusBelliEval {
   name: string;
   failureReason: string | null; // null = 可用
   cost: { prestige: number; legitimacy: number };
+  trucePenalty?: { prestige: number; legitimacy: number }; // 停战期额外��罚（仅当 hasTruce 时存在）
 }
 
 /** 战争 */
@@ -104,6 +106,19 @@ export interface War {
   previousOverlordId?: string; // 独立战争：攻方宣战前的领主，败北时恢复
   summonCooldowns?: Record<string, number>; // charId → absoluteDay，召集参战冷却（30天内不重复）
 }
+
+/** 停战协议 */
+export interface Truce {
+  id: string;
+  partyA: string; // 角色 ID
+  partyB: string; // 角色 ID
+  expiryDay: number; // 到期的绝对天数
+}
+
+/** 停战期：2 年 */
+export const TRUCE_DURATION_DAYS = 730;
+/** 违反停战额外惩罚 */
+export const TRUCE_PENALTY = { prestige: -30, legitimacy: -20 };
 
 /** 正在赶赴行营的军队 */
 export interface IncomingArmy {

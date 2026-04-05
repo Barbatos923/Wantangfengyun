@@ -1,7 +1,7 @@
 // ===== 战争计算（纯函数） =====
 
 import type { CasusBelli, WarContext, CasusBelliEval, PeaceProposalContext, PeaceAcceptanceContext, PeaceResult } from './types';
-import { CASUS_BELLI_NAMES } from './types';
+import { CASUS_BELLI_NAMES, TRUCE_PENALTY } from './types';
 import type { Territory } from '@engine/territory/types';
 import { Era } from '@engine/types';
 import { positionMap } from '@data/positions';
@@ -28,12 +28,22 @@ export function evaluateAllCasusBelli(ctx: WarContext): CasusBelliEval[] {
   const results: CasusBelliEval[] = [];
   for (const def of CASUS_BELLI_DEFS) {
     if (!def.canShow(ctx)) continue;
-    results.push({
+    const baseCost = getWarCost(def.id, ctx.era);
+    const eval_: CasusBelliEval = {
       id: def.id,
       name: CASUS_BELLI_NAMES[def.id],
       failureReason: def.getFailureReason(ctx),
-      cost: getWarCost(def.id, ctx.era),
-    });
+      cost: baseCost,
+    };
+    // 停战期额外惩罚：叠加到 cost 中，同时保留 trucePenalty 供 UI 展示
+    if (ctx.hasTruce) {
+      eval_.trucePenalty = TRUCE_PENALTY;
+      eval_.cost = {
+        prestige: baseCost.prestige + TRUCE_PENALTY.prestige,
+        legitimacy: baseCost.legitimacy + TRUCE_PENALTY.legitimacy,
+      };
+    }
+    results.push(eval_);
   }
   return results;
 }

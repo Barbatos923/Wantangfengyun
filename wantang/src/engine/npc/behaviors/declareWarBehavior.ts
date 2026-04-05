@@ -9,6 +9,8 @@ import { executeDeclareWar } from '@engine/interaction';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { useWarStore } from '@engine/military/WarStore';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取 defender 直接控制的州级领地 ID ────────────
@@ -74,6 +76,10 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
         (w.attackerId === target.id && w.defenderId === actor.id)
       )) continue;
 
+      // 停战检查
+      const currentDay = toAbsoluteDay(ctx.date);
+      const truce = useWarStore.getState().hasTruce(actor.id, target.id, currentDay);
+
       // 评估宣战理由
       const warCtx: WarContext = {
         attackerId: actor.id,
@@ -81,6 +87,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
         era: ctx.era,
         territories: ctx.territories,
         characters: ctx.characters,
+        hasTruce: truce,
       };
       const evals = evaluateAllCasusBelli(warCtx);
       const usable = evals.filter(e => e.failureReason === null);
@@ -155,6 +162,9 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
           // 成本惩罚：每 10 点成本扣 1 weight
           ...(cbCost > 0 ? [{ label: '成本', add: -cbCost * 0.1 }] : []),
+
+          // 停战期惩罚：NPC 基本不会违反停战
+          ...(truce ? [{ label: '停战期', add: -20 }] : []),
 
           // 硬切（factor=0）
           ...(opinion > 20 ? [{ label: '朋友', factor: 0 }] : []),

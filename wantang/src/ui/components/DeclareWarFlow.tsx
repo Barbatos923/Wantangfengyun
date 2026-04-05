@@ -5,9 +5,11 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import type { CasusBelli, CasusBelliEval } from '@engine/military/types';
-import { evaluateAllCasusBelli, getWarCost, getDeJureTargets, getAnnexTargets } from '@engine/military/warCalc';
+import { evaluateAllCasusBelli, getDeJureTargets, getAnnexTargets } from '@engine/military/warCalc';
 import { executeDeclareWar } from '@engine/interaction';
 import { canAffordWarCost } from '@engine/official/legitimacyCalc';
+import { useWarStore } from '@engine/military/WarStore';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { Modal, ModalHeader, Button } from './base';
 
 interface DeclareWarFlowProps {
@@ -32,6 +34,9 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     return null;
   }
 
+  // 停战检查
+  const hasTruce = useWarStore.getState().hasTruce(playerId, targetId, toAbsoluteDay(currentDate));
+
   // 评估所有可见的宣战理由
   const casusBelliEvals: CasusBelliEval[] = evaluateAllCasusBelli({
     attackerId: playerId,
@@ -39,6 +44,7 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     era,
     territories,
     characters,
+    hasTruce,
   });
 
   // 选中的理由是否可用
@@ -67,12 +73,12 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
       selectedTargets = [selectedAnnexTarget];
     }
 
-    const cost = getWarCost(selectedCasus, era);
+    const cost = selectedEval!.cost; // 含停战惩罚
     executeDeclareWar(playerId, targetId, selectedCasus, selectedTargets, currentDate, cost);
     onClose();
   };
 
-  const selectedCost = selectedCasus ? getWarCost(selectedCasus, era) : { prestige: 0, legitimacy: 0 };
+  const selectedCost = selectedEval?.cost ?? { prestige: 0, legitimacy: 0 };
   const canAfford = canAffordWarCost(player.resources, selectedCost);
 
   const canConfirm = isSelectedAvailable && canAfford && (
@@ -137,6 +143,11 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
                       {isDisabled && (
                         <span className="text-xs text-[var(--color-accent-red)] mt-0.5">
                           {evalItem.failureReason}
+                        </span>
+                      )}
+                      {evalItem.trucePenalty && !isDisabled && (
+                        <span className="text-xs text-[var(--color-accent-red)] mt-0.5">
+                          停战期内宣战（额外 名望{evalItem.trucePenalty.prestige} 正统性{evalItem.trucePenalty.legitimacy}）
                         </span>
                       )}
                     </button>

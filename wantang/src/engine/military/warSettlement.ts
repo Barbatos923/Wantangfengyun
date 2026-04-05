@@ -8,7 +8,9 @@ import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
+import { TRUCE_DURATION_DAYS } from './types';
 import { isWarParticipant } from './warParticipantUtils';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { findEmperorId, collectRulerIds } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
 
@@ -41,6 +43,11 @@ export function settleWar(warId: string, result: War['result']): void {
 
   // ── 战争结束事件通知 ────────────────────────────────────────────────────
   emitWarEndEvent(war, result);
+
+  // ── 停战协议（双方领袖间） ──────────────────────────────────────────
+  const date = useTurnManager.getState().currentDate;
+  const expiryDay = toAbsoluteDay(date) + TRUCE_DURATION_DAYS;
+  warStore.addTruce(war.attackerId, war.defenderId, expiryDay);
 
   // ── 通用收尾 ──────────────────────────────────────────────────────────
   clearOccupation(war);

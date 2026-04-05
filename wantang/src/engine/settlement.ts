@@ -12,6 +12,8 @@ import {
   runBuildingSystem,
 } from './systems/index.ts';
 import { runDailyNpcEngine } from './npc/NpcEngine.ts';
+import { useWarStore } from './military/WarStore.ts';
+import { toAbsoluteDay } from './dateUtils.ts';
 
 /**
  * 每日执行。由 TurnManager.advanceDay() 的 dailyCallback 触发。
@@ -28,6 +30,7 @@ export function runDailySettlement(date: GameDate): void {
  * 顺序严格：角色 → NPC → 人口 → 社交 → 经济 → 军事 → 时代 → 建筑。
  */
 export function runMonthlySettlement(date: GameDate): void {
+  useWarStore.getState().cleanExpiredTruces(toAbsoluteDay(date)); // 停���过���清理
   runCharacterSystem(date);   // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
   runDailyNpcEngine(date);    // 2. NPC 决策（月初在 characterSystem 之后，保证继承先完成）
   runPopulationSystem(date);  // 3. 年度人口变化

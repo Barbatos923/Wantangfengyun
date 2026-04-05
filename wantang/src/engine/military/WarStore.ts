@@ -1,12 +1,18 @@
 // ===== 战争 Store =====
 
 import { create } from 'zustand';
-import type { War, Campaign, Siege, CasusBelli } from './types';
+import type { War, Campaign, Siege, CasusBelli, Truce } from './types';
 
 interface WarState {
   wars: Map<string, War>;
   campaigns: Map<string, Campaign>;
   sieges: Map<string, Siege>;
+  truces: Map<string, Truce>;
+
+  // 停战
+  addTruce(partyA: string, partyB: string, expiryDay: number): void;
+  hasTruce(a: string, b: string, currentDay: number): boolean;
+  cleanExpiredTruces(currentDay: number): void;
 
   // 战争
   declareWar(
@@ -56,6 +62,41 @@ export const useWarStore = create<WarState>()((set, get) => ({
   wars: new Map(),
   campaigns: new Map(),
   sieges: new Map(),
+  truces: new Map(),
+
+  // ── 停战 ────────────────────────────────────────────────────────────────
+
+  addTruce(partyA, partyB, expiryDay) {
+    const truce: Truce = { id: crypto.randomUUID(), partyA, partyB, expiryDay };
+    set((state) => {
+      const truces = new Map(state.truces);
+      truces.set(truce.id, truce);
+      return { truces };
+    });
+  },
+
+  hasTruce(a, b, currentDay) {
+    for (const t of get().truces.values()) {
+      if (t.expiryDay <= currentDay) continue;
+      if ((t.partyA === a && t.partyB === b) || (t.partyA === b && t.partyB === a)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  cleanExpiredTruces(currentDay) {
+    const expired: string[] = [];
+    for (const t of get().truces.values()) {
+      if (t.expiryDay <= currentDay) expired.push(t.id);
+    }
+    if (expired.length === 0) return;
+    set((state) => {
+      const truces = new Map(state.truces);
+      for (const id of expired) truces.delete(id);
+      return { truces };
+    });
+  },
 
   // ── 战争 ────────────────────────────────────────────────────────────────
 

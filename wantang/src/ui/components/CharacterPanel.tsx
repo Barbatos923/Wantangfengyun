@@ -1,6 +1,6 @@
 // ===== 三段式人物面板（左侧面板内嵌） =====
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
@@ -14,6 +14,9 @@ import { getRankTitle, getSubordinates, getDirectControlLimit, getDynamicTitle, 
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
+import { isWarParticipant, getWarSide } from '@engine/military/warParticipantUtils';
+import { toAbsoluteDay, fromAbsoluteDay } from '@engine/dateUtils';
 import InteractionMenu from './InteractionMenu';
 import AppointFlow from './AppointFlow';
 import DismissFlow from './DismissFlow';
@@ -100,7 +103,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const territories = useTerritoryStore((s) => s.territories);
   const expectedLegitimacy = useTerritoryStore((s) => s.expectedLegitimacy);
   const policyCache = useTerritoryStore((s) => s.policyOpinionCache);
-  const currentYear = useTurnManager((s) => s.currentDate.year);
+  const currentDate = useTurnManager((s) => s.currentDate);
+  const currentYear = currentDate.year;
   const { pushCharacter, openTerritoryModal, goBack, goToPlayer, close, togglePin } = usePanelStore();
   const pinned = usePanelStore((s) => s.pinned);
   const canGoBack = usePanelStore((s) => s.stack.length > 1);
@@ -118,6 +122,35 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
   // Controlled territories
   const controlledTerritories = Array.from(territories.values()).filter((t) => getActualController(t) === characterId);
+
+  // Active wars (responsive subscription)
+  const wars = useWarStore((s) => s.wars);
+  const activeWars = useMemo(
+    () => [...wars.values()].filter(w => w.status === 'active' && isWarParticipant(characterId, w)),
+    [wars, characterId],
+  );
+
+  // Truces (responsive subscription)
+  const truces = useWarStore((s) => s.truces);
+  const currentAbsDay = toAbsoluteDay(currentDate);
+  const activeTruces = useMemo(() => {
+    const result: { opponentId: string; opponentName: string; expiryDate: string }[] = [];
+    for (const t of truces.values()) {
+      if (t.expiryDay <= currentAbsDay) continue;
+      let opponentId: string | null = null;
+      if (t.partyA === characterId) opponentId = t.partyB;
+      else if (t.partyB === characterId) opponentId = t.partyA;
+      if (!opponentId) continue;
+      const opponent = characters.get(opponentId);
+      const expiry = fromAbsoluteDay(t.expiryDay);
+      result.push({
+        opponentId,
+        opponentName: opponent?.name ?? '???',
+        expiryDate: `${expiry.year}年${expiry.month}月`,
+      });
+    }
+    return result;
+  }, [truces, currentAbsDay, characterId, characters]);
 
   return (
     <div className="flex flex-col h-full">
@@ -405,6 +438,73 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           </div>
           );
         })()}
+
+        {/* Current wars */}
+        {activeWars.length > 0 && (
+          <div>
+            <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">
+              当前战争 ({activeWars.length})
+            </h3>
+            <div className="space-y-1">
+              {activeWars.map((war) => {
+                const side = getWarSide(characterId, war);
+                const isAttacker = side === 'attacker';
+                const enemyId = isAttacker ? war.defenderId : war.attackerId;
+                const enemy = characters.get(enemyId);
+                const cbName = CASUS_BELLI_NAMES[war.casusBelli] ?? war.casusBelli;
+                const roleLabel = war.attackerId === characterId ? '发起' :
+                  war.defenderId === characterId ? '防御' : isAttacker ? '攻方参战' : '守方参战';
+                // 战分：正=该角色��方占优
+                const myScore = isAttacker ? war.warScore : -war.warScore;
+                return (
+                  <div key={war.id} className="flex items-center justify-between px-2 py-1 rounded border border-[var(--color-border)] text-xs">
+                    <div>
+                      <span className="text-[var(--color-accent-red)] font-bold">⚔</span>
+                      <span className="text-[var(--color-text)] ml-1">vs</span>
+                      <button
+                        className="text-[var(--color-accent-gold)] ml-1 hover:underline"
+                        onClick={() => pushCharacter(enemyId)}
+                      >
+                        {enemy?.name ?? '???'}
+                      </button>
+                      <span className={`ml-1.5 font-bold ${myScore > 0 ? 'text-[var(--color-accent-green)]' : myScore < 0 ? 'text-[var(--color-accent-red)]' : 'text-[var(--color-text-muted)]'}`}>
+                        {myScore > 0 ? '+' : ''}{myScore}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-[var(--color-text-muted)]">
+                      {roleLabel} · {cbName}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Diplomacy: truces */}
+        {activeTruces.length > 0 && (
+          <div>
+            <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">外交</h3>
+            <div className="space-y-1">
+              {activeTruces.map((truce) => (
+                <div key={truce.opponentId} className="flex items-center justify-between px-2 py-1 rounded border border-[var(--color-border)] text-xs">
+                  <div>
+                    <span className="text-[var(--color-text-muted)]">停战</span>
+                    <button
+                      className="text-[var(--color-accent-gold)] ml-1 hover:underline"
+                      onClick={() => pushCharacter(truce.opponentId)}
+                    >
+                      {truce.opponentName}
+                    </button>
+                  </div>
+                  <span className="text-[10px] text-[var(--color-text-muted)]">
+                    至 {truce.expiryDate}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Bottom section: Tabs ── */}
