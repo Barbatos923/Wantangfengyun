@@ -44,6 +44,7 @@ import './behaviors/adjustTypeBehavior';
 import './behaviors/adjustAppointRightBehavior';
 import './behaviors/adjustSuccessionBehavior';
 import './behaviors/adjustRedistributionBehavior';
+import './behaviors/reassignBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

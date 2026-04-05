@@ -3,7 +3,7 @@
 import type { Character } from '@engine/character/types';
 
 /** 交互参数类型 */
-export type InteractionParamType = 'none' | 'appoint' | 'dismiss' | 'centralization' | 'declareWar' | 'transferVassal' | 'revoke' | 'joinWar' | 'callToArms' | 'usurpPost';
+export type InteractionParamType = 'none' | 'appoint' | 'dismiss' | 'centralization' | 'declareWar' | 'transferVassal' | 'revoke' | 'joinWar' | 'callToArms' | 'usurpPost' | 'reassign';
 
 /** 交互定义 */
 export interface Interaction {

@@ -25,6 +25,7 @@ import DeclareWarFlow from './DeclareWarFlow';
 import TransferVassalFlow from './TransferVassalFlow';
 import RevokeFlow from './RevokeFlow';
 import UsurpPostFlow from './UsurpPostFlow';
+import ReassignFlow from './ReassignFlow';
 import { executeDemandFealty, previewDemandFealty, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms } from '@engine/interaction';
 import type { DemandFealtyResult, FealtyChanceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from '@engine/interaction';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
@@ -646,6 +647,13 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
       {activeInteraction === 'usurpPost' && (
         <UsurpPostFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
+
+      {activeInteraction === 'reassign' && (
+        <ReassignFlow
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />

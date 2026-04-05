@@ -13,6 +13,7 @@ import './transferVassalAction';
 import './revokeAction';
 import './joinWarAction';
 import './usurpPostAction';
+import './reassignAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -36,3 +37,11 @@ export { executeJoinWar, getJoinableWars, getCallableWars, calcCallToArmsChance,
 export type { JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from './joinWarAction';
 export { getUsurpablePosts, previewUsurp, executeUsurp } from './usurpPostAction';
 export type { UsurpPreview } from './usurpPostAction';
+export { previewReassignChance, executeReassign, submitReassignProposal } from './reassignAction';
+export type { ReassignProposalResult } from './reassignAction';
+export {
+  isCentralOfficial,
+  getTerritorialCandidates,
+  getCentralCandidates,
+} from '@engine/official/reassignCalc';
+export type { ReassignCandidate } from '@engine/official/reassignCalc';

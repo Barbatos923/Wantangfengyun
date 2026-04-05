@@ -139,6 +139,7 @@ src/
 | **战争结算** | `seatPost(attacker)` | | `syncArmyForPost` | `cascadeSecondary(attacker)`（无条件） | 不执行 | `checkCapitalZhouLost` | `refreshPostCaches(full)` |
 | **创建头衔** | （addPost） | | `syncArmyForPost` | | | `capitalZhouSeat` | `refreshPostCaches(full)` |
 | **销毁头衔** | | | | | | | `destroyMainPost` + `refreshPostCaches` |
+| **调任**（外放内调） | `seatPost(京官)` | 非目标岗`executeDismiss(skipOpinion)` + 目标岗`vacateOnly` | `syncArmyForPost` | `cascadeSecondary(京官)` | `cascadeChild(京官, 有地者)` | 非目标随dismiss + 目标`capitalZhouSeat` | `refreshPostCaches` |
 | **皇帝销毁**（eraSystem） | | | | | | | `removePost` + `refreshPostCaches(full)` |
 
 ### 治所州联动
@@ -241,7 +242,7 @@ src/
 
 ## 六、NPC Engine（已日结化）
 
-- 26 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺 / 罢免 / 调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率
+- 28 个行为模块：铨选 / 考课 / 宣战 / 要求效忠 / 动员 / 补员 / 征兵 / 赏赐 / 建设 / 和谈 / 授予领地 / 剥夺领地 / 转移臣属 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争 / 称王建镇 / 称帝 / 篡夺 / 罢免 / 皇帝调任 / 宰相调任 / 调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率
 - `playerMode`：`push-task`（行政职责）/ `skip`（自愿行为）/ `auto-execute`
 - `schedule`：`daily`（每天检测，默认 push-task）/ `monthly-slot`（按槽位，默认 skip/auto-execute）
 - `weight` = 百分比概率，`forced` = 强制执行（forced 每天检测，日历型需自带 day===1 守卫）
@@ -285,9 +286,10 @@ src/
 
 ## 八、当前开发阶段
 
-核心循环、继承、铨选、考课、正统性、NPC Engine（26 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
+核心循环、继承、铨选、考课、正统性、NPC Engine（28 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
+- **外放内调（调任）交互**（2026-04-06）：京官↔有地臣属调任，有地者可拒绝（发动独立战争，类似剥夺领地）。品级匹配三档（五品以下↔州、五品到三品↔道、三品到一品↔国）。有地者交出所有领地只身入京，京官继承领地/臣属/军队/副岗。无好感变化。NPC 皇帝行为（制衡地方：长期任职/低好感/强军力加分，理性/多疑/勤奋性格加分）。NPC 宰相行为（忠诚型制衡 + 自私型政斗外放政敌）。宰相提案→StoryEvent 皇帝审批。新文件：`reassignCalc.ts`/`reassignAction.ts`/`ReassignFlow.tsx`/`reassignBehavior.ts`
 - **交互 canShow / 适用对象审查 + 辟署权修复**（2026-04-06）：逐场景审查所有岗位变动的对象条件（考课罢免/正常罢免/剥夺领地/铨选/直接任命/篡夺/继承/创建头衔/销毁头衔/皇帝销毁）。修复：(1) `ensureAppointRight` 统一入口——独立统治者自动获得辟署权（独立宣战/继承断链/乱世进入三处调用）；(2) 剥夺领地需辟署权校验（`getRevokablePosts` + NPC `revokeBehavior`）；(3) 独立统治者绝嗣兜底——臣属全部独立并获得辟署权；(4) eraSystem 去掉重复的 `hasAppointRight: true`，改由 `ensureAppointRight` 统一处理
 - **法理下级可选转移**（2026-04-05）：铨选/直接任命 grantsControl 岗位后，递归遍历所有法理后代（国→道→州），玩家可勾选转移（TransferChildrenFlow 弹窗，默认全选），NPC 自动全转移。铨选模式（deJure）：任命者的臣属 + 前任（vacatedHolderId）的臣属均可转移，其他领主的臣属不动；直接任命模式：仅转移任命者自己的臣属。新增 Post.vacatedHolderId 字段记录考课前任。好感：新任者对任命者+转授法理臣属好感（累加，公式同转移臣属）
 - **岗位变动原子操作重构**（2026-04-05）：新建 `official/postTransfer.ts` 提取 8 个原子操作（seatPost/vacatePost/syncArmyForPost/cascadeSecondaryOverlord/cascadeChildOverlord/capitalZhouSeat/capitalZhouVacate/destroyMainPost/refreshPostCaches）；改写 dismissAction/appointAction/usurpPostAction/warSettlement/characterSystem/destroyTitleDecision/createKingdomDecision/eraSystem 8 个文件，消除内联重复的副岗级联/治所联动/缓存刷新代码；`refreshPlayerLedger` 从 appointAction 迁移到 postTransfer，appointAction 保留 re-export 兼容
@@ -301,7 +303,6 @@ src/
 - **效忠级联 + 铨选修复 + 通知系统三层重构**（2026-04-04~05）
 
 ### 尚未完成（当前优先）
-- "调任"交互：零好感成本岗位互调，适用皇帝/独立统治者/辟署权持有者/宰相
 - 独立统治者可修改自己领地的继承法和辟署权（集权交互扩展）
 
 ### 尚未完成（后续系统）
