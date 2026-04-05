@@ -1,7 +1,11 @@
 // ===== 军事计算（纯函数） =====
 
 import type { Territory } from '@engine/territory/types';
+import type { Character } from '@engine/character/types';
 import type { Battalion, Army, UnitTypeDef } from './types';
+import { unitTypeMap } from '@data/unitTypes';
+import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
+import { getEffectiveAbilities } from '@engine/character/characterUtils';
 
 // ===== 兵役人口 =====
 
@@ -120,12 +124,46 @@ export function getTotalMilitaryMaintenance(
   armies: Map<string, Army>,
   battalions: Map<string, Battalion>,
   unitTypeDefs: Map<string, UnitTypeDef>,
+  ownerArmyIndex?: Map<string, Set<string>>,
 ): { money: number; grain: number } {
   let totalGrain = 0;
-  for (const army of armies.values()) {
-    if (army.ownerId === ownerId) {
-      totalGrain += getArmyMonthlyGrainCost(army, battalions, unitTypeDefs);
+  // 优先用 ownerArmyIndex 局部遍历
+  const armyIds = ownerArmyIndex?.get(ownerId);
+  if (armyIds) {
+    for (const armyId of armyIds) {
+      const army = armies.get(armyId);
+      if (army) totalGrain += getArmyMonthlyGrainCost(army, battalions, unitTypeDefs);
+    }
+  } else {
+    for (const army of armies.values()) {
+      if (army.ownerId === ownerId) {
+        totalGrain += getArmyMonthlyGrainCost(army, battalions, unitTypeDefs);
+      }
     }
   }
   return { money: 0, grain: totalGrain };
+}
+
+// ===== 粮草估算 =====
+
+/**
+ * 轻量估算角色月粮草净收入：领地粮产出 - 军费粮耗。
+ * 不计算贡奉/薪俸等小项，避免调用完整 calculateMonthlyLedger。
+ */
+export function estimateNetGrain(
+  actor: Character,
+  controlledZhou: Territory[],
+  armies: Map<string, Army>,
+  battalions: Map<string, Battalion>,
+  ownerArmyIndex?: Map<string, Set<string>>,
+): number {
+  const abilities = getEffectiveAbilities(actor);
+  let grainIncome = 0;
+  for (const t of controlledZhou) {
+    grainIncome += calculateMonthlyIncome(t, abilities).grain;
+  }
+  const { grain: grainCost } = getTotalMilitaryMaintenance(
+    actor.id, armies, battalions, unitTypeMap, ownerArmyIndex,
+  );
+  return grainIncome - grainCost;
 }

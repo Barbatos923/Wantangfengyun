@@ -62,6 +62,9 @@ function emitWarEndEvent(war: War, result: War['result']): void {
     : result === 'defenderWin' ? `${defenderName}获胜`
     : '双方和谈';
 
+  const CB_LABELS: Record<string, string> = { annexation: '武力兼并', deJureClaim: '法理宣称', independence: '独立' };
+  console.log(`[战争] 结束：${attackerName} vs ${defenderName}（${CB_LABELS[war.casusBelli] ?? war.casusBelli}）→ ${resultText}`);
+
   turnMgr.addEvent({
     id: crypto.randomUUID(),
     date: { year: date.year, month: date.month, day: date.day },

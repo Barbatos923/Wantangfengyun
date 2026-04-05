@@ -4,14 +4,12 @@ import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from
 import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import type { Territory } from '@engine/territory/types';
-import type { Army, Battalion, UnitType } from '@engine/military/types';
+import type { Army, UnitType } from '@engine/military/types';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
-import { getAvailableRecruits, getTotalMilitaryMaintenance } from '@engine/military/militaryCalc';
-import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
-import { getEffectiveAbilities } from '@engine/character/characterUtils';
+import { getAvailableRecruits, estimateNetGrain } from '@engine/military/militaryCalc';
 import { RECRUIT_COST_PER_SOLDIER, executeRecruit } from '@engine/interaction/militaryAction';
-import { ALL_UNIT_TYPES, unitTypeMap } from '@data/unitTypes';
+import { ALL_UNIT_TYPES } from '@data/unitTypes';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
 
@@ -56,26 +54,6 @@ function getOwnedArmies(actorId: string, ctx: NpcContext): Army[] {
   return result;
 }
 
-/**
- * 轻量估算角色月粮草净收入：领地粮产出 - 军费粮耗。
- * 不计算贡奉/薪俸等小项，避免调用完整 calculateMonthlyLedger。
- */
-function estimateNetGrain(
-  actor: Character,
-  controlledZhou: Territory[],
-  armies: Map<string, Army>,
-  battalions: Map<string, Battalion>,
-): number {
-  const abilities = getEffectiveAbilities(actor);
-  let grainIncome = 0;
-  for (const t of controlledZhou) {
-    grainIncome += calculateMonthlyIncome(t, abilities).grain;
-  }
-  const { grain: grainCost } = getTotalMilitaryMaintenance(
-    actor.id, armies, battalions, unitTypeMap,
-  );
-  return grainIncome - grainCost;
-}
 
 /** 获取有足够征兵池的州（按征兵池降序） */
 function getRecruitableZhou(

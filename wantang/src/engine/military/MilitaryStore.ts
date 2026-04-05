@@ -147,7 +147,7 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
   },
 
   createArmy: (name, ownerId, locationId, commanderId, postId) => {
-    const id = `army-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const id = crypto.randomUUID();
     const army: Army = {
       id,
       name,
@@ -188,7 +188,7 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
   },
 
   recruitBattalion: (armyId, territoryId, unitType, name) => {
-    const id = `battalion-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const id = crypto.randomUUID();
     const battalion: Battalion = {
       id,
       name,

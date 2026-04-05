@@ -195,6 +195,12 @@ src/
 - **哈希槽位调度**：`hash(actorId + ':' + behaviorId) % 28 + 1` 决定月内执行日
 - **品级分档频率**：王公(25+) 2次/月，节度使(17-24) 1次/月，刺史(12-16) 1次/2月，县令(0-11) 1次/3月
 - 新增行为：实现 `NpcBehavior` → `registerBehavior()` → 自动调度，默认从 playerMode 推断 schedule
+- **军事编制 AI**（`militaryAI.ts`，在 `militarySystem` 月结中调用，不走 NpcBehavior）：
+  - 建军：每 3 州 1 支军队（上限 10），选无己方军队驻扎的州
+  - 换将：commanderId 空缺自动补缺 + military 高 10+ 点时优化替换
+  - 调营：营数差距 >= 3 时从多的转弱营到少的
+  - 裁营：空壳营（strength < 100）直接解散 + 净粮草为负时裁弱营（每月最多 2 个）
+  - 跳过玩家，玩家手动管理军队
 
 ---
 
@@ -226,18 +232,15 @@ src/
 核心循环、继承、铨选、考课、正统性、NPC Engine（26 个行为）、战争系统（含多方参战）、决议系统均已实现并可自主运转。时间系统全面日结（CK3 风格）。
 
 ### 最近完成
-- **NPC 政策行为 + 好感实时化重构**（2026-04-05）：5 个政策 NPC 行为（调税/调职类/调辟署权/调继承法/调回拨率）；好感系统重构为双轨制（实时计算+事件存储）；`policyOpinionCache` 自维护（updatePost/addPost/removePost 自动增量更新）；通用讨好评估 `evaluateAppeasementTargets`；权限校验 `hasAuthorityOverPost`；道/州职类独立（删除 childIds 级联）
-- **NPC 罢免行为 + StoryEvent 下沉**（2026-04-05）：dismissBehavior 完成；StoryEvent 类型移至 engine 层
-- **自我领主防御**（2026-04-05）：修复4处自我领主 bug + CharacterStore DEBUG 监测
-- **决议系统**（2026-04-05）：4 个决议（称王/建镇/称帝/销毁）+ 篡夺交互 + 治所联动 + 3 个 NPC 行为 + 时代钩子
-- **多方参战系统**（2026-04-04）：召集/干涉/退出 + 合兵战斗 + 战争 UI（WarOverlay）+ 地图行营四色
-- **效忠级联 + 铨选修复**（2026-04-05）：级联更新、铨选候选池/草案去重/vacateOnly、调兵草拟人四级拆分
-- **战争 Bug 修复**（2026-04-05）：多行营合围、跨战争寻路、城破守军解散、防守方惰性加分删除
-- **通知系统三层重构**：AlertBar（行政）/ EventToast（CK3 侧栏）/ EventModal（重大决策）
+- **NPC 军事编制 AI**（2026-04-05）：`militaryAI.ts` 在 militarySystem 月结中自动执行（建军/换将/调营/裁营）；`estimateNetGrain` 提取到 militaryCalc.ts 共用；MilitaryStore ID 生成修复为 `crypto.randomUUID()`
+- **NPC 政策行为 + 好感实时化重构**（2026-04-05）：5 个政策行为 + 好感双轨制（实时计算+事件存储）+ `policyOpinionCache` 自维护 + 权限校验 `hasAuthorityOverPost` + 道/州职类独立
+- **NPC 罢免行为 + StoryEvent 下沉**（2026-04-05）
+- **决议系统 + 篡夺 + 头衔系统**（2026-04-05）
+- **多方参战系统**（2026-04-04）：召集/干涉/退出 + 合兵战斗 + 战争 UI + 地图行营四色
+- **效忠级联 + 铨选修复 + 通知系统三层重构**（2026-04-04~05）
 
 ### 尚未完成（当前优先）
 - 战争停战协议期限
-- NPC 军事编制 AI（建军/换将/调营/裁营）
 - NPC 指定继承人（性格偏好选择）
 
 ### 尚未完成（后续系统）

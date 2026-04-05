@@ -9,6 +9,7 @@ import { useTurnManager } from '@engine/TurnManager.ts';
 import { getConscriptionCap } from '@engine/military/militaryCalc.ts';
 import { clamp } from '@engine/utils.ts';
 import { random } from '@engine/random.ts';
+import { runMilitaryAI } from '@engine/military/militaryAI.ts';
 
 export function runMilitarySystem(date: GameDate): void {
   const terrStore = useTerritoryStore.getState();
@@ -99,4 +100,7 @@ export function runMilitarySystem(date: GameDate): void {
       }
     }
   }
+
+  // ===== NPC 军事编制 AI =====
+  runMilitaryAI();
 }
