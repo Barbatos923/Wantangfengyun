@@ -186,107 +186,39 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 
 ### Phase 6：谋略 + 派系 + 事件 — ⬜ 继续补充
 
-**已完成：**
-- ✅ NPC Engine 框架 + 21 个行为模块（铨选/考课/宣战/要求效忠/动员/补员/征兵/赏赐/建设/和谈/授予领地/剥夺领地/转移臣属/调兵草拟/调兵批准/召集参战/干涉战争/退出战争/称王建镇/称帝/篡夺）
-- ✅ 日结时间系统（2026-04-02）：战争系统日结，其余月结，现实平年日历，dateUtils 工具库
-  - 行军使用 marchSpeed 日累积器，骑兵快于步兵
-  - 围城/损耗/分数按日推进
-- ✅ NPC Engine 日结化（2026-04-03）：哈希槽位+品级分档调度
-  - daily 行为（push-task）每天检测，monthly-slot 行为（skip）按槽位分散
-  - 品级分档：王公 2次/月，节度使 1次/月，刺史 1次/2月，县令 1次/3月
-- ✅ CK3 风格时间控制 UI（2026-04-03）：播放键+三档毛边色块+快捷键
-- ✅ NPC 授予领地 + 剥夺领地行为（2026-04-04）：
-  - `grantTerritoryBehavior`：直辖超额时自动授予臣属，受赠者按好感(60%)+属性总和(40%)评分
-  - `revokeBehavior`：对仇敌臣属剥夺领地，性格驱动权重
-  - `revokeAction` + `RevokeFlow`：玩家剥夺交互，成功率判定（`calcRevokeChance`），失败→免费独立战争
-- ✅ 罢免/剥夺分离（2026-04-04）：dismiss 仅限非 grantsControl 岗位（京官/地方副岗），revoke 针对 grantsControl 岗位（有风险）；罢免条件改为"直接臣属"
-- ✅ 效忠关系级联更新（2026-04-04）：
-  - `executeDismiss` 主岗免职时，法理下级主岗持有人 + 本领地副岗持有人的 overlordId 回退给接管者
-  - `executeDismiss` 新增 `skipOpinion` 选项，铨选调动等合规场景跳过好感惩罚
-  - `executeAppoint` 铨选调动（`vacateOldPost=true`）改用 `executeDismiss` 复用级联逻辑
-  - `executeAppoint` 铨选调动主岗时，新任者 overlordId 沿 parentId 找法理上级主岗持有人
-  - `executeAppoint` 就任 grantsControl 岗位时，本领地副岗持有人自动归附新任者
-  - `demandFealtyBehavior` 权重调整：基础权重 0→50，荣誉感改为正向修正
-- ✅ NPC 转移臣属行为（2026-04-04）：`transferVassalBehavior`，节度使及以上主动将法理下级臣属转给对应的下级领主
-- ✅ 三层通知系统重构（2026-04-04）：
-  - 顶部通知栏（AlertBar）：仅行政任务（铨选/审批/考课）
-  - 侧边栏通知（EventToast）：CK3 风格右侧卡片流，羊皮纸材质，头像集成，边框颜色编码，入场动画
-  - 中心弹出框（EventModal）：重大决策事件框架（角色卡+叙事+决策按钮+hover效果预览）
-- ✅ 事件系统改进（2026-04-04）：事件在引擎层无条件记录（为 AI 史书准备），UI 层按玩家关联度筛选显示；新增宣战/战争结束事件
-- ✅ 征兵/补员金钱消耗（2026-04-05）：新增每兵 20 贯征募费用（`RECRUIT_COST_PER_SOLDIER`），征兵和补员均扣除金钱
-- ✅ NPC 征兵行为（2026-04-05）：`conscriptBehavior`，NPC 自主新建营扩军
-  - 权重：基础 + 战时/兵力/金钱/粮草/性格（boldness/greed/honor/vengefulness）多维驱动
-  - 粮草评估：轻量纯函数 `estimateNetGrain`（领地粮产出 - 军费粮耗），征兵后净粮草为负则硬切
-  - 执行：每次最多 2 营，优先往营数最少的军队扩编，兵种按性格选择
-- ✅ 调兵草拟人四级拆分（2026-04-05）：`resolveDeployDrafter` 重写
-  - 天下 → 兵部尚书，国 → 国司马，道 → 都知兵马使，州 → 录事参军
-  - ruler 不再自己兼任草拟人，修复皇帝持有刺史岗位时草拟按钮误显示的 bug
-- ✅ 岗位调整（2026-04-05）：新增 `pos-guo-sima`（国司马），删除 `pos-sima`（州司马）和 `pos-zhangshi`（州长史）
-- ✅ NpcContext 扩展（2026-04-05）：新增 `armies`/`battalions`/`controllerIndex` 快照字段
-- ✅ 多方参战系统（2026-04-05）：
-  - War 扩展 `attackerParticipants`/`defenderParticipants`，两阵营联盟制
-  - `warParticipantUtils.ts`：8 个纯函数替换全部二元判断
-  - 合兵战斗方案：同阵营行营合并 armyIds，统帅取 military 最高者
-  - 围城解除：援军到达正在被围城的领地时，围城方被拉入野战
-  - 领地阵营判定：`isEnemyTerritoryInWar` 沿效忠链找第一个参战者判断阵营
-  - 角色死亡自动清理参战状态 + 解散行营
-  - 战争自动结算：仅领袖是玩家时跳过，参战者不阻止
-  - `WarStore.addParticipant` 兜底校验：拒绝领袖加入/去重
-- ✅ 召集参战交互（2026-04-05）：
-  - `callToArmsBehavior`（NPC）：领袖 daily 召集臣属，接受概率 = 60 + 好感×1 + 荣誉×15 - 胆识×10，拒绝好感-30
-  - 玩家被召集：AlertBar push-task 通知（接受/拒绝），超时 30 天自动接受
-  - 玩家主动召集：角色交互"召集参战"二级弹窗（概率预览→结果）
-- ✅ 干涉战争交互（2026-04-05）：
-  - `joinWarBehavior`（NPC）：领主 monthly-slot 主动加入臣属战争，playerMode=skip
-  - 玩家通过角色交互"干涉战争"发起，选择战争+加入阵营
-- ✅ 退出战争（2026-04-05）：`withdrawWarBehavior`（NPC），参战者 monthly-slot 评估退出；玩家从 MilitaryPanel/WarOverlay 操作
-- ✅ 战争 UI 增强（2026-04-05）：
-  - `WarOverlay`：右下角虎符悬浮图标 + 我方视角战分；点击展开详情面板（双方头像/战分条/兵力/盟友头像/操作按钮）；多场战争切换
-  - 战分显示改为我方视角（+绿-红）
-  - 地图行营颜色四态（我军金/友军绿/敌军红/中立灰）
-  - CampaignPopup：非我军行营统一提示"这不是我军行营，无法操作"
-  - MilitaryPanel 新增"臣属的战争"区域（可直接加入）
-- ✅ 性能优化（2026-04-05）：`buildZhouAdjacency` 模块级缓存；`DeployApproveFlow` 打开时过滤已失效 entries
-- ✅ 调兵机制改进（2026-04-05）：执行前校验军队存在性和归属；驳回后 180 天冷却
-- ✅ 决议系统（2026-04-05）：`engine/decision/` 框架 + 4 个决议
-  - 称王决议：guo 级，控制 50% 法理州，可选体制/继承法/辟署权，创建时一并生成国司马+国长史副岗
-  - 建镇决议：dao 级，控制 50% 法理州 + 治所州，治所失陷后重建节度使/观察使
-  - 称帝决议：乱世限定，控制 80% 全国州，触发乱世→治世
-  - 销毁头衔决议：guo 级，非唯一主岗，好感-40
-  - 控制比例统一以州为最小单位（`calcRealmControlRatio` 递归收集法理 zhou）
-  - UI：SideMenu"决议"按钮 → DecisionPanel 列表 → DecisionDetailModal 详情弹窗（含建制配置）
-- ✅ 篡夺头衔交互（2026-04-05）：`usurpPostAction`，guo+dao 级，控制 50% 法理州，dao 需控制治所州，好感-40，本领地副岗归附
-- ✅ 治所州失陷联动（2026-04-05）：战争转移治所州 → 自动销毁父道主岗 + 副岗清空 + 军队变私兵；`executeAppoint` 不再强覆盖被敌方占领的治所
-- ✅ 时代钩子（2026-04-05）：危世→乱世自动销毁皇帝岗位
-- ✅ NPC 称王/称帝/篡夺行为（2026-04-05）：3 个新 NPC 行为完成王朝兴衰自动循环
-- ✅ TerritoryStore 扩展（2026-04-05）：`addPost()` / `removePost()` 方法
-- ✅ 岗位模板新增（2026-04-05）：`pos-guo-changshi`（国长史）
-- ✅ 自我领主防御（2026-04-05）：修复4处 overlordId=操作者 的自我领主bug；CharacterStore 加 DEBUG console.error 监测；demandFealtyPure 加防环检查；characterSystem 继承加自我领主防御
-- ✅ 同战争多行营合围（2026-04-05）：同阵营多行营共同参与围城，合算兵力；城破后所有参与行营回 idle；跨战争围城仍互斥
-- ✅ 行营AI跨战争寻路（2026-04-05）：idle行营在被其他战争围城的领地继续寻路；目标选择排除被其他战争围城的领地
-- ✅ 删除防守方惰性加分（2026-04-05）：移除战争分数中防守方惰性加分机制（bug多，100%占领后仍扣分）
-- ✅ 危世→乱世全面改革（2026-04-05）：销毁皇帝岗位 + 有地臣属解除效忠独立 + 所有道/国级 grantsControl 主岗改为辟署权+宗法继承（割据体制）
-- ✅ 铨选候选池修复（2026-04-05）：排除辟署权持有者；继承时高品不继承低品岗位；连锁铨选只选fresh候选人+接受underRank
-- ✅ 铨选草案去重（2026-04-05）：handleDraftSubmission 执行前按 appointeeId 去重
-- ✅ 铨选调动vacateOnly（2026-04-05）：executeDismiss 新增 vacateOnly 选项，防止罢免者接管 grantsControl 岗位
-- ✅ 赏赐行为改进（2026-04-05）：一次赏赐所有低士气军队；去除 isRuler 限制
-- ✅ 授予领地改进（2026-04-05）：executeAsNpc 一次授出所有超额州
-- ✅ 城破守军解散（2026-04-05）：城破后解散守军而非转移给攻方
-- ✅ DeployDraftFlow hooks修复（2026-04-05）：修复提前return导致React hooks数量变化的崩溃
+**已完成（按系统归类）：**
 
-**待做（NPC-玩家同权收尾）：**
-- ⬜ 战争停战协议期限（战争结束后一定时间内不可再次宣战）
-- ⬜ NPC 罢免行为（`dismissBehavior`）：NPC 主动罢免不满/低能副岗官员
-- ⬜ NPC 政策行为（`policyBehavior`）：集权/放权决策
-  - 正统性高+实力强 → 提高税率、收回辟署权、改流官制
-  - 正统性低+臣属不满 → 降税、给辟署权、给宗法继承权
-  - 核心叙事：晚唐皇帝正统性下降 → 被迫逐步向藩镇让权
-- ⬜ NPC 军事编制 AI（`militarySystem` 内通用函数）：
-  - 建军：领地扩张后拆分军队覆盖多州
-  - 换将：都统死亡/能力差时替换
-  - 调营：两军兵力悬殊时均衡
-  - 裁营：财政/粮草吃紧时裁减弱营
-- ⬜ NPC 指定继承人（`characterSystem` 内扩展）：NPC 根据性格偏好选择继承人
+**NPC Engine（26 个行为）**：
+- ✅ 框架：日结化调度、哈希槽位+品级分档、push-task/skip/auto-execute/standing 四种 playerMode
+- ✅ 行政行为：铨选 / 考课 / 罢免
+- ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争
+- ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠
+- ✅ 政策行为：调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率（通用讨好评估 `evaluateAppeasementTargets` + 权限校验 `hasAuthorityOverPost`）
+- ✅ 决议行为：称王建镇 / 称帝 / 篡夺
+- ✅ 其他：建设 / 和谈
+
+**好感系统双轨制重构**：
+- ✅ 实时计算：特质/亲属/外交/正统性/赋税等级/回拨率/辟署权/继承法/职类（`calculateBaseOpinion` + `policyOpinionCache`）
+- ✅ 事件存储：`addOpinion` + `decayable: true`，逐月衰减
+- ✅ `policyOpinionCache` 自维护（updatePost/addPost/removePost 自动增量更新）
+- ✅ 淘汰 `setOpinion` + `decayable: false` 模式
+
+**决议系统**：称王 / 建镇 / 称帝 / 销毁头衔 + 篡夺交互 + 治所联动 + 时代钩子
+
+**多方参战系统**：召集/干涉/退出 + 合兵战斗 + WarOverlay 战争 UI + 地图行营四色
+
+**效忠级联**：离任/就任/铨选调动三路级联 + 自我领主防御 + 铨选候选池/草案修复
+
+**通知系统三层**：AlertBar（行政）/ EventToast（CK3 侧栏）/ EventModal（重大决策）
+
+**战争修复**：多行营合围 / 跨战争寻路 / 城破守军解散 / 删除惰性加分 / 调兵校验+冷却
+
+**时代系统**：危世→乱世全面改革（销毁皇帝+割据体制）
+
+**待做（收尾）：**
+- ⬜ 战争停战协议期限
+- ⬜ NPC 军事编制 AI（建军/换将/调营/裁营）
+- ⬜ NPC 指定继承人
 
 **待做（新系统）：**
 - 谋略系统（个人计谋 + 政治计谋，成功率积累）
