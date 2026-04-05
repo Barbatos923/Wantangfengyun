@@ -91,4 +91,7 @@ export interface Character {
 
   // 官职 (Phase 2)
   official?: OfficialData;
+
+  // 交互冷却（absoluteDay）
+  lastDemandFealtyDay?: number;
 }

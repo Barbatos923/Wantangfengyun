@@ -10,12 +10,17 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
+import { useTurnManager } from '@engine/TurnManager';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getActualController } from '@engine/official/postQueries';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { positionMap } from '@data/positions';
 import { random } from '@engine/random';
+
+/** 要求效忠冷却天数（约半年） */
+export const DEMAND_FEALTY_COOLDOWN_DAYS = 180;
 
 /** 注册要求效忠交互 */
 registerInteraction({
@@ -29,6 +34,12 @@ registerInteraction({
 // ── canShow（便捷版：读 Store） ──────────────────────────
 
 function canDemandFealty(player: Character, target: Character): boolean {
+  // 冷却检查：半年内不可重复使用
+  const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+  if (player.lastDemandFealtyDay != null && currentDay - player.lastDemandFealtyDay < DEMAND_FEALTY_COOLDOWN_DAYS) {
+    return false;
+  }
+
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const targetPosts = terrStore.getPostsByHolder(target.id);
@@ -232,6 +243,10 @@ export function executeDemandFealty(
 
   const roll = random() * 100;
   const success = roll < chance;
+
+  // 记录冷却
+  const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+  charStore.updateCharacter(playerId, { lastDemandFealtyDay: currentDay });
 
   console.log(`[要求效忠] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
 

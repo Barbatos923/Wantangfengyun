@@ -4,10 +4,11 @@ import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from
 import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
-import { canDemandFealtyPure, calcFealtyChance, executeDemandFealty } from '@engine/interaction';
+import { canDemandFealtyPure, calcFealtyChance, executeDemandFealty, DEMAND_FEALTY_COOLDOWN_DAYS } from '@engine/interaction';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取角色持有的岗位（从 Context 快照） ─────────
@@ -41,6 +42,10 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
 
   generateTask(actor: Character, ctx: NpcContext): BehaviorTaskResult<DemandFealtyData> | null {
     if (!actor.isRuler) return null;
+
+    // 冷却检查
+    const today = toAbsoluteDay(ctx.date);
+    if (actor.lastDemandFealtyDay != null && today - actor.lastDemandFealtyDay < DEMAND_FEALTY_COOLDOWN_DAYS) return null;
 
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
@@ -143,11 +148,16 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
           },
         ],
       };
+      // 记录冷却（NPC 发起时即计入）
+      const cd = toAbsoluteDay(ctx.date);
+      useCharacterStore.getState().updateCharacter(actor.id, { lastDemandFealtyDay: cd });
+
       useStoryEventBus.getState().pushStoryEvent(event);
       return;
     }
 
     executeDemandFealty(actor.id, data.targetId);
+    // executeDemandFealty 内部已记录冷却
   },
 };
 
