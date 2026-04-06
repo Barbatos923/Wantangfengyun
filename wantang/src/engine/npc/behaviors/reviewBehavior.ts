@@ -4,7 +4,7 @@ import type { GameDate } from '@engine/types';
 import type { NpcBehavior, NpcContext, PlayerTask } from '../types';
 import type { Character } from '@engine/character/types';
 import type { ReviewEntry, ReviewPlan } from '@engine/systems/reviewSystem';
-import { calculateReviewScore, getReviewGrade } from '@engine/systems/reviewSystem';
+import { calculateReviewScore, getReviewGrade, monthsBetween } from '@engine/systems/reviewSystem';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useNpcStore } from '../NpcStore';
@@ -31,11 +31,24 @@ export function runReview(date: GameDate): void {
   const characters = charStore.characters;
   const territories = terrStore.territories;
 
+  // 收集治所州 ID → 治所主岗由道级联动管理，考课跳过
+  const capitalZhouIds = new Set<string>();
+  for (const t of territories.values()) {
+    if (t.tier === 'dao' && t.capitalZhouId) capitalZhouIds.add(t.capitalZhouId);
+  }
+
   const allEntries: ReviewEntry[] = [];
 
   function reviewPost(post: import('@engine/territory/types').Post, terr: import('@engine/territory/types').Territory | undefined): void {
     if (post.successionLaw !== 'bureaucratic') return;
     if (!post.holderId || !post.reviewBaseline) return;
+    // 新任豁免：任职不满 6 个月不参加考课（参考明清新任规定）
+    if (monthsBetween(post.reviewBaseline.date, date) < 6) return;
+    // 治所州 grantsControl 主岗跳过（由道级联动管理，铨选不独立填补）
+    if (terr && capitalZhouIds.has(terr.id)) {
+      const tpl2 = positionMap.get(post.templateId);
+      if (tpl2?.grantsControl) return;
+    }
     const holder = characters.get(post.holderId);
     if (!holder?.alive || !holder.official) return;
     const tpl = positionMap.get(post.templateId);

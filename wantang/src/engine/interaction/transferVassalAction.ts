@@ -5,6 +5,8 @@ import type { Post } from '@engine/territory/types';
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useWarStore } from '@engine/military/WarStore';
+import { getWarSide } from '@engine/military/warParticipantUtils';
 import { getActualController } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
@@ -58,11 +60,22 @@ export function getTransferCandidates(
   // 获取 player 的所有臣属
   const vassals = charStore.getVassalsByOverlord(playerId);
 
+  // 预计算活跃战争中参战的角色集合，排除正在打仗的臣属
+  const activeWars = useWarStore.getState().getActiveWars();
+  const atWarSet = new Set<string>();
+  for (const w of activeWars) {
+    if (w.status !== 'active') continue;
+    for (const id of [w.attackerId, ...w.attackerParticipants, w.defenderId, ...w.defenderParticipants]) {
+      atWarSet.add(id);
+    }
+  }
+
   const result: TransferCandidate[] = [];
 
   for (const vassal of vassals) {
     if (vassal.id === targetId) continue;
     if (!vassal.alive) continue;
+    if (atWarSet.has(vassal.id)) continue;
 
     // 获取该臣属的 grantsControl 岗位
     const vassalPosts = terrStore.getPostsByHolder(vassal.id);

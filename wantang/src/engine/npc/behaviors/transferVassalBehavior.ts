@@ -21,10 +21,20 @@ interface TransferPair {
  * 返回所有 (vassal, receiver) 对。
  */
 function findTransferPairs(actorId: string, ctx: NpcContext): TransferPair[] {
+  // 预计算活跃战争中参战的角色集合，排除正在打仗的臣属
+  const atWarSet = new Set<string>();
+  for (const w of ctx.activeWars) {
+    if (w.status !== 'active') continue;
+    for (const id of [w.attackerId, ...w.attackerParticipants, w.defenderId, ...w.defenderParticipants]) {
+      atWarSet.add(id);
+    }
+  }
+
   const pairs: TransferPair[] = [];
 
   for (const char of ctx.characters.values()) {
     if (!char.alive || char.overlordId !== actorId) continue;
+    if (atWarSet.has(char.id)) continue;
 
     // 找该臣属持有的 grantsControl 岗位
     for (const terr of ctx.territories.values()) {

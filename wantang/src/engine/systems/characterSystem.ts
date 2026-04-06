@@ -101,7 +101,11 @@ export function runCharacterSystem(date: GameDate): void {
               .map(p => positionMap.get(p.templateId)?.minRank ?? 0));
             if (heirMaxRank > postRank) heir = null;
           }
-          const receiver = heir ?? findParentAuthority(post, territories);
+          // 重新获取最新 territories（seatPost 会创建新 Map，旧引用过期）
+          const latestTerritories = terrStore.territories;
+          let receiver = heir ?? findParentAuthority(post, latestTerritories);
+          // 防御：receiver 不能是死人
+          if (receiver && !charStore.getCharacter(receiver)?.alive) receiver = null;
 
           // DEBUG: 继承/上交接收人定位
           if (receiver) {
