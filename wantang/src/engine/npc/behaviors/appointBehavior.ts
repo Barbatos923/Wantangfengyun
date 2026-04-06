@@ -119,7 +119,7 @@ export const appointBehavior: NpcBehavior<AppointData> = {
     const entries = planAppointments(actor.id, ctx.appointedThisRound);
     if (entries.length === 0) return;
 
-    // 存入 draftPlan，下月呈报
+    // 存入 draftPlan，由 handleDraftSubmission 统一分流
     const npcStore = useNpcStore.getState();
     const existingDraft = npcStore.draftPlan;
     const mergedEntries = existingDraft ? [...existingDraft.entries, ...entries] : entries;

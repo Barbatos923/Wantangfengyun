@@ -41,7 +41,9 @@ const MapPlaceholder: React.FC = () => {
   const playerId = useCharacterStore((s) => s.playerId) ?? '';
   const territoryModalId = usePanelStore((s) => s.territoryModalId);
   const territoryForModal = territoryModalId ? territories.get(territoryModalId) : undefined;
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
+  const selectedCampaignId = usePanelStore((s) => s.campaignPopupId);
+  const setSelectedCampaignId = usePanelStore((s) => s.openCampaignPopup);
+  const clearSelectedCampaignId = usePanelStore((s) => s.closeCampaignPopup);
 
   // 地图选择模式（从弹窗触发的领地选择）
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
@@ -77,10 +79,10 @@ const MapPlaceholder: React.FC = () => {
   }, [marchError]);
 
   const handleStartMarch = useCallback((campaignId: string) => {
-    setSelectedCampaignId(null);
+    clearSelectedCampaignId();
     setMarchingCampaignId(campaignId);
     setMarchError(null);
-  }, []);
+  }, [clearSelectedCampaignId]);
 
   const handleCancelMarch = useCallback(() => {
     setMarchingCampaignId(null);
@@ -224,7 +226,7 @@ const MapPlaceholder: React.FC = () => {
       {selectedCampaignId && (
         <CampaignPopup
           campaignId={selectedCampaignId}
-          onClose={() => setSelectedCampaignId(null)}
+          onClose={clearSelectedCampaignId}
           onStartMarch={handleStartMarch}
         />
       )}

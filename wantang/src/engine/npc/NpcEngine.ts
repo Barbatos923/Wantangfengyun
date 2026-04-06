@@ -127,26 +127,49 @@ function handleDraftSubmission(date: GameDate): void {
   const { territories, centralPosts } = useTerritoryStore.getState();
   const emperorId = findEmperorId(territories, centralPosts);
 
-  if (emperorId && emperorId === playerId) {
-    // 玩家是皇帝 → 创建 appoint-approve PlayerTask 等待审批
-    npcStore.addPlayerTask({
-      id: crypto.randomUUID(),
-      type: 'appoint-approve',
-      actorId: emperorId,
-      data: { entries: draft.entries, date: draft.date },
-      deadline: addDays(date, 30),
-    });
-  } else {
-    // NPC 皇帝自动批准 → 立即执行（去重：同一人只执行最后一条）
-    const deduped = new Map<string, typeof draft.entries[number]>();
-    for (const entry of draft.entries) {
-      deduped.set(entry.appointeeId, entry);
-    }
-    for (const entry of deduped.values()) {
-      executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
-      autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
+  // 分流：辟署权域（法理主体是经办人自己）直接执行，朝廷体系走审批
+  const directEntries: typeof draft.entries = [];
+  const imperialEntries: typeof draft.entries = [];
+  for (const entry of draft.entries) {
+    if (entry.legalAppointerId === entry.proposedBy) {
+      // 辟署权持有人自己铨选，直接执行
+      directEntries.push(entry);
+    } else {
+      // 朝廷体系（吏部/宰相经办），需皇帝审批
+      imperialEntries.push(entry);
     }
   }
+
+  // 辟署权域：立即执行
+  for (const entry of directEntries) {
+    executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+    autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
+  }
+
+  // 朝廷体系：走皇帝审批流程
+  if (imperialEntries.length > 0) {
+    if (emperorId && emperorId === playerId) {
+      // 玩家是皇帝 → 创建 appoint-approve PlayerTask 等待审批
+      npcStore.addPlayerTask({
+        id: crypto.randomUUID(),
+        type: 'appoint-approve',
+        actorId: emperorId,
+        data: { entries: imperialEntries, date: draft.date },
+        deadline: addDays(date, 30),
+      });
+    } else {
+      // NPC 皇帝自动批准 → 立即执行（去重：同一人只执行最后一条）
+      const deduped = new Map<string, typeof imperialEntries[number]>();
+      for (const entry of imperialEntries) {
+        deduped.set(entry.appointeeId, entry);
+      }
+      for (const entry of deduped.values()) {
+        executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+        autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
+      }
+    }
+  }
+
   npcStore.setDraftPlan(null);
 }
 

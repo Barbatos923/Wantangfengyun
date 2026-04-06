@@ -1,0 +1,1037 @@
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=25.965)] data={"vassalId":"char-npc-shannan-e","postId":"post-guancha-shannan-e","territoryId":"dao-shannan-e","grant":true,"tier":"da
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(25.965)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustAppointRight (weight=25.965, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6662},{"territoryId":"zhou-luoyang","available":175
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-luoyang","territoryId":"zhou-luoyang","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] adjustOwnPolicy (weight=7.1, chance=7%)
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：洛阳 授予辟署权
+NpcEngine.ts:239 [皇帝AI] [任务生成] revoke [自愿(w=2.3499999999999996)] data={"targetId":"char-zhanghuaishen","postId":"post-jiedushi-hexi"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[revoke(2.3499999999999996)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] revoke (weight=2.3499999999999996, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] build (weight=18, chance=18%)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 泰宁使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgMorale":47.666666666666664}],"lowestMorale":47.666666666
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustType (weight=27.965, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.965)] data={"vassalId":"char-npc-shannan-e","postId":"post-cishi-xiangyang","territoryId":"zhou-xiangyang","toClan":true,"tier":"zh
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.965)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] adjustSuccession (weight=20.965, chance=21%)
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 山南东使：襄州防御使 改为世袭
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=25.965)] data={"vassalId":"char-npc-shannan-e","postId":"post-guancha-shannan-e","territoryId":"dao-shannan-e","grant":true,"tier":"da
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(25.965)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustAppointRight (weight=25.965, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6662},{"territoryId":"zhou-luoyang","available":175
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] revoke [自愿(w=2.3499999999999996)] data={"targetId":"char-zhanghuaishen","postId":"post-jiedushi-hexi"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[revoke(2.3499999999999996)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] revoke (weight=2.3499999999999996, 骰子未通过)
+characterSystem.ts:411 [留后] 唐懿宗（关陇行台尚书令）指定留后：李儇
+characterSystem.ts:411 [留后] 于琮（河东道节度使）指定留后：无
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgMorale":47.166666666666664}],"lowestMorale":47.166666666
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] adjustType (weight=27.965, chance=28%)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 崔彦曾：淮南道观察使 改为军事制
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(19.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] adjustSuccession (weight=19.465, chance=19%)
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 崔彦曾：扬州刺史 改为世袭
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=25.814999999999998)] data={"vassalId":"char-npc-shannan-e","postId":"post-guancha-shannan-e","territoryId":"dao-shannan-e","grant":true,"tier":"da
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(25.814999999999998)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustAppointRight (weight=25.814999999999998, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7451},{"territoryId":"zhou-luoyang","available":228
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] revoke [自愿(w=2.05)] data={"targetId":"char-zhanghuaishen","postId":"post-jiedushi-hexi"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[revoke(2.05)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] revoke (weight=2.05, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgMorale":47.166666666666664}],"lowestMorale":47.166666666
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustType (weight=27.965, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustSuccession (weight=19.015, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+declareWarAction.ts:50 [战争] 宣战：高骈 → 湖南使（武力兼并）
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=25.814999999999998)] data={"vassalId":"char-npc-shannan-e","postId":"post-guancha-shannan-e","territoryId":"dao-shannan-e","grant":true,"tier":"da
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(25.814999999999998)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] adjustAppointRight (weight=25.814999999999998, chance=26%)
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 山南东使：山南东道节度使 授予辟署权
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7451},{"territoryId":"zhou-luoyang","available":228
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] revoke [自愿(w=2.05)] data={"targetId":"char-zhanghuaishen","postId":"post-jiedushi-hexi"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[revoke(2.05)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] revoke (weight=2.05, chance=2%)
+TerritoryStore.ts:324 [岗位变动] 河西道 节度使: char-zhanghuaishen → char-yizong (由system任命)
+TerritoryStore.ts:324 [岗位变动] 沙州 防御使: char-zhanghuaishen → char-yizong (由system任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+militaryAI.ts:93 [军编] 唐懿宗：归义军 补将 → 周宝（military=28）
+militaryAI.ts:148 [军编] 唐懿宗：调营 长安军重骑兵第1营 从长安军 → 归义军
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+react-dom_client.js?v=5fd3b264:1773 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-yizong">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-y...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+react-dom_client.js?v=5fd3b264:1775 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.8},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgMorale":46.7727
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [forced触发] deploy-approve data={"entries":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","fromLocationId":"zhou-changan","targetLocationId":"zhou-lu
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=长安, 军队=[长安军]
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":824
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 武宁使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.8},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgMorale":46.7727
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":824
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+militaryAI.ts:148 [军编] 唐懿宗：调营 长安军弓箭手第2营 从长安军 → 归义军
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.583333333333336},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+adjustSuccessionBehavior.ts:117 [政策] 山南东使 → 武昌使：鄂州防御使 改为世袭
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":902
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.583333333333336},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [forced触发] deploy-approve data={"entries":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","fromLocationId":"zhou-luoyang","targetLocationId":"zhou-ch
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=洛阳, 军队=[长安军]
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":902
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+militaryAI.ts:148 [军编] 唐懿宗：调营 长安军弓箭手第3营 从长安军 → 归义军
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+demandFealtyAction.ts:279 [要求效忠] 宣武使 → 韩君雄 | chance=47% → 成功
+CharacterStore.ts:123 [overlord变更] 韩君雄(char-han) overlord: 韩允中 → 宣武使     at http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775496093544:83:111 ←     at setState (http://localhost:5173/Wantangfengyun/node_modules/.vite/deps/zustand.js?v=5fd3b264:8:53) ←     at Object.updateCharacter (http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775496093544:59:3)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+demandFealtyAction.ts:279 [要求效忠] 韩允中 → 韩君雄 | chance=71% → 成功
+CharacterStore.ts:123 [overlord变更] 韩君雄(char-han) overlord: 宣武使 → 韩允中     at http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775496093544:83:111 ←     at setState (http://localhost:5173/Wantangfengyun/node_modules/.vite/deps/zustand.js?v=5fd3b264:8:53) ←     at Object.updateCharacter (http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775496093544:59:3)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":43.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":42.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [forced触发] deploy-approve data={"entries":[{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","fromLocationId":"zhou-changan","targetLocationId":"zhou-lu
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=长安, 军队=[长安军]
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":42.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":42.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":42.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: char-npc-hunan → char-gaopian (由char-gaopian任命)
+warSettlement.ts:92 [战争] 结束：高骈 vs 湖南使（武力兼并）→ 高骈获胜
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+TerritoryStore.ts:324 [岗位变动] 邕州 防御使: char-gaopian → char-gen-65 (由char-gaopian任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+characterSystem.ts:411 [留后] 唐懿宗（河西道节度使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（沙州防御使）指定留后：李儇
+characterSystem.ts:411 [留后] 武昌使（鄂州防御使）指定留后：无
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+militaryAI.ts:38 [军编] 杨承恩：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 杨承恩：邕州军 补将 → 马承恩（military=8）
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":41.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":41.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 同华使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=19.015)] data={"vassalId":"char-ct-yushe","postId":"post-fangyu-taiyuan","territoryId":"zhou-taiyuan","toClan":true,"tier":"zhou"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(19.015)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=24.465)] data={"vassalId":"char-cuiyanzeng","postId":"post-guancha-huainan","territoryId":"dao-huainan","grant":true,"tier":"dao"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(24.465)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+TerritoryStore.ts:324 [岗位变动] 定州 防御使: char-wang-chongwen → char-zhangyunshen (由system任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+grantTerritoryBehavior.ts?t=1775496665633:164 [自身政策] 张允伸：瀛州 授出前改为流官
+grantTerritoryBehavior.ts?t=1775496665633:169 [自身政策] 张允伸：瀛州 授出前收回辟署权
+TerritoryStore.ts:324 [岗位变动] 瀛州 防御使: char-zhangyunshen → char-zhang-jian (由char-zhangyunshen任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+militaryAI.ts:38 [军编] 张简会：建军「瀛州军」驻瀛州
+militaryAI.ts:93 [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":41.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=21.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","toClan":true,"tier":"zhou
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(21.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","grant":true,"tier":"zhou"
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(26.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":41.357142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=21.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","toClan":true,"tier":"zhou
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(21.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","grant":true,"tier":"zhou"
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(26.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":40.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=21.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","toClan":true,"tier":"zhou
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(21.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","grant":true,"tier":"zhou"
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(26.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"army-guiyi","avgMorale":40.857142857142854},{"armyId":"2f7e23d7-97a2-40fa-a07d-519498dd0716","avgM
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustType [自愿(w=27.965)] data={"vassalId":"char-cuiyanzeng","postId":"post-cishi-yangzhou","territoryId":"zhou-yangzhou","toMilitary":true}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustType(27.965), reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustSuccession [自愿(w=21.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","toClan":true,"tier":"zhou
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustSuccession(21.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（武力兼并）
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-dingzhou","territoryId":"zhou-dingzhou","grant":true,"tier":"zhou"
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), adjustAppointRight(26.865000000000002)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-shazhou","available":9936},{"territoryId":"zhou-changan","available":946
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-jiedushi-hexi","territoryId":"dao-hexi","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":1,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100), build(18)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] grantTerritory [自愿(w=100)] data={"postId":"post-guancha-jingji","vassalId":"char-liwei","territoryName":"京畿道"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[grantTerritory(100)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] grantTerritory (weight=100, chance=100%)

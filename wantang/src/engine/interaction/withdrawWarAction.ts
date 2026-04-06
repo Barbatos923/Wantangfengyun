@@ -1,31 +1,15 @@
 // ===== 退出战争交互 =====
 
 import { useWarStore } from '@engine/military/WarStore';
-import { useMilitaryStore } from '@engine/military/MilitaryStore';
-import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { isWarParticipant, isWarLeader, getOwnLeaderId } from '@engine/military/warParticipantUtils';
-import { positionMap } from '@data/positions';
 
 /**
- * 解散角色在指定战争中的所有行营，军队移回己方领地。
+ * 解散角色在指定战争中的所有行营，军队留在当前位置。
  * 可被 withdrawWar 和死亡清理复用。
  */
 export function disbandParticipantCampaigns(charId: string, warId: string): void {
   const warStore = useWarStore.getState();
-  const milStore = useMilitaryStore.getState();
-  const terrStore = useTerritoryStore.getState();
-
-  // 找一个己方领地作为军队归还地
-  let homeId: string | null = null;
-  for (const t of terrStore.territories.values()) {
-    if (t.tier !== 'zhou') continue;
-    const mainPost = t.posts.find(p => positionMap.get(p.templateId)?.grantsControl === true);
-    if (mainPost?.holderId === charId) {
-      homeId = t.id;
-      break;
-    }
-  }
 
   for (const campaign of warStore.campaigns.values()) {
     if (campaign.warId !== warId || campaign.ownerId !== charId) continue;
@@ -35,13 +19,6 @@ export function disbandParticipantCampaigns(charId: string, warId: string): void
       if (siege.campaignId === campaign.id) {
         warStore.endSiege(siege.id);
         break;
-      }
-    }
-
-    // 军队移回己方领地
-    if (homeId) {
-      for (const armyId of campaign.armyIds) {
-        milStore.updateArmy(armyId, { locationId: homeId });
       }
     }
 

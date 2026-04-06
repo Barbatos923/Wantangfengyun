@@ -11,6 +11,10 @@ interface PanelState {
   territoryModalId: string | null;
   /** 地图聚焦的角色 ID（顶级领主），null = 默认视图 */
   mapFocusCharId: string | null;
+  /** 当前打开的行营弹窗 ID */
+  campaignPopupId: string | null;
+  openCampaignPopup: (id: string) => void;
+  closeCampaignPopup: () => void;
 
   /** 地图选择模式（用于从弹窗中选择领地） */
   mapSelectionActive: boolean;
@@ -34,6 +38,9 @@ export const usePanelStore = create<PanelState>((set, get) => ({
   pinned: false,
   territoryModalId: null,
   mapFocusCharId: null,
+  campaignPopupId: null,
+  openCampaignPopup: (id) => set({ campaignPopupId: id }),
+  closeCampaignPopup: () => set({ campaignPopupId: null }),
 
   mapSelectionActive: false,
   mapSelectionPrompt: '',

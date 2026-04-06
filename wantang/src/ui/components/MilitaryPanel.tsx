@@ -81,8 +81,6 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   const [createCampaignWarId, setCreateCampaignWarId] = useState<string | null>(null);
   const [selectedCampaignArmies, setSelectedCampaignArmies] = useState<string[]>([]);
   const [campaignLocationId, setCampaignLocationId] = useState<string>('');
-  const [marchTargetId, setMarchTargetId] = useState<string>('');
-  const [marchCampaignId, setMarchCampaignId] = useState<string | null>(null);
 
   // 地图选择回调：记录哪个 setter 等待结果
   const mapSelectionCallbackRef = useRef<((id: string) => void) | null>(null);
@@ -801,13 +799,6 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                   );
                   const isCreatingCampaign = createCampaignWarId === war.id;
 
-                  // 敌方控制的州（防守方）
-                  const defenderTerritories = Array.from(territories.values()).filter(
-                    (t) =>
-                      t.tier === 'zhou' &&
-                      t.posts.some((p) => p.holderId === war.defenderId),
-                  );
-
                   const myScore = isOnAttackerSide(playerId!, war)
                     ? war.warScore
                     : -war.warScore;
@@ -953,99 +944,33 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             const campTarget = camp.targetId
                               ? territories.get(camp.targetId)
                               : null;
-                            const isSettingTarget =
-                              marchCampaignId === camp.id;
-
                             return (
-                              <div
+                              <button
                                 key={camp.id}
-                                className="px-3 py-2 bg-[var(--color-bg-surface)]"
+                                onClick={() => { onClose(); usePanelStore.getState().openCampaignPopup(camp.id); }}
+                                className="w-full px-3 py-2 bg-[var(--color-bg-surface)] hover:bg-[var(--color-bg)] transition-colors text-left cursor-pointer"
                               >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex flex-col min-w-0 mr-2">
-                                    <span className="text-xs font-bold text-[var(--color-text)]">
-                                      {campCommander?.name ?? '无将领'}
-                                    </span>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-xs font-bold text-[var(--color-text)]">
+                                    {campCommander?.name ?? '无将领'}
+                                  </span>
+                                  <span className="text-xs text-[var(--color-text-muted)]">
+                                    {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
+                                    {camp.status === 'idle' && '待命'}
+                                    {camp.status === 'marching' && `行军中`}
+                                    {camp.status === 'sieging' && '围城中'}
+                                    {' · '}
+                                    {campLocation?.name ?? camp.locationId}
+                                    {' · '}
+                                    {campArmyCount}军 / {campStrength.toLocaleString()}兵
+                                  </span>
+                                  {camp.status === 'marching' && campTarget && (
                                     <span className="text-xs text-[var(--color-text-muted)]">
-                                      {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
-                                      {camp.status === 'idle' && '待命'}
-                                      {camp.status === 'marching' && `行军中`}
-                                      {camp.status === 'sieging' && '围城中'}
-                                      {' · '}
-                                      {campLocation?.name ?? camp.locationId}
-                                      {' · '}
-                                      {campArmyCount}军 / {campStrength.toLocaleString()}兵
+                                      目标：{campTarget.name}（进度 {camp.routeProgress}/{camp.route.length}）
                                     </span>
-                                    {camp.status === 'marching' && campTarget && (
-                                      <span className="text-xs text-[var(--color-text-muted)]">
-                                        目标：{campTarget.name}（进度 {camp.routeProgress}/{camp.route.length}）
-                                      </span>
-                                    )}
-                                  </div>
-                                  {camp.status === 'idle' && !isSettingTarget && (
-                                    <button
-                                      onClick={() => {
-                                        setMarchCampaignId(camp.id);
-                                        setMarchTargetId('');
-                                      }}
-                                      className="text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] px-2 py-1 rounded hover:bg-[var(--color-bg)] transition-colors shrink-0"
-                                    >
-                                      设定目标
-                                    </button>
                                   )}
                                 </div>
-
-                                {/* 设定行军目标 */}
-                                {isSettingTarget && (
-                                  <div className="mt-2 space-y-2">
-                                    <select
-                                      className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
-                                      value={marchTargetId}
-                                      onChange={(e) => setMarchTargetId(e.target.value)}
-                                    >
-                                      <option value="">-- 选择目标州 --</option>
-                                      {defenderTerritories.map((t) => (
-                                        <option key={t.id} value={t.id}>
-                                          {t.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    <div className="flex gap-2 justify-end">
-                                      <button
-                                        onClick={() => setMarchCampaignId(null)}
-                                        className="px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-                                      >
-                                        取消
-                                      </button>
-                                      <button
-                                        disabled={!marchTargetId}
-                                        onClick={() => {
-                                          if (!marchTargetId || !playerId) return;
-                                          const path = findPath(
-                                            camp.locationId,
-                                            marchTargetId,
-                                            playerId,
-                                            territories,
-                                            characters,
-                                          );
-                                          if (!path) {
-                                            alert('无法到达目标州');
-                                            return;
-                                          }
-                                          useWarStore
-                                            .getState()
-                                            .setCampaignTarget(camp.id, marchTargetId, path);
-                                          setMarchCampaignId(null);
-                                          setMarchTargetId('');
-                                        }}
-                                        className="px-2 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                      >
-                                        确认行军
-                                      </button>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                              </button>
                             );
                           })
                         )}
@@ -1210,91 +1135,32 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             if (a) campTroops += getArmyStrength(a, battalions);
                           }
                           const campTarget = camp.targetId ? territories.get(camp.targetId) : null;
-                          const isSettingTarget = marchCampaignId === camp.id;
                           return (
-                            <div key={camp.id} className="px-3 py-2 border-b border-[var(--color-border)] last:border-b-0 bg-[var(--color-bg-surface)]">
-                              <div className="flex items-center justify-between">
-                                <div className="flex flex-col min-w-0 mr-2">
-                                  <span className="text-xs font-bold text-[var(--color-text)]">
-                                    {campCmd?.name ?? '无将领'}
-                                  </span>
+                            <button
+                              key={camp.id}
+                              onClick={() => { onClose(); usePanelStore.getState().openCampaignPopup(camp.id); }}
+                              className="w-full px-3 py-2 border-b border-[var(--color-border)] last:border-b-0 bg-[var(--color-bg-surface)] hover:bg-[var(--color-bg)] transition-colors text-left cursor-pointer"
+                            >
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-xs font-bold text-[var(--color-text)]">
+                                  {campCmd?.name ?? '无将领'}
+                                </span>
+                                <span className="text-xs text-[var(--color-text-muted)]">
+                                  {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
+                                  {camp.status === 'idle' && '待命'}
+                                  {camp.status === 'marching' && '行军中'}
+                                  {' · '}
+                                  {campLoc?.name ?? camp.locationId}
+                                  {' · '}
+                                  {camp.armyIds.length}军 / {campTroops.toLocaleString()}兵
+                                </span>
+                                {camp.status === 'marching' && campTarget && (
                                   <span className="text-xs text-[var(--color-text-muted)]">
-                                    {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
-                                    {camp.status === 'idle' && '待命'}
-                                    {camp.status === 'marching' && '行军中'}
-                                    {' · '}
-                                    {campLoc?.name ?? camp.locationId}
-                                    {' · '}
-                                    {camp.armyIds.length}军 / {campTroops.toLocaleString()}兵
+                                    目标：{campTarget.name}（进度 {camp.routeProgress}/{camp.route.length}）
                                   </span>
-                                  {camp.status === 'marching' && campTarget && (
-                                    <span className="text-xs text-[var(--color-text-muted)]">
-                                      目标：{campTarget.name}（进度 {camp.routeProgress}/{camp.route.length}）
-                                    </span>
-                                  )}
-                                </div>
-                                {camp.status === 'idle' && !isSettingTarget && (
-                                  <button
-                                    onClick={() => {
-                                      setMarchCampaignId(camp.id);
-                                      setMarchTargetId('');
-                                    }}
-                                    className="text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] px-2 py-1 rounded hover:bg-[var(--color-bg)] transition-colors shrink-0"
-                                  >
-                                    设定目标
-                                  </button>
                                 )}
                               </div>
-                              {isSettingTarget && (
-                                <div className="mt-2 space-y-2">
-                                  <select
-                                    className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
-                                    value={marchTargetId}
-                                    onChange={(e) => setMarchTargetId(e.target.value)}
-                                  >
-                                    <option value="">-- 选择目标州 --</option>
-                                    {playerRealmZhou
-                                      .filter((t) => t.id !== camp.locationId)
-                                      .map((t) => (
-                                        <option key={t.id} value={t.id}>{t.name}</option>
-                                      ))}
-                                  </select>
-                                  <div className="flex gap-2 justify-end">
-                                    <button
-                                      onClick={() => setMarchCampaignId(null)}
-                                      className="px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]"
-                                    >
-                                      取消
-                                    </button>
-                                    <button
-                                      disabled={!marchTargetId}
-                                      onClick={() => {
-                                        if (!marchTargetId || !playerId) return;
-                                        const path = findPath(
-                                          camp.locationId,
-                                          marchTargetId,
-                                          playerId,
-                                          territories,
-                                          characters,
-                                        );
-                                        if (!path) {
-                                          alert('无法到达目标州');
-                                          return;
-                                        }
-                                        useWarStore
-                                          .getState()
-                                          .setCampaignTarget(camp.id, marchTargetId, path);
-                                        setMarchCampaignId(null);
-                                        setMarchTargetId('');
-                                      }}
-                                      className="px-2 py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                      确认行军
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                            </button>
                           );
                         })}
                       </div>

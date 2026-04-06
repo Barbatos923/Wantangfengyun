@@ -1,0 +1,715 @@
+react-dom_client.js?v=5fd3b264:14338 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+random.ts:5 Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+autoseed @ seedrandom.js?v=5fd3b264:517
+seedrandom @ seedrandom.js?v=5fd3b264:440
+(anonymous) @ random.ts:5
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 卢潘：赋税 一般(2) → 放任(1)
+militaryAI.ts:93 [军编] 杜悰：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:93 [军编] 郑从谠：河东军 补将 → 李国昌（military=28）
+militaryAI.ts:93 [军编] 张允伸：卢龙军 补将 → 张允伸（military=23）
+militaryAI.ts:93 [军编] 王景崇：成德军 补将 → 王景崇（military=19）
+militaryAI.ts:93 [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-6899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=-4899）
+militaryAI.ts:93 [军编] 拓跋思恭：定难军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第1营（strength=1000，净粮草=-6706）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第2营（strength=1000，净粮草=-4206）
+militaryAI.ts:93 [军编] 崔彦曾：淮南军 补将 → 裴远恩（military=13）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第1营（strength=1000，净粮草=-101）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第2营（strength=1000，净粮草=1899）
+militaryAI.ts:93 [军编] 刘潼：西川军 补将 → 刘潼（military=12）
+militaryAI.ts:93 [军编] 萧邺：兴元军 补将 → 杜远恩（military=12）
+militaryAI.ts:93 [军编] 卢潘：朔方军 补将 → 卢潘（military=21）
+militaryAI.ts:93 [军编] 李弘甫：泾原军 补将 → 李弘甫（military=21）
+militaryAI.ts:93 [军编] 张淮深：归义军 补将 → 张淮深（military=24）
+militaryAI.ts:93 [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+militaryAI.ts:216 [军编] 贾惟庆：财政裁营 坊州军重步第营（strength=1000，净粮草=1488）
+militaryAI.ts:93 [军编] 孙谠：遂州军 补将 → 孙谠（military=10）
+militaryAI.ts:93 [军编] 高骈：安南军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 李国昌：沙陀骑 补将 → 李国昌（military=28）
+militaryAI.ts:216 [军编] 李国昌：财政裁营 沙陀骑铁骑第1营（strength=1000，净粮草=1451）
+militaryAI.ts:93 [军编] 邠宁使：邠宁军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:93 [军编] 同华使：同华军 补将 → 吴远恩（military=12）
+militaryAI.ts:93 [军编] 陕虢使：陕虢军 补将 → 陕虢使（military=10）
+militaryAI.ts:93 [军编] 昭义使：昭义军 补将 → 昭义使（military=17）
+militaryAI.ts:93 [军编] 义武使：义武军 补将 → 义武使（military=16）
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 宣武使（military=18）
+militaryAI.ts:93 [军编] 义成使：义成军 补将 → 义成使（military=11）
+militaryAI.ts:93 [军编] 天平使：天平军 补将 → 天平使（military=10）
+militaryAI.ts:93 [军编] 泰宁使：泰宁军 补将 → 泰宁使（military=15）
+militaryAI.ts:38 [军编] 武宁使：建军「徐州军」驻徐州
+militaryAI.ts:93 [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+militaryAI.ts:38 [军编] 平卢使：建军「青州军」驻青州
+militaryAI.ts:93 [军编] 平卢使：青州军 补将 → 蔡远恩（military=17）
+militaryAI.ts:93 [军编] 忠武使：忠武军 补将 → 忠武使（military=11）
+militaryAI.ts:93 [军编] 奉国使：奉国军 补将 → 奉国使（military=16）
+militaryAI.ts:93 [军编] 山南东使：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 荆南使：荆南军 补将 → 荆南使（military=10）
+militaryAI.ts:93 [军编] 武昌使：武昌军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 镇海使：镇海军 补将 → 温远恩（military=16）
+militaryAI.ts:93 [军编] 镇东使：镇东军 补将 → 严远恩（military=17）
+militaryAI.ts:93 [军编] 威武使：威武军 补将 → 威武使（military=15）
+militaryAI.ts:93 [军编] 宣歙使：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:93 [军编] 镇南使：镇南军 补将 → 陈承恩（military=17）
+militaryAI.ts:93 [军编] 湖南使：湖南军 补将 → 湖南使（military=10）
+militaryAI.ts:93 [军编] 东川使：东川军 补将 → 东川使（military=11）
+militaryAI.ts:93 [军编] 清海使：清海军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 岭南西使：岭南西道军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 静江使：静江军 补将 → 静江使（military=10）
+militaryAI.ts:216 [军编] 静江使：财政裁营 静江军重步第营（strength=1000，净粮草=172）
+militaryAI.ts:93 [军编] 天水使：天水军 补将 → 天水使（military=17）
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: char-gen-31 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: 空缺 → char-gen-31 (由char-hanyunzhong任命)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 义成使：赋税 一般(2) → 放任(1)
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（独立）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=-1988）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=12）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第1营（strength=1000，净粮草=-1730）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第2营（strength=1000，净粮草=470）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=51f4e6dc-46d2-41e5-a8ca-860a4876895c, 地点=长安, 军队=[神策军]
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=交州, 路径=[长安 → 凤翔 → 兴元 → 襄州 → 鄂州 → 洪州 → 潭州 → 桂州 → 邕州 → 交州]
+militaryAI.ts:38 [军编] 岭南西使：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 天平使：赋税 一般(2) → 放任(1)
+TerritoryStore.ts:324 [岗位变动] 关内道 节度使: char-npc-binning → char-yizong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 邠州 防御使: char-npc-binning → char-yizong (由char-yizong任命)
+militaryAI.ts:93 [军编] 唐懿宗：邠宁军 补将 → 周宝（military=28）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 静江使：建军「桂州军」驻桂州
+militaryAI.ts:93 [军编] 静江使：桂州军 补将 → 静江使（military=10）
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从潭州出发, 目标=交州, 路径=[潭州 → 桂州 → 邕州 → 交州]
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 贾惟庆 | chance=72% → 成功
+CharacterStore.ts:123 [overlord变更] 贾惟庆(char-jia) overlord: 邠宁使 → 唐懿宗
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从邕州出发, 目标=交州, 路径=[邕州 → 交州]
+characterSystem.ts:411 [留后] 唐懿宗（京畿道观察使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（长安刺史）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（都畿道观察使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（洛阳刺史）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（关内道节度使）指定留后：李儇
+characterSystem.ts:411 [留后] 郑从谠（河东道节度使）指定留后：郑延球
+characterSystem.ts:411 [留后] 张允伸（河北道·幽州节度使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（幽州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（瀛州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 王景崇（河北道·成德节度使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（镇州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（冀州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（魏州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（相州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 崔彦曾（淮南道观察使）指定留后：崔知和
+characterSystem.ts:411 [留后] 刘潼（剑南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 萧邺（山南西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 李弘甫（陇右道节度使）指定留后：无
+characterSystem.ts:411 [留后] 张淮深（河西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 宣武使（河南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 山南东使（山南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇海使（江南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇南使（江南西道观察使）指定留后：无
+characterSystem.ts:411 [留后] 清海使（岭南道观察使）指定留后：无
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第2营 从神策军 → 邠宁军
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从邕州出发, 目标=交州, 路径=[邕州 → 交州]
+CharacterStore.ts:123 [overlord变更] 高骈(char-gao) overlord: 无 → 清海使
+warSettlement.ts:92 [战争] 结束：高骈 vs 清海使（独立）→ 清海使获胜
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=邕州, 军队=[神策军]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第3营 从神策军 → 邠宁军
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻步第2营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军弓弩第营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻骑第营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步第1营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步第2营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻步第1营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻步第2营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军弓弩第营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻骑第营（strength=89）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重骑兵第13营（strength=89）
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+CharacterPanel.tsx:1019 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-yizong">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-y...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<button>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+(anonymous) @ CharacterPanel.tsx:1019
+FamilyTab @ CharacterPanel.tsx:1006
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<FamilyTab>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+CharacterPanel @ CharacterPanel.tsx:544
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<CharacterPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+LeftPanel @ LeftPanel.tsx:13
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+CharacterPanel.tsx:1007 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1774
+completeWork @ react-dom_client.js?v=5fd3b264:6335
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+completeUnitOfWork @ react-dom_client.js?v=5fd3b264:8492
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8431
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<button>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+(anonymous) @ CharacterPanel.tsx:1007
+FamilyTab @ CharacterPanel.tsx:1006
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<FamilyTab>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+CharacterPanel @ CharacterPanel.tsx:544
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+<CharacterPanel>
+exports.jsxDEV @ react_jsx-dev-runtime.js?v=5fd3b264:193
+LeftPanel @ LeftPanel.tsx:13
+react_stack_bottom_frame @ react-dom_client.js?v=5fd3b264:12868
+renderWithHooksAgain @ react-dom_client.js?v=5fd3b264:4268
+renderWithHooks @ react-dom_client.js?v=5fd3b264:4219
+updateFunctionComponent @ react-dom_client.js?v=5fd3b264:5569
+beginWork @ react-dom_client.js?v=5fd3b264:6140
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+performUnitOfWork @ react-dom_client.js?v=5fd3b264:8429
+workLoopSync @ react-dom_client.js?v=5fd3b264:8325
+renderRootSync @ react-dom_client.js?v=5fd3b264:8309
+performWorkOnRoot @ react-dom_client.js?v=5fd3b264:7957
+performSyncWorkOnRoot @ react-dom_client.js?v=5fd3b264:9067
+flushSyncWorkAcrossRoots_impl @ react-dom_client.js?v=5fd3b264:8984
+processRootScheduleInMicrotask @ react-dom_client.js?v=5fd3b264:9005
+(anonymous) @ react-dom_client.js?v=5fd3b264:9078
+adjustOwnPolicyBehavior.ts:85 [自身政策] 唐懿宗：邠州 改为世袭
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第4营 从神策军 → 邠宁军
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=邠州, 军队=[邠宁军]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第5营 从神策军 → 邠宁军
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 平卢使（武力兼并）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=d446b7df-b57c-4de9-bfbd-5669b926fd84, 地点=长安, 军队=[神策军, 邠宁军]
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=青州, 路径=[长安 → 同州 → 陕州 → 洛阳 → 汴州 → 郓州 → 青州]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第1营 从神策军 → 邠宁军
+adjustTaxBehavior.ts:87 [政策] 清海使 → 高骈：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第2营 从神策军 → 邠宁军
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 同华使 | chance=74% → 成功
+CharacterStore.ts:123 [overlord变更] 同华使(char-npc) overlord: 邠宁使 → 唐懿宗
+TerritoryStore.ts:324 [岗位变动] 青州 防御使: char-npc-pinglu → char-zhangyunshen (由char-zhangyunshen任命)
+warSettlement.ts:92 [战争] 结束：张允伸 vs 平卢使（武力兼并）→ 张允伸获胜
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=汴州, 军队=[神策军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=汴州, 军队=[邠宁军]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第3营 从神策军 → 邠宁军
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 义成使（武力兼并）
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：京畿道 授予辟署权
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第4营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第1营 从神策军 → 邠宁军
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+TerritoryStore.ts:324 [岗位变动] 滑州 防御使: char-npc-yicheng → char-hanyunzhong (由char-hanyunzhong任命)
+warSettlement.ts:92 [战争] 结束：韩允中 vs 义成使（武力兼并）→ 韩允中获胜
+TerritoryStore.ts:324 [岗位变动] 滑州 防御使: char-hanyunzhong → char-han-junxiong (由char-hanyunzhong任命)
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第2营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 韩君雄：建军「滑州军」驻滑州
+militaryAI.ts:93 [军编] 韩君雄：滑州军 补将 → 韩君雄（military=20）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第3营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻步第1营 从神策军 → 邠宁军
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 拓跋思恭 | chance=63% → 失败
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 昭义使（武力兼并）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 忠武使：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻步第2营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻骑第营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 邠宁军
+TerritoryStore.ts:324 [岗位变动] 潞州 防御使: char-npc-zhaoyi → char-hanyunzhong (由char-hanyunzhong任命)
+warSettlement.ts:92 [战争] 结束：韩允中 vs 昭义使（武力兼并）→ 韩允中获胜
+grantTerritoryBehavior.ts:158 [自身政策] 韩允中：相州 授出前改为流官
+TerritoryStore.ts:324 [岗位变动] 相州 防御使: char-hanyunzhong → char-han-junxiong (由char-hanyunzhong任命)
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：长安 授予辟署权
+declareWarAction.ts:50 [战争] 宣战：高骈 → 岭南西使（武力兼并）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第2营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 韩君雄：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 韩君雄：相州军 补将 → 韩君雄（military=20）
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 天平使（武力兼并）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=f688c0bd-7f41-4587-ba09-9fcad79e08d3, 地点=长安, 军队=[神策军, 邠宁军]
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=郓州, 路径=[长安 → 同州 → 陕州 → 洛阳 → 汴州 → 郓州]
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：都畿道 授予辟署权
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第3营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第4营 从神策军 → 邠宁军
+TerritoryStore.ts:324 [岗位变动] 邕州 防御使: char-npc-lingnan-w → char-gaopian (由char-gaopian任命)
+warSettlement.ts:92 [战争] 结束：高骈 vs 岭南西使（武力兼并）→ 高骈获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第5营 从神策军 → 邠宁军
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 拓跋思恭 | chance=60% → 失败
+TerritoryStore.ts:324 [岗位变动] 郓州 防御使: char-npc-tianping → char-zhangyunshen (由char-zhangyunshen任命)
+warSettlement.ts:92 [战争] 结束：张允伸 vs 天平使（武力兼并）→ 张允伸获胜
+grantTerritoryBehavior.ts:158 [自身政策] 张允伸：瀛州 授出前改为流官
+TerritoryStore.ts:324 [岗位变动] 瀛州 防御使: char-zhangyunshen → char-zhang-jian (由char-zhangyunshen任命)
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张允伸：幽州防御使 授予辟署权
+demandRightsBehavior.ts:119 [逼迫授权] NPC 镇海使 → 唐懿宗：江南东道观察使 辟署权
+demandRightsAction.ts:315 [逼迫授权] 镇海使 → 唐懿宗 (辟署权) | chance=31% → 失败
+demandRightsBehavior.ts:119 [逼迫授权] NPC 郑从谠 → 唐懿宗：河东道节度使 辟署权
+demandRightsAction.ts:315 [逼迫授权] 郑从谠 → 唐懿宗 (辟署权) | chance=34% → 失败
+demandRightsBehavior.ts:119 [逼迫授权] NPC 山南东使 → 唐懿宗：山南东道观察使 辟署权
+demandRightsAction.ts:315 [逼迫授权] 山南东使 → 唐懿宗 (辟署权) | chance=31% → 失败
+TerritoryStore.ts:324 [岗位变动] 河东道 节度使: char-zhengcongdang → char-yizong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 太原 防御使: char-zhengcongdang → char-yizong (由char-yizong任命)
+militaryAI.ts:38 [军编] 唐懿宗：建军「长安军」驻长安
+militaryAI.ts:93 [军编] 唐懿宗：河东军 补将 → 张直方（military=30）
+militaryAI.ts:93 [军编] 唐懿宗：长安军 补将 → 周宝（military=28）
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军重步第1营 从河东军 → 长安军
+militaryAI.ts:38 [军编] 郑从谠：建军「河中军」驻河中
+militaryAI.ts:93 [军编] 郑从谠：河中军 补将 → 李国昌（military=28）
+militaryAI.ts:38 [军编] 张简会：建军「瀛州军」驻瀛州
+militaryAI.ts:93 [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+demandFealtyAction.ts:279 [要求效忠] 宣武使 → 韩君雄 | chance=49% → 成功
+CharacterStore.ts:123 [overlord变更] 韩君雄(char-han) overlord: 韩允中 → 宣武使
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 镇海使：江南东道观察使 改为军事制
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 张允伸：青州防御使 改为世袭
+demandFealtyAction.ts:279 [要求效忠] 韩允中 → 韩君雄 | chance=65% → 失败
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=长安, 军队=[长安军]
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张允伸：青州防御使 授予辟署权
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 宣武使（武力兼并）
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 镇海使：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军重步第2营 从河东军 → 长安军
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 张允伸：郓州防御使 改为世袭
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 山南东使：赋税 一般(2) → 放任(1)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 镇海使：润州刺史 改为军事制
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军重步第3营 从河东军 → 长安军
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 泰宁使：赋税 一般(2) → 放任(1)
+declareWarAction.ts:50 [战争] 宣战：忠武使 → 宣武使（独立）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张允伸：郓州防御使 授予辟署权
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军铁骑第1营 从河东军 → 长安军
+militaryAI.ts:38 [军编] 韩君雄：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 韩君雄：相州军 补将 → 韩君雄（military=20）
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 韩允中：潞州防御使 改为世袭
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军铁骑第2营 从河东军 → 长安军
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 镇海使：润州防御使 改为世袭
+characterSystem.ts:411 [留后] 唐懿宗（河东道节度使）指定留后：李儇
+characterSystem.ts:411 [留后] 张允伸（青州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（郓州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 韩允中（潞州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 宣武使（河南道观察使）指定留后：韩君雄
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军铁骑第3营 从河东军 → 长安军
+militaryAI.ts:38 [军编] 奉国使：建军「蔡州军」驻蔡州
+militaryAI.ts:93 [军编] 奉国使：蔡州军 补将 → 奉国使（military=16）
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 拓跋思恭 | chance=54% → 成功
+CharacterStore.ts:123 [overlord变更] 拓跋思恭(char-tuo) overlord: 邠宁使 → 唐懿宗
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 山南东使：山南东道观察使 改为军事制
+reassignAction.ts:438 [调任] 唐懿宗 调任 拓跋思恭 → 邓承恩（成功率 85%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 夏州 防御使: char-tuobasigong → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 夏州 防御使: 空缺 → char-gen-84 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: 空缺 → char-tuobasigong (由char-yizong任命)
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 山南东使：襄州刺史 改为世袭
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（独立）
+militaryAI.ts:148 [军编] 唐懿宗：调营 河东军弓弩第1营 从河东军 → 长安军
+militaryAI.ts:38 [军编] 武宁使：建军「徐州军」驻徐州
+militaryAI.ts:93 [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+militaryAI.ts:93 [军编] 邓承恩：定难军 补将 → 邓承恩（military=14）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 韩允中：魏州防御使 授予辟署权
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=4b144902-ad32-49fd-a61b-a79c1196c10c, 地点=长安, 军队=[河东军, 长安军]
+militaryAI.ts:38 [军编] 泰宁使：建军「兖州军」驻兖州
+militaryAI.ts:93 [军编] 泰宁使：兖州军 补将 → 泰宁使（military=15）
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=邕州, 路径=[长安 → 凤翔 → 兴元 → 襄州 → 鄂州 → 洪州 → 潭州 → 桂州 → 邕州]
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 韩君雄（deJureClaim）
+warSettlement.ts:92 [战争] 结束：高骈 vs 清海使（独立）→ 高骈获胜
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=凤翔, 军队=[河东军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=凤翔, 军队=[长安军]
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 韩允中：潞州防御使 授予辟署权
+GameMap.tsx:181 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+(anonymous) @ GameMap.tsx:181
+executeDispatch @ react-dom_client.js?v=5fd3b264:9141
+runWithFiberInDEV @ react-dom_client.js?v=5fd3b264:851
+processDispatchQueue @ react-dom_client.js?v=5fd3b264:9167
+(anonymous) @ react-dom_client.js?v=5fd3b264:9454
+batchedUpdates$1 @ react-dom_client.js?v=5fd3b264:2044
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=5fd3b264:9240
+dispatchEvent @ react-dom_client.js?v=5fd3b264:11319
+dispatchContinuousEvent @ react-dom_client.js?v=5fd3b264:11311
+declareWarAction.ts:50 [战争] 宣战：高骈 → 静江使（武力兼并）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=太原, 军队=[河东军]
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: char-gen-10 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: char-gen-11 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 都知兵马使: char-gen-12 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: char-gen-13 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: char-gen-15 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: char-gen-17 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: char-gen-18 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: char-gen-19 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: char-gen-70 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 都知兵马使: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: char-gen-72 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: char-gen-73 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: char-gen-74 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: char-gen-75 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: char-gen-76 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 都知兵马使: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 泾州 录事参军: char-gen-78 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: char-gen-79 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 节度判官: char-gen-80 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 都知兵马使: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 沙州 录事参军: char-gen-82 → 空缺 (未知)
+militaryAI.ts:38 [军编] 韩允中：建军「潞州军」驻潞州
+militaryAI.ts:93 [军编] 韩允中：潞州军 补将 → 韩允中（military=25）
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 防御使: char-zhengcongdang → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 都知兵马使: 空缺 → char-zhengcongdang (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: 空缺 → char-npc-tianping (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 防御使: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: 空缺 → char-npc-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: 空缺 → char-npc-lingnan-w (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-ducong → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: 空缺 → char-ducong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: 空缺 → char-npc-pinglu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: 空缺 → char-npc-binning (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: 空缺 → char-ct-cuiyin (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 宣州 刺史: char-npc-xuanshe → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 都知兵马使: 空缺 → char-npc-xuanshe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: 空缺 → char-gen-12 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 同州 防御使: char-npc-zhenguo → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 都知兵马使: 空缺 → char-npc-zhenguo (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 泾州 录事参军: 空缺 → char-gen-77 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: 空缺 → char-gen-81 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河西道 节度判官: 空缺 → char-zhangzhifang (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: char-npc-hunan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 都知兵马使: 空缺 → char-npc-hunan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 沙州 录事参军: 空缺 → char-ct-lizheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-ct-zhoubao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 宣州 刺史: 空缺 → char-ct-lufang (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 同州 防御使: 空缺 → char-gen-10 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: 空缺 → char-gen-13 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 魏州 录事参军: char-gen-32 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: 空缺 → char-gen-32 (由char-hanyunzhong任命)
+TerritoryStore.ts:324 [岗位变动] 魏州 录事参军: 空缺 → char-gen-18 (由char-hanyunzhong任命)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: 空缺 → char-gen-73 (由char-gaopian任命)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: 空缺 → char-gen-75 (由char-gaopian任命)
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 卢潘 | chance=61% → 失败
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 山南东使：襄州刺史 改为军事制
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=太原, 军队=[长安军]
+demandFealtyAction.ts:279 [要求效忠] 镇海使 → 卢芳 | chance=58% → 成功
+CharacterStore.ts:123 [overlord变更] 卢芳(char-ct-) overlord: 唐懿宗 → 镇海使
+CharacterStore.ts:123 [overlord变更] 马远恩(char-gen) overlord: 唐懿宗 → 镇南使
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 王景崇：镇州防御使 授予辟署权
+militaryAI.ts:93 [军编] 周宝：凤翔军 补将 → 周宝（military=28）
+militaryAI.ts:93 [军编] 卢芳：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:38 [军编] 义成使：建军「河中军」驻河中
+militaryAI.ts:93 [军编] 义成使：河中军 补将 → 邠宁使（military=16）
+militaryAI.ts:93 [军编] 孙远恩：同华军 补将 → 孙远恩（military=14）
+militaryAI.ts:93 [军编] 马远恩：湖南军 补将 → 马远恩（military=17）
+militaryAI.ts:38 [军编] 韩君雄：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 韩君雄：相州军 补将 → 韩君雄（military=20）
+TerritoryStore.ts:324 [岗位变动] 桂州 刺史: char-npc-jingjiang → char-gaopian (由char-gaopian任命)
+warSettlement.ts:92 [战争] 结束：高骈 vs 静江使（武力兼并）→ 高骈获胜
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 韩君雄（military=20）
+militaryAI.ts:38 [军编] 清海使：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 清海使：广州军 补将 → 朱远恩（military=16）
+militaryAI.ts:38 [军编] 张简会：建军「瀛州军」驻瀛州
+militaryAI.ts:93 [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+militaryAI.ts:38 [军编] 韩君雄：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 韩君雄：相州军 补将 → 韩君雄（military=20）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[河东军]
+adjustTaxBehavior.ts:87 [政策] 张允伸 → 义武使：赋税 一般(2) → 放任(1)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 武宁使：赋税 一般(2) → 放任(1)
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 王景崇：冀州防御使 授予辟署权
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[长安军]
+adjustOwnPolicyBehavior.ts:85 [自身政策] 唐懿宗：太原 改为世袭
+militaryAI.ts:38 [军编] 张允伸：建军「幽州军」驻幽州
+militaryAI.ts:93 [军编] 张允伸：幽州军 补将 → 张允伸（military=23）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=bfeadf7b-abb9-4f21-bb0d-5e60a6554247, 地点=长安, 军队=[河东军]
+declareWarAction.ts:50 [战争] 宣战：奉国使 → 宣武使（独立）
+adjustAppointRightBehavior.ts:113 [政策] 张允伸 → 义武使：定州防御使 授予辟署权
+declareWarAction.ts:50 [战争] 宣战：王景崇 → 韩允中（武力兼并）
+warSystem.ts:611 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=许州, 路径=[长安 → 凤翔 → 兴元 → 襄州 → 许州]
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: char-ducong → 空缺 (未知)
+characterSystem.ts:323 Uncaught ReferenceError: heirIds is not defined
+    at runCharacterSystem (characterSystem.ts:323:26)
+    at runMonthlySettlement (settlement.ts:34:3)
+    at TurnManager.ts:90:9
+    at Map.forEach (<anonymous>)
+    at Object.advanceDay (TurnManager.ts:89:24)
+    at TimeControl.tsx:94:35
+runCharacterSystem @ characterSystem.ts:323
+runMonthlySettlement @ settlement.ts:34
+(anonymous) @ TurnManager.ts:90
+advanceDay @ TurnManager.ts:89
+(anonymous) @ TimeControl.tsx:94
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-npc-shanzhou → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: 空缺 → char-npc-shanzhou (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-npc-jingjiang (由char-yizong任命)
+characterSystem.ts:411 [留后] 张淮深（河西道节度使）指定留后：张直方
+militaryAI.ts:216 [军编] 王景崇：财政裁营 成德军重步第1营（strength=1000，净粮草=56）
+militaryAI.ts:93 [军编] 静江使：陕虢军 补将 → 静江使（military=10）
+adjustSuccessionBehavior.ts:117 [政策] 张允伸 → 义武使：定州防御使 改为世袭
+adjustOwnPolicyBehavior.ts:85 [自身政策] 忠武使：许州 改为世袭
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 卢潘 | chance=59% → 失败
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 泰宁使（武力兼并）
+militaryAI.ts:38 [军编] 张简会：建军「瀛州军」驻瀛州
+militaryAI.ts:93 [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+CharacterStore.ts:123 [overlord变更] 忠武使(char-npc) overlord: 无 → 宣武使
+warSettlement.ts:92 [战争] 结束：忠武使 vs 宣武使（独立）→ 宣武使获胜
+TerritoryStore.ts:324 [岗位变动] 相州 防御使: char-han-junxiong → char-hanyunzhong (由char-hanyunzhong任命)
+warSettlement.ts:92 [战争] 结束：韩允中 vs 韩君雄（法理宣称）→ 韩允中获胜
+TerritoryStore.ts:324 [岗位变动] 相州 防御使: char-hanyunzhong → char-gen-33 (由char-hanyunzhong任命)
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=许州, 军队=[河东军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=太原, 军队=[长安军]
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 韩君雄（military=20）
+militaryAI.ts:38 [军编] 石远恩：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 石远恩：相州军 补将 → 石远恩（military=14）
+militaryAI.ts:38 [军编] 韩君雄：建军「滑州军」驻滑州
+militaryAI.ts:93 [军编] 韩君雄：滑州军 补将 → 韩君雄（military=20）

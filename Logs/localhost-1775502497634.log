@@ -1,0 +1,353 @@
+react-dom_client.js?v=5fd3b264:14338 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+seedrandom.js?v=5fd3b264:429 Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":2400},{"territoryId":"zhou-luoyang","available":160
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":2400},{"territoryId":"zhou-luoyang","available":160
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] conscript (weight=20.75, chance=21%)
+militaryAI.ts:93 [军编] 杜悰：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:93 [军编] 郑从谠：河东军 补将 → 李国昌（military=28）
+militaryAI.ts:93 [军编] 张允伸：卢龙军 补将 → 张允伸（military=23）
+militaryAI.ts:93 [军编] 王景崇：成德军 补将 → 王景崇（military=19）
+militaryAI.ts:93 [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-6899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=-4899）
+militaryAI.ts:93 [军编] 拓跋思恭：定难军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第1营（strength=1000，净粮草=-6706）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第2营（strength=1000，净粮草=-4206）
+militaryAI.ts:93 [军编] 崔彦曾：淮南军 补将 → 裴远恩（military=13）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第1营（strength=1000，净粮草=-101）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第2营（strength=1000，净粮草=1899）
+militaryAI.ts:93 [军编] 刘潼：西川军 补将 → 刘潼（military=12）
+militaryAI.ts:93 [军编] 萧邺：兴元军 补将 → 杜远恩（military=12）
+militaryAI.ts:93 [军编] 卢潘：朔方军 补将 → 卢潘（military=21）
+militaryAI.ts:216 [军编] 卢潘：财政裁营 朔方军重步第营（strength=1000，净粮草=1281）
+militaryAI.ts:93 [军编] 李弘甫：泾原军 补将 → 李弘甫（military=21）
+militaryAI.ts:93 [军编] 张淮深：归义军 补将 → 张淮深（military=24）
+militaryAI.ts:93 [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+militaryAI.ts:216 [军编] 贾惟庆：财政裁营 坊州军重步第营（strength=1000，净粮草=1488）
+militaryAI.ts:93 [军编] 孙谠：遂州军 补将 → 孙谠（military=10）
+militaryAI.ts:93 [军编] 高骈：安南军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 李国昌：沙陀骑 补将 → 李国昌（military=28）
+militaryAI.ts:216 [军编] 李国昌：财政裁营 沙陀骑铁骑第1营（strength=1000，净粮草=1451）
+militaryAI.ts:93 [军编] 邠宁使：邠宁军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:93 [军编] 同华使：同华军 补将 → 吴远恩（military=12）
+militaryAI.ts:93 [军编] 陕虢使：陕虢军 补将 → 陕虢使（military=10）
+militaryAI.ts:93 [军编] 昭义使：昭义军 补将 → 昭义使（military=17）
+militaryAI.ts:93 [军编] 义武使：义武军 补将 → 义武使（military=16）
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 宣武使（military=18）
+militaryAI.ts:93 [军编] 义成使：义成军 补将 → 义成使（military=11）
+militaryAI.ts:93 [军编] 天平使：天平军 补将 → 天平使（military=10）
+militaryAI.ts:93 [军编] 泰宁使：泰宁军 补将 → 泰宁使（military=15）
+militaryAI.ts:38 [军编] 武宁使：建军「徐州军」驻徐州
+militaryAI.ts:93 [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+militaryAI.ts:38 [军编] 平卢使：建军「青州军」驻青州
+militaryAI.ts:93 [军编] 平卢使：青州军 补将 → 蔡远恩（military=17）
+militaryAI.ts:93 [军编] 忠武使：忠武军 补将 → 忠武使（military=11）
+militaryAI.ts:93 [军编] 奉国使：奉国军 补将 → 奉国使（military=16）
+militaryAI.ts:93 [军编] 山南东使：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 荆南使：荆南军 补将 → 荆南使（military=10）
+militaryAI.ts:93 [军编] 武昌使：武昌军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 镇海使：镇海军 补将 → 温远恩（military=16）
+militaryAI.ts:93 [军编] 镇东使：镇东军 补将 → 严远恩（military=17）
+militaryAI.ts:93 [军编] 威武使：威武军 补将 → 威武使（military=15）
+militaryAI.ts:93 [军编] 宣歙使：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:93 [军编] 镇南使：镇南军 补将 → 陈承恩（military=17）
+militaryAI.ts:93 [军编] 湖南使：湖南军 补将 → 湖南使（military=10）
+militaryAI.ts:93 [军编] 东川使：东川军 补将 → 东川使（military=11）
+militaryAI.ts:93 [军编] 清海使：清海军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 岭南西使：岭南西道军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 静江使：静江军 补将 → 静江使（military=10）
+militaryAI.ts:216 [军编] 静江使：财政裁营 静江军重步第营（strength=1000，净粮草=172）
+militaryAI.ts:93 [军编] 天水使：天水军 补将 → 天水使（military=17）
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-84"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":3200},{"territoryId":"zhou-luoyang","available":213
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 义成使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-84"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（独立）
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"0920a83a-51ce-4498-89d4-d3a1097fa8a2","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=0920a83a-51ce-4498-89d4-d3a1097fa8a2, 地点=洛阳, 军队=[神策军]
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":3200},{"territoryId":"zhou-luoyang","available":213
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=-1988）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=12）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第1营（strength=1000，净粮草=-1730）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第2营（strength=1000，净粮草=470）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=0920a83a-51ce-4498-89d4-d3a1097fa8a2, 地点=长安, 军队=[长安军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=0920a83a-51ce-4498-89d4-d3a1097fa8a2, 地点=长安, 军队=[神策军]
+campaignAction.ts:30 [DEBUG-懿宗] 设定行军目标: 洛阳, 路径=[长安 → 同州 → 陕州 → 洛阳]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=0920a83a-51ce-4498-89d4-d3a1097fa8a2, 地点=洛阳, 军队=[神策军]
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":2666}],"armyIds":["army-shence","6fb6d1f5-f550-48e4
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+campaignAction.ts:30 [DEBUG-懿宗] 设定行军目标: 邕州, 路径=[洛阳 → 陕州 → 襄州 → 鄂州 → 洪州 → 潭州 → 桂州 → 邕州]
+declareWarAction.ts:50 [战争] 宣战：静江使 → 清海使（独立）
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":2666}],"armyIds":["army-shence","6fb6d1f5-f550-48e4
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+militaryAI.ts:38 [军编] 岭南西使：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":49.5}],"lowestMorale":49.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=28, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":3200}],"armyIds":["army-shence","6fb6d1f5-f550-48e4
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 天平使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":49.5}],"lowestMorale":49.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=28, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":3200}],"armyIds":["army-shence","6fb6d1f5-f550-48e4
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] conscript (weight=40.75, chance=41%)
+reassignAction.ts:438 [调任] 唐懿宗 调任 陕虢使 → 邓承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-npc-shanzhou → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-84 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: 空缺 → char-npc-shanzhou (由char-yizong任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":49}],"lowestMorale":49}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] reward (weight=28, chance=28%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":3733},{"territoryId":"zhou-changan","available":159
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":49}],"lowestMorale":49}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] reward (weight=28, chance=28%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":3733},{"territoryId":"zhou-changan","available":159
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+militaryAI.ts:93 [军编] 邓承恩：陕虢军 补将 → 邓承恩（military=14）
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":48.5}],"lowestMorale":48.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=28, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":4266},{"territoryId":"zhou-changan","available":239
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 忠武使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":48.5}],"lowestMorale":48.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=28, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":4266},{"territoryId":"zhou-changan","available":239
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=40.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+campaignAction.ts:30 [DEBUG-懿宗] 设定行军目标: 交州, 路径=[潭州 → 桂州 → 邕州 → 交州]
+characterSystem.ts:411 [留后] 郑从谠（河东道节度使）指定留后：郑延球
+characterSystem.ts:411 [留后] 张允伸（河北道·幽州节度使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（幽州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（瀛州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 王景崇（河北道·成德节度使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（镇州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（冀州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（魏州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（相州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 崔彦曾（淮南道观察使）指定留后：崔知和
+characterSystem.ts:411 [留后] 刘潼（剑南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 萧邺（山南西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 李弘甫（陇右道节度使）指定留后：无
+characterSystem.ts:411 [留后] 张淮深（河西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 邠宁使（关内道节度使）指定留后：无
+characterSystem.ts:411 [留后] 宣武使（河南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 山南东使（山南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇海使（江南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇南使（江南西道观察使）指定留后：无
+characterSystem.ts:411 [留后] 清海使（岭南道观察使）指定留后：无
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":48}],"lowestMorale":48}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] reward (weight=28, chance=28%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=40.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":4800},{"territoryId":"zhou-changan","available":318
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(40.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] conscript (weight=40.75, chance=41%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=28)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":48}],"lowestMorale":48}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(28)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] reward (weight=28, chance=28%)
+CharacterStore.ts:123 [overlord变更] 高骈(char-gao) overlord: 无 → 清海使     at http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775497563542:83:111 ←     at setState (http://localhost:5173/Wantangfengyun/node_modules/.vite/deps/zustand.js?v=5fd3b264:8:53) ←     at Object.updateCharacter (http://localhost:5173/Wantangfengyun/src/engine/character/CharacterStore.ts?t=1775497563542:59:3)
+warSettlement.ts:94 [战争] 结束：高骈 vs 清海使（独立）→ 清海使获胜
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":4800},{"territoryId":"zhou-changan","available":318
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步第1营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步第2营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻步第1营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻步第2营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军弓弩第营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军轻骑第营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步兵第13营（strength=95）
+militaryAI.ts:180 [军编] 高骈：裁空壳营 安南军重步兵第14营（strength=95）
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[神策军]
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":47.5}],"lowestMorale":47.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-101"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":5333},{"territoryId":"zhou-changan","available":398
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":47.5}],"lowestMorale":47.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-101"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":5333},{"territoryId":"zhou-changan","available":398
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: char-gen-31 → 空缺 (未知)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":47}],"lowestMorale":47}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-101"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] joinWar (weight=22.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":5866},{"territoryId":"zhou-changan","available":478
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":47}],"lowestMorale":47}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-101"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":5866},{"territoryId":"zhou-changan","available":478
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: 空缺 → char-gen-31 (由char-hanyunzhong任命)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":46.5}],"lowestMorale":46.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] reward (weight=8, chance=8%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-fangyu-shanzhou","replacementId":"char-gen-101"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts:239 [皇帝AI] [任务生成] joinWar [自愿(w=22.1)] data={"warId":"af77cb8d-d8ef-47ac-8b01-35ccac51043e","side":"defender","vassalId":"char-npc-qinghai"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[joinWar(22.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] joinWar (weight=22.1, chance=22%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-luoyang","available":6399},{"territoryId":"zhou-changan","available":557
+NpcEngine.ts:239 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-guancha-jingji","territoryId":"dao-jingji","action":"grantAppointRight"}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts:239 [皇帝AI] [执行-自愿] conscript (weight=20.75, chance=21%)
+NpcEngine.ts:239 [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 泰宁使：赋税 一般(2) → 放任(1)
+NpcEngine.ts:239 [皇帝AI] [任务生成] reward [自愿(w=8)] data={"armies":[{"armyId":"6fb6d1f5-f550-48e4-8ddf-f368b9b33b40","avgMorale":46.5}],"lowestMorale":46.5}
+NpcEngine.ts:239 [皇帝AI] [自愿候选] maxActions=1, 候选=[reward(8)]
+NpcEngine.ts:239 [皇帝AI] [跳过-自愿] reward (weight=8, 骰子未通过)

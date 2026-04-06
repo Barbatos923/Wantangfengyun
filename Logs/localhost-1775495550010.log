@@ -1,0 +1,1037 @@
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustTax [自愿(w=33.775)] data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustTax(33.775)]
+ [皇帝AI] [跳过-自愿] adjustTax (weight=33.775, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4116},{"territoryId":"zhou-luoyang","available":208
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4116},{"territoryId":"zhou-luoyang","available":208
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4116},{"territoryId":"zhou-luoyang","available":208
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4116},{"territoryId":"zhou-luoyang","available":208
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=27.065)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(27.065)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=27.065, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=18.565)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(18.565)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=18.565, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.865000000000002)]
+ [皇帝AI] [跳过-自愿] adjustAppointRight (weight=26.865000000000002, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustTax [自愿(w=33.775)] data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustTax(33.775)]
+ [皇帝AI] [跳过-自愿] adjustTax (weight=33.775, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [政策] 宣武使 → 奉国使：赋税 一般(2) → 放任(1)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=27.065)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(27.065)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=27.065, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=18.565)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(18.565)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=18.565, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [战争] 宣战：高骈 → 湖南使（武力兼并）
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.865000000000002)]
+ [皇帝AI] [跳过-自愿] adjustAppointRight (weight=26.865000000000002, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustTax [自愿(w=33.775)] data={"vassalId":"char-liutong","delta":-1,"currentLevel":2}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustTax(33.775)]
+ [皇帝AI] [执行-自愿] adjustTax (weight=33.775, chance=34%)
+ [政策] 唐懿宗 → 刘潼：赋税 一般(2) → 放任(1)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [留后] 唐懿宗（关陇行台尚书令）指定留后：李儇
+ [留后] 于琮（河东道节度使）指定留后：无
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":4907},{"territoryId":"zhou-luoyang","available":260
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-changan","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [执行-自愿] build (weight=18, chance=18%)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=28.564999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(28.564999999999998)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=28.564999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.064999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.064999999999998)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=20.064999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [战争] 宣战：韩允中 → 杜悰（武力兼并）
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.865000000000002)]
+ [皇帝AI] [跳过-自愿] adjustAppointRight (weight=26.865000000000002, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] deploy-approve → 触发 data={"entries":[{"armyId":"58f01cee-e336-4003-ba7f-9bdfef8eb1ba","fromLocationId":"zhou-guizhou","targetLocationId":"zhou-ta
+ [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[长安军]
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustTax → 非forced跳过 data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustTax [自愿(w=32.025)] data={"vassalId":"char-ct-yushe","delta":-1,"currentLevel":2}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustTax(32.025)]
+ [皇帝AI] [执行-自愿] adjustTax (weight=32.025, chance=32%)
+ [政策] 唐懿宗 → 于琮：赋税 一般(2) → 放任(1)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=28.564999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(28.564999999999998)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=28.564999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.064999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.064999999999998)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=20.064999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-youzhou","territoryId":"zhou-youzhou","grant":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.865000000000002)]
+ [皇帝AI] [执行-自愿] adjustAppointRight (weight=26.865000000000002, chance=27%)
+ [政策] 唐懿宗 → 张允伸：幽州防御使 授予辟署权
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":5699},{"territoryId":"zhou-luoyang","available":313
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=28.564999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(28.564999999999998)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=28.564999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.064999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.064999999999998)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=20.064999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.865000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.865000000000002)]
+ [皇帝AI] [跳过-自愿] adjustAppointRight (weight=26.865000000000002, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [战争] 宣战：张允伸 → 平卢使（武力兼并）
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=28.564999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(28.564999999999998)]
+ [皇帝AI] [跳过-自愿] adjustType (weight=28.564999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.064999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.064999999999998)]
+ [皇帝AI] [跳过-自愿] adjustSuccession (weight=20.064999999999998, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+ [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] joinWar [自愿(w=19.9)] data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [任务生成] adjustAppointRight [自愿(w=27.615000000000002)] data={"vassalId":"char-zhangyunshen","postId":"post-fangyu-yingzhou","territoryId":"zhou-yingzhou","grant":true,"tier":"zhou"
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(27.615000000000002), joinWar(19.9)]
+ [皇帝AI] [执行-自愿] adjustAppointRight (weight=27.615000000000002, chance=28%)
+ [政策] 唐懿宗 → 张允伸：瀛州防御使 授予辟署权
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+ [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+ [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":6490},{"territoryId":"zhou-luoyang","available":366
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] build [自愿(w=18)] data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[build(18)]
+ [皇帝AI] [跳过-自愿] build (weight=18, 骰子未通过)
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+ [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+ [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+ [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+ [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+ [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+ [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+ [皇帝AI] [任务生成] adjustType [自愿(w=28.564999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+ [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustType(28.564999999999998)]
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] adjustType (weight=28.564999999999998, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] adjustSuccession [自愿(w=20.064999999999998)] data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustSuccession(20.064999999999998)]
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] adjustSuccession (weight=20.064999999999998, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] emperor-reassign [自愿(w=3.9000000000000004)] data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [自愿候选] maxActions=1, 候选=[emperor-reassign(3.9000000000000004)]
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] emperor-reassign (weight=3.9000000000000004, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] joinWar [自愿(w=19.9)] data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] adjustAppointRight [自愿(w=26.715000000000003)] data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [自愿候选] maxActions=1, 候选=[adjustAppointRight(26.715000000000003), joinWar(19.9)]
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] adjustAppointRight (weight=26.715000000000003, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] joinWar (weight=19.9, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] build → 非forced跳过 data={"territoryId":"zhou-luoyang","slotIndex":0,"building":{"id":"building-market","name":"集市","description":"兴建集市，增加钱财收入","
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] conscript → 非forced跳过 data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] joinWar → 非forced跳过 data={"warId":"dcbe76b1-bc4e-41e6-8982-4064b491f7ce","side":"attacker","vassalId":"char-zhangyunshen"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustType → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toMilitary":true}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustAppointRight → 非forced跳过 data={"vassalId":"char-npc-zhenhai","postId":"post-guancha-jiangnan-e","territoryId":"dao-jiangnan-e","grant":true,"tier":"da
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustSuccession → 非forced跳过 data={"vassalId":"char-liutong","postId":"post-cishi-chengdu","territoryId":"zhou-chengdu","toClan":true,"tier":"zhou"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] adjustOwnPolicy → 非forced跳过 data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [forced检测] emperor-reassign → 非forced跳过 data={"territorialPostId":"post-jiedushi-hedong","replacementId":"char-gen-87"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] conscript [自愿(w=20.75)] data={"recruitableTerritories":[{"territoryId":"zhou-changan","available":7281},{"territoryId":"zhou-luoyang","available":418
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [任务生成] adjustOwnPolicy [自愿(w=7.1)] data={"postId":"post-cishi-changan","territoryId":"zhou-changan","action":"grantAppointRight"}
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [自愿候选] maxActions=1, 候选=[conscript(20.75), adjustOwnPolicy(7.1)]
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] conscript (weight=20.75, 骰子未通过)
+NpcEngine.ts?t=1775495355685:206 [皇帝AI] [跳过-自愿] adjustOwnPolicy (weight=7.1, 骰子未通过)
+react-dom_client.js?v=5fd3b264:1773 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-hanyu...">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-h...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+react-dom_client.js?v=5fd3b264:1775 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775

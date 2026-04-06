@@ -1,0 +1,8 @@
+militaryAI.ts:93 [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-6899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=-4899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=-1988）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=12）
+characterSystem.ts:411 [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: char-gen-31 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: 空缺 → char-gen-31 (由char-hanyunzhong任命)

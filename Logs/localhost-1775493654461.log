@@ -1,0 +1,257 @@
+react-dom_client.js?v=5fd3b264:14338 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+seedrandom.js?v=5fd3b264:429 Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+adjustTaxBehavior.ts:87 [政策] 清海使 → 高骈：赋税 一般(2) → 放任(1)
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+react-dom_client.js?v=5fd3b264:2115 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ react-dom_client.js?v=5fd3b264:2115
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（独立）
+militaryAI.ts:93 [军编] 杜悰：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:93 [军编] 郑从谠：河东军 补将 → 李国昌（military=28）
+militaryAI.ts:93 [军编] 张允伸：卢龙军 补将 → 张允伸（military=23）
+militaryAI.ts:93 [军编] 王景崇：成德军 补将 → 王景崇（military=19）
+militaryAI.ts:93 [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-6899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=-4899）
+militaryAI.ts:93 [军编] 拓跋思恭：定难军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第1营（strength=1000，净粮草=-6706）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第2营（strength=1000，净粮草=-4206）
+militaryAI.ts:93 [军编] 崔彦曾：淮南军 补将 → 裴远恩（military=13）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第1营（strength=1000，净粮草=-101）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第2营（strength=1000，净粮草=1899）
+militaryAI.ts:93 [军编] 刘潼：西川军 补将 → 刘潼（military=12）
+militaryAI.ts:93 [军编] 萧邺：兴元军 补将 → 杜远恩（military=12）
+militaryAI.ts:93 [军编] 卢潘：朔方军 补将 → 卢潘（military=21）
+militaryAI.ts:216 [军编] 卢潘：财政裁营 朔方军重步第营（strength=1000，净粮草=1281）
+militaryAI.ts:93 [军编] 李弘甫：泾原军 补将 → 李弘甫（military=21）
+militaryAI.ts:93 [军编] 张淮深：归义军 补将 → 张淮深（military=24）
+militaryAI.ts:93 [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+militaryAI.ts:216 [军编] 贾惟庆：财政裁营 坊州军重步第营（strength=1000，净粮草=1488）
+militaryAI.ts:93 [军编] 孙谠：遂州军 补将 → 孙谠（military=10）
+militaryAI.ts:93 [军编] 李国昌：沙陀骑 补将 → 李国昌（military=28）
+militaryAI.ts:216 [军编] 李国昌：财政裁营 沙陀骑铁骑第1营（strength=1000，净粮草=1451）
+militaryAI.ts:93 [军编] 邠宁使：邠宁军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:93 [军编] 同华使：同华军 补将 → 吴远恩（military=12）
+militaryAI.ts:93 [军编] 陕虢使：陕虢军 补将 → 陕虢使（military=10）
+militaryAI.ts:93 [军编] 昭义使：昭义军 补将 → 昭义使（military=17）
+militaryAI.ts:93 [军编] 义武使：义武军 补将 → 义武使（military=16）
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 宣武使（military=18）
+militaryAI.ts:93 [军编] 义成使：义成军 补将 → 义成使（military=11）
+militaryAI.ts:93 [军编] 天平使：天平军 补将 → 天平使（military=10）
+militaryAI.ts:93 [军编] 泰宁使：泰宁军 补将 → 泰宁使（military=15）
+militaryAI.ts:38 [军编] 武宁使：建军「徐州军」驻徐州
+militaryAI.ts:93 [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+militaryAI.ts:38 [军编] 平卢使：建军「青州军」驻青州
+militaryAI.ts:93 [军编] 平卢使：青州军 补将 → 蔡远恩（military=17）
+militaryAI.ts:93 [军编] 忠武使：忠武军 补将 → 忠武使（military=11）
+militaryAI.ts:93 [军编] 奉国使：奉国军 补将 → 奉国使（military=16）
+militaryAI.ts:93 [军编] 山南东使：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 荆南使：荆南军 补将 → 荆南使（military=10）
+militaryAI.ts:93 [军编] 武昌使：武昌军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 镇海使：镇海军 补将 → 温远恩（military=16）
+militaryAI.ts:93 [军编] 镇东使：镇东军 补将 → 严远恩（military=17）
+militaryAI.ts:93 [军编] 威武使：威武军 补将 → 威武使（military=15）
+militaryAI.ts:93 [军编] 宣歙使：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:93 [军编] 镇南使：镇南军 补将 → 陈承恩（military=17）
+militaryAI.ts:93 [军编] 湖南使：湖南军 补将 → 湖南使（military=10）
+militaryAI.ts:93 [军编] 东川使：东川军 补将 → 东川使（military=11）
+militaryAI.ts:93 [军编] 清海使：清海军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 岭南西使：岭南西道军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 静江使：静江军 补将 → 静江使（military=10）
+militaryAI.ts:216 [军编] 静江使：财政裁营 静江军重步第营（strength=1000，净粮草=172）
+militaryAI.ts:93 [军编] 天水使：天水军 补将 → 天水使（military=17）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 义成使：赋税 一般(2) → 放任(1)
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=-1988）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=12）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第1营（strength=1000，净粮草=-1730）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第2营（strength=1000，净粮草=470）
+reassignAction.ts:520 [调任提案] 路岩 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:438 [调任] 唐懿宗 调任 陕虢使 → 邓承恩（成功率 95%）→ 拒绝（独立战争）
+declareWarAction.ts:50 [战争] 宣战：陕虢使 → 唐懿宗（独立）
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 卢潘：赋税 一般(2) → 放任(1)
+militaryAI.ts:38 [军编] 岭南西使：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 天平使：赋税 一般(2) → 放任(1)
+CharacterStore.ts:123 [overlord变更] 陕虢使(char-npc) overlord: 无 → 唐懿宗
+warSettlement.ts:93 [战争] 结束：陕虢使 vs 唐懿宗（独立）→ 唐懿宗获胜
+TerritoryStore.ts:324 [岗位变动] 关内道 节度使: char-npc-binning → char-yizong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 邠州 防御使: char-npc-binning → char-yizong (由char-yizong任命)
+militaryAI.ts:93 [军编] 唐懿宗：邠宁军 补将 → 周宝（military=28）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 静江使：建军「桂州军」驻桂州
+militaryAI.ts:93 [军编] 静江使：桂州军 补将 → 静江使（military=10）
+reassignAction.ts:438 [调任] 唐懿宗 调任 宣武使 → 裴璩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 河南道 观察使: char-npc-xuanwu → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河南道 观察使: 空缺 → char-ct-peizhao (由char-yizong任命)
+CharacterStore.ts:289 [overlord变更/batch] 义成使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 天平使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 泰宁使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 武宁使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 平卢使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 忠武使(char-npc) overlord: 宣武使 → 裴璩
+CharacterStore.ts:289 [overlord变更/batch] 奉国使(char-npc) overlord: 宣武使 → 裴璩
+TerritoryStore.ts:324 [岗位变动] 汴州 刺史: char-npc-xuanwu → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: 空缺 → char-npc-xuanwu (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 泰宁使：赋税 一般(2) → 放任(1)
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 平卢使（武力兼并）
+adjustOwnPolicyBehavior.ts:85 [自身政策] 唐懿宗：邠州 改为世袭
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第2营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 裴璩：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 裴璩：汴州军 补将 → 武宁使（military=17）
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 贾惟庆 | chance=72% → 成功
+CharacterStore.ts:123 [overlord变更] 贾惟庆(char-jia) overlord: 邠宁使 → 唐懿宗
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：京畿道 授予辟署权
+characterSystem.ts:411 [留后] 唐懿宗（京畿道观察使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（长安刺史）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（都畿道观察使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（洛阳刺史）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（关内道节度使）指定留后：李儇
+characterSystem.ts:411 [留后] 唐懿宗（邠州防御使）指定留后：李儇
+characterSystem.ts:411 [留后] 裴璩（河南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 郑从谠（河东道节度使）指定留后：郑延球
+characterSystem.ts:411 [留后] 张允伸（河北道·幽州节度使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（幽州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 张允伸（瀛州防御使）指定留后：张简会
+characterSystem.ts:411 [留后] 王景崇（河北道·成德节度使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（镇州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 王景崇（冀州防御使）指定留后：王崇文
+characterSystem.ts:411 [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（魏州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 韩允中（相州防御使）指定留后：韩君雄
+characterSystem.ts:411 [留后] 崔彦曾（淮南道观察使）指定留后：崔知和
+characterSystem.ts:411 [留后] 刘潼（剑南道观察使）指定留后：无
+characterSystem.ts:411 [留后] 萧邺（山南西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 李弘甫（陇右道节度使）指定留后：无
+characterSystem.ts:411 [留后] 张淮深（河西道节度使）指定留后：无
+characterSystem.ts:411 [留后] 山南东使（山南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇海使（江南东道观察使）指定留后：无
+characterSystem.ts:411 [留后] 镇南使（江南西道观察使）指定留后：无
+characterSystem.ts:411 [留后] 清海使（岭南道观察使）指定留后：无
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第3营 从神策军 → 邠宁军
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 武宁使：赋税 一般(2) → 放任(1)
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=1d27cfb1-30aa-4973-98df-99ed4b7cac08, 地点=长安, 军队=[神策军, 邠宁军]
+warSystem.ts:588 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=交州, 路径=[长安 → 凤翔 → 兴元 → 襄州 → 鄂州 → 洪州 → 潭州 → 桂州 → 邕州 → 交州]
+TerritoryStore.ts:324 [岗位变动] 青州 防御使: char-npc-pinglu → char-zhangyunshen (由char-zhangyunshen任命)
+warSettlement.ts:93 [战争] 结束：张允伸 vs 平卢使（武力兼并）→ 张允伸获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第4营 从神策军 → 邠宁军
+reassignAction.ts:520 [调任提案] 韦保衡 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:438 [调任] 唐懿宗 调任 镇南使 → 李蔚（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: char-npc-zhennan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-liwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: 空缺 → char-liwei (由char-yizong任命)
+CharacterStore.ts:289 [overlord变更/batch] 湖南使(char-npc) overlord: 镇南使 → 李蔚
+TerritoryStore.ts:324 [岗位变动] 洪州 刺史: char-npc-zhennan → char-liwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-npc-zhennan (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 奉国使：赋税 一般(2) → 放任(1)
+declareWarAction.ts:50 [战争] 宣战：张允伸 → 天平使（武力兼并）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第5营 从神策军 → 邠宁军
+militaryAI.ts:93 [军编] 李蔚：镇南军 补将 → 陈承恩（military=17）
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 义成使：赋税 一般(2) → 放任(1)
+adjustTaxBehavior.ts:87 [政策] 山南东使 → 武昌使：赋税 一般(2) → 放任(1)
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：长安 授予辟署权
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第1营 从神策军 → 邠宁军
+warSettlement.ts:93 [战争] 结束：高骈 vs 清海使（独立）→ 高骈获胜
+react-dom_client.js?v=5fd3b264:1773 In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <App>
+    <GameLayout>
+      <div className="w-screen h...">
+        <ResourceBar>
+        <div className="flex-1 fle...">
+          <LeftPanel>
+            <div className="w-[360px] ...">
+              <CharacterPanel characterId="char-yizong">
+                <div className="flex flex-...">
+                  <div>
+                  <div>
+                  <div>
+                  <div className="shrink-0 b..." style={{height:"25%", ...}}>
+                    <div>
+                    <div className="flex-1 ove...">
+                      <FamilyTab character={{id:"char-y...", ...}} characters={Map} onClickChar={function pushCharacter} ...>
+                        <div className="space-y-1">
+>                         <button
+>                           className="w-full flex items-center justify-between px-2 py-1 rounded hover:bg-[var(--colo..."
+>                           onClick={function onClick}
+>                         >
+                            <div>
+                            <div className="flex items...">
+                              <span>
+>                             <button
+>                               className="text-[10px] font-bold cursor-pointer hover:underline"
+>                               style={{color:"var(--colo..."}}
+>                               onClick={function onClick}
+>                             >
+          ...
+        ...
+
+validateDOMNesting @ react-dom_client.js?v=5fd3b264:1773
+react-dom_client.js?v=5fd3b264:1775 <button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=5fd3b264:1775
+declareWarAction.ts:50 [战争] 宣战：高骈 → 岭南西使（武力兼并）
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=53dab4e0-c90d-448f-b779-c2827a860c66, 地点=长安, 军队=[神策军, 邠宁军]
+warSystem.ts:588 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=郓州, 路径=[长安 → 同州 → 陕州 → 洛阳 → 汴州 → 郓州]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第2营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 清海使：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 清海使：广州军 补将 → 岭南西使（military=16）
+declareWarAction.ts:50 [战争] 宣战：王景崇 → 义武使（武力兼并）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第3营 从神策军 → 邠宁军
+adjustRedistributionBehavior.ts:65 [政策] 裴璩：回拨率 0% → 10%
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 同华使 | chance=73% → 失败
+TerritoryStore.ts:324 [岗位变动] 郓州 防御使: char-npc-tianping → char-zhangyunshen (由char-zhangyunshen任命)
+warSettlement.ts:93 [战争] 结束：张允伸 vs 天平使（武力兼并）→ 张允伸获胜
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=892911ce-8f21-477f-babc-553f9f2cb573, 地点=长安, 军队=[神策军, 邠宁军]
+grantTerritoryBehavior.ts:158 [自身政策] 张允伸：瀛州 授出前改为流官
+TerritoryStore.ts:324 [岗位变动] 瀛州 防御使: char-zhangyunshen → char-zhang-jian (由char-zhangyunshen任命)
+warSystem.ts:588 [DEBUG-懿宗] 行营AI: 从长安出发, 目标=定州, 路径=[长安 → 同州 → 河中 → 太原 → 云州 → 幽州 → 定州]
+characterSystem.ts:411 [留后] 李蔚（江南西道观察使）指定留后：湖南使
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军铁骑第4营 从神策军 → 邠宁军
+militaryAI.ts:38 [军编] 岭南西使：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+militaryAI.ts:38 [军编] 张简会：建军「瀛州军」驻瀛州
+militaryAI.ts:93 [军编] 张简会：瀛州军 补将 → 张简会（military=19）
+TerritoryStore.ts:324 [岗位变动] 邕州 防御使: char-npc-lingnan-w → char-gaopian (由char-gaopian任命)
+warSettlement.ts:93 [战争] 结束：高骈 vs 岭南西使（武力兼并）→ 高骈获胜
+declareWarAction.ts:50 [战争] 宣战：高骈 → 静江使（武力兼并）
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 忠武使：赋税 一般(2) → 放任(1)
+TerritoryStore.ts:324 [岗位变动] 定州 防御使: char-npc-yiwu → char-wangjingchong (由char-wangjingchong任命)
+warSettlement.ts:93 [战争] 结束：王景崇 vs 义武使（武力兼并）→ 王景崇获胜
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第1营 从神策军 → 邠宁军
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=长安, 军队=[神策军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=长安, 军队=[邠宁军]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第2营 从神策军 → 邠宁军
+adjustOwnPolicyBehavior.ts:88 [自身政策] 唐懿宗：都畿道 授予辟署权
+TerritoryStore.ts:324 [岗位变动] 桂州 刺史: char-npc-jingjiang → char-gaopian (由char-gaopian任命)
+warSettlement.ts:93 [战争] 结束：高骈 vs 静江使（武力兼并）→ 高骈获胜
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（武力兼并）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军弓弩第3营 从神策军 → 邠宁军
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻步第1营 从神策军 → 邠宁军
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[神策军]
+campaignAction.ts:145 [DEBUG-懿宗] 组建行营: warId=调兵, 地点=桂州, 军队=[邠宁军]
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻步第2营 从神策军 → 邠宁军
+demandFealtyAction.ts:279 [要求效忠] 唐懿宗 → 同华使 | chance=70% → 成功
+CharacterStore.ts:123 [overlord变更] 同华使(char-npc) overlord: 邠宁使 → 唐懿宗
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 义成使（武力兼并）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军轻骑第营 从神策军 → 邠宁军
+TerritoryStore.ts:324 [岗位变动] 河东道 节度使: char-zhengcongdang → char-yizong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 太原 防御使: char-zhengcongdang → char-yizong (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 郑从谠 → 昭义使：赋税 一般(2) → 放任(1)
+militaryAI.ts:93 [军编] 唐懿宗：河东军 补将 → 韩允中（military=25）
+militaryAI.ts:148 [军编] 唐懿宗：调营 神策军重步第1营 从神策军 → 河东军
+militaryAI.ts:38 [军编] 郑从谠：建军「河中军」驻河中
+militaryAI.ts:93 [军编] 郑从谠：河中军 补将 → 李国昌（military=28）
+militaryAI.ts:38 [军编] 清海使：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 清海使：广州军 补将 → 岭南西使（military=16）
+TerritoryStore.ts:324 [岗位变动] 广州 刺史: char-npc-qinghai → char-gaopian (由char-gaopian任命)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: char-gen-70 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 都知兵马使: char-gen-71 → 空缺 (未知)
+warSettlement.ts:93 [战争] 结束：高骈 vs 清海使（武力兼并）→ 高骈获胜

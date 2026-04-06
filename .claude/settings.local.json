@@ -73,7 +73,11 @@
       "Bash(/dev/null:*)",
       "Bash(find:*)",
       "WebFetch(domain:www.anthropic.com)",
-      "Bash(ls *.json)"
+      "Bash(ls *.json)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

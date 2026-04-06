@@ -616,11 +616,11 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // ===== 战争自动结算 =====
-  // 玩家是战争领袖时跳过（由玩家手动操作），仅参战者不阻止自动结算
   const playerId = useCharacterStore.getState().playerId;
   for (const war of useWarStore.getState().wars.values()) {
     if (war.status !== 'active') continue;
-    if (playerId && (war.attackerId === playerId || war.defenderId === playerId)) continue;
+
+    const isPlayerWar = playerId && (war.attackerId === playerId || war.defenderId === playerId);
 
     const chars = useCharacterStore.getState().characters;
     const terrs = useTerritoryStore.getState().territories;
@@ -633,8 +633,12 @@ export function runWarSystem(date: GameDate): void {
     }
 
     if (war.warScore >= 100) {
+      // 玩家是攻方（占优）时让玩家手动强制媾和
+      if (isPlayerWar && war.attackerId === playerId) continue;
       settleWar(war.id, 'attackerWin');
     } else if (war.warScore <= -100) {
+      // 玩家是守方（占优）时让玩家手动强制媾和
+      if (isPlayerWar && war.defenderId === playerId) continue;
       settleWar(war.id, 'defenderWin');
     }
   }
