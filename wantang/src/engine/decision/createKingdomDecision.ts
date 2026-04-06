@@ -13,7 +13,7 @@ import {
   calcPostManageCost,
 } from '@engine/official/postManageCalc';
 import type { Post, TerritoryTier } from '@engine/territory/types';
-import { syncArmyForPost, capitalZhouSeat, refreshPostCaches, promoteOverlordIfNeeded } from '@engine/official/postTransfer';
+import { syncArmyForPost, capitalZhouSeat, refreshPostCaches, refreshLegitimacyForChar, promoteOverlordIfNeeded } from '@engine/official/postTransfer';
 
 // ── 确定领地对应的 grantsControl 模板 ID ─────────────────────
 
@@ -92,11 +92,12 @@ export function executeCreateKingdom(
     capitalZhouSeat(territoryId, actorId, actorId, date);
   }
 
-  // 军队 + 效忠链提升 + 缓存
+  // 军队 + 效忠链提升 + 缓存 + 正统性刷新
   syncArmyForPost(newPost.id, actorId);
   const TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
   promoteOverlordIfNeeded(actorId, TIER_RANK[territory.tier] ?? 0);
   refreshPostCaches(undefined, true);
+  refreshLegitimacyForChar(actorId);
 
   // 记录事件
   const eventType = territory.tier === 'guo' ? '称王' : '建镇';

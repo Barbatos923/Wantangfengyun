@@ -32,7 +32,7 @@ src/
 │   ├── military/    # MilitaryStore/WarStore + 战斗/行军/围城/结算
 │   ├── interaction/ # 玩家交互 Action（任命/罢免/宣战/调任/剥夺/篡夺等）
 │   ├── decision/    # 决议系统（称王/称帝/建镇/销毁头衔）
-│   ├── npc/         # NPC Engine 框架 + 29 个行为模块
+│   ├── npc/         # NPC Engine 框架 + 31 个行为模块
 │   └── systems/     # 月结管线各 System（9 个）
 ├── data/            # 纯静态数据（JSON + 定义表，禁止放逻辑）
 ├── ui/              # React UI 层（只读 Store + 调用 interaction）
@@ -121,7 +121,7 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 六、NPC Engine（31 个行为，已日结化）
 
-行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/逼迫授权/议定进奉 | 政策：调税/调职类/调辟署权/调继承法/调回拨率/自身政策调整 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
+行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/归附/逼迫授权/议定进奉 | 政策：调税/调职类/调辟署权/调继承法/调回拨率/自身政策调整 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
 
 - `playerMode`：`push-task` / `skip` / `auto-execute` / `standing`
 - `schedule`：`daily`（默认 push-task）/ `monthly-slot`（哈希槽位+品级分档）
@@ -138,14 +138,15 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 八、当前开发阶段
 
-Phase 6（谋略+派系+事件）94%。详细进度见 `docs/milestones.md`。
+Phase 6（谋略+派系+事件）95%。详细进度见 `docs/milestones.md`。
 
 ### 尚未完成（当前优先）
-- 无
+- 金钱系统重构（区分私财与国库）
 
 ### 尚未完成（后续系统）
+- 更多个人交互 | 谋略系统 | 活动系统 | 派系系统 | 更多随机事件
 - 存档/读档 UI | AI 史书 | 生育系统 | 人才自然生成 | 非宗法皇位更替
-- 权知机制 | 谋略/派系 | 地图增强 | 行营AI优化 | 强力CB
+- 权知机制 | 地图增强 | 行营AI优化 | 强力CB
 
 ### 测试原则
 - **测纯函数**（Calc/dateUtils/territoryUtils），**不测** Store 流转/NPC 决策

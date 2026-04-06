@@ -9,8 +9,6 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { getActualController, getHeldPosts } from '@engine/official/officialUtils';
-import { getHighestBaseLegitimacy, getRankLegitimacyCap } from '@engine/official/legitimacyCalc';
-import { getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
 import { executeDismiss } from './dismissAction';
 import {
   seatPost,
@@ -19,6 +17,7 @@ import {
   cascadeSecondaryOverlord,
   capitalZhouSeat,
   refreshPostCaches,
+  refreshLegitimacyForChar,
 } from '@engine/official/postTransfer';
 
 /** 注册任命交互 */
@@ -27,11 +26,15 @@ registerInteraction({
   name: '任命职位',
   icon: '📜',
   canShow: (player, target) => {
+    // 宽松：target 是臣属即显示
     if (target.overlordId !== player.id) return false;
     if (!target.official) return false;
     if (!player.official) return false;
-    // 检查是否有可任命的岗位（含空缺和已占）
-    return getAppointablePosts(player).length > 0;
+    return true;
+  },
+  canExecuteCheck: (player, _target) => {
+    if (getAppointablePosts(player).length > 0) return null;
+    return '无可任命岗位';
   },
   paramType: 'appoint',
 });
@@ -221,23 +224,7 @@ export function executeAppoint(
   }
 
   // ── 6. 正统性刷新 ──
-  {
-    const freshAppointee = charStore.getCharacter(appointeeId);
-    if (freshAppointee) {
-      const freshTerrStore = useTerritoryStore.getState();
-      const heldPosts = getHeldPostsPure(appointeeId, freshTerrStore.territories, freshTerrStore.centralPosts);
-      const baseLeg = getHighestBaseLegitimacy(heldPosts);
-      if (baseLeg !== null && freshAppointee.resources.legitimacy < baseLeg) {
-        const cap = freshAppointee.official ? getRankLegitimacyCap(freshAppointee.official.rankLevel) : 100;
-        const targetLeg = Math.min(baseLeg, cap);
-        if (freshAppointee.resources.legitimacy < targetLeg) {
-          charStore.addResources(appointeeId, {
-            legitimacy: targetLeg - freshAppointee.resources.legitimacy,
-          });
-        }
-      }
-    }
-  }
+  refreshLegitimacyForChar(appointeeId);
 
   // ── 7. 治所联动 ──
   if (post) {

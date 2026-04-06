@@ -219,6 +219,9 @@ export default function DecisionDetailModal({ decision, onClose, onExecuted }: D
                 <span className="text-[var(--color-text)]">名望 -{currentCost.prestige}</span>
               )}
             </div>
+            <p className="text-xs text-[var(--color-accent-green,#22c55e)] mt-1">
+              创建后正统性将提升至与岗位匹配的水平（受品位上限约束）。
+            </p>
           </div>
         )}
 

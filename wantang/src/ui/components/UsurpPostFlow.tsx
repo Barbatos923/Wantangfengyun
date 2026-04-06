@@ -70,6 +70,9 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
         <p className="text-xs text-[var(--color-text-muted)]">
           {target!.name}将对你产生"篡夺者"好感 -40。
         </p>
+        <p className="text-xs text-[var(--color-accent-green,#22c55e)]">
+          篡夺后正统性将提升至与岗位匹配的水平（受品位上限约束）。
+        </p>
       </div>
     );
   }

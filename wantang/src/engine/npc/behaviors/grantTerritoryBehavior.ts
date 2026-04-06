@@ -16,11 +16,28 @@ import { registerBehavior } from './index';
 
 function getControlledZhouFromCtx(
   charId: string,
-  territories: NpcContext['territories'],
+  territories: Map<string, Territory>,
 ): Territory[] {
   const result: Territory[] = [];
   for (const t of territories.values()) {
     if (t.tier !== 'zhou') continue;
+    const mainPost = t.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+    if (mainPost?.holderId === charId) {
+      result.push(t);
+    }
+  }
+  return result;
+}
+
+// ── 辅助：从 ctx 快照获取直辖道 ────────────────────────────
+
+function getControlledDaoFromCtx(
+  charId: string,
+  territories: Map<string, Territory>,
+): Territory[] {
+  const result: Territory[] = [];
+  for (const t of territories.values()) {
+    if (t.tier !== 'dao') continue;
     const mainPost = t.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
     if (mainPost?.holderId === charId) {
       result.push(t);
@@ -66,7 +83,7 @@ function pickBestVassal(
 function pickZhouToGrant(
   actor: Character,
   directZhou: Territory[],
-  territories: NpcContext['territories'],
+  territories: Map<string, Territory>,
 ): { territory: Territory; postId: string } | null {
   // 综合评分：低分优先授出
   const scored: { territory: Territory; postId: string; score: number }[] = [];
@@ -93,6 +110,25 @@ function pickZhouToGrant(
   return scored.length > 0 ? { territory: scored[0].territory, postId: scored[0].postId } : null;
 }
 
+// ── 辅助：选择授出的道（人口低优先） ─────────────
+
+function pickDaoToGrant(
+  directDao: Territory[],
+): { territory: Territory; postId: string } | null {
+  const scored: { territory: Territory; postId: string; score: number }[] = [];
+
+  for (const dao of directDao) {
+    const mainPost = dao.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
+    if (!mainPost) continue;
+
+    // 人口低的优先授出
+    scored.push({ territory: dao, postId: mainPost.id, score: dao.basePopulation });
+  }
+
+  scored.sort((a, b) => a.score - b.score);
+  return scored.length > 0 ? { territory: scored[0].territory, postId: scored[0].postId } : null;
+}
+
 // ── 行为定义 ────────────────────────────────────────────────
 
 interface GrantTerritoryData {
@@ -112,48 +148,65 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
     const directZhou = getControlledZhouFromCtx(actor.id, ctx.territories);
     const limit = getDirectControlLimit(actor);
 
-    // 仅在超额时触发
+    // 仅在州超额时触发
     if (directZhou.length <= limit) return null;
 
     // 选择受赠臣属
     const vassal = pickBestVassal(actor, ctx);
     if (!vassal) return null;
 
-    // 选择授出哪个州
+    // 优先选择可授出的州
     const grant = pickZhouToGrant(actor, directZhou, ctx.territories);
-    if (!grant) return null;
+    if (grant) {
+      return {
+        data: {
+          postId: grant.postId,
+          vassalId: vassal.id,
+          territoryName: grant.territory.name,
+        },
+        weight: 100,
+      };
+    }
 
-    return {
-      data: {
-        postId: grant.postId,
-        vassalId: vassal.id,
-        territoryName: grant.territory.name,
-      },
-      weight: 100,
-    };
+    // 所有州都是治所州无法授出 → 兜底授道（连带治所州一起转出）
+    const directDao = getControlledDaoFromCtx(actor.id, ctx.territories);
+    const daoGrant = pickDaoToGrant(directDao);
+    if (daoGrant) {
+      return {
+        data: {
+          postId: daoGrant.postId,
+          vassalId: vassal.id,
+          territoryName: daoGrant.territory.name,
+        },
+        weight: 100,
+      };
+    }
+
+    return null;
   },
 
   executeAsNpc(actor: Character, _data: GrantTerritoryData, ctx: NpcContext) {
-    // 一次性授出所有超额的州（不止一块）
     const limit = getDirectControlLimit(actor);
     const usedVassals = new Set<string>();
-    for (let i = 0; i < 20; i++) { // 安全上限
-      const directZhou = getControlledZhouFromCtx(actor.id, useTerritoryStore.getState().territories);
-      if (directZhou.length <= limit) break;
+
+    // ── 第一轮：优先授州 ──
+    for (let i = 0; i < 20; i++) {
+      const territories = useTerritoryStore.getState().territories;
+      const directZhou = getControlledZhouFromCtx(actor.id, territories);
+      if (directZhou.length <= limit) return;
 
       const vassal = pickBestVassal(actor, ctx);
       if (!vassal || usedVassals.has(vassal.id)) break;
       usedVassals.add(vassal.id);
 
-      const currentTerritories = useTerritoryStore.getState().territories;
-      const grant = pickZhouToGrant(actor, directZhou, currentTerritories);
-      if (!grant) break;
+      const grant = pickZhouToGrant(actor, directZhou, territories);
+      if (!grant) break; // 所有州都是治所州无法授出，进入第二轮
 
       // 先改后授：授出前确保流官 + 无辟署权
       const grantPost = useTerritoryStore.getState().findPost(grant.postId);
       if (grantPost) {
         if (grantPost.successionLaw === 'clan') {
-          const capitalZhouId = currentTerritories.get(grant.territory.id)?.capitalZhouId;
+          const capitalZhouId = territories.get(grant.territory.id)?.capitalZhouId;
           executeToggleSuccession(grant.postId, capitalZhouId, useTerritoryStore.getState().territories);
           console.log(`[自身政策] ${actor.name}：${grant.territory.name} 授出前改为流官`);
         }
@@ -166,6 +219,33 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
 
       executeAppoint(grant.postId, vassal.id, actor.id);
       autoTransferChildrenAfterAppoint(grant.postId, actor.id);
+    }
+
+    // ── 第二轮：所有州都是治所州无法授出 → 兜底授道 ──
+    {
+      const territories = useTerritoryStore.getState().territories;
+      const directZhou = getControlledZhouFromCtx(actor.id, territories);
+      if (directZhou.length <= limit) return;
+
+      // 仍然超额，说明剩余州全是治所州，授道来连带释放治所州
+      const directDao = getControlledDaoFromCtx(actor.id, territories);
+      for (let i = 0; i < 10; i++) {
+        const freshTerritories = useTerritoryStore.getState().territories;
+        const freshZhou = getControlledZhouFromCtx(actor.id, freshTerritories);
+        if (freshZhou.length <= limit) return;
+
+        const freshDao = getControlledDaoFromCtx(actor.id, freshTerritories);
+        const vassal = pickBestVassal(actor, ctx);
+        if (!vassal || usedVassals.has(vassal.id)) break;
+        usedVassals.add(vassal.id);
+
+        const daoGrant = pickDaoToGrant(freshDao);
+        if (!daoGrant) break;
+
+        console.log(`[授予领地] ${actor.name}：授予道级领地 ${daoGrant.territory.name} → ${vassal.name}`);
+        executeAppoint(daoGrant.postId, vassal.id, actor.id);
+        autoTransferChildrenAfterAppoint(daoGrant.postId, actor.id);
+      }
     }
   },
 };

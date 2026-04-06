@@ -16,6 +16,7 @@ import {
   cascadeSecondaryOverlord,
   capitalZhouSeat,
   refreshPostCaches,
+  refreshLegitimacyForChar,
   promoteOverlordIfNeeded,
 } from '@engine/official/postTransfer';
 
@@ -26,7 +27,34 @@ registerInteraction({
   icon: '⚡',
   canShow: (player, target) => {
     if (player.id === target.id) return false;
-    return getUsurpablePosts(player, target).length > 0;
+    // 宽松：target 持有 dao/guo 级 grantsControl 岗位即显示
+    const terrStore = useTerritoryStore.getState();
+    const posts = terrStore.getPostsByHolder(target.id);
+    return posts.some(p => {
+      const tpl = positionMap.get(p.templateId);
+      if (!tpl?.grantsControl) return false;
+      const territory = p.territoryId ? terrStore.territories.get(p.territoryId) : undefined;
+      return territory?.tier === 'dao' || territory?.tier === 'guo';
+    });
+  },
+  canExecuteCheck: (player, target) => {
+    const usurpable = getUsurpablePosts(player, target);
+    if (usurpable.length > 0) return null;
+    // 找出第一个不可篡夺的原因
+    const terrStore = useTerritoryStore.getState();
+    const characters = useCharacterStore.getState().characters;
+    const wars = useWarStore.getState().getActiveWars();
+    const posts = terrStore.getPostsByHolder(target.id);
+    for (const p of posts) {
+      const tpl = positionMap.get(p.templateId);
+      if (!tpl?.grantsControl) continue;
+      const territory = p.territoryId ? terrStore.territories.get(p.territoryId) : undefined;
+      if (!territory) continue;
+      if (territory.tier !== 'dao' && territory.tier !== 'guo') continue;
+      const result = canUsurpPost(player.id, p, territory, terrStore.territories, characters, wars);
+      if (!result.eligible && result.reason) return result.reason;
+    }
+    return '条件不满足';
   },
   paramType: 'usurpPost',
 });
@@ -133,6 +161,9 @@ export function executeUsurp(postId: string, actorId: string): void {
 
   // ── 缓存 ──
   refreshPostCaches([actorId, oldHolderId]);
+
+  // ── 正统性刷新 ──
+  refreshLegitimacyForChar(actorId);
 
   // ── 记录事件 ──
   const actorName = charStore.getCharacter(actorId)?.name ?? '';

@@ -10,6 +10,8 @@ import { executeJoinWar } from '@engine/interaction/joinWarAction';
 import { isWarLeader, isWarParticipant, getWarSide } from '@engine/military/warParticipantUtils';
 import { addDays, toAbsoluteDay } from '@engine/dateUtils';
 import { useWarStore } from '@engine/military/WarStore';
+import { useTurnManager } from '@engine/TurnManager';
+import { EventPriority } from '@engine/types';
 import { random } from '@engine/random';
 import { useNpcStore } from '../NpcStore';
 import { registerBehavior } from './index';
@@ -104,6 +106,24 @@ export const callToArmsBehavior: NpcBehavior<CallToArmsData> = {
 
       if (random() * 100 < acceptChance) {
         executeJoinWar(vassalId, data.warId, data.side);
+
+        // 玩家参与此战争 → 右下角通知
+        const war = useWarStore.getState().wars.get(data.warId);
+        if (ctx.playerId && war && isWarParticipant(ctx.playerId, war)) {
+          const playerSide = getWarSide(ctx.playerId, war);
+          const isFriendly = playerSide === data.side;
+          useTurnManager.getState().addEvent({
+            id: crypto.randomUUID(),
+            date: { ...ctx.date },
+            type: '参战',
+            actors: [vassalId, ctx.playerId],
+            territories: war.targetTerritoryIds ?? [],
+            description: isFriendly
+              ? `${vassal.name}响应召集，加入了你方的战争`
+              : `${vassal.name}响应召集，加入了敌方的战争`,
+            priority: EventPriority.Normal,
+          });
+        }
       } else {
         // 拒绝：好感 -30
         useCharacterStore.getState().setOpinion(vassalId, actor.id, {

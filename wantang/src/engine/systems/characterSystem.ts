@@ -28,6 +28,7 @@ import {
   capitalZhouSeat,
   capitalZhouVacate,
   refreshPostCaches,
+  refreshLegitimacyForChar,
   ensureAppointRight,
 } from '@engine/official/postTransfer';
 
@@ -53,6 +54,7 @@ export function runCharacterSystem(date: GameDate): void {
   });
 
   // ===== 死亡角色：岗位自治继承 =====
+  const heirIds = new Set<string>(); // 收集所有继承人，统一刷新正统性（提升到外层作用域供后续使用）
   if (deadIds.length > 0) {
     const territories = terrStore.territories;
     const milStore = useMilitaryStore.getState();
@@ -118,6 +120,7 @@ export function runCharacterSystem(date: GameDate): void {
             const appointedBy = heir ? 'succession' : 'escheat';
             seatPost(post.id, receiver, appointedBy, date);
             syncArmyForPost(post.id, receiver);
+            heirIds.add(receiver);
 
             // 治所联动：道级岗位继承时，治所一并转给继承人
             if (post.territoryId) {
@@ -314,9 +317,12 @@ export function runCharacterSystem(date: GameDate): void {
     }
   }
 
-  // 死亡/继承完成后刷新缓存（全量）
+  // 死亡/继承完成后刷新缓存（全量）+ 继承人正统性刷新
   if (deadIds.length > 0) {
     refreshPostCaches(undefined, true);
+    for (const heirId of heirIds) {
+      refreshLegitimacyForChar(heirId);
+    }
   }
 
   // ===== 2. 角色压力结算（批量） =====

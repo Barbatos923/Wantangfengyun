@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ░░░░░░░░░░░░    0%  ⬜ 未开始
-Phase 6  谋略 + 派系 + 事件 ██████████░░   94%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉
+Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -192,7 +192,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 框架：日结化调度、哈希槽位+品级分档、push-task/skip/auto-execute/standing 四种 playerMode
 - ✅ 行政行为：铨选 / 考课 / 罢免 / 皇帝调任 / 宰相调任
 - ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争
-- ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠 / 逼迫授权 / 议定进奉
+- ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠 / 归附 / 逼迫授权 / 议定进奉
 - ✅ 政策行为：调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率 / 自身政策调整（通用讨好评估 `evaluateAppeasementTargets` + 权限校验 `hasAuthorityOverPost`）
 - ✅ 决议行为：称王建镇 / 称帝 / 篡夺
 - ✅ 其他：建设 / 和谈
@@ -302,7 +302,26 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 授予领地优化：`grantTerritoryBehavior` 排序优先流官/无辟署权州（−100/−50评分），授出前先改后授（clan→bureaucratic + 移除辟署权）
 - ✅ 移除 eraSystem 月结 ensureAppointRight 全量扫描（保留乱世转换+事件触发点），允许辟署权持久变更
 
-**待做（新系统）：**
+**归附交互**（2026-04-06）：
+- ✅ 玩家交互：`pledgeAllegianceAction.ts`（点击独立统治者→成功率预览→骰子判定）
+- ✅ 前置：玩家独立 + 目标独立 + 目标tier严格高于玩家 + 领地相邻（势力范围穿透） + 不在对立战争中 + 半年冷却
+- ✅ 成功率：base 70 + 法理附庸(+20)/非法理(-10) + 好感(±15) + 性格(±10)
+- ✅ 法理检查沿parentId链向上穿透（州→道→天下）
+- ✅ 邻接检查收集目标势力范围所有臣属的州级领地（递归vassalIndex）
+- ✅ 成功：overlordId设为target + 好感+10 + centralization自动重置默认2级；失败：好感-5
+
+**玩家通知补全**（2026-04-06）：
+- ✅ reassignAction.ts 重构：提取 `executeReassignSuccess` / `executeReassignRebel` 独立函数
+- ✅ StoryEvent弹窗：declareWar（纯通知）/ transferVassal（纯通知）/ usurp（纯通知）/ reassign（地方官双选项+京官纯通知，皇帝/宰相两路）
+- ✅ EventToast右下角通知：withdrawWar（退出战争🏃）/ joinWar（参战🛡，区分敌我）
+- ✅ 修复 reassignBehavior `registerBehavior(chancellorReassignBehavior)` 重复注册
+- ✅ 移除 CharacterStore overlord变更日志的误导性 `new Error().stack`
+
+**待做（当前优先）：**
+- 金钱系统重构（区分私财与国库）
+
+**待做（后续系统）：**
+- 更多个人交互
 - 谋略系统（个人计谋 + 政治计谋，成功率积累）
 - 活动系统（宴会/狩猎/压力释放）
 - 派系系统（五大派系，廷议/弹劾/推举）

@@ -23,8 +23,14 @@ registerInteraction({
   name: '罢免职位',
   icon: '❌',
   canShow: (player, target) => {
-    // target 必须是臣属且持有非 grantsControl 岗位
-    return getDismissablePosts(player, target).length > 0;
+    // 宽松：target 是臣属且持有非 grantsControl 岗位
+    if (target.overlordId !== player.id) return false;
+    const terrStore = useTerritoryStore.getState();
+    return terrStore.getPostsByHolder(target.id).some(p => !positionMap.get(p.templateId)?.grantsControl);
+  },
+  canExecuteCheck: (player, target) => {
+    if (getDismissablePosts(player, target).length > 0) return null;
+    return '无可罢免岗位';
   },
   paramType: 'dismiss',
 });

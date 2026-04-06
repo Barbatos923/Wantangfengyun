@@ -28,6 +28,12 @@ function getVassalControlPosts(
   actorId: string,
   ctx: NpcContext,
 ): Post[] {
+  // 预建治所州集合：治所州剥夺后无法授出，NPC 不应剥夺
+  const capitalZhouIds = new Set<string>();
+  for (const t of ctx.territories.values()) {
+    if (t.tier === 'dao' && t.capitalZhouId) capitalZhouIds.add(t.capitalZhouId);
+  }
+
   const postIds = ctx.holderIndex.get(vassalId);
   if (!postIds) return [];
   const posts: Post[] = [];
@@ -36,6 +42,13 @@ function getVassalControlPosts(
     if (!p) continue;
     const tpl = positionMap.get(p.templateId);
     if (!tpl?.grantsControl) continue;
+    // 治所州不可剥夺（剥夺后无法通过授予行为授出）
+    if (p.territoryId && capitalZhouIds.has(p.territoryId)) continue;
+    // 道级岗位不可NPC剥夺（剥夺后道+治所州都卡在手里，应走调任/铨选）
+    if (p.territoryId) {
+      const terr = ctx.territories.get(p.territoryId);
+      if (terr && terr.tier === 'dao') continue;
+    }
     // 剥夺领地需要辟署权：actor 必须是该岗位的法理任命人
     if (p.territoryId) {
       const rightHolder = findAppointRightHolder(p.territoryId, ctx.territories);

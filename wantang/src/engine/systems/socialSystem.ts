@@ -19,7 +19,7 @@ import {
   getActualController,
 } from '@engine/official/officialUtils.ts';
 import { findEmperorId } from '@engine/official/postQueries.ts';
-import { calcEraDecay, getRankLegitimacyCap } from '@engine/official/legitimacyCalc.ts';
+import { calcEraDecay, getRankLegitimacyCap, calcMonthlyPrestigeGrowth } from '@engine/official/legitimacyCalc.ts';
 
 export function runSocialSystem(_date: GameDate): void {
   const charStore = useCharacterStore.getState();
@@ -67,6 +67,15 @@ export function runSocialSystem(_date: GameDate): void {
           const cap = getRankLegitimacyCap(char.official.rankLevel);
           if (resources.legitimacy > cap) {
             resources = { ...resources, legitimacy: cap };
+            changed = true;
+          }
+        }
+
+        // 3. 名望自然增长（按品级）
+        if (char.official) {
+          const growth = calcMonthlyPrestigeGrowth(char.official.rankLevel);
+          if (growth > 0) {
+            resources = { ...resources, prestige: resources.prestige + growth };
             changed = true;
           }
         }

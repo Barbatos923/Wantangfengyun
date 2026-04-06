@@ -231,6 +231,14 @@ function passesPostGate(actor: import('@engine/character/types').Character, beha
   );
 }
 
+// ── 皇帝行为监测 ──────────────────────────────────────────
+
+const EMPEROR_DEBUG_ID = 'char-yizong';
+
+function logEmperor(tag: string, msg: string): void {
+  console.log(`[皇帝AI] [${tag}] ${msg}`);
+}
+
 // ── 日结入口 ───────────────────────────────────────────────
 
 /** 执行单个任务（根据 playerMode 路由） */
@@ -297,6 +305,9 @@ export function runDailyNpcEngine(date: GameDate): void {
         if (!passesPostGate(actor, behavior, ctx1.centralPosts)) continue;
 
         const result = behavior.generateTask(actor, ctx1);
+        if (actor.id === EMPEROR_DEBUG_ID && result?.forced) {
+          logEmperor('forced触发', `${behavior.id} data=${JSON.stringify(result.data).slice(0, 120)}`);
+        }
         if (!result || !result.forced) continue;
         executeTask(actor, { behavior, data: result.data }, ctx1);
       }
@@ -353,6 +364,11 @@ export function runDailyNpcEngine(date: GameDate): void {
       const result = behavior.generateTask(actor, ctx);
       if (!result || result.forced) continue;
 
+      if (actor.id === EMPEROR_DEBUG_ID) {
+        const cat = (behavior.playerMode === 'push-task' || behavior.playerMode === 'standing') ? '行政' : `自愿(w=${result.weight})`;
+        logEmperor('任务生成', `${behavior.id} [${cat}] data=${JSON.stringify(result.data).slice(0, 120)}`);
+      }
+
       if (behavior.playerMode === 'push-task' || behavior.playerMode === 'standing') {
         // 行政职责 + 常驻任务：不受 maxActions 限制
         adminTasks.push({ behavior, data: result.data });
@@ -364,6 +380,7 @@ export function runDailyNpcEngine(date: GameDate): void {
 
     // 行政职责：无条件执行
     for (const task of adminTasks) {
+      if (actor.id === EMPEROR_DEBUG_ID) logEmperor('执行-行政', task.behavior.id);
       executeTask(actor, task, ctx);
     }
 
@@ -371,13 +388,19 @@ export function runDailyNpcEngine(date: GameDate): void {
     // weight 直接作为百分比概率（weight=10 → 10%，weight>=100 → 必定执行）
     if (maxActions > 0 && voluntaryTasks.length > 0) {
       voluntaryTasks.sort((a, b) => b.weight - a.weight);
+      if (actor.id === EMPEROR_DEBUG_ID) {
+        logEmperor('自愿候选', `maxActions=${maxActions}, 候选=[${voluntaryTasks.map(t => `${t.behavior.id}(${t.weight})`).join(', ')}]`);
+      }
       let slotsUsed = 0;
       for (const task of voluntaryTasks) {
         if (slotsUsed >= maxActions) break;
         const chance = Math.min(task.weight, 100) / 100;
         if (random() < chance) {
+          if (actor.id === EMPEROR_DEBUG_ID) logEmperor('执行-自愿', `${task.behavior.id} (weight=${task.weight}, chance=${(chance * 100).toFixed(0)}%)`);
           executeTask(actor, task, ctx);
           slotsUsed++;
+        } else {
+          if (actor.id === EMPEROR_DEBUG_ID) logEmperor('跳过-自愿', `${task.behavior.id} (weight=${task.weight}, 骰子未通过)`);
         }
       }
     }

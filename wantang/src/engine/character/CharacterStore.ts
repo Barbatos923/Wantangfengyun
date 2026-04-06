@@ -120,7 +120,7 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId && existing.isRuler) {
         const oldOverlord = existing.overlordId ? chars.get(existing.overlordId)?.name ?? existing.overlordId : '无';
         const newOverlord = patch.overlordId ? chars.get(patch.overlordId)?.name ?? patch.overlordId : '无';
-        console.log(`[overlord变更] ${existing.name}(${id.slice(0,8)}) overlord: ${oldOverlord} → ${newOverlord}`, new Error().stack);
+        console.log(`[overlord变更] ${existing.name}(${id.slice(0,8)}) overlord: ${oldOverlord} → ${newOverlord}`, new Error().stack?.split('\n').slice(1, 4).join(' ← '));
       }
 
       // 维护 vassalIndex
@@ -286,7 +286,7 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
           if (c.isRuler) {
             const oldName = oldOv ? (chars.get(oldOv)?.name ?? oldOv) : '无';
             const newName = c.overlordId ? (chars.get(c.overlordId)?.name ?? c.overlordId) : '无';
-            console.log(`[overlord变更/batch] ${c.name}(${id.slice(0,8)}) overlord: ${oldName} → ${newName}`, new Error().stack);
+            console.log(`[overlord变更/batch] ${c.name}(${id.slice(0,8)}) overlord: ${oldName} → ${newName}`);
           }
         }
       }

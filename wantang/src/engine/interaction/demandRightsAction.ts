@@ -57,17 +57,27 @@ registerInteraction({
   id: 'demandRights',
   name: '逼迫授权',
   icon: '📜',
-  canShow: (player, target) => canDemandRights(player, target),
+  canShow: (player, target) => {
+    // 宽松：player 是 target 的臣属
+    return player.overlordId === target.id;
+  },
+  canExecuteCheck: (player, target) => {
+    if (canDemandRights(player, target)) return null;
+    const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+    if (player.lastDemandRightsDay != null && currentDay - player.lastDemandRightsDay < DEMAND_RIGHTS_COOLDOWN_DAYS) {
+      return '冷却中';
+    }
+    if (!player.isRuler) return '需为统治者';
+    return '无可逼迫的权限';
+  },
   paramType: 'demandRights',
 });
 
-// ── canShow（便捷版：读 Store） ──────────────────────────
+// ── canShow 严格版（便捷版：读 Store） ──────────────────────────
 
 function canDemandRights(player: Character, target: Character): boolean {
-  // 必须是 player 的领主
   if (player.overlordId !== target.id) return false;
 
-  // 冷却检查
   const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
   if (player.lastDemandRightsDay != null && currentDay - player.lastDemandRightsDay < DEMAND_RIGHTS_COOLDOWN_DAYS) {
     return false;

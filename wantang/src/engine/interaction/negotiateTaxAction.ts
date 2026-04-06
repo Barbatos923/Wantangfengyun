@@ -43,23 +43,35 @@ registerInteraction({
   id: 'negotiateTax',
   name: '议定进奉',
   icon: '💰',
-  canShow: (player, target) => canNegotiateTax(player, target),
+  canShow: (player, target) => {
+    // 宽松：player 是 target 的臣属
+    if (!player.alive || !target.alive) return false;
+    return player.overlordId === target.id;
+  },
+  canExecuteCheck: (player, target) => {
+    if (canNegotiateTax(player, target)) return null;
+    const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+    if (player.lastNegotiateTaxDay != null && currentDay - player.lastNegotiateTaxDay < NEGOTIATE_TAX_COOLDOWN_DAYS) {
+      return '冷却中';
+    }
+    const level = player.centralization ?? 2;
+    if (level <= 1 && level >= 4) return '税率已在极限';
+    return '条件不满足';
+  },
   paramType: 'negotiateTax',
 });
 
-// ── canShow ──────────────────────────────────────────────
+// ── canShow 严格版 ──────────────────────────────────────────────
 
 function canNegotiateTax(player: Character, target: Character): boolean {
   if (!player.alive || !target.alive) return false;
   if (player.overlordId !== target.id) return false;
 
-  // 冷却检查
   const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
   if (player.lastNegotiateTaxDay != null && currentDay - player.lastNegotiateTaxDay < NEGOTIATE_TAX_COOLDOWN_DAYS) {
     return false;
   }
 
-  // 至少有一个方向可调
   const level = player.centralization ?? 2;
   return level > 1 || level < 4;
 }

@@ -10,7 +10,8 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
-import { collectRulerIds } from './postQueries';
+import { collectRulerIds, getHeldPosts } from './postQueries';
+import { getHighestBaseLegitimacy, getRankLegitimacyCap } from './legitimacyCalc';
 import { calculateMonthlyLedger } from './officialUtils';
 import { useLedgerStore } from './LedgerStore';
 
@@ -525,7 +526,46 @@ export function ensureAppointRight(charId: string): void {
   }
 }
 
-// ── 6. 缓存刷新（合并为一次调用） ──────────────────────────
+/**
+ * 收回角色所有 grantsControl 主岗的辟署权（独立战争失败时调用）。
+ */
+export function revokeAppointRight(charId: string): void {
+  const terrStore = useTerritoryStore.getState();
+  const posts = terrStore.getPostsByHolder(charId);
+  for (const p of posts) {
+    if (!p.hasAppointRight) continue;
+    const tpl = positionMap.get(p.templateId);
+    if (!tpl?.grantsControl) continue;
+    terrStore.updatePost(p.id, { hasAppointRight: false });
+  }
+}
+
+// ── 6. 正统性刷新（岗位变动后补齐） ────────────────────────────
+
+/**
+ * 角色获得新岗位后，将正统性补齐到 min(最高岗位baseLeg, 品位Cap)。
+ * 只升不降。任命/调任/篡夺/继承/创建岗位 统一调用此函数。
+ */
+export function refreshLegitimacyForChar(charId: string): void {
+  const charStore = useCharacterStore.getState();
+  const char = charStore.getCharacter(charId);
+  if (!char) return;
+
+  const terrStore = useTerritoryStore.getState();
+  const heldPosts = getHeldPosts(charId, terrStore.territories, terrStore.centralPosts);
+  const baseLeg = getHighestBaseLegitimacy(heldPosts);
+  if (baseLeg === null || char.resources.legitimacy >= baseLeg) return;
+
+  const cap = char.official ? getRankLegitimacyCap(char.official.rankLevel) : 100;
+  const targetLeg = Math.min(baseLeg, cap);
+  if (char.resources.legitimacy < targetLeg) {
+    charStore.addResources(charId, {
+      legitimacy: targetLeg - char.resources.legitimacy,
+    });
+  }
+}
+
+// ── 7. 缓存刷新（合并为一次调用） ──────────────────────────
 
 /**
  * 岗位变动后统一刷新缓存。

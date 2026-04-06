@@ -199,6 +199,29 @@ export function runWarSystem(date: GameDate): void {
     }
   }
 
+  // ===== 零兵力行营自动解散 =====
+  {
+    const milStore = useMilitaryStore.getState();
+    for (const campaign of useWarStore.getState().campaigns.values()) {
+      if (campaign.armyIds.length === 0 && campaign.incomingArmies.length === 0) {
+        useWarStore.getState().disbandCampaign(campaign.id);
+        continue;
+      }
+      // 所有军队总兵力为 0 → 解散
+      let totalStrength = 0;
+      for (const armyId of campaign.armyIds) {
+        const army = milStore.armies.get(armyId);
+        if (!army) continue;
+        for (const batId of army.battalionIds) {
+          totalStrength += milStore.battalions.get(batId)?.currentStrength ?? 0;
+        }
+      }
+      if (totalStrength === 0 && campaign.incomingArmies.length === 0) {
+        useWarStore.getState().disbandCampaign(campaign.id);
+      }
+    }
+  }
+
   // ===== 战斗检测：合兵方案 =====
   // 同一州、同一战争的敌对阵营行营合并 armyIds 打一场
   {
@@ -580,6 +603,13 @@ export function runWarSystem(date: GameDate): void {
       }
 
       if (bestTarget && bestPath && bestPath.length > 1) {
+        // DEBUG: 追踪唐懿宗行营AI决策
+        if (campaign.ownerId === 'char-yizong') {
+          const targetName = territories.get(bestTarget)?.name ?? bestTarget;
+          const locName = territories.get(campaign.locationId)?.name ?? campaign.locationId;
+          const pathNames = bestPath.map(id => territories.get(id)?.name ?? id).join(' → ');
+          console.log(`[DEBUG-懿宗] 行营AI: 从${locName}出发, 目标=${targetName}, 路径=[${pathNames}]`);
+        }
         useWarStore.getState().setCampaignTarget(campaign.id, bestTarget, bestPath);
       }
     }

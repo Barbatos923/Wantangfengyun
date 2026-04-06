@@ -5,7 +5,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import type { CasusBelli, CasusBelliEval } from '@engine/military/types';
-import { evaluateAllCasusBelli, getDeJureTargets, getAnnexTargets } from '@engine/military/warCalc';
+import { evaluateAllCasusBelli, getDeJureTargets, getAnnexTargets, getWarPrestigeReward } from '@engine/military/warCalc';
 import { executeDeclareWar } from '@engine/interaction';
 import { canAffordWarCost } from '@engine/official/legitimacyCalc';
 import { useWarStore } from '@engine/military/WarStore';
@@ -136,8 +136,8 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
                           {evalItem.name}
                         </span>
                         <span className="text-xs text-[var(--color-text-muted)]">
-                          名望 {evalItem.cost.prestige}
-                          {evalItem.cost.legitimacy !== 0 && ` / 正统性 ${evalItem.cost.legitimacy}`}
+                          宣战成本：名望{evalItem.cost.prestige}
+                          {evalItem.cost.legitimacy !== 0 && `，正统性${evalItem.cost.legitimacy}`}
                         </span>
                       </div>
                       {isDisabled && (
@@ -207,6 +207,29 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
             )}
           </div>
         )}
+
+        {/* 后果预览 */}
+        {selectedCasus && isSelectedAvailable && (() => {
+          const reward = getWarPrestigeReward(selectedCasus, era);
+          const targetNames = selectedCasus === 'annexation' && selectedAnnexTarget
+            ? [territories.get(selectedAnnexTarget)?.name ?? selectedAnnexTarget]
+            : selectedCasus === 'deJureClaim'
+              ? deJureTargetIds.map(id => territories.get(id)?.name ?? id)
+              : [];
+          return (
+            <div className="mb-2 rounded border border-[var(--color-border)] p-2.5 text-xs space-y-1">
+              <div className="text-[var(--color-text-muted)] font-bold mb-1">战争后果</div>
+              <div className="text-[var(--color-accent-green,#22c55e)]">
+                胜利：
+                {selectedCasus === 'independence' ? '独立成功，获得辟署权' : targetNames.length > 0 ? `得到${targetNames.join('、')}` : ''}
+                {reward.winnerGain > 0 && `${targetNames.length > 0 || selectedCasus === 'independence' ? '，' : ''}名望 +${reward.winnerGain}`}
+              </div>
+              <div className="text-[var(--color-accent-red)]">
+                失败：{selectedCasus === 'independence' ? '恢复效忠，收回辟署权，世袭改流官，' : ''}名望 {reward.loserLoss}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* 资源不足提示 */}
         {isSelectedAvailable && !canAfford && (

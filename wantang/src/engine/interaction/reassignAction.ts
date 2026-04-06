@@ -16,9 +16,8 @@ import { random } from '@engine/random';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
-import { findEmperorId, getHeldPosts as getHeldPostsPure } from '@engine/official/postQueries';
+import { findEmperorId } from '@engine/official/postQueries';
 import { getEffectiveMinRank } from '@engine/official/selectionCalc';
-import { getHighestBaseLegitimacy, getRankLegitimacyCap } from '@engine/official/legitimacyCalc';
 import { executeDeclareWar } from './declareWarAction';
 import {
   seatPost,
@@ -28,6 +27,7 @@ import {
   cascadeChildOverlord,
   capitalZhouSeat,
   refreshPostCaches,
+  refreshLegitimacyForChar,
 } from '@engine/official/postTransfer';
 import { findAppointRightHolder } from '@engine/character/successionUtils';
 import {
@@ -43,11 +43,32 @@ registerInteraction({
   id: 'reassign',
   name: '外放内调',
   icon: '🔀',
-  canShow: (player, target) => canReassign(player, target),
+  canShow: (player, target) => {
+    // 宽松：player 是皇帝或宰相
+    if (!target.alive || !target.official) return false;
+    if (!player.official) return false;
+    const terrStore = useTerritoryStore.getState();
+    const { territories, centralPosts } = terrStore;
+    const emperorId = findEmperorId(territories, centralPosts);
+    const isEmperor = player.id === emperorId;
+    const isChancellor = centralPosts.some(p => p.templateId === 'pos-zaixiang' && p.holderId === player.id);
+    return isEmperor || isChancellor;
+  },
+  canExecuteCheck: (player, target) => {
+    if (canReassign(player, target)) return null;
+    const terrStore = useTerritoryStore.getState();
+    const targetIsCentral = isCentralOfficial(target.id, terrStore.territories, terrStore.centralPosts);
+    if (!targetIsCentral) {
+      const emperorId = findEmperorId(terrStore.territories, terrStore.centralPosts);
+      const targetIsTerritorial = isEligibleTerritorial(target.id, terrStore.territories, terrStore.centralPosts, emperorId);
+      if (!targetIsTerritorial) return '非京官或非可调臣属';
+    }
+    return '无合适候选人';
+  },
   paramType: 'reassign',
 });
 
-// ── canShow ──────────────────────────────────────────────
+// ── canShow 严格版 ──────────────────────────────────────────────
 
 function canReassign(player: Character, target: Character): boolean {
   if (!target.alive || !target.official) return false;
@@ -57,7 +78,6 @@ function canReassign(player: Character, target: Character): boolean {
   const territories = terrStore.territories;
   const centralPosts = terrStore.centralPosts;
 
-  // 玩家须为皇帝或宰相
   const emperorId = findEmperorId(territories, centralPosts);
   const isEmperor = player.id === emperorId;
   const isChancellor = centralPosts.some(p => p.templateId === 'pos-zaixiang' && p.holderId === player.id);
@@ -214,64 +234,50 @@ function getTotalStrength(charId: string): number {
  * @param appointerId 法理主体（皇帝 ID）
  * @returns true=成功, false=拒绝（独立战争）
  */
-export function executeReassign(
+/**
+ * 调任失败分支：好感惩罚 + 独立战争。
+ * 独立导出供 behavior 在玩家拒绝调任时直接调用。
+ */
+export function executeReassignRebel(
+  territorialId: string,
+  appointerId: string,
+): void {
+  const charStore = useCharacterStore.getState();
+  const date = useTurnManager.getState().currentDate;
+  charStore.addOpinion(territorialId, appointerId, {
+    reason: '强制调任',
+    value: -30,
+    decayable: true,
+  });
+  executeDeclareWar(
+    territorialId,
+    appointerId,
+    'independence',
+    [],
+    date,
+    { prestige: 0, legitimacy: 0 },
+  );
+}
+
+/**
+ * 调任成功分支：京官接管有地者全部领地/臣属/军队，有地者接任京官职位。
+ * 独立导出供 behavior 在玩家接受调任时直接调用。
+ */
+export function executeReassignSuccess(
   territorialPostId: string,
   replacementId: string,
   appointerId: string,
-): boolean {
+): void {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
   const targetPost = terrStore.findPost(territorialPostId);
-  if (!targetPost?.holderId) return true;
+  if (!targetPost?.holderId) return;
 
   const territorialId = targetPost.holderId;
-  const territorial = charStore.getCharacter(territorialId);
   const replacement = charStore.getCharacter(replacementId);
-  const appointer = charStore.getCharacter(appointerId);
-  if (!territorial || !replacement || !appointer) return true;
-
-  // ── 0. 骰子判定 ──
-  const bExpectedLeg = terrStore.expectedLegitimacy.get(appointerId) ?? null;
-  const opinion = calculateBaseOpinion(
-    territorial, appointer, bExpectedLeg,
-    terrStore.policyOpinionCache.get(territorialId) ?? null,
-  );
-  const personality = calcPersonality(territorial);
-  const chance = calcReassignChance(
-    opinion,
-    getTotalStrength(appointerId),
-    getTotalStrength(territorialId),
-    appointer.official?.rankLevel ?? 0,
-    territorial.official?.rankLevel ?? 0,
-    appointer.resources.legitimacy,
-    personality,
-  );
-
-  const success = random() * 100 < chance;
-
-  console.log(`[调任] ${appointer.name} 调任 ${territorial.name} → ${replacement.name}（成功率 ${chance}%）→ ${success ? '成功' : '拒绝（独立战争）'}`);
-
-  if (!success) {
-    // ── 失败：好感惩罚 + 独立战争 ──
-    charStore.addOpinion(territorialId, appointerId, {
-      reason: '强制调任',
-      value: -30,
-      decayable: true,
-    });
-    executeDeclareWar(
-      territorialId,
-      appointerId,
-      'independence',
-      [],
-      date,
-      { prestige: 0, legitimacy: 0 },
-    );
-    return false;
-  }
-
-  // ── 成功分支 ──
+  if (!replacement) return;
 
   // 1. 记录快照
   const centralPostsHeld = getCentralPostsHeld(replacementId, terrStore.territories, terrStore.centralPosts);
@@ -289,7 +295,6 @@ export function executeReassign(
     .filter(p => {
       const pTpl = positionMap.get(p.templateId);
       if (!pTpl?.grantsControl || !p.territoryId) return false;
-      // 治所州的 grantsControl 岗位跟随道级联动，不单独处理
       if (capitalZhouIds.has(p.territoryId)) return false;
       return true;
     });
@@ -305,7 +310,6 @@ export function executeReassign(
   }
 
   // 5. 京官就任所有领地岗位（继承有地者的全部直辖领地）
-  //    目标岗位优先处理（决定 overlordId），其他岗位跟随
   const targetFirst = [
     allControlPosts.find(p => p.id === territorialPostId),
     ...allControlPosts.filter(p => p.id !== territorialPostId),
@@ -352,7 +356,6 @@ export function executeReassign(
           checkCanTake: true,
           extra: capitalExtra,
         });
-        // 治所州副岗持有人归附新任者
         cascadeSecondaryOverlord(dao.capitalZhouId, replacementId);
       }
     }
@@ -387,29 +390,59 @@ export function executeReassign(
   }
 
   // 7. 正统性刷新
-  {
-    const freshReplacement = charStore.getCharacter(replacementId);
-    if (freshReplacement) {
-      const freshTerrStore = useTerritoryStore.getState();
-      const heldPosts = getHeldPostsPure(replacementId, freshTerrStore.territories, freshTerrStore.centralPosts);
-      const baseLeg = getHighestBaseLegitimacy(heldPosts);
-      if (baseLeg !== null && freshReplacement.resources.legitimacy < baseLeg) {
-        const cap = freshReplacement.official ? getRankLegitimacyCap(freshReplacement.official.rankLevel) : 100;
-        const targetLeg = Math.min(baseLeg, cap);
-        if (freshReplacement.resources.legitimacy < targetLeg) {
-          charStore.addResources(replacementId, {
-            legitimacy: targetLeg - freshReplacement.resources.legitimacy,
-          });
-        }
-      }
-    }
-  }
+  refreshLegitimacyForChar(replacementId);
 
   // 8. 无好感变化
 
   // 9. 缓存刷新
   refreshPostCaches([replacementId, territorialId]);
+}
 
+export function executeReassign(
+  territorialPostId: string,
+  replacementId: string,
+  appointerId: string,
+): boolean {
+  const terrStore = useTerritoryStore.getState();
+  const charStore = useCharacterStore.getState();
+  const date = useTurnManager.getState().currentDate;
+
+  const targetPost = terrStore.findPost(territorialPostId);
+  if (!targetPost?.holderId) return true;
+
+  const territorialId = targetPost.holderId;
+  const territorial = charStore.getCharacter(territorialId);
+  const replacement = charStore.getCharacter(replacementId);
+  const appointer = charStore.getCharacter(appointerId);
+  if (!territorial || !replacement || !appointer) return true;
+
+  // ── 0. 骰子判定 ──
+  const bExpectedLeg = terrStore.expectedLegitimacy.get(appointerId) ?? null;
+  const opinion = calculateBaseOpinion(
+    territorial, appointer, bExpectedLeg,
+    terrStore.policyOpinionCache.get(territorialId) ?? null,
+  );
+  const personality = calcPersonality(territorial);
+  const chance = calcReassignChance(
+    opinion,
+    getTotalStrength(appointerId),
+    getTotalStrength(territorialId),
+    appointer.official?.rankLevel ?? 0,
+    territorial.official?.rankLevel ?? 0,
+    appointer.resources.legitimacy,
+    personality,
+  );
+
+  const success = random() * 100 < chance;
+
+  console.log(`[调任] ${appointer.name} 调任 ${territorial.name} → ${replacement.name}（成功率 ${chance}%）→ ${success ? '成功' : '拒绝（独立战争）'}`);
+
+  if (!success) {
+    executeReassignRebel(territorialId, appointerId);
+    return false;
+  }
+
+  executeReassignSuccess(territorialPostId, replacementId, appointerId);
   return true;
 }
 

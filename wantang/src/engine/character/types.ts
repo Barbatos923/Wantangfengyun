@@ -96,4 +96,5 @@ export interface Character {
   lastDemandFealtyDay?: number;
   lastDemandRightsDay?: number;
   lastNegotiateTaxDay?: number;
+  lastPledgeAllegianceDay?: number;
 }

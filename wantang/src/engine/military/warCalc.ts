@@ -164,6 +164,20 @@ export function getWarCost(
 }
 
 /**
+ * 战争结算名望奖惩（基于宣战成本）。
+ * winnerGain: 胜方获得（正数）；loserLoss: 败方额外损失（负数）。
+ * 和谈无奖惩。
+ */
+export function getWarPrestigeReward(
+  casusBelli: CasusBelli,
+  era: Era,
+): { winnerGain: number; loserLoss: number } {
+  const cost = getWarCost(casusBelli, era);
+  const base = Math.abs(cost.prestige);
+  return { winnerGain: base * 2, loserLoss: -base };
+}
+
+/**
  * 获取法理宣称可以争夺的目标领地列表。
  */
 export function getDeJureTargets(

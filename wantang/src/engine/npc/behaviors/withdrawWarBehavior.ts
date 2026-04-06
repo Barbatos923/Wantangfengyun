@@ -9,6 +9,9 @@ import { executeWithdrawWar } from '@engine/interaction/withdrawWarAction';
 import { isWarParticipant, isWarLeader, getWarSide, getOwnLeaderId } from '@engine/military/warParticipantUtils';
 import { diffMonths } from '@engine/dateUtils';
 import { registerBehavior } from './index';
+import { useTurnManager } from '@engine/TurnManager';
+import { EventPriority } from '@engine/types';
+import { useWarStore } from '@engine/military/WarStore';
 
 // ── 数据 ────────────────────────────────────────────────
 
@@ -73,8 +76,26 @@ export const withdrawWarBehavior: NpcBehavior<WithdrawData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: WithdrawData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: WithdrawData, ctx: NpcContext) {
+    // 执行前查询玩家是否为该方 leader
+    const war = useWarStore.getState().wars.get(data.warId);
+    const leaderId = war ? getOwnLeaderId(actor.id, war) : null;
+    const playerIsLeader = leaderId === ctx.playerId;
+
     executeWithdrawWar(actor.id, data.warId);
+
+    // 玩家是战争领袖 → 右下角通知
+    if (playerIsLeader) {
+      useTurnManager.getState().addEvent({
+        id: crypto.randomUUID(),
+        date: { ...ctx.date },
+        type: '退出战争',
+        actors: [actor.id, ctx.playerId!],
+        territories: war?.targetTerritoryIds ?? [],
+        description: `${actor.name}退出了你的战争`,
+        priority: EventPriority.Normal,
+      });
+    }
   },
 };
 

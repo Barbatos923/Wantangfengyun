@@ -8,6 +8,9 @@ import type { Character } from '@engine/character/types';
 import { executeJoinWar } from '@engine/interaction/joinWarAction';
 import { isWarParticipant, getWarSide } from '@engine/military/warParticipantUtils';
 import { registerBehavior } from './index';
+import { useTurnManager } from '@engine/TurnManager';
+import { EventPriority } from '@engine/types';
+import { useWarStore } from '@engine/military/WarStore';
 
 // ── 数据 ────────────────────────────────────────────────
 
@@ -92,8 +95,29 @@ export const joinWarBehavior: NpcBehavior<JoinWarData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: JoinWarData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: JoinWarData, ctx: NpcContext) {
+    // 执行前查询玩家是否参与此战争
+    const war = useWarStore.getState().wars.get(data.warId);
+    const playerInvolved = ctx.playerId && war && isWarParticipant(ctx.playerId, war);
+    const playerSide = playerInvolved ? getWarSide(ctx.playerId!, war) : null;
+
     executeJoinWar(actor.id, data.warId, data.side);
+
+    // 玩家参与此战争 → 右下角通知
+    if (playerInvolved && playerSide) {
+      const isFriendly = playerSide === data.side;
+      useTurnManager.getState().addEvent({
+        id: crypto.randomUUID(),
+        date: { ...ctx.date },
+        type: '参战',
+        actors: [actor.id, ctx.playerId!],
+        territories: war?.targetTerritoryIds ?? [],
+        description: isFriendly
+          ? `${actor.name}加入了你方的战争`
+          : `${actor.name}加入了敌方的战争`,
+        priority: EventPriority.Normal,
+      });
+    }
   },
 };
 

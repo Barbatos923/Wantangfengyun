@@ -28,8 +28,8 @@ import RevokeFlow from './RevokeFlow';
 import UsurpPostFlow from './UsurpPostFlow';
 import ReassignFlow from './ReassignFlow';
 import DemandRightsFlow from './DemandRightsFlow';
-import { executeDemandFealty, previewDemandFealty, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS } from '@engine/interaction';
-import type { DemandFealtyResult, FealtyChanceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult } from '@engine/interaction';
+import { executeDemandFealty, previewDemandFealty, previewPledgeAllegiance, executePledgeAllegiance, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS } from '@engine/interaction';
+import type { DemandFealtyResult, FealtyChanceResult, PledgeAllegianceChanceResult, PledgeAllegianceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult } from '@engine/interaction';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
 
 // ── Constants ──────────────────────────────────────
@@ -96,6 +96,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const [activeInteraction, setActiveInteraction] = useState<string | null>(null);
   const [fealtyPreview, setFealtyPreview] = useState<FealtyChanceResult | null>(null);
   const [fealtyResult, setFealtyResult] = useState<DemandFealtyResult | null>(null);
+  const [pledgePreview, setPledgePreview] = useState<PledgeAllegianceChanceResult | null>(null);
+  const [pledgeResult, setPledgeResult] = useState<PledgeAllegianceResult | null>(null);
   const [ctaPreview, setCtaPreview] = useState<{ war: CallableWar; chance: CallToArmsChanceResult } | null>(null);
   const [ctaResult, setCtaResult] = useState<CallToArmsResult | null>(null);
   const [taxNegDelta, setTaxNegDelta] = useState<number | null>(null); // 议定进奉选定方向
@@ -603,6 +605,10 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               setFealtyPreview(previewDemandFealty(playerId, characterId));
               return;
             }
+            if (id === 'pledgeAllegiance' && playerId) {
+              setPledgePreview(previewPledgeAllegiance(playerId, characterId));
+              return;
+            }
             setActiveInteraction(id);
           }}
         />
@@ -922,6 +928,47 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                 : `${character?.name ?? ''}对此无动于衷`}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>确定</Button>
+          </div>
+        </Modal>
+      )}
+
+      {/* 归附：预览 */}
+      {pledgePreview && !pledgeResult && (
+        <Modal size="sm" onOverlayClick={() => setPledgePreview(null)}>
+          <ModalHeader title={`归附 — ${character?.name ?? ''}`} onClose={() => setPledgePreview(null)} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <div className="text-xs text-[var(--color-text-muted)] space-y-1">
+              <div>成功率：<span className="text-[var(--color-text)] font-bold">{pledgePreview.chance}%</span></div>
+              <div className="border-t border-[var(--color-border)] pt-1 mt-1">
+                <div>基础：{pledgePreview.breakdown.base}</div>
+                <div>法理：{pledgePreview.breakdown.dejure >= 0 ? '+' : ''}{pledgePreview.breakdown.dejure}</div>
+                <div>好感：{pledgePreview.breakdown.opinion >= 0 ? '+' : ''}{pledgePreview.breakdown.opinion}</div>
+                <div>性格：{pledgePreview.breakdown.personality >= 0 ? '+' : ''}{pledgePreview.breakdown.personality}</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="default" className="flex-1" onClick={() => setPledgePreview(null)}>取消</Button>
+              <Button variant="primary" className="flex-1" onClick={() => {
+                if (!playerId) return;
+                const result = executePledgeAllegiance(playerId, characterId);
+                setPledgeResult(result);
+              }}>确定</Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 归附：结果 */}
+      {pledgeResult && (
+        <Modal size="sm" onOverlayClick={() => { setPledgeResult(null); setPledgePreview(null); }}>
+          <ModalHeader title={pledgeResult.success ? '归附成功' : '归附被拒'} onClose={() => { setPledgeResult(null); setPledgePreview(null); }} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className={`text-sm ${pledgeResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
+              {pledgeResult.success
+                ? `${playerChar?.name ?? '我'}成功归附${character?.name ?? ''}`
+                : `${character?.name ?? ''}拒绝了你的归附请求`}
+            </p>
+            <Button variant="default" className="w-full" onClick={() => { setPledgeResult(null); setPledgePreview(null); }}>确定</Button>
           </div>
         </Modal>
       )}

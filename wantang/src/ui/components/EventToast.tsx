@@ -18,6 +18,8 @@ const EVENT_ICONS: Record<string, string> = {
   '王朝覆灭': '⚡',
   '宣战': '📯',
   '战争结束': '🏳',
+  '退出战争': '🏃',
+  '参战': '🛡',
 };
 
 // ── 边框颜色：按事件性质区分 ──────────────────────────────
@@ -31,6 +33,7 @@ function getEventTone(event: GameEvent): EventTone {
     case '城破':
     case '王朝覆灭':
     case '绝嗣':
+    case '退出战争':
       return 'danger';
     case '战争结束':
     case '继位':

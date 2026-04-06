@@ -10,8 +10,17 @@ export interface Interaction {
   id: string;
   name: string;
   icon: string;
-  /** 粗筛：该交互对 player→target 是否可见 */
+  /** 粗筛：该交互是否出现在菜单中（隐藏 = 完全不相关） */
   canShow: (player: Character, target: Character) => boolean;
+  /** 细筛：返回 null 表示可执行，返回字符串表示不可执行的原因（灰显） */
+  canExecuteCheck?: (player: Character, target: Character) => string | null;
   /** 是否需要额外参数选择 */
   paramType: InteractionParamType;
+}
+
+/** 交互菜单条目（含灰显原因） */
+export interface InteractionEntry {
+  interaction: Interaction;
+  /** null = 可执行；非 null = 灰显并显示原因 */
+  disabledReason: string | null;
 }

@@ -7,6 +7,7 @@ import type { CasusBelli, WarContext } from '@engine/military/types';
 import { evaluateAllCasusBelli } from '@engine/military/warCalc';
 import { executeDeclareWar } from '@engine/interaction';
 import { useTurnManager } from '@engine/TurnManager';
+import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 import { positionMap } from '@data/positions';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { useWarStore } from '@engine/military/WarStore';
@@ -194,7 +195,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: DeclareWarData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: DeclareWarData, ctx: NpcContext) {
     const date = useTurnManager.getState().currentDate;
     executeDeclareWar(
       actor.id,
@@ -204,6 +205,30 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
       date,
       data.cost,
     );
+
+    // 玩家是被宣战方 → 纯通知
+    if (data.targetId === ctx.playerId) {
+      const CB_LABELS: Record<string, string> = { annexation: '武力兼并', claim: '法理宣称', independence: '独立' };
+      const cbLabel = CB_LABELS[data.casusBelli] ?? data.casusBelli;
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '遭到宣战',
+        description: `${actor.name}以「${cbLabel}」为由向你宣战！`,
+        actors: [
+          { characterId: actor.id, role: '宣战者' },
+          { characterId: data.targetId, role: '你' },
+        ],
+        options: [
+          {
+            label: '知道了',
+            description: '准备迎战。',
+            effects: [],
+            onSelect: () => { /* 已执行 */ },
+          },
+        ],
+      };
+      useStoryEventBus.getState().pushStoryEvent(event);
+    }
   },
 };
 

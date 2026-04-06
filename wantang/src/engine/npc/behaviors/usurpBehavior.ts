@@ -7,6 +7,7 @@ import { registerBehavior } from './index';
 import { canUsurpPost, calcRealmControlRatio, calcPostManageCost } from '@engine/official/postManageCalc';
 import { executeUsurp } from '@engine/interaction';
 import { positionMap } from '@data/positions';
+import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 
 interface UsurpData {
   postId: string;
@@ -71,8 +72,37 @@ export const usurpBehavior: NpcBehavior<UsurpData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: UsurpData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: UsurpData, ctx: NpcContext) {
+    const isPlayerTarget = data.holderId === ctx.playerId;
+
     executeUsurp(data.postId, actor.id);
+
+    // 玩家的岗位被篡夺 → 纯通知
+    if (isPlayerTarget) {
+      const territory = ctx.territories.get(data.territoryId);
+      const terrName = territory?.name ?? '';
+      // 从领地 posts 中查找岗位模板名
+      const postTplId = territory?.posts.find(p => p.id === data.postId)?.templateId;
+      const postName = postTplId ? (positionMap.get(postTplId)?.name ?? '') : '';
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '头衔被篡夺',
+        description: `${actor.name}篡夺了你的${terrName}${postName}！`,
+        actors: [
+          { characterId: actor.id, role: '篡夺者' },
+          { characterId: data.holderId, role: '你' },
+        ],
+        options: [
+          {
+            label: '知道了',
+            description: '失去了这个头衔。',
+            effects: [],
+            onSelect: () => { /* 已执行 */ },
+          },
+        ],
+      };
+      useStoryEventBus.getState().pushStoryEvent(event);
+    }
   },
 };
 

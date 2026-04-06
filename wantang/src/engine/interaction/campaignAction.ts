@@ -6,12 +6,29 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { getMusteringTime } from '@engine/military/marchCalc';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 
+/** 检查军队是否已在任意行营中（含 incomingArmies） */
+function isArmyInAnyCampaign(armyId: string): boolean {
+  for (const c of useWarStore.getState().campaigns.values()) {
+    if (c.armyIds.includes(armyId)) return true;
+    if (c.incomingArmies.some(ia => ia.armyId === armyId)) return true;
+  }
+  return false;
+}
+
 /** 设定行军目标 */
 export function executeSetCampaignTarget(
   campaignId: string,
   targetId: string,
   path: string[],
 ): void {
+  // DEBUG: 追踪唐懿宗行军目标
+  const campaign = useWarStore.getState().campaigns.get(campaignId);
+  if (campaign?.ownerId === 'char-yizong') {
+    const territories = useTerritoryStore.getState().territories;
+    const targetName = territories.get(targetId)?.name ?? targetId;
+    const pathNames = path.map(id => territories.get(id)?.name ?? id).join(' → ');
+    console.log(`[DEBUG-懿宗] 设定行军目标: ${targetName}, 路径=[${pathNames}]`);
+  }
   useWarStore.getState().setCampaignTarget(campaignId, targetId, path);
 }
 
@@ -26,6 +43,9 @@ export function executeAddArmyToCampaign(
 
   const army = useMilitaryStore.getState().armies.get(armyId);
   if (!army) return;
+
+  // 军队已在其他行营中，不可重复编入
+  if (isArmyInAnyCampaign(armyId)) return;
 
   const territories = useTerritoryStore.getState().territories;
   const turnsLeft = getMusteringTime(army.locationId, campaign.locationId, territories);
@@ -86,6 +106,10 @@ export function executeCreateCampaign(
   armyIds: string[],
   locationId: string,
 ): void {
+  // 过滤掉已在其他行营中的军队
+  const validArmyIds = armyIds.filter(id => !isArmyInAnyCampaign(id));
+  if (validArmyIds.length === 0) return;
+
   const armies = useMilitaryStore.getState().armies;
   const characters = useCharacterStore.getState().characters;
   const territories = useTerritoryStore.getState().territories;
@@ -93,8 +117,8 @@ export function executeCreateCampaign(
   // 选最佳统帅：各军兵马使中军事能力最高者
   let bestCommander = '';
   let bestMil = -1;
-  for (const armyId of armyIds) {
-    const army = armies.get(armyId);
+  for (const aid of validArmyIds) {
+    const army = armies.get(aid);
     if (army?.commanderId) {
       const cmd = characters.get(army.commanderId);
       if (cmd && cmd.abilities.military > bestMil) {
@@ -106,19 +130,26 @@ export function executeCreateCampaign(
 
   // 计算最大集结时间
   let maxMustering = 0;
-  for (const armyId of armyIds) {
-    const army = armies.get(armyId);
+  for (const aid of validArmyIds) {
+    const army = armies.get(aid);
     if (army) {
       const time = getMusteringTime(army.locationId, locationId, territories);
       if (time > maxMustering) maxMustering = time;
     }
   }
 
+  // DEBUG: 追踪唐懿宗行营组建
+  if (ownerId === 'char-yizong') {
+    const armyNames = validArmyIds.map(id => armies.get(id)?.name ?? id).join(', ');
+    const locName = territories.get(locationId)?.name ?? locationId;
+    console.log(`[DEBUG-懿宗] 组建行营: warId=${warId || '调兵'}, 地点=${locName}, 军队=[${armyNames}]`);
+  }
+
   const newCampaign = useWarStore.getState().createCampaign(
     warId,
     ownerId,
     bestCommander || ownerId,
-    armyIds,
+    validArmyIds,
     locationId,
   );
 

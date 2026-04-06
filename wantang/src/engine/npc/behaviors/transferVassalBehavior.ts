@@ -7,6 +7,7 @@ import { getActualController } from '@engine/official/postQueries';
 import { executeTransferVassal } from '@engine/interaction';
 import { positionMap } from '@data/positions';
 import { registerBehavior } from './index';
+import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 
 // ── 辅助 ──────────────────────────────────────────────────
 
@@ -127,8 +128,32 @@ export const transferVassalBehavior: NpcBehavior<TransferVassalData> = {
     return { data: { vassalId: best.vassalId, receiverId: best.receiverId }, weight };
   },
 
-  executeAsNpc(actor: Character, data: TransferVassalData, _ctx: NpcContext) {
+  executeAsNpc(actor: Character, data: TransferVassalData, ctx: NpcContext) {
     executeTransferVassal(data.vassalId, data.receiverId, actor.id);
+
+    // 玩家被转移 → 纯通知
+    if (data.vassalId === ctx.playerId) {
+      const receiverName = ctx.characters.get(data.receiverId)?.name ?? '???';
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '效忠对象变更',
+        description: `${actor.name}将你转封给${receiverName}，你此后效忠于${receiverName}。`,
+        actors: [
+          { characterId: actor.id, role: '转封者' },
+          { characterId: data.vassalId, role: '你' },
+          { characterId: data.receiverId, role: '新领主' },
+        ],
+        options: [
+          {
+            label: '知道了',
+            description: '接受新的效忠关系。',
+            effects: [],
+            onSelect: () => { /* 已执行 */ },
+          },
+        ],
+      };
+      useStoryEventBus.getState().pushStoryEvent(event);
+    }
   },
 };
 

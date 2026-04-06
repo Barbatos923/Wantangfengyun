@@ -8,6 +8,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { Era, EventPriority } from '@engine/types';
 import { collectRulerIds, findEmperorId } from '@engine/official/postQueries';
 import { canCreateEmperor, calcPostManageCost } from '@engine/official/postManageCalc';
+import { refreshLegitimacyForChar } from '@engine/official/postTransfer';
 import type { Post } from '@engine/territory/types';
 
 // ── 执行函数（引擎层，NPC 可直接调用） ───────────────────────
@@ -49,10 +50,11 @@ export function executeCreateEmperor(actorId: string): void {
     stabilityProgress: 0,
   });
 
-  // 配套三连
+  // 配套三连 + 正统性刷新
   useMilitaryStore.getState().syncArmyOwnersByPost(newPost.id, actorId);
   charStore.refreshIsRuler(collectRulerIds(useTerritoryStore.getState().territories));
   useTerritoryStore.getState().refreshExpectedLegitimacy();
+  refreshLegitimacyForChar(actorId);
 
   // 记录事件
   useTurnManager.getState().addEvent({

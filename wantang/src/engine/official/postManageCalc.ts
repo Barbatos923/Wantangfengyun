@@ -213,6 +213,11 @@ export function canUsurpPost(
   if (!post.holderId) return { eligible: false, reason: '岗位无人持有' };
   if (post.holderId === actorId) return { eligible: false, reason: '你已持有此岗位' };
 
+  // 不能篡夺自己势力内的臣属（应走剥夺/罢免流程）
+  if (isInActorRealm(post.holderId, actorId, characters)) {
+    return { eligible: false, reason: '不能篡夺自己的臣属' };
+  }
+
   // dao 级额外条件：必须控制治所州
   if (territory.tier === 'dao' && territory.capitalZhouId) {
     const capitalZhou = territories.get(territory.capitalZhouId);

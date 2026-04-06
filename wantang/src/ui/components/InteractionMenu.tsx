@@ -13,7 +13,7 @@ const InteractionMenu: React.FC<InteractionMenuProps> = ({ targetId, onClose, on
   const player = useCharacterStore((s) => playerId ? s.characters.get(playerId) : undefined);
   const target = useCharacterStore((s) => s.characters.get(targetId));
 
-  const interactions =
+  const entries =
     player && target ? getAvailableInteractions(player, target) : [];
 
   return (
@@ -26,16 +26,26 @@ const InteractionMenu: React.FC<InteractionMenuProps> = ({ targetId, onClose, on
           对 {target?.name ?? targetId} 的交互
         </div>
 
-        {interactions.length > 0 ? (
+        {entries.length > 0 ? (
           <div className="flex flex-col gap-1">
-            {interactions.map((interaction) => (
+            {entries.map(({ interaction, disabledReason }) => (
               <button
                 key={interaction.id}
-                className="flex items-center gap-2 px-3 py-1.5 rounded text-sm text-[var(--color-text)] hover:bg-[var(--color-bg-surface)] hover:text-[var(--color-accent-gold)] transition-colors text-left w-full"
-                onClick={() => onSelect(interaction.id)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm text-left w-full transition-colors ${
+                  disabledReason
+                    ? 'text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
+                    : 'text-[var(--color-text)] hover:bg-[var(--color-bg-surface)] hover:text-[var(--color-accent-gold)]'
+                }`}
+                onClick={() => !disabledReason && onSelect(interaction.id)}
+                title={disabledReason ?? undefined}
               >
                 <span className="text-base leading-none">{interaction.icon}</span>
-                <span>{interaction.name}</span>
+                <span className="flex-1">{interaction.name}</span>
+                {disabledReason && (
+                  <span className="text-[10px] text-[var(--color-text-muted)] ml-1 max-w-[120px] text-right leading-tight">
+                    {disabledReason}
+                  </span>
+                )}
               </button>
             ))}
           </div>

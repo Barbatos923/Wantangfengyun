@@ -11,7 +11,10 @@ import { diffDays } from '@engine/dateUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { findAppointRightHolder } from '@engine/character/successionUtils';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
-import { executeReassign, previewReassignChance, submitReassignProposal } from '@engine/interaction';
+import { executeReassign, executeReassignSuccess, executeReassignRebel, previewReassignChance, submitReassignProposal } from '@engine/interaction';
+import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
+import { useCharacterStore } from '@engine/character/CharacterStore';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import {
   isCentralOfficial,
   getCentralMaxRank,
@@ -170,7 +173,81 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
     return { data: bestData, weight: bestWeight };
   },
 
-  executeAsNpc(actor: Character, data: EmperorReassignData): void {
+  executeAsNpc(actor: Character, data: EmperorReassignData, ctx: NpcContext): void {
+    const terrStore = useTerritoryStore.getState();
+    const post = terrStore.findPost(data.territorialPostId);
+    const territorialId = post?.holderId;
+
+    // ── 玩家是地方官（被调任者）→ 双选项 ──
+    if (territorialId && territorialId === ctx.playerId) {
+      const terrName = post?.territoryId ? (terrStore.territories.get(post.territoryId)?.name ?? '') : '';
+      const postTpl = post ? positionMap.get(post.templateId) : undefined;
+      const replacementName = ctx.characters.get(data.replacementId)?.name ?? '???';
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '被调任',
+        description: `${actor.name}下令将你调入京师，由${replacementName}接替你的${terrName}${postTpl?.name ?? ''}。`,
+        actors: [
+          { characterId: actor.id, role: '皇帝' },
+          { characterId: territorialId, role: '你' },
+          { characterId: data.replacementId, role: '接替者' },
+        ],
+        options: [
+          {
+            label: '服从调任',
+            description: '交出领地，入京任职。',
+            effects: [],
+            onSelect: () => {
+              executeReassignSuccess(data.territorialPostId, data.replacementId, actor.id);
+            },
+          },
+          {
+            label: '抗命不从',
+            description: '拒绝调任，发动独立战争。',
+            effects: [
+              { label: '好感', value: -30, type: 'negative' },
+            ],
+            onSelect: () => {
+              executeReassignRebel(ctx.playerId!, actor.id);
+            },
+          },
+        ],
+      };
+      useStoryEventBus.getState().pushStoryEvent(event);
+      return;
+    }
+
+    // ── 玩家是京官（被外放者）→ 先执行，成功则纯通知 ──
+    if (data.replacementId === ctx.playerId) {
+      const success = executeReassign(data.territorialPostId, data.replacementId, actor.id);
+      if (success) {
+        const freshTerrStore = useTerritoryStore.getState();
+        const freshPost = freshTerrStore.findPost(data.territorialPostId);
+        const terrName = freshPost?.territoryId ? (freshTerrStore.territories.get(freshPost.territoryId)?.name ?? '') : '';
+        const postTpl = freshPost ? positionMap.get(freshPost.templateId) : undefined;
+        const event: StoryEvent = {
+          id: crypto.randomUUID(),
+          title: '外放任职',
+          description: `${actor.name}将你外放为${terrName}${postTpl?.name ?? ''}。`,
+          actors: [
+            { characterId: actor.id, role: '皇帝' },
+            { characterId: data.replacementId, role: '你' },
+          ],
+          options: [
+            {
+              label: '知悉',
+              description: '赴任就职。',
+              effects: [],
+              onSelect: () => { /* 已执行 */ },
+            },
+          ],
+        };
+        useStoryEventBus.getState().pushStoryEvent(event);
+      }
+      return;
+    }
+
+    // ── 无关玩家 → 正常执行 ──
     executeReassign(data.territorialPostId, data.replacementId, actor.id);
   },
 };
@@ -269,11 +346,82 @@ export const chancellorReassignBehavior: NpcBehavior<ChancellorReassignData> = {
     const emperorId = findEmperorId(ctx.territories, ctx.centralPosts);
     if (!emperorId) return;
 
-    // 统一走 submitReassignProposal（处理玩家皇帝 StoryEvent / NPC 皇帝自动评估）
+    // ── 玩家是地方官（被调任者）→ 双选项 ──
+    if (data.territorialId === ctx.playerId) {
+      const terrStore = useTerritoryStore.getState();
+      const post = terrStore.findPost(data.territorialPostId);
+      const terrName = post?.territoryId ? (terrStore.territories.get(post.territoryId)?.name ?? '') : '';
+      const postTpl = post ? positionMap.get(post.templateId) : undefined;
+      const replacementName = ctx.characters.get(data.replacementId)?.name ?? '???';
+      const emperorName = ctx.characters.get(emperorId)?.name ?? '???';
+      const event: StoryEvent = {
+        id: crypto.randomUUID(),
+        title: '被调任',
+        description: `经${actor.name}提议，${emperorName}下令将你调入京师，由${replacementName}接替你的${terrName}${postTpl?.name ?? ''}。`,
+        actors: [
+          { characterId: emperorId, role: '皇帝' },
+          { characterId: actor.id, role: '宰相' },
+          { characterId: data.territorialId, role: '你' },
+          { characterId: data.replacementId, role: '接替者' },
+        ],
+        options: [
+          {
+            label: '服从调任',
+            description: '交出领地，入京任职。',
+            effects: [],
+            onSelect: () => {
+              executeReassignSuccess(data.territorialPostId, data.replacementId, emperorId);
+            },
+          },
+          {
+            label: '抗命不从',
+            description: '拒绝调任，发动独立战争。',
+            effects: [
+              { label: '好感', value: -30, type: 'negative' },
+            ],
+            onSelect: () => {
+              executeReassignRebel(ctx.playerId!, emperorId);
+            },
+          },
+        ],
+      };
+      useStoryEventBus.getState().pushStoryEvent(event);
+      return;
+    }
+
+    // ── 玩家是京官（被外放者）→ 走提案流程，成功则纯通知 ──
+    if (data.replacementId === ctx.playerId) {
+      const result = submitReassignProposal(data.territorialPostId, data.replacementId, emperorId, actor.id);
+      if (result.type === 'success') {
+        const freshTerrStore = useTerritoryStore.getState();
+        const freshPost = freshTerrStore.findPost(data.territorialPostId);
+        const terrName = freshPost?.territoryId ? (freshTerrStore.territories.get(freshPost.territoryId)?.name ?? '') : '';
+        const postTpl = freshPost ? positionMap.get(freshPost.templateId) : undefined;
+        const event: StoryEvent = {
+          id: crypto.randomUUID(),
+          title: '外放任职',
+          description: `经${actor.name}提议，你被外放为${terrName}${postTpl?.name ?? ''}。`,
+          actors: [
+            { characterId: actor.id, role: '宰相' },
+            { characterId: data.replacementId, role: '你' },
+          ],
+          options: [
+            {
+              label: '知悉',
+              description: '赴任就职。',
+              effects: [],
+              onSelect: () => { /* 已执行 */ },
+            },
+          ],
+        };
+        useStoryEventBus.getState().pushStoryEvent(event);
+      }
+      return;
+    }
+
+    // ── 无关玩家 → 统一走提案流程 ──
     submitReassignProposal(data.territorialPostId, data.replacementId, emperorId, actor.id);
   },
 };
-
-registerBehavior(chancellorReassignBehavior);
 
 registerBehavior(chancellorReassignBehavior);

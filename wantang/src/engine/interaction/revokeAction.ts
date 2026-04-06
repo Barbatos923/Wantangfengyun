@@ -23,7 +23,24 @@ registerInteraction({
   name: '剥夺领地',
   icon: '🔴',
   canShow: (player, target) => {
-    return target.overlordId === player.id && getRevokablePosts(player, target).length > 0;
+    // 宽松：target 是臣属且有 grantsControl 岗位
+    if (target.overlordId !== player.id) return false;
+    const terrStore = useTerritoryStore.getState();
+    return terrStore.getPostsByHolder(target.id).some(p => positionMap.get(p.templateId)?.grantsControl);
+  },
+  canExecuteCheck: (player, target) => {
+    if (getRevokablePosts(player, target).length > 0) return null;
+    // 找出具体原因：逐岗位检查法理任命人
+    const terrStore = useTerritoryStore.getState();
+    const posts = terrStore.getPostsByHolder(target.id);
+    for (const p of posts) {
+      const tpl = positionMap.get(p.templateId);
+      if (!tpl?.grantsControl) continue;
+      const legalAppointer = resolveLegalAppointer(player.id, p);
+      if (legalAppointer === target.id) return '对方持有辟署权';
+      if (legalAppointer !== player.id) return '你不是法理任命人';
+    }
+    return '无可剥夺岗位';
   },
   paramType: 'revoke',
 });

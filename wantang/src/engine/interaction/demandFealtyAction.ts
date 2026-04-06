@@ -27,11 +27,39 @@ registerInteraction({
   id: 'demandFealty',
   name: '要求效忠',
   icon: '🤝',
-  canShow: (player, target) => canDemandFealty(player, target),
+  canShow: (player, target) => {
+    // 宽松：target 有地 + 非自己臣属 + 非自己 + 玩家有更高品级岗位
+    if (player.id === target.id) return false;
+    if (!target.alive || !target.isRuler) return false;
+    if (target.overlordId === player.id) return false;
+    const terrStore = useTerritoryStore.getState();
+    const targetPosts = terrStore.getPostsByHolder(target.id);
+    const playerPosts = terrStore.getPostsByHolder(player.id);
+    const targetHasMain = targetPosts.some(p => positionMap.get(p.templateId)?.grantsControl);
+    if (!targetHasMain) return false;
+    const playerMaxRank = Math.max(0, ...playerPosts.map(p => positionMap.get(p.templateId)?.minRank ?? 0));
+    const targetMaxRank = Math.max(0, ...targetPosts.filter(p => positionMap.get(p.templateId)?.grantsControl).map(p => positionMap.get(p.templateId)?.minRank ?? 0));
+    return playerMaxRank > targetMaxRank;
+  },
+  canExecuteCheck: (player, target) => {
+    if (canDemandFealty(player, target)) return null;
+    const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+    if (player.lastDemandFealtyDay != null && currentDay - player.lastDemandFealtyDay < DEMAND_FEALTY_COOLDOWN_DAYS) {
+      return '冷却中';
+    }
+    const activeWars = useWarStore.getState().getActiveWars();
+    if (activeWars.some(w => {
+      if (w.status !== 'active') return false;
+      const pSide = getWarSide(player.id, w);
+      const tSide = getWarSide(target.id, w);
+      return pSide && tSide && pSide !== tSide;
+    })) return '与对方交战中';
+    return '非法理上级';
+  },
   paramType: 'none',
 });
 
-// ── canShow（便捷版：读 Store） ──────────────────────────
+// ── canShow 严格版（便捷版：读 Store） ──────────────────────────
 
 function canDemandFealty(player: Character, target: Character): boolean {
   // 冷却检查：半年内不可重复使用

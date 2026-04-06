@@ -88,6 +88,21 @@ export function calcEraDecay(era: Era): number {
   }
 }
 
+// ── 名望月度自然增长 ────────────────────────────────────────────────────────────
+
+/** 品级 → 每月名望自然增长量 */
+export function calcMonthlyPrestigeGrowth(rankLevel: number): number {
+  if (rankLevel >= 29) return 5;
+  if (rankLevel >= 25) return 4;
+  if (rankLevel >= 21) return 3;
+  if (rankLevel >= 17) return 2;
+  if (rankLevel >= 13) return 1.5;
+  if (rankLevel >= 9) return 1;
+  if (rankLevel >= 5) return 0.5;
+  if (rankLevel >= 1) return 0.25;
+  return 0;
+}
+
 // ── 铨选品位惩罚 ─────────────────────────────────────────────────────────────────
 
 /** 品位不足时的铨选评分惩罚（charRank < postMinRank 时返回负数） */

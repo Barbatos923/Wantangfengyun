@@ -3,13 +3,13 @@
 import { useWarStore } from './WarStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { useMilitaryStore } from './MilitaryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
 import { TRUCE_DURATION_DAYS } from './types';
 import { isWarParticipant } from './warParticipantUtils';
+import { getWarPrestigeReward } from './warCalc';
 import { toAbsoluteDay } from '@engine/dateUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
@@ -20,6 +20,8 @@ import {
   checkCapitalZhouLost,
   refreshPostCaches,
   promoteOverlordIfNeeded,
+  ensureAppointRight,
+  revokeAppointRight,
 } from '@engine/official/postTransfer';
 
 /**
@@ -47,6 +49,17 @@ export function settleWar(warId: string, result: War['result']): void {
       // 其他理由暂用领地战争的通用逻辑
       settleTerritorialWar(war, result);
       break;
+  }
+
+  // ── 名望奖惩 ──────────────────────────────────────────────────────────
+  if (result !== 'whitePeace') {
+    const era = useTurnManager.getState().era;
+    const { winnerGain, loserLoss } = getWarPrestigeReward(war.casusBelli, era);
+    const charStore = useCharacterStore.getState();
+    const winnerId = result === 'attackerWin' ? war.attackerId : war.defenderId;
+    const loserId = result === 'attackerWin' ? war.defenderId : war.attackerId;
+    charStore.addResources(winnerId, { prestige: winnerGain });
+    charStore.addResources(loserId, { prestige: loserLoss });
   }
 
   // ── 战争结束事件通知 ────────────────────────────────────────────────────
@@ -132,6 +145,28 @@ function settleTerritorialWar(war: War, result: War['result']): void {
   refreshPostCaches(undefined, true);
 }
 
+// ── 独立战争失败：宗法改流官 ────────────────────────────────────────────
+
+/** 将角色所有 grantsControl 主岗的宗法改为流官（独立失败惩罚） */
+function revertClanToBureaucratic(charId: string): void {
+  const terrStore = useTerritoryStore.getState();
+  const date = useTurnManager.getState().currentDate;
+  const posts = terrStore.getPostsByHolder(charId);
+  for (const p of posts) {
+    if (p.successionLaw !== 'clan') continue;
+    const tpl = positionMap.get(p.templateId);
+    if (!tpl?.grantsControl) continue;
+    terrStore.updatePost(p.id, {
+      successionLaw: 'bureaucratic',
+      reviewBaseline: {
+        population: terrStore.territories.get(p.territoryId ?? '')?.basePopulation ?? 0,
+        virtue: useCharacterStore.getState().getCharacter(charId)?.official?.virtue ?? 0,
+        date: { year: date.year, month: date.month, day: date.day },
+      },
+    });
+  }
+}
+
 // ── 独立战争结算 ────────────────────────────────────────────────────────
 
 function settleIndependenceWar(war: War, result: War['result']): void {
@@ -139,7 +174,8 @@ function settleIndependenceWar(war: War, result: War['result']): void {
 
   switch (result) {
     case 'attackerWin': {
-      // 攻方已在宣战时脱离效忠，无需再次操作
+      // 攻方已在宣战时脱离效忠，独立成功 → 授予辟署权
+      ensureAppointRight(war.attackerId);
       // 针对皇帝的独立战争胜利 → 崩溃进度 +10
       const terrStore = useTerritoryStore.getState();
       const emperorId = findEmperorId(terrStore.territories, terrStore.centralPosts);
@@ -148,19 +184,25 @@ function settleIndependenceWar(war: War, result: War['result']): void {
       }
       break;
     }
-    case 'defenderWin':
-      // 叛乱失败：恢复效忠关系 + 好感 -30
+    case 'defenderWin': {
+      // 叛乱失败：恢复效忠关系 + 收回辟署权 + 宗法改流官 + 好感 -30
+      // 收回辟署权：防止独立期间通过 adjustOwnPolicy 自行授予后残留
+      // 宗法改流官：防止独立期间改成世袭后残留
       if (war.previousOverlordId) {
         charStore.updateCharacter(war.attackerId, { overlordId: war.previousOverlordId });
       }
+      revokeAppointRight(war.attackerId);
+      revertClanToBureaucratic(war.attackerId);
       charStore.setOpinion(war.attackerId, war.defenderId, {
         reason: '叛乱失败',
         value: -30,
         decayable: true,
       });
       break;
+    }
     case 'whitePeace':
-      // 和谈：独立成功（已在宣战时脱离，不恢复）
+      // 和谈：独立成功（已在宣战时脱离，不恢复）→ 授予辟署权
+      ensureAppointRight(war.attackerId);
       break;
   }
 }
@@ -179,11 +221,9 @@ function clearOccupation(war: War): void {
   }
 }
 
-/** 解散该战争下的所有行营和围城，军队移回所有者领地 */
+/** 解散该战争下的所有行营和围城，军队留在原地（由调兵系统自然遣回） */
 function disbandCampaigns(warId: string): void {
   const warStore = useWarStore.getState();
-  const terrStore = useTerritoryStore.getState();
-  const milStore = useMilitaryStore.getState();
 
   // 先结束所有该战争的围城
   for (const siege of warStore.sieges.values()) {
@@ -192,31 +232,9 @@ function disbandCampaigns(warId: string): void {
     }
   }
 
-  // 再解散所有该战争的行营，军队移回所有者领地
+  // 解散所有该战争的行营，军队留在当前位置
   for (const campaign of useWarStore.getState().campaigns.values()) {
     if (campaign.warId !== warId) continue;
-
-    // 找所有者的一个己方领地
-    let homeId: string | null = null;
-    for (const t of terrStore.territories.values()) {
-      if (t.tier !== 'zhou') continue;
-      const mainPost = t.posts.find(p => {
-        const tpl = positionMap.get(p.templateId);
-        return tpl?.grantsControl === true;
-      });
-      if (mainPost?.holderId === campaign.ownerId) {
-        homeId = t.id;
-        break;
-      }
-    }
-
-    // 移动军队回家
-    if (homeId) {
-      for (const armyId of campaign.armyIds) {
-        milStore.updateArmy(armyId, { locationId: homeId });
-      }
-    }
-
     useWarStore.getState().disbandCampaign(campaign.id);
   }
 }

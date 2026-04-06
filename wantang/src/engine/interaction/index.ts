@@ -1,6 +1,6 @@
 // ===== 交互系统桶导出 =====
 
-export type { Interaction, InteractionParamType } from './types';
+export type { Interaction, InteractionParamType, InteractionEntry } from './types';
 export { registerInteraction, getAvailableInteractions } from './registry';
 
 // 导入交互定义以触发注册（宣战优先显示）
@@ -16,6 +16,7 @@ import './usurpPostAction';
 import './reassignAction';
 import './demandRightsAction';
 import './negotiateTaxAction';
+import './pledgeAllegianceAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -39,7 +40,7 @@ export { executeJoinWar, getJoinableWars, getCallableWars, calcCallToArmsChance,
 export type { JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from './joinWarAction';
 export { getUsurpablePosts, previewUsurp, executeUsurp } from './usurpPostAction';
 export type { UsurpPreview } from './usurpPostAction';
-export { previewReassignChance, executeReassign, submitReassignProposal } from './reassignAction';
+export { previewReassignChance, executeReassign, executeReassignSuccess, executeReassignRebel, submitReassignProposal } from './reassignAction';
 export type { ReassignProposalResult } from './reassignAction';
 export {
   isCentralOfficial,
@@ -66,3 +67,11 @@ export {
   TAX_LABELS,
 } from './negotiateTaxAction';
 export type { NegotiateTaxChanceResult, NegotiateTaxResult } from './negotiateTaxAction';
+export {
+  canPledgeAllegiancePure,
+  calcPledgeAllegianceChance,
+  previewPledgeAllegiance,
+  executePledgeAllegiance,
+  PLEDGE_ALLEGIANCE_COOLDOWN_DAYS,
+} from './pledgeAllegianceAction';
+export type { PledgeAllegianceChanceResult, PledgeAllegianceResult } from './pledgeAllegianceAction';
