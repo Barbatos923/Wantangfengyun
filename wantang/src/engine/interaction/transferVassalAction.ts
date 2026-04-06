@@ -6,7 +6,7 @@ import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
-import { getWarSide } from '@engine/military/warParticipantUtils';
+
 import { getActualController } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
@@ -72,6 +72,13 @@ export function getTransferCandidates(
 
   const result: TransferCandidate[] = [];
 
+  // receiver 岗位模板最高品级（用 minRank 而非个人 rankLevel，防止同职位因个人品级差异绕过）
+  const targetPosts = terrStore.getPostsByHolder(targetId);
+  const targetPostRank = Math.max(0, ...targetPosts.map(p => {
+    const tpl = positionMap.get(p.templateId);
+    return tpl?.grantsControl ? tpl.minRank : 0;
+  }));
+
   for (const vassal of vassals) {
     if (vassal.id === targetId) continue;
     if (!vassal.alive) continue;
@@ -79,6 +86,13 @@ export function getTransferCandidates(
 
     // 获取该臣属的 grantsControl 岗位
     const vassalPosts = terrStore.getPostsByHolder(vassal.id);
+
+    // 品级检查：receiver 岗位品级必须严格高于 vassal（不能同级节度使互转）
+    const vassalPostRank = Math.max(0, ...vassalPosts.map(p => {
+      const tpl = positionMap.get(p.templateId);
+      return tpl?.grantsControl ? tpl.minRank : 0;
+    }));
+    if (targetPostRank <= vassalPostRank) continue;
     for (const post of vassalPosts) {
       const tpl = positionMap.get(post.templateId);
       if (!tpl?.grantsControl) continue;

@@ -8,12 +8,27 @@ import { executeTransferVassal } from '@engine/interaction';
 import { positionMap } from '@data/positions';
 import { registerBehavior } from './index';
 
+// ── 辅助 ──────────────────────────────────────────────────
+
+/** 获取角色持有的所有 grantsControl 岗位的模板 minRank 数组 */
+function getControlPostMinRanks(charId: string, ctx: NpcContext): number[] {
+  const ranks: number[] = [];
+  for (const terr of ctx.territories.values()) {
+    for (const post of terr.posts) {
+      if (post.holderId !== charId) continue;
+      const tpl = positionMap.get(post.templateId);
+      if (tpl?.grantsControl) ranks.push(tpl.minRank);
+    }
+  }
+  return ranks;
+}
+
 // ── 辅助：找臣属应转给谁 ──────────────────────────────────
 
 interface TransferPair {
   vassalId: string;
   receiverId: string;
-  receiverRank: number; // 用于优先选品级高的 receiver
+  receiverRank: number; // 用于优先选岗位品级高的 receiver
 }
 
 /**
@@ -58,12 +73,13 @@ function findTransferPairs(actorId: string, ctx: NpcContext): TransferPair[] {
         const controller = ctx.characters.get(controllerId);
         if (!controller?.alive || controller.overlordId !== actorId) continue;
 
-        // 品级检查：receiver 品级必须严格高于 vassal（不能同级节度使互转）
-        const receiverRank = ctx.rankLevelCache.get(controllerId) ?? 0;
-        const vassalRank = ctx.rankLevelCache.get(char.id) ?? 0;
-        if (receiverRank <= vassalRank) continue;
+        // 品级检查：receiver 岗位品级必须严格高于 vassal（不能同级节度使互转）
+        // 用岗位模板 minRank 而非角色个人 rankLevel，避免同职位因个人品级差异绕过
+        const receiverPostRank = Math.max(0, ...getControlPostMinRanks(controllerId, ctx));
+        const vassalPostRank = Math.max(0, ...getControlPostMinRanks(char.id, ctx));
+        if (receiverPostRank <= vassalPostRank) continue;
 
-        pairs.push({ vassalId: char.id, receiverId: controllerId, receiverRank });
+        pairs.push({ vassalId: char.id, receiverId: controllerId, receiverRank: receiverPostRank });
         break; // 该臣属已找到归属，跳出岗位循环
       }
     }

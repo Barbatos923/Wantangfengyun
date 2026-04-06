@@ -43,9 +43,11 @@ import './behaviors/adjustTaxBehavior';
 import './behaviors/adjustTypeBehavior';
 import './behaviors/adjustAppointRightBehavior';
 import './behaviors/adjustSuccessionBehavior';
+import './behaviors/adjustOwnPolicyBehavior';
 import './behaviors/adjustRedistributionBehavior';
 import './behaviors/reassignBehavior';
 import './behaviors/demandRightsBehavior';
+import './behaviors/negotiateTaxBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

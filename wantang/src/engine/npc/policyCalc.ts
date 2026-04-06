@@ -102,6 +102,11 @@ export function getVassalPolicyPosts(vassalId: string, ctx: NpcContext): PolicyP
   return result;
 }
 
+/** 获取角色自身持有的 grantsControl 岗位（用于自调政策） */
+export function getOwnPolicyPosts(actorId: string, ctx: NpcContext): PolicyPost[] {
+  return getVassalPolicyPosts(actorId, ctx);
+}
+
 // ── 辟署权权限校验 ──────────────────────────────────────────────────────────
 
 /**

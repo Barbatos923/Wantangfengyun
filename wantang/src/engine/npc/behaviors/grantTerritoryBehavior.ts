@@ -6,7 +6,7 @@ import type { Territory } from '@engine/territory/types';
 import { positionMap } from '@data/positions';
 import { getDirectControlLimit, getVassals } from '@engine/official/postQueries';
 import { canGrantTerritory } from '@engine/official/appointValidation';
-import { executeAppoint } from '@engine/interaction';
+import { executeAppoint, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
 import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -61,29 +61,36 @@ function pickBestVassal(
   return best;
 }
 
-// ── 辅助：选择授出的州（basePopulation 最低的） ─────────────
+// ── 辅助：选择授出的州（优先流官/无辟署权 + 人口低） ─────────────
 
 function pickZhouToGrant(
   actor: Character,
   directZhou: Territory[],
   territories: NpcContext['territories'],
 ): { territory: Territory; postId: string } | null {
-  // 按 basePopulation 升序，授出最差的
-  const sorted = [...directZhou].sort((a, b) => a.basePopulation - b.basePopulation);
+  // 综合评分：低分优先授出
+  const scored: { territory: Territory; postId: string; score: number }[] = [];
 
-  for (const zhou of sorted) {
-    // 校验能否授出（至少保留 1 个直辖州）
+  for (const zhou of directZhou) {
     const check = canGrantTerritory(actor, zhou.id, territories as Map<string, Territory>);
     if (!check.ok) continue;
 
-    // 找到该州的 grantsControl 岗位
     const mainPost = zhou.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-    if (mainPost) {
-      return { territory: zhou, postId: mainPost.id };
-    }
+    if (!mainPost) continue;
+
+    let score = 0;
+    // 流官优先授出（宗法留着更值钱）
+    if (mainPost.successionLaw === 'bureaucratic') score -= 100;
+    // 无辟署权优先授出
+    if (!mainPost.hasAppointRight) score -= 50;
+    // 人口低的优先授出
+    score += zhou.basePopulation;
+
+    scored.push({ territory: zhou, postId: mainPost.id, score });
   }
 
-  return null;
+  scored.sort((a, b) => a.score - b.score);
+  return scored.length > 0 ? { territory: scored[0].territory, postId: scored[0].postId } : null;
 }
 
 // ── 行为定义 ────────────────────────────────────────────────
@@ -138,8 +145,24 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
       if (!vassal || usedVassals.has(vassal.id)) break;
       usedVassals.add(vassal.id);
 
-      const grant = pickZhouToGrant(actor, directZhou, useTerritoryStore.getState().territories);
+      const currentTerritories = useTerritoryStore.getState().territories;
+      const grant = pickZhouToGrant(actor, directZhou, currentTerritories);
       if (!grant) break;
+
+      // 先改后授：授出前确保流官 + 无辟署权
+      const grantPost = useTerritoryStore.getState().findPost(grant.postId);
+      if (grantPost) {
+        if (grantPost.successionLaw === 'clan') {
+          const capitalZhouId = currentTerritories.get(grant.territory.id)?.capitalZhouId;
+          executeToggleSuccession(grant.postId, capitalZhouId, useTerritoryStore.getState().territories);
+          console.log(`[自身政策] ${actor.name}：${grant.territory.name} 授出前改为流官`);
+        }
+        const freshPost = useTerritoryStore.getState().findPost(grant.postId);
+        if (freshPost?.hasAppointRight) {
+          executeToggleAppointRight(grant.postId);
+          console.log(`[自身政策] ${actor.name}：${grant.territory.name} 授出前收回辟署权`);
+        }
+      }
 
       executeAppoint(grant.postId, vassal.id, actor.id);
       autoTransferChildrenAfterAppoint(grant.postId, actor.id);

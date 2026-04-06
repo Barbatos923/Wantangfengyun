@@ -1,0 +1,561 @@
+random.ts:5 Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.randomBytes" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ seedrandom.js?v=5fd3b264:429
+autoseed @ seedrandom.js?v=5fd3b264:517
+seedrandom @ seedrandom.js?v=5fd3b264:440
+(anonymous) @ random.ts:5
+adjustTaxBehavior.ts:87 [政策] 清海使 → 高骈：赋税 一般(2) → 放任(1)
+adjustTaxBehavior.ts:87 [政策] 邠宁使 → 卢潘：赋税 一般(2) → 放任(1)
+militaryAI.ts:93 [军编] 杜悰：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:93 [军编] 郑从谠：河东军 补将 → 李国昌（military=28）
+militaryAI.ts:93 [军编] 张允伸：卢龙军 补将 → 张允伸（military=23）
+militaryAI.ts:93 [军编] 王景崇：成德军 补将 → 王景崇（military=19）
+militaryAI.ts:93 [军编] 韩允中：魏博军 补将 → 韩允中（military=25）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第1营（strength=1000，净粮草=-6899）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第2营（strength=1000，净粮草=-4899）
+militaryAI.ts:93 [军编] 拓跋思恭：定难军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第1营（strength=1000，净粮草=-6706）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军铁骑第2营（strength=1000，净粮草=-4206）
+militaryAI.ts:93 [军编] 崔彦曾：淮南军 补将 → 裴远恩（military=13）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第1营（strength=1000，净粮草=-101）
+militaryAI.ts:216 [军编] 崔彦曾：财政裁营 淮南军重步第2营（strength=1000，净粮草=1899）
+militaryAI.ts:93 [军编] 刘潼：西川军 补将 → 刘潼（military=12）
+militaryAI.ts:93 [军编] 萧邺：兴元军 补将 → 杜远恩（military=12）
+militaryAI.ts:93 [军编] 卢潘：朔方军 补将 → 卢潘（military=21）
+militaryAI.ts:93 [军编] 李弘甫：泾原军 补将 → 李弘甫（military=21）
+militaryAI.ts:93 [军编] 张淮深：归义军 补将 → 张淮深（military=24）
+militaryAI.ts:93 [军编] 贾惟庆：坊州军 补将 → 贾惟庆（military=16）
+militaryAI.ts:216 [军编] 贾惟庆：财政裁营 坊州军重步第营（strength=1000，净粮草=1488）
+militaryAI.ts:93 [军编] 孙谠：遂州军 补将 → 孙谠（military=10）
+militaryAI.ts:93 [军编] 高骈：安南军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 李国昌：沙陀骑 补将 → 李国昌（military=28）
+militaryAI.ts:216 [军编] 李国昌：财政裁营 沙陀骑铁骑第1营（strength=1000，净粮草=1451）
+militaryAI.ts:93 [军编] 邠宁使：邠宁军 补将 → 拓跋思恭（military=26）
+militaryAI.ts:93 [军编] 同华使：同华军 补将 → 吴远恩（military=12）
+militaryAI.ts:93 [军编] 陕虢使：陕虢军 补将 → 陕虢使（military=10）
+militaryAI.ts:93 [军编] 昭义使：昭义军 补将 → 昭义使（military=17）
+militaryAI.ts:93 [军编] 义武使：义武军 补将 → 义武使（military=16）
+militaryAI.ts:38 [军编] 宣武使：建军「汴州军」驻汴州
+militaryAI.ts:93 [军编] 宣武使：汴州军 补将 → 宣武使（military=18）
+militaryAI.ts:93 [军编] 义成使：义成军 补将 → 义成使（military=11）
+militaryAI.ts:93 [军编] 天平使：天平军 补将 → 天平使（military=10）
+militaryAI.ts:93 [军编] 泰宁使：泰宁军 补将 → 泰宁使（military=15）
+militaryAI.ts:38 [军编] 武宁使：建军「徐州军」驻徐州
+militaryAI.ts:93 [军编] 武宁使：徐州军 补将 → 武宁使（military=17）
+militaryAI.ts:38 [军编] 平卢使：建军「青州军」驻青州
+militaryAI.ts:93 [军编] 平卢使：青州军 补将 → 蔡远恩（military=17）
+militaryAI.ts:93 [军编] 忠武使：忠武军 补将 → 忠武使（military=11）
+militaryAI.ts:93 [军编] 奉国使：奉国军 补将 → 奉国使（military=16）
+militaryAI.ts:93 [军编] 山南东使：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 荆南使：荆南军 补将 → 荆南使（military=10）
+militaryAI.ts:93 [军编] 武昌使：武昌军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 镇海使：镇海军 补将 → 温远恩（military=16）
+militaryAI.ts:93 [军编] 镇东使：镇东军 补将 → 严远恩（military=17）
+militaryAI.ts:93 [军编] 威武使：威武军 补将 → 威武使（military=15）
+militaryAI.ts:93 [军编] 宣歙使：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:93 [军编] 镇南使：镇南军 补将 → 陈承恩（military=17）
+militaryAI.ts:93 [军编] 湖南使：湖南军 补将 → 湖南使（military=10）
+militaryAI.ts:93 [军编] 东川使：东川军 补将 → 东川使（military=11）
+militaryAI.ts:93 [军编] 清海使：清海军 补将 → 高骈（military=30）
+militaryAI.ts:93 [军编] 岭南西使：岭南西道军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 静江使：静江军 补将 → 静江使（military=10）
+militaryAI.ts:216 [军编] 静江使：财政裁营 静江军重步第营（strength=1000，净粮草=172）
+militaryAI.ts:93 [军编] 天水使：天水军 补将 → 天水使（military=17）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第3营（strength=1000，净粮草=-1988）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第4营（strength=1000，净粮草=12）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第1营（strength=1000，净粮草=-1730）
+militaryAI.ts:216 [军编] 拓跋思恭：财政裁营 定难军轻骑第2营（strength=1000，净粮草=470）
+declareWarAction.ts:50 [战争] 宣战：高骈 → 清海使（独立）
+militaryAI.ts:38 [军编] 岭南西使：建军「邕州军」驻邕州
+militaryAI.ts:93 [军编] 岭南西使：邕州军 补将 → 岭南西使（military=16）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 义成使：赋税 一般(2) → 放任(1)
+characterSystem.ts:401 [留后] 郑从谠（河东道节度使）指定留后：郑延球
+characterSystem.ts:401 [留后] 张允伸（河北道·幽州节度使）指定留后：张简会
+characterSystem.ts:401 [留后] 张允伸（幽州防御使）指定留后：张简会
+characterSystem.ts:401 [留后] 张允伸（瀛州防御使）指定留后：张简会
+characterSystem.ts:401 [留后] 王景崇（河北道·成德节度使）指定留后：王崇文
+characterSystem.ts:401 [留后] 王景崇（镇州防御使）指定留后：王崇文
+characterSystem.ts:401 [留后] 王景崇（冀州防御使）指定留后：王崇文
+characterSystem.ts:401 [留后] 韩允中（河北道·魏博节度使）指定留后：韩君雄
+characterSystem.ts:401 [留后] 韩允中（魏州防御使）指定留后：韩君雄
+characterSystem.ts:401 [留后] 韩允中（相州防御使）指定留后：韩君雄
+characterSystem.ts:401 [留后] 崔彦曾（淮南道观察使）指定留后：崔知和
+characterSystem.ts:401 [留后] 刘潼（剑南道观察使）指定留后：无
+characterSystem.ts:401 [留后] 萧邺（山南西道节度使）指定留后：无
+characterSystem.ts:401 [留后] 李弘甫（陇右道节度使）指定留后：无
+characterSystem.ts:401 [留后] 张淮深（河西道节度使）指定留后：无
+characterSystem.ts:401 [留后] 邠宁使（关内道节度使）指定留后：无
+characterSystem.ts:401 [留后] 宣武使（河南道观察使）指定留后：无
+characterSystem.ts:401 [留后] 山南东使（山南东道观察使）指定留后：无
+characterSystem.ts:401 [留后] 镇海使（江南东道观察使）指定留后：无
+characterSystem.ts:401 [留后] 镇南使（江南西道观察使）指定留后：无
+characterSystem.ts:401 [留后] 清海使（岭南道观察使）指定留后：无
+militaryAI.ts:38 [军编] 静江使：建军「桂州军」驻桂州
+militaryAI.ts:93 [军编] 静江使：桂州军 补将 → 静江使（military=10）
+reassignAction.ts:254 [调任] 唐懿宗 调任 陕虢使 → 邓承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-npc-shanzhou → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-84 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: 空缺 → char-npc-shanzhou (由char-yizong任命)
+militaryAI.ts:93 [军编] 邓承恩：陕虢军 补将 → 邓承恩（military=14）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 天平使：赋税 一般(2) → 放任(1)
+warSettlement.ts:81 [战争] 结束：高骈 vs 清海使（独立）→ 高骈获胜
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 忠武使：赋税 一般(2) → 放任(1)
+reassignAction.ts:254 [调任] 唐懿宗 调任 邓承恩 → 蔡承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-gen-84 (由char-yizong任命)
+characterSystem.ts:401 [留后] 唐懿宗（京畿道观察使）指定留后：李儇
+characterSystem.ts:401 [留后] 唐懿宗（长安刺史）指定留后：李儇
+characterSystem.ts:401 [留后] 唐懿宗（都畿道观察使）指定留后：李儇
+characterSystem.ts:401 [留后] 唐懿宗（洛阳刺史）指定留后：李儇
+militaryAI.ts:38 [军编] 清海使：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 清海使：广州军 补将 → 岭南西使（military=16）
+militaryAI.ts:93 [军编] 蔡承恩：陕虢军 补将 → 蔡承恩（military=14）
+adjustTaxBehavior.ts:87 [政策] 清海使 → 岭南西使：赋税 一般(2) → 放任(1)
+declareWarAction.ts:50 [战争] 宣战：拓跋思恭 → 邠宁使（独立）
+CharacterStore.ts:117 [overlord变更] 拓跋思恭(char-tuo) overlord: 无 → 邠宁使
+warSettlement.ts:81 [战争] 结束：拓跋思恭 vs 邠宁使（独立）→ 邠宁使获胜
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 泰宁使：赋税 一般(2) → 放任(1)
+demandFealtyAction.ts:251 [要求效忠] 清海使 → 高骈 | chance=23% → 成功
+CharacterStore.ts:117 [overlord变更] 高骈(char-gao) overlord: 无 → 清海使
+militaryAI.ts:104 [军编] 清海使：广州军 换将 → 高骈（military=30，原岭南西使=16）
+reassignAction.ts:487 [调任提案] 路岩 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 蔡承恩 → 邓承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-84 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-gen-101 (由char-yizong任命)
+reassignAction.ts:487 [调任提案] 韦保衡 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 邓承恩 → 蔡承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-gen-84 (由char-yizong任命)
+militaryAI.ts:93 [军编] 蔡承恩：陕虢军 补将 → 蔡承恩（military=14）
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 义成使（武力兼并）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军重步第5营（strength=1000，净粮草=1923）
+TerritoryStore.ts:324 [岗位变动] 滑州 防御使: char-npc-yicheng → char-hanyunzhong (由char-hanyunzhong任命)
+warSettlement.ts:81 [战争] 结束：韩允中 vs 义成使（武力兼并）→ 韩允中获胜
+TerritoryStore.ts:324 [岗位变动] 滑州 防御使: char-hanyunzhong → char-han-junxiong (由char-hanyunzhong任命)
+declareWarAction.ts:50 [战争] 宣战：静江使 → 清海使（独立）
+militaryAI.ts:38 [军编] 韩君雄：建军「滑州军」驻滑州
+militaryAI.ts:93 [军编] 韩君雄：滑州军 补将 → 韩君雄（military=20）
+reassignAction.ts:254 [调任] 唐懿宗 调任 蔡承恩 → 邓承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-gen-84 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 防御使: 空缺 → char-gen-84 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-gen-101 (由char-yizong任命)
+militaryAI.ts:93 [军编] 邓承恩：陕虢军 补将 → 邓承恩（military=14）
+demandFealtyAction.ts:251 [要求效忠] 宣武使 → 韩君雄 | chance=65% → 成功
+CharacterStore.ts:117 [overlord变更] 韩君雄(char-han) overlord: 韩允中 → 宣武使
+declareWarAction.ts:50 [战争] 宣战：高骈 → 岭南西使（武力兼并）
+militaryAI.ts:216 [军编] 韩允中：财政裁营 魏博军铁骑第1营（strength=1000，净粮草=47）
+TerritoryStore.ts:324 [岗位变动] 邕州 防御使: char-npc-lingnan-w → char-gaopian (由char-gaopian任命)
+warSettlement.ts:81 [战争] 结束：高骈 vs 岭南西使（武力兼并）→ 高骈获胜
+CharacterStore.ts:117 [overlord变更] 静江使(char-npc) overlord: 无 → 清海使
+warSettlement.ts:81 [战争] 结束：静江使 vs 清海使（独立）→ 清海使获胜
+reassignAction.ts:254 [调任] 唐懿宗 调任 邓承恩 → 蔡承恩（成功率 69%）→ 拒绝（独立战争）
+declareWarAction.ts:50 [战争] 宣战：邓承恩 → 唐懿宗（独立）
+declareWarAction.ts:50 [战争] 宣战：高骈 → 唐懿宗（独立）
+demandRightsBehavior.ts:119 [逼迫授权] NPC 崔彦曾 → 唐懿宗：淮南道观察使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 崔彦曾 → 唐懿宗 (辟署权) | chance=34% → 失败
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 崔彦曾：赋税 一般(2) → 放任(1)
+characterSystem.ts:401 [留后] 宣武使（河南道观察使）指定留后：韩君雄
+militaryAI.ts:38 [军编] 唐懿宗：建军「长安军」驻长安
+militaryAI.ts:93 [军编] 唐懿宗：长安军 补将 → 张直方（military=30）
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 崔彦曾：淮南道观察使 改为军事制
+demandRightsBehavior.ts:119 [逼迫授权] NPC 邠宁使 → 唐懿宗：关内道节度使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 邠宁使 → 唐懿宗 (辟署权) | chance=31% → 成功
+demandRightsBehavior.ts:119 [逼迫授权] NPC 韩允中 → 唐懿宗：魏州防御使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 韩允中 → 唐懿宗 (辟署权) | chance=29% → 失败
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 韩允中：魏州防御使 授予辟署权
+demandRightsBehavior.ts:119 [逼迫授权] NPC 镇海使 → 唐懿宗：江南东道观察使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 镇海使 → 唐懿宗 (辟署权) | chance=31% → 失败
+demandRightsBehavior.ts:119 [逼迫授权] NPC 王景崇 → 唐懿宗：镇州防御使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 王景崇 → 唐懿宗 (辟署权) | chance=30% → 失败
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 镇海使：赋税 一般(2) → 放任(1)
+demandRightsBehavior.ts:119 [逼迫授权] NPC 郑从谠 → 唐懿宗：河东道节度使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 郑从谠 → 唐懿宗 (辟署权) | chance=31% → 失败
+adjustAppointRightBehavior.ts:113 [政策] 邠宁使 → 卢潘：灵州防御使 授予辟署权
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 王景崇：镇州防御使 授予辟署权
+demandRightsBehavior.ts:119 [逼迫授权] NPC 张淮深 → 唐懿宗：河西道节度使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 张淮深 → 唐懿宗 (辟署权) | chance=11% → 失败
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-ducong → 空缺 (未知)
+militaryAI.ts:38 [军编] 静江使：建军「桂州军」驻桂州
+militaryAI.ts:93 [军编] 静江使：桂州军 补将 → 静江使（military=10）
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 镇海使：江南东道观察使 改为军事制
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 郑从谠：赋税 一般(2) → 放任(1)
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 镇南使：赋税 一般(2) → 放任(1)
+militaryAI.ts:93 [军编] 刘瞻：凤翔军 补将 → 刘远恩（military=17）
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 镇海使：润州刺史 改为军事制
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 王景崇：冀州防御使 授予辟署权
+CharacterStore.ts:117 [overlord变更] 邓承恩(char-gen) overlord: 无 → 唐懿宗
+warSettlement.ts:81 [战争] 结束：邓承恩 vs 唐懿宗（独立）→ 唐懿宗获胜
+militaryAI.ts:38 [军编] 湖南使：建军「潭州军」驻潭州
+militaryAI.ts:93 [军编] 湖南使：潭州军 补将 → 湖南使（military=10）
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 崔彦曾：扬州刺史 改为军事制
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 郑从谠：太原防御使 改为世袭
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 刘潼：赋税 一般(2) → 放任(1)
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 邠宁使：赋税 一般(2) → 放任(1)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 刘潼：剑南道观察使 改为军事制
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 韩允中：相州防御使 授予辟署权
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-ct-liuzhan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: char-gen-10 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: char-gen-11 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 都知兵马使: char-gen-12 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: char-gen-13 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: char-gen-15 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: char-gen-17 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: char-gen-18 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: char-gen-19 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: char-gen-70 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 都知兵马使: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: char-gen-72 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: char-gen-73 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: char-gen-74 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: char-gen-75 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: char-gen-76 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 都知兵马使: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 泾州 录事参军: char-gen-78 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: char-gen-79 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 节度判官: char-gen-80 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 都知兵马使: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 沙州 录事参军: char-gen-82 → 空缺 (未知)
+militaryAI.ts:216 [军编] 王景崇：财政裁营 成德军重步第1营（strength=1000，净粮草=139）
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 郓州 防御使: char-npc-tianping → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 都畿道 都知兵马使: 空缺 → char-npc-tianping (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: char-npc-shanzhou → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: 空缺 → char-npc-shanzhou (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 宣州 刺史: char-npc-xuanshe → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河东道 都知兵马使: 空缺 → char-npc-xuanshe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 太原 录事参军: 空缺 → char-npc-lingnan-w (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潞州 录事参军: 空缺 → char-ct-cuiyin (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: 空缺 → char-gen-12 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 许州 防御使: char-npc-zhongwu → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 都知兵马使: 空缺 → char-npc-zhongwu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: 空缺 → char-gen-77 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: 空缺 → char-gen-81 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: char-npc-hunan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 都知兵马使: 空缺 → char-npc-hunan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 泾州 录事参军: 空缺 → char-zhangzhifang (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 秦州 录事参军: 空缺 → char-ct-lizheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河西道 节度判官: 空缺 → char-ct-zhoubao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 江陵 刺史: char-npc-jingnan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河西道 都知兵马使: 空缺 → char-npc-jingnan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: char-gen-64 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 沙州 录事参军: 空缺 → char-gen-64 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 郓州 防御使: 空缺 → char-gen-13 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司巡官: 空缺 → char-ct-lufang (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 宣州 刺史: 空缺 → char-gen-17 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 许州 防御使: 空缺 → char-gen-78 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: 空缺 → char-gen-18 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 江陵 刺史: 空缺 → char-gen-19 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: 空缺 → char-gen-72 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: 空缺 → char-gen-73 (由char-gaopian任命)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: 空缺 → char-gen-10 (由char-tuobasigong任命)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: 空缺 → char-gen-74 (由char-npc-jingjiang任命)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: 空缺 → char-gen-14 (由char-gen-84任命)
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 郑从谠：河中防御使 改为世袭
+demandFealtyAction.ts:251 [要求效忠] 镇海使 → 高远恩 | chance=56% → 失败
+CharacterStore.ts:117 [overlord变更] 马远恩(char-gen) overlord: 唐懿宗 → 宣武使
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 郑从谠：河东道节度使 授予辟署权
+militaryAI.ts:93 [军编] 马远恩：天平军 补将 → 马远恩（military=17）
+militaryAI.ts:93 [军编] 高远恩：宣歙军 补将 → 王承恩（military=14）
+militaryAI.ts:38 [军编] 罗远恩：建军「潭州军」驻潭州
+militaryAI.ts:93 [军编] 罗远恩：潭州军 补将 → 罗远恩（military=9）
+militaryAI.ts:93 [军编] 郭远恩：荆南军 补将 → 郭远恩（military=10）
+militaryAI.ts:93 [军编] 罗承恩：忠武军 补将 → 罗承恩（military=13）
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 刘潼：成都刺史 改为军事制
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 崔彦曾：扬州防御使 改为世袭
+CharacterStore.ts:117 [overlord变更] 高远恩(char-gen) overlord: 唐懿宗 → 镇海使
+warSettlement.ts:81 [战争] 结束：高骈 vs 唐懿宗（独立）→ 唐懿宗获胜
+CharacterStore.ts:117 [overlord变更] 罗远恩(char-gen) overlord: 唐懿宗 → 镇南使
+militaryAI.ts:38 [军编] 张允伸：建军「幽州军」驻幽州
+militaryAI.ts:93 [军编] 张允伸：幽州军 补将 → 张允伸（military=23）
+adjustSuccessionBehavior.ts:117 [政策] 张允伸 → 义武使：定州防御使 改为世袭
+CharacterStore.ts:117 [overlord变更] 郭远恩(char-gen) overlord: 唐懿宗 → 山南东使
+adjustTaxBehavior.ts:87 [政策] 张允伸 → 义武使：赋税 一般(2) → 放任(1)
+CharacterStore.ts:117 [overlord变更] 罗承恩(char-gen) overlord: 唐懿宗 → 宣武使
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 张淮深：沙州防御使 改为世袭
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 郑从谠：太原防御使 授予辟署权
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 马远恩：赋税 一般(2) → 放任(1)
+militaryAI.ts:216 [军编] 高远恩：财政裁营 宣歙军重步第营（strength=1000，净粮草=1847）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 郑从谠：河中防御使 授予辟署权
+militaryAI.ts:216 [军编] 刘瞻：财政裁营 凤翔军重步第营（strength=963，净粮草=1528）
+militaryAI.ts:216 [军编] 郭远恩：财政裁营 荆南军重步第营（strength=1000，净粮草=1911）
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: char-gen-31 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河北道·魏博 都知兵马使: 空缺 → char-gen-31 (由char-hanyunzhong任命)
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张淮深：河西道节度使 授予辟署权
+characterSystem.ts:401 [留后] 郑从谠（河中防御使）指定留后：郑延球
+characterSystem.ts:401 [留后] 李弘甫（陇右道节度使）指定留后：湖南使
+characterSystem.ts:401 [留后] 义武使（定州防御使）指定留后：无
+declareWarAction.ts:50 [战争] 宣战：韩允中 → 昭义使（武力兼并）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张淮深：沙州防御使 授予辟署权
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 崔彦曾：淮南道节度使 授予辟署权
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 崔彦曾：扬州防御使 授予辟署权
+reassignAction.ts:254 [调任] 唐懿宗 调任 刘瞻 → 蔡承恩（成功率 93%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-ct-liuzhan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-ct-liuzhan (由char-yizong任命)
+militaryAI.ts:93 [军编] 蔡承恩：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:216 [军编] 蔡承恩：财政裁营 凤翔军弓弩第营（strength=985，净粮草=1862）
+reassignAction.ts:254 [调任] 唐懿宗 调任 宣武使 → 裴璩（成功率 93%）→ 拒绝（独立战争）
+declareWarAction.ts:50 [战争] 宣战：宣武使 → 唐懿宗（独立）
+TerritoryStore.ts:324 [岗位变动] 潞州 防御使: char-npc-zhaoyi → char-hanyunzhong (由char-hanyunzhong任命)
+warSettlement.ts:81 [战争] 结束：韩允中 vs 昭义使（武力兼并）→ 韩允中获胜
+TerritoryStore.ts:324 [岗位变动] 相州 防御使: char-hanyunzhong → char-ct-cuiyin (由char-hanyunzhong任命)
+CharacterStore.ts:117 [overlord变更] 韩允中(char-han) overlord: 唐懿宗 → 郑从谠
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 罗承恩：赋税 一般(2) → 放任(1)
+militaryAI.ts:38 [军编] 崔胤：建军「相州军」驻相州
+militaryAI.ts:93 [军编] 崔胤：相州军 补将 → 石远恩（military=14）
+militaryAI.ts:216 [军编] 高远恩：财政裁营 宣歙军弓弩第营（strength=1000，净粮草=1802）
+CharacterStore.ts:117 [overlord变更] 宣武使(char-npc) overlord: 无 → 唐懿宗
+warSettlement.ts:81 [战争] 结束：宣武使 vs 唐懿宗（独立）→ 唐懿宗获胜
+reassignAction.ts:254 [调任] 唐懿宗 调任 李弘甫 → 彭承恩（成功率 85%）→ 拒绝（独立战争）
+declareWarAction.ts:50 [战争] 宣战：李弘甫 → 唐懿宗（独立）
+adjustAppointRightBehavior.ts:113 [政策] 郑从谠 → 韩允中：潞州防御使 授予辟署权
+CharacterStore.ts:117 [overlord变更] 李弘甫(char-lih) overlord: 无 → 唐懿宗
+warSettlement.ts:81 [战争] 结束：李弘甫 vs 唐懿宗（独立）→ 唐懿宗获胜
+characterSystem.ts:401 [留后] 崔胤（相州防御使）指定留后：无
+declareWarAction.ts:50 [战争] 宣战：奉国使 → 宣武使（独立）
+reassignAction.ts:254 [调任] 唐懿宗 调任 山南东使 → 裴璩（成功率 89%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: char-npc-shannan-e → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: 空缺 → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 襄州 刺史: char-npc-shannan-e → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: 空缺 → char-npc-shannan-e (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 武昌使：赋税 一般(2) → 放任(1)
+CharacterStore.ts:117 [overlord变更] 奉国使(char-npc) overlord: 无 → 宣武使
+warSettlement.ts:81 [战争] 结束：奉国使 vs 宣武使（独立）→ 宣武使获胜
+militaryAI.ts:93 [军编] 裴璩：山南东道军 补将 → 武昌使（military=16）
+reassignAction.ts:254 [调任] 唐懿宗 调任 镇南使 → 李蔚（成功率 92%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: char-npc-zhennan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-liwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: 空缺 → char-liwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 刺史: char-npc-zhennan → char-liwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-npc-zhennan (由char-yizong任命)
+adjustAppointRightBehavior.ts:113 [政策] 宣武使 → 马远恩：郓州防御使 授予辟署权
+militaryAI.ts:93 [军编] 李蔚：镇南军 补将 → 刘承恩（military=16）
+reassignAction.ts:254 [调任] 唐懿宗 调任 蔡承恩 → 许承恩（成功率 87%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-83 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-gen-101 (由char-yizong任命)
+militaryAI.ts:93 [军编] 许承恩：凤翔军 补将 → 刘远恩（military=17）
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 平卢使：赋税 一般(2) → 放任(1)
+reassignAction.ts:254 [调任] 唐懿宗 调任 许承恩 → 蔡承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-gen-83 (由char-yizong任命)
+militaryAI.ts:93 [军编] 蔡承恩：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:216 [军编] 郭远恩：财政裁营 荆南军弓弩第营（strength=1000，净粮草=2000）
+militaryAI.ts:216 [军编] 罗承恩：财政裁营 忠武军重步第1营（strength=1000，净粮草=1848）
+adjustSuccessionBehavior.ts:117 [政策] 郑从谠 → 韩允中：潞州防御使 改为世袭
+militaryAI.ts:216 [军编] 马远恩：财政裁营 天平军重步第1营（strength=1000，净粮草=1864）
+militaryAI.ts:216 [军编] 高远恩：财政裁营 宣歙军轻步第营（strength=1000，净粮草=1923）
+adjustAppointRightBehavior.ts:113 [政策] 宣武使 → 罗承恩：许州防御使 授予辟署权
+characterSystem.ts:401 [留后] 韩允中（潞州防御使）指定留后：韩君雄
+adjustSuccessionBehavior.ts:117 [政策] 宣武使 → 马远恩：郓州防御使 改为世袭
+reassignAction.ts:254 [调任] 唐懿宗 调任 蔡承恩 → 许承恩（成功率 93%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-83 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-gen-101 (由char-yizong任命)
+militaryAI.ts:93 [军编] 许承恩：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:216 [军编] 李蔚：财政裁营 镇南军重步第营（strength=1000，净粮草=1946）
+militaryAI.ts:216 [军编] 罗远恩：财政裁营 潭州军轻步兵第1营（strength=1000，净粮草=1970）
+reassignAction.ts:487 [调任提案] 路岩 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 裴璩 → 裴坦（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: char-ct-peitan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: 空缺 → char-ct-peitan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 襄州 刺史: char-ct-peizhao → char-ct-peitan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: 空缺 → char-ct-peizhao (由char-yizong任命)
+reassignAction.ts:254 [调任] 唐懿宗 调任 许承恩 → 蔡承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-gen-83 (由char-yizong任命)
+militaryAI.ts:93 [军编] 裴坦：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:93 [军编] 蔡承恩：凤翔军 补将 → 刘远恩（military=17）
+characterSystem.ts:401 [留后] 马远恩（郓州防御使）指定留后：无
+militaryAI.ts:216 [军编] 罗承恩：财政裁营 忠武军重步第2营（strength=1000，净粮草=1996）
+reassignAction.ts:254 [调任] 唐懿宗 调任 蔡承恩 → 许承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-83 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-gen-101 (由char-yizong任命)
+militaryAI.ts:93 [军编] 许承恩：凤翔军 补将 → 刘远恩（military=17）
+TerritoryStore.ts:324 [岗位变动] 山南西道 节度使: char-xiaoye → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 兴元 防御使: char-xiaoye → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: char-liwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洪州 刺史: char-liwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 山南西道 节度使: 空缺 → char-liwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 兴元 防御使: 空缺 → char-liwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: 空缺 → char-ct-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 刺史: 空缺 → char-ct-zhaoyi (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: char-gen-10 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: char-gen-14 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: char-gen-12 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江陵 刺史: char-gen-19 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 兴元 防御使: char-liwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: char-gen-72 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: char-gen-18 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: char-gen-16 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: char-gen-71 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: char-gen-77 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: char-gen-74 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: char-gen-73 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: char-gen-81 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: char-npc-shannan-e → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-npc-zhennan → 空缺 (未知)
+militaryAI.ts:93 [军编] 赵义：镇南军 补将 → 刘承恩（military=16）
+militaryAI.ts:216 [军编] 赵义：财政裁营 镇南军弓弩第营（strength=1000，净粮草=-4428）
+militaryAI.ts:216 [军编] 赵义：财政裁营 镇南军轻步第营（strength=1000，净粮草=-2428）
+militaryAI.ts:216 [军编] 裴坦：财政裁营 山南东道军重步第1营（strength=1000，净粮草=-1550）
+militaryAI.ts:216 [军编] 裴坦：财政裁营 山南东道军重步第2营（strength=1000，净粮草=450）
+militaryAI.ts:216 [军编] 许承恩：财政裁营 凤翔军轻步第营（strength=985，净粮草=1702）
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: char-ct-yushe → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江陵 刺史: 空缺 → char-ct-yushe (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: char-ct-liuzhan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 洪州 录事参军: 空缺 → char-ct-liuzhan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: 空缺 → char-npc-shannan-e (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 岭南道 节度判官: 空缺 → char-npc-zhennan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: char-npc-yicheng → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 广州 录事参军: 空缺 → char-npc-yicheng (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 邕州 录事参军: 空缺 → char-gen-16 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 都畿道 节度判官: 空缺 → char-gen-71 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 正字: 空缺 → char-gen-18 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洛阳 录事参军: 空缺 → char-gen-19 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 翰林学士: char-ct-zhengwei → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司使: 空缺 → char-ct-zhengwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 兵部尚书: char-ct-xiaochu → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-ct-xiaochu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 翰林学士: 空缺 → char-gen-72 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 兵部尚书: 空缺 → char-li-xuan (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: char-npc-shanzhou → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 河中 录事参军: 空缺 → char-npc-shanzhou (由char-zhengcongdang任命)
+TerritoryStore.ts:324 [岗位变动] 河东道 节度判官: 空缺 → char-npc-zhaoyi (由char-zhengcongdang任命)
+TerritoryStore.ts:324 [岗位变动] 交州 录事参军: 空缺 → char-gen-77 (由char-gaopian任命)
+TerritoryStore.ts:324 [岗位变动] 夏州 录事参军: 空缺 → char-gen-10 (由char-tuobasigong任命)
+TerritoryStore.ts:324 [岗位变动] 陇右道 节度判官: 空缺 → char-gen-81 (由char-lihongfu任命)
+TerritoryStore.ts:324 [岗位变动] 桂州 录事参军: 空缺 → char-gen-74 (由char-npc-jingjiang任命)
+TerritoryStore.ts:324 [岗位变动] 陕州 录事参军: 空缺 → char-gen-14 (由char-gen-84任命)
+reassignAction.ts:487 [调任提案] 韦保衡 提议调任（批准率 92%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 山南东使 → 蔡承恩（成功率 92%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: char-npc-shannan-e → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: char-gen-101 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 潭州 刺史: 空缺 → char-gen-101 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 三司推官: 空缺 → char-npc-shannan-e (由char-yizong任命)
+reassignAction.ts:254 [调任] 唐懿宗 调任 许承恩 → 魏承恩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 校书郎: char-gen-100 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-100 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 校书郎: 空缺 → char-gen-83 (由char-yizong任命)
+militaryAI.ts:93 [军编] 于琮：荆南军 补将 → 余远恩（military=10）
+militaryAI.ts:93 [军编] 魏承恩：凤翔军 补将 → 刘远恩（military=17）
+militaryAI.ts:38 [军编] 蔡承恩：建军「潭州军」驻潭州
+militaryAI.ts:93 [军编] 蔡承恩：潭州军 补将 → 蔡承恩（military=14）
+adjustAppointRightBehavior.ts:113 [政策] 宣武使 → 泰宁使：兖州防御使 授予辟署权
+reassignAction.ts:487 [调任提案] 路岩 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 清海使 → 裴璩（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 岭南道 观察使: char-npc-qinghai → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 观察使: 空缺 → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 刺史: char-npc-qinghai → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 户部尚书: 空缺 → char-npc-qinghai (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 裴璩 → 静江使：赋税 一般(2) → 放任(1)
+militaryAI.ts:38 [军编] 裴璩：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 裴璩：广州军 补将 → 高骈（military=30）
+reassignAction.ts:487 [调任提案] 韦保衡 提议调任（批准率 95%）→ 皇帝唐懿宗 批准
+reassignAction.ts:254 [调任] 唐懿宗 调任 裴璩 → 萧仿（成功率 95%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 岭南道 观察使: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-ct-xiaochu → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 岭南道 观察使: 空缺 → char-ct-xiaochu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 广州 刺史: char-ct-peizhao → char-ct-xiaochu (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-ct-peizhao (由char-yizong任命)
+militaryAI.ts:38 [军编] 萧仿：建军「广州军」驻广州
+militaryAI.ts:93 [军编] 萧仿：广州军 补将 → 高骈（military=30）
+declareWarAction.ts:50 [战争] 宣战：张淮深 → 卢潘（武力兼并）
+characterSystem.ts:111 [继承] 河北道·幽州 节度使: 死者=张允伸 → receiver=张简会(char-zhang-jian) heir=宗法
+TerritoryStore.ts:324 [岗位变动] 河北道·幽州 节度使: char-zhangyunshen → char-zhang-jian (继承)
+TerritoryStore.ts:324 [岗位变动] 幽州 防御使: char-zhangyunshen → char-zhang-jian (继承)
+characterSystem.ts:111 [继承] 瀛州 防御使: 死者=张允伸 → receiver=张允伸(char-zhangyunshen) heir=绝嗣上交
+militaryAI.ts:93 [军编] 张简会：幽州军 补将 → 张简会（military=19）
+militaryAI.ts:216 [军编] 张简会：财政裁营 幽州军弓箭手第1营（strength=1000，净粮草=-6395）
+militaryAI.ts:216 [军编] 张简会：财政裁营 幽州军重步兵第2营（strength=1000，净粮草=-4395）
+TerritoryStore.ts:324 [岗位变动] 灵州 防御使: char-lupan → char-zhanghuaishen (由char-zhanghuaishen任命)
+warSettlement.ts:81 [战争] 结束：张淮深 vs 卢潘（武力兼并）→ 张淮深获胜
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 张淮深：灵州防御使 改为世袭
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 张简会：赋税 一般(2) → 放任(1)
+demandRightsBehavior.ts:119 [逼迫授权] NPC 裴坦 → 唐懿宗：山南东道观察使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 裴坦 → 唐懿宗 (辟署权) | chance=34% → 失败
+demandRightsBehavior.ts:119 [逼迫授权] NPC 萧仿 → 唐懿宗：岭南道观察使 辟署权
+demandRightsAction.ts:305 [逼迫授权] 萧仿 → 唐懿宗 (辟署权) | chance=34% → 失败
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 萧仿：广州刺史 改为世袭
+militaryAI.ts:38 [军编] 唐懿宗：建军「长安军」驻长安
+militaryAI.ts:93 [军编] 唐懿宗：长安军 补将 → 张淮深（military=24）
+militaryAI.ts:216 [军编] 张简会：财政裁营 幽州军轻骑兵第3营（strength=1000，净粮草=1979）
+demandRightsBehavior.ts:119 [逼迫授权] NPC 邓承恩 → 唐懿宗：陕州防御使 宗法继承权
+demandRightsAction.ts:305 [逼迫授权] 邓承恩 → 唐懿宗 (宗法继承权) | chance=26% → 成功
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: char-ct-peitan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 襄州 刺史: char-ct-peitan → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 剑南道 节度使: char-liutong → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 成都 防御使: char-liutong → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 山南东道 观察使: 空缺 → char-liutong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 襄州 刺史: 空缺 → char-liutong (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 剑南道 节度使: 空缺 → char-ct-sunwei (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 成都 防御使: 空缺 → char-ct-sunwei (由char-yizong任命)
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 萧仿：赋税 一般(2) → 放任(1)
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 孙威：成都防御使 改为世袭
+reassignAction.ts:254 [调任] 唐懿宗 调任 魏承恩 → 许承恩（成功率 46%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: char-gen-100 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 校书郎: char-gen-83 → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 凤翔 防御使: 空缺 → char-gen-83 (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 校书郎: 空缺 → char-gen-100 (由char-yizong任命)
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 张简会：幽州防御使 授予辟署权
+militaryAI.ts:93 [军编] 孙威：西川军 补将 → 孙威（military=23）
+militaryAI.ts:93 [军编] 刘潼：山南东道军 补将 → 武昌使（military=16）
+militaryAI.ts:216 [军编] 张简会：财政裁营 幽州军轻步兵第4营（strength=1000，净粮草=1424）
+militaryAI.ts:93 [军编] 许承恩：凤翔军 补将 → 刘远恩（military=17）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 孙威：剑南道节度使 授予辟署权
+declareWarAction.ts:50 [战争] 宣战：崔胤 → 唐懿宗（独立）
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 孙威：赋税 一般(2) → 放任(1)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 宣武使：河南道观察使 改为军事制
+adjustSuccessionBehavior.ts:117 [政策] 唐懿宗 → 宣武使：汴州刺史 改为世袭
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 李蔚：赋税 一般(2) → 放任(1)
+warSettlement.ts:81 [战争] 结束：崔胤 vs 唐懿宗（独立）→ 唐懿宗获胜
+militaryAI.ts:216 [军编] 高骈：财政裁营 安南军重步第1营（strength=1000，净粮草=1699）
+militaryAI.ts:216 [军编] 马远恩：财政裁营 天平军重步第2营（strength=1000，净粮草=1975）
+adjustAppointRightBehavior.ts:113 [政策] 宣武使 → 武宁使：徐州防御使 授予辟署权
+adjustTaxBehavior.ts:87 [政策] 宣武使 → 武宁使：赋税 一般(2) → 放任(1)
+adjustTypeBehavior.ts:104 [政策] 唐懿宗 → 宣武使：汴州刺史 改为军事制
+reassignAction.ts:254 [调任] 唐懿宗 调任 赵义 → 裴璩（成功率 68%）→ 成功
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: char-ct-zhaoyi → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: char-ct-peizhao → 空缺 (未知)
+TerritoryStore.ts:324 [岗位变动] 江南西道 观察使: 空缺 → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 洪州 刺史: char-ct-zhaoyi → char-ct-peizhao (由char-yizong任命)
+TerritoryStore.ts:324 [岗位变动] 中央 吏部尚书: 空缺 → char-ct-zhaoyi (由char-yizong任命)
+characterSystem.ts:401 [留后] 张淮深（灵州防御使）指定留后：无
+characterSystem.ts:401 [留后] 张简会（河北道·幽州节度使）指定留后：无
+characterSystem.ts:401 [留后] 张简会（幽州防御使）指定留后：无
+characterSystem.ts:401 [留后] 邓承恩（陕州防御使）指定留后：无
+militaryAI.ts:93 [军编] 裴璩：镇南军 补将 → 刘承恩（military=16）
+militaryAI.ts:148 [军编] 裴璩：调营 镇南军轻骑兵第4营 从镇南军 → 广州军
+militaryAI.ts:216 [军编] 张简会：财政裁营 幽州军轻骑兵第5营（strength=1000，净粮草=1522）
+adjustTaxBehavior.ts:87 [政策] 唐懿宗 → 宣武使：赋税 一般(2) → 放任(1)
+militaryAI.ts:148 [军编] 裴璩：调营 镇南军轻骑兵第5营 从镇南军 → 广州军
+reassignAction.ts:254 [调任] 唐懿宗 调任 镇海使 → 彭承恩（成功率 67%）→ 拒绝（独立战争）
+declareWarAction.ts:50 [战争] 宣战：镇海使 → 唐懿宗（独立）
+adjustAppointRightBehavior.ts:113 [政策] 唐懿宗 → 孙威：成都防御使 授予辟署权

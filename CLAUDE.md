@@ -32,7 +32,7 @@ src/
 │   ├── military/    # MilitaryStore/WarStore + 战斗/行军/围城/结算
 │   ├── interaction/ # 玩家交互 Action（任命/罢免/宣战/调任/剥夺/篡夺等）
 │   ├── decision/    # 决议系统（称王/称帝/建镇/销毁头衔）
-│   ├── npc/         # NPC Engine 框架 + 28 个行为模块
+│   ├── npc/         # NPC Engine 框架 + 29 个行为模块
 │   └── systems/     # 月结管线各 System（9 个）
 ├── data/            # 纯静态数据（JSON + 定义表，禁止放逻辑）
 ├── ui/              # React UI 层（只读 Store + 调用 interaction）
@@ -94,8 +94,13 @@ src/
 ### 自我领主防御
 `updateCharacter(X, { overlordId: Y })` 必须确保 `X !== Y`。CharacterStore 有 DEBUG 监测。
 
+### overlord 变动自动重置赋税
+CharacterStore 在 `updateCharacter` 和 `batchMutate` 中检测 overlordId 变化，自动重置 `centralization` 为 `undefined`（等效默认2级）。赋税好感双向：臣属→领主（高税=不满）、领主→臣属（高税=满意），无地臣属（`isRuler === false`）不适用。
+
 ### 辟署权与权限
-- 独立统治者自动辟署权（`ensureAppointRight`，三个调用点）
+- 独立统治者自动辟署权（`ensureAppointRight`，三个事件触发点：独立宣战/继承/乱世转换，**无月结扫描**）
+- 独立统治者/皇帝可主动调整自己岗位的继承法和辟署权（玩家通过 RealmPanel 体制Tab，NPC 通过 `adjustOwnPolicyBehavior`）
+- `grantTerritoryBehavior` 授出前先改后授（clan→bureaucratic + 移除辟署权），优先授出流官/无辟署权州
 - 剥夺领地需辟署权；直接任命不需辟署权
 - 铨选/考课由辟署权路由（`resolveAppointAuthority`）
 
@@ -110,13 +115,13 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - 皇帝用 `findEmperorId(territories, centralPosts)` 查找（不在 centralPosts 里）
 - 铨选 `dismisserId` 传法理主体，不传经办人
 - `canGrantTerritory` 禁止授出治所州
-- `transferVassalBehavior` receiver 品级严格高于 vassal
+- `transferVassalBehavior` receiver 岗位模板品级（minRank）严格高于 vassal（非个人 rankLevel）
 
 ---
 
-## 六、NPC Engine（29 个行为，已日结化）
+## 六、NPC Engine（31 个行为，已日结化）
 
-行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/逼迫授权 | 政策：调税/调职类/调辟署权/调继承法/调回拨率 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
+行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/逼迫授权/议定进奉 | 政策：调税/调职类/调辟署权/调继承法/调回拨率/自身政策调整 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
 
 - `playerMode`：`push-task` / `skip` / `auto-execute` / `standing`
 - `schedule`：`daily`（默认 push-task）/ `monthly-slot`（哈希槽位+品级分档）
@@ -133,7 +138,7 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 八、当前开发阶段
 
-Phase 6（谋略+派系+事件）92%。详细进度见 `docs/milestones.md`。
+Phase 6（谋略+派系+事件）94%。详细进度见 `docs/milestones.md`。
 
 ### 尚未完成（当前优先）
 - 无

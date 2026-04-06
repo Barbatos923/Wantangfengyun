@@ -122,7 +122,7 @@ function destroyEmperorPost(): void {
     }
   }
 
-  // 独立统治者自动获得辟署权（通过统一入口）
+  // 新独立统治者自动获得辟署权
   const charStore2 = useCharacterStore.getState();
   for (const [id, c] of charStore2.characters) {
     if (c.alive && c.overlordId === undefined && c.isRuler) {

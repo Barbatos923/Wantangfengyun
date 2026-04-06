@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ░░░░░░░░░░░░    0%  ⬜ 未开始
-Phase 6  谋略 + 派系 + 事件 ██████████░░   93%  ⬜ NPC Engine 29 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权
+Phase 6  谋略 + 派系 + 事件 ██████████░░   94%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -188,12 +188,12 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 
 **已完成（按系统归类）：**
 
-**NPC Engine（28 个行为）**：
+**NPC Engine（31 个行为）**：
 - ✅ 框架：日结化调度、哈希槽位+品级分档、push-task/skip/auto-execute/standing 四种 playerMode
 - ✅ 行政行为：铨选 / 考课 / 罢免 / 皇帝调任 / 宰相调任
 - ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争
-- ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠 / 逼迫授权
-- ✅ 政策行为：调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率（通用讨好评估 `evaluateAppeasementTargets` + 权限校验 `hasAuthorityOverPost`）
+- ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠 / 逼迫授权 / 议定进奉
+- ✅ 政策行为：调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率 / 自身政策调整（通用讨好评估 `evaluateAppeasementTargets` + 权限校验 `hasAuthorityOverPost`）
 - ✅ 决议行为：称王建镇 / 称帝 / 篡夺
 - ✅ 其他：建设 / 和谈
 
@@ -284,6 +284,23 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 玩家是上级时：StoryEvent弹窗（授予+5感激 / 拒绝-25）
 - ✅ UI：`DemandRightsFlow.tsx`（岗位选择+预览+结果三阶段）
 - ✅ NPC路径用 `holderIndex` 优化，O(N_post_held)
+
+**议定进奉系统 + 赋税好感双向化 + overlord变动重置**（2026-04-06）：
+- ✅ 玩家交互：`negotiateTaxAction.ts`（点击领主→选择升/降→成功率预览→骰子判定）
+- ✅ 双向：臣属可请求降低（base 0，靠好感/兵力/性格）或提高（base 100，仅多疑领主小幅拒绝）
+- ✅ 半年冷却（`lastNegotiateTaxDay`），好感后果：成功±5、失败-15
+- ✅ NPC行为：`negotiateTaxBehavior.ts`（centralization≥3时请求降低，胆量/贪婪驱动）
+- ✅ 玩家是领主时：StoryEvent弹窗（同意+5 / 拒绝-15）
+- ✅ 赋税好感双向化：臣属→领主（高税=不满）+ 领主→臣属（高税=满意），无地臣属不适用
+- ✅ overlord变动自动重置centralization：CharacterStore updateCharacter/batchMutate 两处拦截
+- ✅ 转移臣属品级检查修复：改用岗位模板minRank（非个人rankLevel），防止同级节度使互转
+- ✅ CharacterPanel 内联弹窗统一重构为 `<Modal>` + `<ModalHeader>` + `<Button>`（9处）
+
+**自身政策调整 + 授予领地优化**（2026-04-06）：
+- ✅ 玩家UI：RealmPanel 体制Tab 继承体制区域改为可交互按钮（独立统治者/皇帝可切换继承法和辟署权）
+- ✅ NPC行为：`adjustOwnPolicyBehavior.ts`（独立统治者自愿提升自身权力：流官→宗法、无辟署→有辟署，honor驱动/greed抑制）
+- ✅ 授予领地优化：`grantTerritoryBehavior` 排序优先流官/无辟署权州（−100/−50评分），授出前先改后授（clan→bureaucratic + 移除辟署权）
+- ✅ 移除 eraSystem 月结 ensureAppointRight 全量扫描（保留乱世转换+事件触发点），允许辟署权持久变更
 
 **待做（新系统）：**
 - 谋略系统（个人计谋 + 政治计谋，成功率积累）

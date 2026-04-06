@@ -103,7 +103,13 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       const chars = new Map(state.characters);
       const existing = chars.get(id);
       if (!existing) return state;
-      chars.set(id, { ...existing, ...patch });
+
+      // overlordId 变动时重置 centralization（除非 caller 显式设置了）
+      let effectivePatch = patch;
+      if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId && !('centralization' in patch)) {
+        effectivePatch = { ...patch, centralization: undefined };
+      }
+      chars.set(id, { ...existing, ...effectivePatch });
 
       // DEBUG: 检测自我领主
       if (patch.overlordId !== undefined && patch.overlordId === id) {
@@ -114,7 +120,7 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       if (patch.overlordId !== undefined && patch.overlordId !== existing.overlordId && existing.isRuler) {
         const oldOverlord = existing.overlordId ? chars.get(existing.overlordId)?.name ?? existing.overlordId : '无';
         const newOverlord = patch.overlordId ? chars.get(patch.overlordId)?.name ?? patch.overlordId : '无';
-        console.log(`[overlord变更] ${existing.name}(${id.slice(0,8)}) overlord: ${oldOverlord} → ${newOverlord}`);
+        console.log(`[overlord变更] ${existing.name}(${id.slice(0,8)}) overlord: ${oldOverlord} → ${newOverlord}`, new Error().stack);
       }
 
       // 维护 vassalIndex
@@ -261,7 +267,29 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
   batchMutate: (mutator) => {
     set((state) => {
       const chars = new Map(state.characters);
+      const oldOverlords = new Map<string, string | undefined>();
+      for (const [id, c] of chars) {
+        if (c.alive) oldOverlords.set(id, c.overlordId);
+      }
       mutator(chars);
+
+      // overlordId 变动时重置 centralization + DEBUG 追踪
+      for (const [id, oldOv] of oldOverlords) {
+        const c = chars.get(id);
+        if (!c) continue;
+        if (c.overlordId !== oldOv) {
+          // 重置 centralization
+          if (c.centralization !== undefined) {
+            chars.set(id, { ...c, centralization: undefined });
+          }
+          // DEBUG 日志（仅 isRuler）
+          if (c.isRuler) {
+            const oldName = oldOv ? (chars.get(oldOv)?.name ?? oldOv) : '无';
+            const newName = c.overlordId ? (chars.get(c.overlordId)?.name ?? c.overlordId) : '无';
+            console.log(`[overlord变更/batch] ${c.name}(${id.slice(0,8)}) overlord: ${oldName} → ${newName}`, new Error().stack);
+          }
+        }
+      }
 
       // DEBUG: 检测自我领主
       for (const c of chars.values()) {

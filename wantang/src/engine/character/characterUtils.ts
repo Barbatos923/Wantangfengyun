@@ -220,9 +220,11 @@ export function calculateBaseOpinion(
 
   // 政策好感（实时计算，A 是臣属、B 是领主时生效）
   if (a.overlordId === b.id) {
-    // 赋税等级（A 的 centralization）
-    const taxLevel = a.centralization ?? 2;
-    opinion += CENTRALIZATION_OPINION[taxLevel] ?? 0;
+    // 赋税等级（A 的 centralization，无地臣属不适用）
+    if (a.isRuler) {
+      const taxLevel = a.centralization ?? 2;
+      opinion += CENTRALIZATION_OPINION[taxLevel] ?? 0;
+    }
 
     // 回拨率（B 的 redistributionRate）
     const redistRate = b.redistributionRate ?? 0;
@@ -232,6 +234,12 @@ export function calculateBaseOpinion(
     if (aPolicyOpinion) {
       opinion += aPolicyOpinion.appointRight + aPolicyOpinion.succession + aPolicyOpinion.type;
     }
+  }
+
+  // 赋税好感（反向：B 是臣属、A 是领主时，高税→A 对 B 好感高，无地臣属不适用）
+  if (b.overlordId === a.id && b.isRuler) {
+    const taxLevel = b.centralization ?? 2;
+    opinion += -(CENTRALIZATION_OPINION[taxLevel] ?? 0);
   }
 
   // 事件累积好感度
@@ -329,9 +337,12 @@ export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: nu
 
   // 政策好感（A 是臣属、B 是领主时）
   if (a.overlordId === b.id) {
-    const taxLevel = a.centralization ?? 2;
-    const taxVal = CENTRALIZATION_OPINION[taxLevel] ?? 0;
-    if (taxVal !== 0) entries.push({ label: `赋税等级（${taxLevel}级）`, value: taxVal });
+    // 赋税等级（无地臣属不适用）
+    if (a.isRuler) {
+      const taxLevel = a.centralization ?? 2;
+      const taxVal = CENTRALIZATION_OPINION[taxLevel] ?? 0;
+      if (taxVal !== 0) entries.push({ label: `赋税等级（${taxLevel}级）`, value: taxVal });
+    }
 
     const redistRate = b.redistributionRate ?? 0;
     const redistVal = Math.floor((redistRate - 60) / 10) * 5;
@@ -342,6 +353,13 @@ export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: nu
       if (aPolicyOpinion.succession !== 0) entries.push({ label: '宗法继承', value: aPolicyOpinion.succession });
       if (aPolicyOpinion.type !== 0) entries.push({ label: '军事职类', value: aPolicyOpinion.type });
     }
+  }
+
+  // 赋税好感（反向：B 是臣属、A 是领主时，高税→A 对 B 好感高，无地臣属不适用）
+  if (b.overlordId === a.id && b.isRuler) {
+    const taxLevel = b.centralization ?? 2;
+    const taxVal = -(CENTRALIZATION_OPINION[taxLevel] ?? 0);
+    if (taxVal !== 0) entries.push({ label: `臣属进奉（${taxLevel}级）`, value: taxVal });
   }
 
   // 事件累积

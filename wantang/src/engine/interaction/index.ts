@@ -15,6 +15,7 @@ import './joinWarAction';
 import './usurpPostAction';
 import './reassignAction';
 import './demandRightsAction';
+import './negotiateTaxAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -56,3 +57,12 @@ export {
   DEMAND_RIGHTS_COOLDOWN_DAYS,
 } from './demandRightsAction';
 export type { DemandableRight, DemandablePost, DemandRightsChanceResult, DemandRightsResult } from './demandRightsAction';
+export {
+  canNegotiateTaxPure,
+  calcNegotiateTaxChance,
+  previewNegotiateTax,
+  executeNegotiateTax,
+  NEGOTIATE_TAX_COOLDOWN_DAYS,
+  TAX_LABELS,
+} from './negotiateTaxAction';
+export type { NegotiateTaxChanceResult, NegotiateTaxResult } from './negotiateTaxAction';

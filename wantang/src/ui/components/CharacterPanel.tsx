@@ -17,6 +17,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { isWarParticipant, getWarSide } from '@engine/military/warParticipantUtils';
 import { toAbsoluteDay, fromAbsoluteDay } from '@engine/dateUtils';
+import { Modal, ModalHeader, Button } from './base';
 import InteractionMenu from './InteractionMenu';
 import AppointFlow from './AppointFlow';
 import DismissFlow from './DismissFlow';
@@ -27,8 +28,8 @@ import RevokeFlow from './RevokeFlow';
 import UsurpPostFlow from './UsurpPostFlow';
 import ReassignFlow from './ReassignFlow';
 import DemandRightsFlow from './DemandRightsFlow';
-import { executeDemandFealty, previewDemandFealty, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms } from '@engine/interaction';
-import type { DemandFealtyResult, FealtyChanceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from '@engine/interaction';
+import { executeDemandFealty, previewDemandFealty, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS } from '@engine/interaction';
+import type { DemandFealtyResult, FealtyChanceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult } from '@engine/interaction';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
 
 // ── Constants ──────────────────────────────────────
@@ -97,6 +98,9 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const [fealtyResult, setFealtyResult] = useState<DemandFealtyResult | null>(null);
   const [ctaPreview, setCtaPreview] = useState<{ war: CallableWar; chance: CallToArmsChanceResult } | null>(null);
   const [ctaResult, setCtaResult] = useState<CallToArmsResult | null>(null);
+  const [taxNegDelta, setTaxNegDelta] = useState<number | null>(null); // 议定进奉选定方向
+  const [taxNegPreview, setTaxNegPreview] = useState<NegotiateTaxChanceResult | null>(null);
+  const [taxNegResult, setTaxNegResult] = useState<NegotiateTaxResult | null>(null);
 
   const character = useCharacterStore((s) => s.characters.get(characterId));
   const playerId = useCharacterStore((s) => s.playerId);
@@ -667,20 +671,102 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
         />
       )}
 
+      {activeInteraction === 'negotiateTax' && !taxNegResult && (() => {
+        const currentLevel = playerChar?.centralization ?? 2;
+        const canDown = currentLevel > 1;
+        const canUp = currentLevel < 4;
+
+        // 已选方向 → 显示预览
+        if (taxNegDelta !== null && taxNegPreview) {
+          const newLevel = currentLevel + taxNegDelta;
+          return (
+            <Modal size="sm" onOverlayClick={() => { setTaxNegDelta(null); setTaxNegPreview(null); }}>
+              <ModalHeader title={`议定进奉 — ${character?.name ?? ''}`} onClose={() => { setTaxNegDelta(null); setTaxNegPreview(null); }} />
+              <div className="px-5 py-4 flex flex-col gap-3">
+                <div className="text-xs text-[var(--color-text-muted)]">
+                  {TAX_LABELS[currentLevel]}（{currentLevel}级）→ {TAX_LABELS[newLevel]}（{newLevel}级）
+                </div>
+                <div className="text-xs text-[var(--color-text-muted)] space-y-1">
+                  <div>成功率：<span className="text-[var(--color-text)] font-bold">{taxNegPreview.chance}%</span></div>
+                  <div className="border-t border-[var(--color-border)] pt-1 mt-1">
+                    <div>基础：{taxNegPreview.breakdown.base}</div>
+                    <div>好感：{taxNegPreview.breakdown.opinion >= 0 ? '+' : ''}{taxNegPreview.breakdown.opinion}</div>
+                    <div>兵力：{taxNegPreview.breakdown.power >= 0 ? '+' : ''}{taxNegPreview.breakdown.power}</div>
+                    <div>性格：{taxNegPreview.breakdown.personality >= 0 ? '+' : ''}{taxNegPreview.breakdown.personality}</div>
+                  </div>
+                </div>
+                <p className="text-xs text-[var(--color-accent-red)]">失败将导致好感 -15</p>
+                <div className="flex gap-2">
+                  <Button variant="default" className="flex-1" onClick={() => { setTaxNegDelta(null); setTaxNegPreview(null); }}>返回</Button>
+                  <Button variant="primary" className="flex-1" onClick={() => {
+                    if (!playerId) return;
+                    const res = executeNegotiateTax(playerId, characterId, taxNegDelta);
+                    setTaxNegResult(res);
+                  }}>确认议定</Button>
+                </div>
+              </div>
+            </Modal>
+          );
+        }
+
+        // 未选方向 → 选择升/降
+        return (
+          <Modal size="sm" onOverlayClick={() => { setActiveInteraction(null); setTaxNegDelta(null); setTaxNegPreview(null); }}>
+            <ModalHeader title={`议定进奉 — ${character?.name ?? ''}`} onClose={() => { setActiveInteraction(null); setTaxNegDelta(null); setTaxNegPreview(null); }} />
+            <div className="px-5 py-4 flex flex-col gap-3">
+              <div className="text-xs text-[var(--color-text-muted)]">
+                当前进奉等级：{TAX_LABELS[currentLevel]}（{currentLevel}级）
+              </div>
+              <div className="flex flex-col gap-2">
+                {canDown && (
+                  <Button variant="default" className="w-full text-left" onClick={() => {
+                    if (!playerId) return;
+                    setTaxNegDelta(-1);
+                    setTaxNegPreview(previewNegotiateTax(playerId, characterId, -1));
+                  }}>
+                    <span className="text-[var(--color-accent-green)]">请求降低</span>
+                    <span className="text-[var(--color-text-muted)] ml-2">→ {TAX_LABELS[currentLevel - 1]}（{currentLevel - 1}级）</span>
+                  </Button>
+                )}
+                {canUp && (
+                  <Button variant="default" className="w-full text-left" onClick={() => {
+                    if (!playerId) return;
+                    setTaxNegDelta(1);
+                    setTaxNegPreview(previewNegotiateTax(playerId, characterId, 1));
+                  }}>
+                    <span className="text-[var(--color-accent-red)]">提议提高</span>
+                    <span className="text-[var(--color-text-muted)] ml-2">→ {TAX_LABELS[currentLevel + 1]}（{currentLevel + 1}级）</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </Modal>
+        );
+      })()}
+
+      {taxNegResult && (
+        <Modal size="sm" onOverlayClick={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }}>
+          <ModalHeader title={taxNegResult.success ? '议定成功' : '议定失败'} onClose={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className={`text-sm ${taxNegResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
+              {taxNegResult.success
+                ? `${character?.name ?? ''}同意调整进奉等级`
+                : `${character?.name ?? ''}拒绝了你的请求，关系恶化`}
+            </p>
+            <Button variant="default" className="w-full" onClick={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }}>确定</Button>
+          </div>
+        </Modal>
+      )}
+
       {activeInteraction === 'joinWar' && (() => {
         const player = playerId ? useCharacterStore.getState().characters.get(playerId) : undefined;
         const target = useCharacterStore.getState().characters.get(characterId);
         const joinable = player && target ? getJoinableWars(player, target) : [];
         const chars = useCharacterStore.getState().characters;
         return (
-          <div className="fixed inset-0 z-50" onClick={() => setActiveInteraction(null)}>
-            <div
-              className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[280px]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
-                干涉战争 — {target?.name ?? ''}
-              </div>
+          <Modal size="sm" onOverlayClick={() => setActiveInteraction(null)}>
+            <ModalHeader title={`干涉战争 — ${target?.name ?? ''}`} onClose={() => setActiveInteraction(null)} />
+            <div className="px-5 py-4 flex flex-col gap-3">
               {joinable.length === 0 ? (
                 <div className="text-xs text-[var(--color-text-muted)] py-2">无可干涉的战争</div>
               ) : (
@@ -700,22 +786,19 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                           战分：<span className={war.warScore > 0 ? 'text-[var(--color-accent-green)]' : war.warScore < 0 ? 'text-[var(--color-accent-red)]' : ''}>{war.warScore > 0 ? '+' : ''}{Math.round(war.warScore)}</span>
                           {' · '}{target?.name}在{targetSide === 'attacker' ? '攻方' : '守方'}
                         </div>
-                        <button
-                          className="w-full py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
-                          onClick={() => {
-                            executeJoinWar(playerId!, war.id, targetSide);
-                            setActiveInteraction(null);
-                          }}
-                        >
+                        <Button variant="primary" size="sm" className="w-full" onClick={() => {
+                          executeJoinWar(playerId!, war.id, targetSide);
+                          setActiveInteraction(null);
+                        }}>
                           加入{targetSide === 'attacker' ? '攻方' : '守方'}
-                        </button>
+                        </Button>
                       </div>
                     );
                   })}
                 </div>
               )}
             </div>
-          </div>
+          </Modal>
         );
       })()}
 
@@ -726,14 +809,9 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
         const callable = player && target ? getCallableWars(player, target) : [];
         const chars = useCharacterStore.getState().characters;
         return (
-          <div className="fixed inset-0 z-50" onClick={() => setActiveInteraction(null)}>
-            <div
-              className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[280px]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
-                召集参战 — {target?.name ?? ''}
-              </div>
+          <Modal size="sm" onOverlayClick={() => setActiveInteraction(null)}>
+            <ModalHeader title={`召集参战 — ${target?.name ?? ''}`} onClose={() => setActiveInteraction(null)} />
+            <div className="px-5 py-4 flex flex-col gap-3">
               {callable.length === 0 ? (
                 <div className="text-xs text-[var(--color-text-muted)] py-2">无可召集的战争</div>
               ) : (
@@ -749,35 +827,27 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                           <span className="font-bold">{defenderName}</span>
                           <span className="text-[var(--color-text-muted)]"> — {CASUS_BELLI_NAMES[war.casusBelli]}</span>
                         </div>
-                        <button
-                          className="w-full py-1 rounded border border-[var(--color-accent-gold)] text-xs font-bold text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
-                          onClick={() => {
-                            const chance = calcCallToArmsChance(playerId!, characterId);
-                            setCtaPreview({ war: { war, side }, chance });
-                          }}
-                        >
+                        <Button variant="primary" size="sm" className="w-full" onClick={() => {
+                          const chance = calcCallToArmsChance(playerId!, characterId);
+                          setCtaPreview({ war: { war, side }, chance });
+                        }}>
                           召集加入{side === 'attacker' ? '攻方' : '守方'}
-                        </button>
+                        </Button>
                       </div>
                     );
                   })}
                 </div>
               )}
             </div>
-          </div>
+          </Modal>
         );
       })()}
 
-      {/* 召集参战：概率预览（第一个弹窗） */}
+      {/* 召集参战：概率预览 */}
       {ctaPreview && !ctaResult && (
-        <div className="fixed inset-0 z-50" onClick={() => { setCtaPreview(null); setActiveInteraction(null); }}>
-          <div
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
-              召集参战 — {character?.name ?? ''}
-            </div>
+        <Modal size="sm" onOverlayClick={() => { setCtaPreview(null); setActiveInteraction(null); }}>
+          <ModalHeader title={`召集参战 — ${character?.name ?? ''}`} onClose={() => { setCtaPreview(null); setActiveInteraction(null); }} />
+          <div className="px-5 py-4 flex flex-col gap-3">
             <div className="text-xs text-[var(--color-text-muted)] space-y-1">
               <div>接受概率：<span className="text-[var(--color-text)] font-bold">{ctaPreview.chance.chance}%</span></div>
               <div className="border-t border-[var(--color-border)] pt-1 mt-1">
@@ -788,62 +858,38 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
               </div>
               <div className="text-[var(--color-accent-red)] mt-1">拒绝后好感 -30</div>
             </div>
-            <div className="flex gap-2 mt-3">
-              <button
-                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
-                onClick={() => { setCtaPreview(null); setActiveInteraction(null); }}
-              >
-                取消
-              </button>
-              <button
-                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] font-bold hover:opacity-80 transition-opacity"
-                onClick={() => {
-                  if (!playerId) return;
-                  const result = executeCallToArms(playerId, characterId, ctaPreview.war.war.id, ctaPreview.war.side);
-                  setCtaResult(result);
-                }}
-              >
-                召集
-              </button>
+            <div className="flex gap-2">
+              <Button variant="default" className="flex-1" onClick={() => { setCtaPreview(null); setActiveInteraction(null); }}>取消</Button>
+              <Button variant="primary" className="flex-1" onClick={() => {
+                if (!playerId) return;
+                const result = executeCallToArms(playerId, characterId, ctaPreview.war.war.id, ctaPreview.war.side);
+                setCtaResult(result);
+              }}>召集</Button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
-      {/* 召集参战：结果弹窗（第二个弹窗） */}
+      {/* 召集参战：结果 */}
       {ctaResult && (
-        <div className="fixed inset-0 z-50" onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>
-          <div
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={`text-sm font-bold mb-1 ${ctaResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {ctaResult.success ? '召集成功' : '召集被拒'}
-            </div>
-            <div className="text-sm text-[var(--color-text)] mb-2">
+        <Modal size="sm" onOverlayClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>
+          <ModalHeader title={ctaResult.success ? '召集成功' : '召集被拒'} onClose={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className={`text-sm ${ctaResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
               {ctaResult.success
                 ? `${ctaResult.targetName}响应号召，加入战争`
                 : `${ctaResult.targetName}拒绝了召集（好感-30）`}
-            </div>
-            <button
-              className="mt-2 w-full px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
-              onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}
-            >
-              确定
-            </button>
+            </p>
+            <Button variant="default" className="w-full" onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>确定</Button>
           </div>
-        </div>
+        </Modal>
       )}
 
+      {/* 要求效忠：预览 */}
       {fealtyPreview && !fealtyResult && (
-        <div className="fixed inset-0 z-50" onClick={() => setFealtyPreview(null)}>
-          <div
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-sm font-bold mb-2 text-[var(--color-accent-gold)]">
-              要求效忠 — {character?.name ?? ''}
-            </div>
+        <Modal size="sm" onOverlayClick={() => setFealtyPreview(null)}>
+          <ModalHeader title={`要求效忠 — ${character?.name ?? ''}`} onClose={() => setFealtyPreview(null)} />
+          <div className="px-5 py-4 flex flex-col gap-3">
             <div className="text-xs text-[var(--color-text-muted)] space-y-1">
               <div>成功率：<span className="text-[var(--color-text)] font-bold">{fealtyPreview.chance}%</span></div>
               <div className="border-t border-[var(--color-border)] pt-1 mt-1">
@@ -853,50 +899,31 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                 <div>性格：{fealtyPreview.breakdown.personality >= 0 ? '+' : ''}{fealtyPreview.breakdown.personality}</div>
               </div>
             </div>
-            <div className="flex gap-2 mt-3">
-              <button
-                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
-                onClick={() => setFealtyPreview(null)}
-              >
-                取消
-              </button>
-              <button
-                className="flex-1 px-3 py-1 text-xs rounded bg-[var(--color-accent-gold)] text-[var(--color-bg)] font-bold hover:opacity-80 transition-opacity"
-                onClick={() => {
-                  if (!playerId) return;
-                  const result = executeDemandFealty(playerId, characterId);
-                  setFealtyResult(result);
-                }}
-              >
-                确定
-              </button>
+            <div className="flex gap-2">
+              <Button variant="default" className="flex-1" onClick={() => setFealtyPreview(null)}>取消</Button>
+              <Button variant="primary" className="flex-1" onClick={() => {
+                if (!playerId) return;
+                const result = executeDemandFealty(playerId, characterId);
+                setFealtyResult(result);
+              }}>确定</Button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
+      {/* 要求效忠：结果 */}
       {fealtyResult && (
-        <div className="fixed inset-0 z-50" onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>
-          <div
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg shadow-xl p-4 min-w-[240px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={`text-sm font-bold mb-1 ${fealtyResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {fealtyResult.success ? '效忠成功' : '要求被拒'}
-            </div>
-            <div className="text-sm text-[var(--color-text)] mb-2">
+        <Modal size="sm" onOverlayClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>
+          <ModalHeader title={fealtyResult.success ? '效忠成功' : '要求被拒'} onClose={() => { setFealtyResult(null); setFealtyPreview(null); }} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className={`text-sm ${fealtyResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
               {fealtyResult.success
                 ? `${character?.name ?? ''}宣誓效忠于${playerChar?.name ?? '我'}`
                 : `${character?.name ?? ''}对此无动于衷`}
-            </div>
-            <button
-              className="mt-2 w-full px-3 py-1 text-xs rounded bg-[var(--color-bg-surface)] hover:bg-[var(--color-border)] transition-colors"
-              onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}
-            >
-              确定
-            </button>
+            </p>
+            <Button variant="default" className="w-full" onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>确定</Button>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
