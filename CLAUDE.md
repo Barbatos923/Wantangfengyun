@@ -98,7 +98,7 @@ src/
 CharacterStore 在 `updateCharacter` 和 `batchMutate` 中检测 overlordId 变化，自动重置 `centralization` 为 `undefined`（等效默认2级）。赋税好感双向：臣属→领主（高税=不满）、领主→臣属（高税=满意），无地臣属（`isRuler === false`）不适用。
 
 ### 辟署权与权限
-- 独立统治者自动辟署权（`ensureAppointRight`，三个事件触发点：独立宣战/继承/乱世转换，**无月结扫描**）
+- 独立统治者辟署权：独立战争**成功后**才授予（`ensureAppointRight`），失败则收回（`revokeAppointRight`）+宗法改流官；其他触发点：继承/乱世转换（**无月结扫描**）
 - 独立统治者/皇帝可主动调整自己岗位的继承法和辟署权（玩家通过 RealmPanel 体制Tab，NPC 通过 `adjustOwnPolicyBehavior`）
 - `grantTerritoryBehavior` 授出前先改后授（clan→bureaucratic + 移除辟署权），优先授出流官/无辟署权州
 - 剥夺领地需辟署权；直接任命不需辟署权
@@ -114,7 +114,9 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - 不引入新 npm 依赖（除非用户授权）
 - 皇帝用 `findEmperorId(territories, centralPosts)` 查找（不在 centralPosts 里）
 - 铨选 `dismisserId` 传法理主体，不传经办人
-- `canGrantTerritory` 禁止授出治所州
+- `canGrantTerritory` 禁止授出治所州；`grantTerritoryBehavior` 超额先授州，治所州卡死则兜底授道
+- `canUsurpPost` 禁止篡夺自己势力内的臣属（应走剥夺/调任）
+- NPC `revokeBehavior` 排除治所州和道级岗位（剥夺后无法授出）
 - `transferVassalBehavior` receiver 岗位模板品级（minRank）严格高于 vassal（非个人 rankLevel）
 
 ---

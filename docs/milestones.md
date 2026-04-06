@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-06
+> **最后更新**：2026-04-07
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -316,6 +316,15 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ EventToast右下角通知：withdrawWar（退出战争🏃）/ joinWar（参战🛡，区分敌我）
 - ✅ 修复 reassignBehavior `registerBehavior(chancellorReassignBehavior)` 重复注册
 - ✅ 移除 CharacterStore overlord变更日志的误导性 `new Error().stack`
+
+**皇帝直辖膨胀+篡夺+独立辟署权批量修复**（2026-04-07）：
+- ✅ 篡夺禁止臣属：`canUsurpPost` 增加 `isInActorRealm` 检查
+- ✅ NPC剥夺排除治所州和道级岗位（`revokeBehavior.getVassalControlPosts`）
+- ✅ 授予领地扩展道级：直辖上限只算州，超额先授州，治所州卡死则兜底授道
+- ✅ 独立辟署权时序修正：宣战不授权→成功后 `ensureAppointRight`→失败收回+宗法改流官
+- ✅ 修复 `heirIds` 变量作用域Bug（characterSystem 死亡继承 crash）
+- ✅ overlord变更日志增加调用栈追踪；皇帝AI行为全量监测（`[皇帝AI]` 标签）
+- ✅ 宣战UI区分宣战成本与战争后果，独立战争标注胜败结果
 
 **待做（当前优先）：**
 - 金钱系统重构（区分私财与国库）
