@@ -326,8 +326,15 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ overlord变更日志增加调用栈追踪；皇帝AI行为全量监测（`[皇帝AI]` 标签）
 - ✅ 宣战UI区分宣战成本与战争后果，独立战争标注胜败结果
 
+**已完成（金钱系统重构）：**
+- ✅ 金钱系统重构（区分私财与国库）— 5批次完成
+  - Batch1：Territory.treasury + Character.capital 数据模型 + treasuryUtils 纯函数
+  - Batch2：月结引擎重写（产出→州国库，俸禄→私产，贡奉/回拨路由到capital州）
+  - Batch3：交互/决议消费者迁移（征兵/建设/赏赐/称王/称帝/篡夺从对应国库扣）
+  - Batch4：10个NPC行为迁移到国库检查
+  - Batch5：UI重构（ResourceBar/CharacterPanel/RealmPanel 国库/私产分离显示）+ 迁都/国库运输交互
+
 **待做（当前优先）：**
-- 金钱系统重构（区分私财与国库）
 
 **待做（后续系统）：**
 - 更多个人交互

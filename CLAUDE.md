@@ -94,6 +94,17 @@ src/
 ### 自我领主防御
 `updateCharacter(X, { overlordId: Y })` 必须确保 `X !== Y`。CharacterStore 有 DEBUG 监测。
 
+### 国库系统（私产/国库分离）
+- **国库**存 `Territory.treasury: {money, grain}`，仅州级；**私产**存 `Character.resources.money/grain`
+- `Character.capital`（治所州ID）：NPC 岗位变动时自动选（`refreshCapital`），玩家显式迁都（`moveCapitalAction`，360天CD）
+- **月结收支路由**：领地产出→该州国库；俸禄→私产；贡奉各州→overlord capital；回拨 capital→臣属 capital；属官俸禄从 capital 扣
+- **军费**：`findPath` 找最近友方州国库扣粮，关隘阻断→士气-10/月，无领地→私产扣
+- **一次性花费**：征兵/补员→homeTerritory 国库；赏赐/决议→capital 国库；建设→本州国库
+- **无 capital fallback**：所有依赖 capital 的收支统一 fallback 到私产（`privateChange`）
+- **国库运输**（`treasuryTransferAction`）：己方州间即时调拨，不受关隘阻断
+- **破产**：总国库（所有州之和）< -50000
+- 扣费辅助：`debitTreasury(zhouId, charId, amount)` / `debitCapitalTreasury(charId, amount)` / `getCapitalBalance(charId)`
+
 ### overlord 变动自动重置赋税
 CharacterStore 在 `updateCharacter` 和 `batchMutate` 中检测 overlordId 变化，自动重置 `centralization` 为 `undefined`（等效默认2级）。赋税好感双向：臣属→领主（高税=不满）、领主→臣属（高税=满意），无地臣属（`isRuler === false`）不适用。
 
@@ -143,7 +154,8 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 Phase 6（谋略+派系+事件）95%。详细进度见 `docs/milestones.md`。
 
 ### 尚未完成（当前优先）
-- 金钱系统重构（区分私财与国库）
+- NPC 国库调度 behavior（treasuryLogisticsBehavior）
+- 迁都/国库运输 UI 面板
 
 ### 尚未完成（后续系统）
 - 更多个人交互 | 谋略系统 | 活动系统 | 派系系统 | 更多随机事件
