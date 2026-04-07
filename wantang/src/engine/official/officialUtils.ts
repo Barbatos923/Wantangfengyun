@@ -110,9 +110,17 @@ export function calculateMonthlyLedger(
   territories: Map<string, Territory>,
   characters: Map<string, Character>,
 ) {
-  const { centralPosts } = useTerritoryStore.getState();
-  const { armies, battalions } = useMilitaryStore.getState();
-  return _calculateMonthlyLedgerPure(char, territories, characters, centralPosts, armies, battalions);
+  const { centralPosts, controllerIndex } = useTerritoryStore.getState();
+  const { armies, battalions, ownerArmyIndex } = useMilitaryStore.getState();
+  // 构建 capitals 映射
+  const capitals = new Map<string, string>();
+  for (const c of characters.values()) {
+    if (c.alive && c.capital) capitals.set(c.id, c.capital);
+  }
+  return _calculateMonthlyLedgerPure(
+    char, territories, characters, centralPosts,
+    armies, battalions, capitals, controllerIndex, ownerArmyIndex,
+  );
 }
 
 /** 角色领地类型判定（便捷版） */

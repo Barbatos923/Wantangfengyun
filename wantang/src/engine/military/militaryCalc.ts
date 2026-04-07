@@ -145,6 +145,74 @@ export function getTotalMilitaryMaintenance(
   return { money: 0, grain: totalGrain };
 }
 
+// ===== 军费分州计算（国库系统） =====
+
+import type { MilitarySupplyResult } from '@engine/official/types';
+import { findNearestFriendlyZhou } from '@engine/territory/treasuryUtils';
+
+/**
+ * 计算角色每支军队的军费供给来源（按军队驻地找最近友方州）。
+ *
+ * - 军队在己方州 → 该州国库扣粮
+ * - findPath 找到最近友方州 → 该州国库扣粮
+ * - findPath 被关隘阻断 → blocked=true，不扣粮（月结时扣士气）
+ * - 角色无领地 → fromPrivate=true，从私产扣
+ */
+export function getMilitaryMaintenanceByTerritory(
+  ownerId: string,
+  armies: Map<string, Army>,
+  battalions: Map<string, Battalion>,
+  unitTypeDefs: Map<string, UnitTypeDef>,
+  territories: Map<string, Territory>,
+  characters: Map<string, Character>,
+  controllerIndex: Map<string, Set<string>>,
+  ownerArmyIndex?: Map<string, Set<string>>,
+): MilitarySupplyResult[] {
+  const results: MilitarySupplyResult[] = [];
+  const controlledIds = controllerIndex.get(ownerId);
+  const hasTerritory = controlledIds && controlledIds.size > 0;
+
+  const armyIds = ownerArmyIndex?.get(ownerId);
+  const armiesToProcess: Army[] = [];
+  if (armyIds) {
+    for (const aid of armyIds) {
+      const a = armies.get(aid);
+      if (a) armiesToProcess.push(a);
+    }
+  } else {
+    for (const a of armies.values()) {
+      if (a.ownerId === ownerId) armiesToProcess.push(a);
+    }
+  }
+
+  for (const army of armiesToProcess) {
+    const grainCost = getArmyMonthlyGrainCost(army, battalions, unitTypeDefs);
+    if (grainCost === 0) {
+      results.push({ armyId: army.id, supplyZhouId: null, grainCost: 0, blocked: false, fromPrivate: false });
+      continue;
+    }
+
+    if (!hasTerritory) {
+      // 无领地，从私产扣
+      results.push({ armyId: army.id, supplyZhouId: null, grainCost, blocked: false, fromPrivate: true });
+      continue;
+    }
+
+    const nearestZhou = findNearestFriendlyZhou(
+      army.locationId, ownerId, territories, characters, controllerIndex,
+    );
+
+    if (nearestZhou) {
+      results.push({ armyId: army.id, supplyZhouId: nearestZhou, grainCost, blocked: false, fromPrivate: false });
+    } else {
+      // 有领地但被关隘阻断
+      results.push({ armyId: army.id, supplyZhouId: null, grainCost, blocked: true, fromPrivate: false });
+    }
+  }
+
+  return results;
+}
+
 // ===== 粮草估算 =====
 
 /**

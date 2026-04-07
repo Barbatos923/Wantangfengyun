@@ -50,8 +50,22 @@ export interface OfficialData {
   isCivil: boolean;
 }
 
+/** 军费补给结果（每支军队） */
+export interface MilitarySupplyResult {
+  armyId: string;
+  /** 供给来源州 ID，null 表示无法从国库供给 */
+  supplyZhouId: string | null;
+  /** 粮草花费 */
+  grainCost: number;
+  /** 是否被关隘阻断（有领地但路径不通） */
+  blocked: boolean;
+  /** 是否从私产扣（角色无领地） */
+  fromPrivate: boolean;
+}
+
 /** 月度收支明细（计算值，非持久化） */
 export interface MonthlyLedger {
+  // ── UI 展示汇总（保持向后兼容） ──
   territoryIncome: { money: number; grain: number };
   positionSalary: { money: number; grain: number };
   vassalTribute: { money: number; grain: number };
@@ -66,4 +80,12 @@ export interface MonthlyLedger {
   totalExpense: { money: number; grain: number };
 
   net: { money: number; grain: number };
+
+  // ── 国库系统新增 ──
+  /** 角色私产净变动（俸禄收入 + 无capital时的fallback收支） */
+  privateChange: { money: number; grain: number };
+  /** 每个州的国库变动明细 */
+  treasuryChanges: Map<string, { money: number; grain: number }>;
+  /** 军费补给详情（含关隘阻断信息） */
+  militarySupply: MilitarySupplyResult[];
 }
