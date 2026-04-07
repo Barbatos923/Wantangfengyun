@@ -9,6 +9,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { formatAmount } from '@ui/utils/formatAmount';
+import TreasuryTransferModal from './TreasuryTransferModal';
 
 interface TerritoryPanelProps {
   territory: Territory;
@@ -31,6 +32,7 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
   const territories = useTerritoryStore((s) => s.territories);
   const characters = useCharacterStore((s) => s.characters);
   const [buildSlotIndex, setBuildSlotIndex] = useState<number | null>(null);
+  const [transferResource, setTransferResource] = useState<'money' | 'grain' | null>(null);
   const playerId = useCharacterStore((s) => s.playerId);
   const isPlayerTerritory = controllerId === playerId;
 
@@ -108,13 +110,43 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
               <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <div className="text-xs text-[var(--color-text-muted)]">国库金钱</div>
-                  <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.money)}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.money)}</div>
+                    {isPlayerTerritory && (
+                      <button
+                        onClick={() => setTransferResource('money')}
+                        className="text-xs px-1.5 py-0.5 rounded border border-[var(--color-accent-green,#27ae60)] text-[var(--color-accent-green,#27ae60)] hover:bg-[var(--color-accent-green,#27ae60)]/10 transition-colors"
+                        title="调拨到其他州"
+                      >
+                        调拨
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <div className="text-xs text-[var(--color-text-muted)]">国库粮草</div>
-                  <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.grain)}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.grain)}</div>
+                    {isPlayerTerritory && (
+                      <button
+                        onClick={() => setTransferResource('grain')}
+                        className="text-xs px-1.5 py-0.5 rounded border border-[var(--color-accent-green,#27ae60)] text-[var(--color-accent-green,#27ae60)] hover:bg-[var(--color-accent-green,#27ae60)]/10 transition-colors"
+                        title="调拨到其他州"
+                      >
+                        调拨
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
+            )}
+            {transferResource && playerId && (
+              <TreasuryTransferModal
+                charId={playerId}
+                lockedFromId={territory.id}
+                lockedResource={transferResource}
+                onClose={() => setTransferResource(null)}
+              />
             )}
 
             {/* Three attributes */}

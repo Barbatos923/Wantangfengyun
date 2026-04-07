@@ -9,6 +9,7 @@ import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualControlle
 import { positionMap } from '@data/positions';
 import { executeRedistributionChange, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
 import { formatAmount, formatAmountSigned } from '@ui/utils/formatAmount';
+import InlineTreasuryTransferRow from './InlineTreasuryTransferRow';
 
 interface RealmPanelProps {
   onClose: () => void;
@@ -204,6 +205,13 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                       </span>
                     </div>
                   ))}
+                  {/* 国库运输内联表单 */}
+                  {playerId && (
+                    <>
+                      <InlineTreasuryTransferRow charId={playerId} resource="money" />
+                      <InlineTreasuryTransferRow charId={playerId} resource="grain" />
+                    </>
+                  )}
                 </div>
               </div>
 

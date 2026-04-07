@@ -75,3 +75,4 @@ export {
   PLEDGE_ALLEGIANCE_COOLDOWN_DAYS,
 } from './pledgeAllegianceAction';
 export type { PledgeAllegianceChanceResult, PledgeAllegianceResult } from './pledgeAllegianceAction';
+export { canTransferTreasury, executeTransferTreasury } from './treasuryTransferAction';
