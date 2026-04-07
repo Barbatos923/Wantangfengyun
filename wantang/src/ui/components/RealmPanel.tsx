@@ -5,7 +5,7 @@ import { usePanelStore } from '@ui/stores/panelStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
-import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getControlledZhou, getHeldPosts } from '@engine/official/officialUtils';
+import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getHeldPosts } from '@engine/official/officialUtils';
 import { positionMap } from '@data/positions';
 import { executeRedistributionChange, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
 
@@ -47,16 +47,8 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
     (t) => getActualController(t) === playerId && t.tier === 'zhou',
   );
 
-  // 臣属领地：效忠于玩家的角色所持有的州
-  const vassalTerritories: { territory: typeof playerZhouTerritories[0]; holder: string }[] = [];
-  if (player) {
-    const vassals = getVassals(player.id, characters);
-    for (const v of vassals) {
-      for (const t of getControlledZhou(v.id, territories)) {
-        vassalTerritories.push({ territory: t, holder: v.name });
-      }
-    }
-  }
+  // 国库预计算
+  const controllerIndex = useTerritoryStore.getState().controllerIndex;
 
   const redistributionRate = player?.redistributionRate ?? 60; // player 可能为 undefined
 
@@ -102,9 +94,8 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
           {/* Tab 1: 领地 */}
           {activeTab === 'territories' && (
             <div className="space-y-4">
-              {/* 直辖领地 */}
               <div>
-                <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-1.5 px-1">直辖 ({playerZhouTerritories.length})</h3>
+                <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-1.5 px-1">直辖领地 ({playerZhouTerritories.length})</h3>
                 <div className="space-y-1">
                   {playerZhouTerritories.length === 0 ? (
                     <p className="text-center text-[var(--color-text-muted)] py-2 text-sm">暂无直辖州</p>
@@ -113,27 +104,48 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                       const income = abilities
                         ? calculateMonthlyIncome(t, abilities)
                         : { money: 0, grain: 0, troops: 0 };
+                      const treasury = t.treasury ?? { money: 0, grain: 0 };
+                      // 该州净值 = 从 ledger.treasuryChanges 读取
+                      const tcDelta = playerLedger?.treasuryChanges.get(t.id);
+                      const netMoney = tcDelta ? Math.floor(tcDelta.money) : 0;
+                      const netGrain = tcDelta ? Math.floor(tcDelta.grain) : 0;
                       return (
                         <button
                           key={t.id}
-                          className="w-full flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)] hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors text-left"
+                          className="w-full flex flex-col px-3 py-2 rounded border border-[var(--color-border)] hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors text-left gap-1"
                           onClick={() => {
                             usePanelStore.getState().openTerritoryModal(t.id);
                             onClose();
                           }}
                         >
-                          <div className="flex flex-col min-w-0 mr-2">
-                            <span className="text-sm font-bold text-[var(--color-accent-gold)] truncate">{t.name}</span>
-                            <span className="text-xs text-[var(--color-text-muted)]">{t.territoryType === 'civil' ? '民政' : '军事'}</span>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-sm font-bold text-[var(--color-accent-gold)] truncate">{t.name}</span>
+                              <span className="text-xs text-[var(--color-text-muted)]">{t.territoryType === 'civil' ? '民政' : '军事'}</span>
+                              {player?.capital === t.id && <span className="text-xs text-purple-400 font-bold">治所</span>}
+                            </div>
+                            <div className="flex gap-2 text-xs text-[var(--color-text-muted)] shrink-0">
+                              <span>控{Math.floor(t.control)}</span>
+                              <span>发{Math.floor(t.development)}</span>
+                              <span>民{Math.floor(t.populace)}</span>
+                            </div>
                           </div>
-                          <div className="flex gap-2 text-xs text-[var(--color-text-muted)] mx-2 shrink-0">
-                            <span>控{Math.floor(t.control)}</span>
-                            <span>发{Math.floor(t.development)}</span>
-                            <span>民{Math.floor(t.populace)}</span>
-                          </div>
-                          <div className="flex flex-col items-end text-xs shrink-0">
-                            <span className="text-[var(--color-accent-gold)]">钱+{income.money.toFixed(1)}</span>
-                            <span className="text-[var(--color-accent-green,#27ae60)]">粮+{income.grain.toFixed(1)}</span>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-[var(--color-text-muted)]">
+                              国库 钱{Math.floor(treasury.money)} 粮{Math.floor(treasury.grain)}
+                            </span>
+                            <span className="text-[var(--color-text-muted)]">
+                              收入 钱+{Math.floor(income.money)} 粮+{Math.floor(income.grain)}
+                            </span>
+                            <span>
+                              <span className={netMoney >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                                钱{netMoney >= 0 ? '+' : ''}{netMoney}
+                              </span>
+                              {' '}
+                              <span className={netGrain >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                                粮{netGrain >= 0 ? '+' : ''}{netGrain}
+                              </span>
+                            </span>
                           </div>
                         </button>
                       );
@@ -141,167 +153,165 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                   )}
                 </div>
               </div>
-
-              {/* 臣属领地 */}
-              {vassalTerritories.length > 0 && (
-                <div>
-                  <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-1.5 px-1">臣属领地 ({vassalTerritories.length})</h3>
-                  <div className="space-y-1">
-                    {vassalTerritories.map(({ territory: t, holder }) => (
-                      <button
-                        key={t.id}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)] hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors text-left"
-                        onClick={() => {
-                          usePanelStore.getState().openTerritoryModal(t.id);
-                          onClose();
-                        }}
-                      >
-                        <div className="flex flex-col min-w-0 mr-2">
-                          <span className="text-sm font-bold text-[var(--color-text)] truncate">{t.name}</span>
-                          <span className="text-xs text-[var(--color-text-muted)]">{holder}</span>
-                        </div>
-                        <div className="flex gap-2 text-xs text-[var(--color-text-muted)] shrink-0">
-                          <span>控{Math.floor(t.control)}</span>
-                          <span>发{Math.floor(t.development)}</span>
-                          <span>民{Math.floor(t.populace)}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
           {/* Tab 2: 经济 */}
           {activeTab === 'economy' && (
             <div className="space-y-4">
-              {/* 治所与国库概览 */}
-              {player && (() => {
-                const capitalId = player.capital;
-                const capitalT = capitalId ? territories.get(capitalId) : undefined;
-                const capitalTreasury = capitalT?.treasury;
-                const controllerIndex = useTerritoryStore.getState().controllerIndex;
-                const controlled = controllerIndex.get(player.id);
-                let totalMoney = 0, totalGrain = 0;
-                if (controlled) {
-                  for (const tid of controlled) {
-                    const t = territories.get(tid);
-                    if (t?.treasury) { totalMoney += t.treasury.money; totalGrain += t.treasury.grain; }
-                  }
-                }
-                return (
-                  <div className="rounded border border-[var(--color-border)] overflow-hidden">
-                    <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                      <span className="text-xs font-bold text-[var(--color-accent-gold)]">国库概览</span>
-                    </div>
-                    <div className="divide-y divide-[var(--color-border)]">
+              {/* ══════ 国库部分 ══════ */}
+              <div className="rounded border border-[var(--color-border)] overflow-hidden">
+                <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                  <span className="text-xs font-bold text-[var(--color-accent-gold)]">国库</span>
+                </div>
+                <div className="divide-y divide-[var(--color-border)]">
+                  {/* 治所 */}
+                  {player && (() => {
+                    const capitalT = player.capital ? territories.get(player.capital) : undefined;
+                    return (
                       <div className="flex justify-between px-3 py-2 text-sm">
                         <span className="text-[var(--color-text-muted)]">治所</span>
-                        <span className="text-[var(--color-text)]">{capitalT ? capitalT.name : '无'}</span>
+                        <span className="text-[var(--color-text)] font-bold">{capitalT ? capitalT.name : '无'}</span>
                       </div>
-                      {capitalTreasury && (
-                        <div className="flex justify-between px-3 py-2 text-sm">
-                          <span className="text-[var(--color-text-muted)]">治所国库</span>
-                          <span className="text-[var(--color-text)]">钱{Math.floor(capitalTreasury.money)} 粮{Math.floor(capitalTreasury.grain)}</span>
-                        </div>
-                      )}
+                    );
+                  })()}
+                  {/* 总国库 */}
+                  {player && (() => {
+                    const controlled = controllerIndex.get(player.id);
+                    let totalMoney = 0, totalGrain = 0;
+                    if (controlled) {
+                      for (const tid of controlled) {
+                        const t = territories.get(tid);
+                        if (t?.treasury) { totalMoney += t.treasury.money; totalGrain += t.treasury.grain; }
+                      }
+                    }
+                    return (
                       <div className="flex justify-between px-3 py-2 text-sm font-bold">
-                        <span className="text-[var(--color-text)]">国库总计</span>
+                        <span className="text-[var(--color-accent-gold)]">国库总计</span>
                         <span className="text-[var(--color-accent-gold)]">钱{Math.floor(totalMoney)} 粮{Math.floor(totalGrain)}</span>
                       </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">私产</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(player.resources.money)} 粮{Math.floor(player.resources.grain)}</span>
-                      </div>
+                    );
+                  })()}
+                  {/* 各州国库 */}
+                  {playerZhouTerritories.map((t) => (
+                    <div key={t.id} className="flex justify-between px-3 py-1.5 text-xs">
+                      <span className="text-[var(--color-text-muted)]">
+                        {t.name}{player?.capital === t.id ? ' (治所)' : ''}
+                      </span>
+                      <span className="text-[var(--color-text)]">
+                        钱{Math.floor(t.treasury?.money ?? 0)} 粮{Math.floor(t.treasury?.grain ?? 0)}
+                      </span>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 国库收入 */}
+              {playerLedger && (
+                <div className="rounded border border-[var(--color-border)] overflow-hidden">
+                  <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                    <span className="text-xs font-bold text-[var(--color-accent-green,#27ae60)]">国库收入</span>
+                  </div>
+                  <div className="divide-y divide-[var(--color-border)]">
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">领地产出</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.territoryIncome.money)} 粮{Math.floor(playerLedger.territoryIncome.grain)}</span>
+                    </div>
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">属下上缴</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.vassalTribute.money)} 粮{Math.floor(playerLedger.vassalTribute.grain)}</span>
+                    </div>
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">回拨收入</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionReceived.money)} 粮{Math.floor(playerLedger.redistributionReceived.grain)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 国库支出 */}
+              {playerLedger && (
+                <div className="rounded border border-[var(--color-border)] overflow-hidden">
+                  <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                    <span className="text-xs font-bold text-[var(--color-accent-red,#e74c3c)]">国库支出</span>
+                  </div>
+                  <div className="divide-y divide-[var(--color-border)]">
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">属下俸禄</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.subordinateSalaries.money)} 粮{Math.floor(playerLedger.subordinateSalaries.grain)}</span>
+                    </div>
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">军事维持</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.militaryMaintenance.money)} 粮{Math.floor(playerLedger.militaryMaintenance.grain)}</span>
+                    </div>
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">回拨支出</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionPaid.money)} 粮{Math.floor(playerLedger.redistributionPaid.grain)}</span>
+                    </div>
+                    <div className="flex justify-between px-3 py-2 text-sm">
+                      <span className="text-[var(--color-text-muted)]">上缴领主</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.overlordTribute.money)} 粮{Math.floor(playerLedger.overlordTribute.grain)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 国库净值 */}
+              {playerLedger && (() => {
+                const tNet = {
+                  money: playerLedger.net.money - playerLedger.privateChange.money,
+                  grain: playerLedger.net.grain - playerLedger.privateChange.grain,
+                };
+                return (
+                  <div className="flex justify-between px-3 py-2 rounded border border-[var(--color-border)] text-sm font-bold">
+                    <span className="text-[var(--color-text)]">国库月净值</span>
+                    <span>
+                      <span className={tNet.money >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                        钱{tNet.money >= 0 ? '+' : ''}{Math.floor(tNet.money)}
+                      </span>
+                      {' '}
+                      <span className={tNet.grain >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                        粮{tNet.grain >= 0 ? '+' : ''}{Math.floor(tNet.grain)}
+                      </span>
+                    </span>
                   </div>
                 );
               })()}
 
-              {!playerLedger ? (
-                <p className="text-center text-[var(--color-text-muted)] py-4 text-sm">尚无经济数据</p>
-              ) : (
-                <>
-                  {/* Income */}
-                  <div className="rounded border border-[var(--color-border)] overflow-hidden">
-                    <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                      <span className="text-xs font-bold text-[var(--color-accent-green,#27ae60)]">收入</span>
+              {/* ══════ 私产部分 ══════ */}
+              <div className="rounded border border-[var(--color-border)] overflow-hidden">
+                <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                  <span className="text-xs font-bold text-[var(--color-text)]">私产</span>
+                </div>
+                <div className="divide-y divide-[var(--color-border)]">
+                  {player && (
+                    <div className="flex justify-between px-3 py-2 text-sm font-bold">
+                      <span className="text-[var(--color-text)]">私产总额</span>
+                      <span className="text-[var(--color-text)]">钱{Math.floor(player.resources.money)} 粮{Math.floor(player.resources.grain)}</span>
                     </div>
-                    <div className="divide-y divide-[var(--color-border)]">
+                  )}
+                  {playerLedger && (
+                    <>
                       <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">领地产出</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.territoryIncome.money)} 粮{Math.floor(playerLedger.territoryIncome.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">职位俸禄</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.positionSalary.money)} 粮{Math.floor(playerLedger.positionSalary.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">属下上缴</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.vassalTribute.money)} 粮{Math.floor(playerLedger.vassalTribute.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">回拨收入</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionReceived.money)} 粮{Math.floor(playerLedger.redistributionReceived.grain)}</span>
+                        <span className="text-[var(--color-text-muted)]">职位俸禄（收入）</span>
+                        <span className="text-[var(--color-accent-green,#27ae60)]">钱+{Math.floor(playerLedger.positionSalary.money)} 粮+{Math.floor(playerLedger.positionSalary.grain)}</span>
                       </div>
                       <div className="flex justify-between px-3 py-2 text-sm font-bold">
-                        <span className="text-[var(--color-accent-green,#27ae60)]">收入合计</span>
-                        <span className="text-[var(--color-accent-green,#27ae60)]">钱{Math.floor(playerLedger.totalIncome.money)} 粮{Math.floor(playerLedger.totalIncome.grain)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Expense */}
-                  <div className="rounded border border-[var(--color-border)] overflow-hidden">
-                    <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                      <span className="text-xs font-bold text-[var(--color-accent-red,#e74c3c)]">支出</span>
-                    </div>
-                    <div className="divide-y divide-[var(--color-border)]">
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">属下俸禄</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.subordinateSalaries.money)} 粮{Math.floor(playerLedger.subordinateSalaries.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">军事维持</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.militaryMaintenance.money)} 粮{Math.floor(playerLedger.militaryMaintenance.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">回拨支出</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.redistributionPaid.money)} 粮{Math.floor(playerLedger.redistributionPaid.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">上缴领主</span>
-                        <span className="text-[var(--color-text)]">钱{Math.floor(playerLedger.overlordTribute.money)} 粮{Math.floor(playerLedger.overlordTribute.grain)}</span>
-                      </div>
-                      <div className="flex justify-between px-3 py-2 text-sm font-bold">
-                        <span className="text-[var(--color-accent-red,#e74c3c)]">支出合计</span>
-                        <span className="text-[var(--color-accent-red,#e74c3c)]">钱{Math.floor(playerLedger.totalExpense.money)} 粮{Math.floor(playerLedger.totalExpense.grain)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Net */}
-                  {(() => {
-                    const moneyPositive = playerLedger.net.money >= 0;
-                    const grainPositive = playerLedger.net.grain >= 0;
-                    return (
-                      <div className="flex justify-between px-3 py-2.5 rounded border border-[var(--color-border)] text-sm font-bold">
-                        <span className="text-[var(--color-text)]">月净值</span>
+                        <span className="text-[var(--color-text)]">私产月净值</span>
                         <span>
-                          <span className={moneyPositive ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
-                            钱{moneyPositive ? '+' : ''}{Math.floor(playerLedger.net.money)}
+                          <span className={playerLedger.privateChange.money >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                            钱{playerLedger.privateChange.money >= 0 ? '+' : ''}{Math.floor(playerLedger.privateChange.money)}
                           </span>
                           {' '}
-                          <span className={grainPositive ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
-                            粮{grainPositive ? '+' : ''}{Math.floor(playerLedger.net.grain)}
+                          <span className={playerLedger.privateChange.grain >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
+                            粮{playerLedger.privateChange.grain >= 0 ? '+' : ''}{Math.floor(playerLedger.privateChange.grain)}
                           </span>
                         </span>
                       </div>
-                    );
-                  })()}
-                </>
-              )}
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 

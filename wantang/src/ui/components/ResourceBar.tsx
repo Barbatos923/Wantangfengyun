@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { getEffectiveAbilities } from '@engine/character/characterUtils';
-import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
 import { useLedgerStore } from '@engine/official/LedgerStore';
-import { getActualController } from '@engine/official/officialUtils';
-import { getRealmZhouCount } from '@engine/official/postQueries';
+import { getActualController, getDirectControlLimit } from '@engine/official/officialUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { getTotalTreasury } from '@engine/territory/treasuryUtils';
 
@@ -26,6 +23,7 @@ interface ResourceItem {
   value: number;
   change: number;
   title?: string;
+  valueStr?: string; // 自定义显示文本（如 "3/4"）
 }
 
 const ResourceBar: React.FC = () => {
@@ -41,30 +39,24 @@ const ResourceBar: React.FC = () => {
   const resources: ResourceItem[] = useMemo(() => {
     if (!player) {
       return [
-        { label: '钱', icon: '💰', value: 0, change: 0 },
-        { label: '粮', icon: '🌾', value: 0, change: 0 },
+        { label: '国库钱', icon: '💰', value: 0, change: 0 },
+        { label: '国库粮', icon: '🌾', value: 0, change: 0 },
+        { label: '私产钱', icon: '💰', value: 0, change: 0 },
+        { label: '私产粮', icon: '🌾', value: 0, change: 0 },
         { label: '名望', icon: '⭐', value: 0, change: 0 },
-        { label: '正统性', icon: '🏛', value: 0, change: 0 },
         { label: '兵力', icon: '⚔', value: 0, change: 0 },
         { label: '领地', icon: '🏯', value: 0, change: 0 },
         { label: '势力', icon: '🏴', value: 0, change: 0 },
       ];
     }
 
-    // 计算每月总产出
-    let monthlyMoney = 0;
-    let monthlyGrain = 0;
     let territoryCount = 0;
-    const abilities = getEffectiveAbilities(player);
-
-    // 领地计数
     territories.forEach((t) => {
       if (getActualController(t) === player.id && t.tier === 'zhou') {
         territoryCount++;
       }
     });
 
-    // 从 MilitaryStore 计算玩家总兵力
     let totalTroops = 0;
     for (const army of milArmies.values()) {
       if (army.ownerId === player.id) {
@@ -75,39 +67,45 @@ const ResourceBar: React.FC = () => {
       }
     }
 
+    // 国库月变动 = net - 私产变动（近似：国库变动 = 总变动 - 俸禄收入 + 私产扣费）
+    // 私产月变动 = privateChange
+    let treasuryMoneyChange = 0;
+    let treasuryGrainChange = 0;
+    let privateMoneyChange = 0;
+    let privateGrainChange = 0;
+
     if (playerLedger) {
-      monthlyMoney = playerLedger.net.money;
-      monthlyGrain = playerLedger.net.grain;
-    } else {
-      // Fallback: territory income calculation
-      territories.forEach((t) => {
-        if (getActualController(t) === player.id && t.tier === 'zhou') {
-          const income = calculateMonthlyIncome(t, abilities);
-          monthlyMoney += income.money;
-          monthlyGrain += income.grain;
-        }
-      });
+      privateMoneyChange = playerLedger.privateChange.money;
+      privateGrainChange = playerLedger.privateChange.grain;
+      treasuryMoneyChange = playerLedger.net.money - privateMoneyChange;
+      treasuryGrainChange = playerLedger.net.grain - privateGrainChange;
     }
 
-    const moneyTitle = playerLedger
-      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.money)}\n职位俸禄: ${Math.floor(playerLedger.positionSalary.money)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.money)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.money)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.money)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.money)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.money)}`
-      : undefined;
-    const grainTitle = playerLedger
-      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.grain)}\n职位俸禄: ${Math.floor(playerLedger.positionSalary.grain)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.grain)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.grain)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.grain)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.grain)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.grain)}`
-      : undefined;
-
-    // 国库总额 = 所有控制州国库之和
     const controllerIndex = useTerritoryStore.getState().controllerIndex;
     const treasury = getTotalTreasury(player.id, territories, controllerIndex);
 
+    const treasuryMoneyTitle = playerLedger
+      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.money)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.money)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.money)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.money)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.money)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.money)}`
+      : undefined;
+    const treasuryGrainTitle = playerLedger
+      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.grain)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.grain)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.grain)}\n军事维持: -${Math.floor(playerLedger.militaryMaintenance.grain)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.grain)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.grain)}`
+      : undefined;
+    const privateMoneyTitle = playerLedger
+      ? `职位俸禄: ${Math.floor(playerLedger.positionSalary.money)}`
+      : undefined;
+    const privateGrainTitle = playerLedger
+      ? `职位俸禄: ${Math.floor(playerLedger.positionSalary.grain)}`
+      : undefined;
+
     return [
-      { label: '国库(贯)', icon: '💰', value: treasury.money, change: monthlyMoney, title: moneyTitle },
-      { label: '国库(斛)', icon: '🌾', value: treasury.grain, change: monthlyGrain, title: grainTitle },
+      { label: '国库钱', icon: '💰', value: treasury.money, change: treasuryMoneyChange, title: treasuryMoneyTitle },
+      { label: '国库粮', icon: '🌾', value: treasury.grain, change: treasuryGrainChange, title: treasuryGrainTitle },
+      { label: '私产钱', icon: '💰', value: player.resources.money, change: privateMoneyChange, title: privateMoneyTitle },
+      { label: '私产粮', icon: '🌾', value: player.resources.grain, change: privateGrainChange, title: privateGrainTitle },
       { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
       { label: '正统性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
       { label: '兵力', icon: '⚔', value: totalTroops, change: 0 },
-      { label: '领地', icon: '🏯', value: territoryCount, change: 0 },
-      { label: '势力', icon: '🏴', value: getRealmZhouCount(player.id, characters, territories), change: 0, title: '势力范围内的全部州数（含附庸领地）' },
+      { label: '领地', icon: '🏯', value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}` },
     ];
   }, [player, characters, territories, playerLedger, milArmies, milBattalions]);
 
@@ -117,7 +115,7 @@ const ResourceBar: React.FC = () => {
         <div key={res.label} className="flex items-center gap-1.5 text-sm" title={res.title}>
           <span className="text-base">{res.icon}</span>
           <span className="text-[var(--color-accent-gold)] font-medium">{res.label}</span>
-          <span className="text-[var(--color-text)] font-bold">{formatValue(res.value)}</span>
+          <span className="text-[var(--color-text)] font-bold">{res.valueStr ?? formatValue(res.value)}</span>
           {res.change !== 0 && (
             <span
               className={`text-xs ${
