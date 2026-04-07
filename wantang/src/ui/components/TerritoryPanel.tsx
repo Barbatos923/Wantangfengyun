@@ -8,6 +8,7 @@ import { getActualController } from '@engine/official/officialUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { getArmyStrength } from '@engine/military/militaryCalc';
+import { formatAmount } from '@ui/utils/formatAmount';
 
 interface TerritoryPanelProps {
   territory: Territory;
@@ -102,6 +103,20 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
           </div>
         ) : (
           <>
+            {/* Treasury */}
+            {territory.treasury && (
+              <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div className="text-xs text-[var(--color-text-muted)]">国库金钱</div>
+                  <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.money)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-[var(--color-text-muted)]">国库粮草</div>
+                  <div className="text-[var(--color-accent-gold)] font-bold">{formatAmount(territory.treasury.grain)}</div>
+                </div>
+              </div>
+            )}
+
             {/* Three attributes */}
             <div className="mb-4">
               <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">属性</h3>

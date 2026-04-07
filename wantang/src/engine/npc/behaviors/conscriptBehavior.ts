@@ -7,11 +7,13 @@ import type { Territory } from '@engine/territory/types';
 import type { Army, UnitType } from '@engine/military/types';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
-import { getAvailableRecruits, estimateNetGrain } from '@engine/military/militaryCalc';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { getAvailableRecruits } from '@engine/military/militaryCalc';
+import { useLedgerStore } from '@engine/official/LedgerStore';
+import type { MonthlyLedger } from '@engine/official/types';
 import { RECRUIT_COST_PER_SOLDIER, executeRecruit } from '@engine/interaction/militaryAction';
 import { ALL_UNIT_TYPES } from '@data/unitTypes';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
-import { getControlledZhou as getControlledZhouPure } from '@engine/official/postQueries';
 import { registerBehavior } from './index';
 
 // ── 常量 ────────────────────────────────────────────────
@@ -22,7 +24,7 @@ const CONSCRIPT_MONEY_COST = MAX_BATTALION_STRENGTH * RECRUIT_COST_PER_SOLDIER;
 /** 最低金钱倍率：至少留够 N 倍征兵费用才考虑征兵 */
 const MIN_MONEY_MULTIPLIER = 1.5;
 
-/** 新营平均月粮耗（取所有兵种平均值） */
+/** 新营平均月粮耗（取所有兵种平均值），用于评估新增一营的边际粮草成本 */
 const AVG_GRAIN_PER_BATTALION = (() => {
   let sum = 0;
   for (const u of ALL_UNIT_TYPES) sum += u.grainCostPerThousand;
@@ -56,19 +58,37 @@ function getOwnedArmies(actorId: string, ctx: NpcContext): Army[] {
 }
 
 
-/** 获取有足够征兵池的州（按征兵池降序） */
+/** 获取兵员够 + 本州国库金钱够的州（按征兵池降序）。粮草由全局 ledger 评估，不在此处过滤 */
 function getRecruitableZhou(
   controlledZhou: Territory[],
+  actor: Character,
 ): Array<{ territoryId: string; available: number }> {
   const result: Array<{ territoryId: string; available: number }> = [];
   for (const t of controlledZhou) {
     const available = getAvailableRecruits(t);
-    if (available >= MAX_BATTALION_STRENGTH) {
-      result.push({ territoryId: t.id, available });
-    }
+    if (available < MAX_BATTALION_STRENGTH) continue;
+    // 本州国库（无 treasury fallback 私产，与 debitTreasury 一致）
+    const treasuryMoney = t.treasury?.money ?? actor.resources.money;
+    if (treasuryMoney < CONSCRIPT_MONEY_COST * MIN_MONEY_MULTIPLIER) continue;
+    result.push({ territoryId: t.id, available });
   }
   result.sort((a, b) => b.available - a.available);
   return result;
+}
+
+/**
+ * 全局粮草净流量评估（国库视角，不含俸禄）：
+ *   收入 = 领地产出 + 属下上缴 + 回拨收入
+ *   支出 = 军事维持 + 回拨下属 + 上缴领主
+ *
+ * 直接读取月结时缓存的 ledger（economySystem 写入），零额外计算成本。
+ * 没有缓存时（首月或非月初）返回 +Infinity，相当于不门控（让权重 modifier 决定）。
+ */
+function calcGlobalGrainNet(ledger: MonthlyLedger | undefined): number {
+  if (!ledger) return Infinity;
+  const income = ledger.territoryIncome.grain + ledger.vassalTribute.grain + ledger.redistributionReceived.grain;
+  const expense = ledger.militaryMaintenance.grain + ledger.redistributionPaid.grain + ledger.overlordTribute.grain;
+  return income - expense;
 }
 
 /** 根据性格选择兵种 */
@@ -111,16 +131,17 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const armies = getOwnedArmies(actor.id, ctx);
     if (armies.length === 0) return null;
 
-    // 必须有足够金钱（检查 capital 国库）
-    const capitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
-    if (capitalMoney < CONSCRIPT_MONEY_COST * MIN_MONEY_MULTIPLIER) return null;
-
     // 控制的州
     const controlledZhou = getControlledZhou(actor.id, ctx);
 
-    // 必须有可征兵领地
-    const recruitableTerritories = getRecruitableZhou(controlledZhou);
+    // 必须有"兵员够 + 本州国库金钱够"的州
+    const recruitableTerritories = getRecruitableZhou(controlledZhou, actor);
     if (recruitableTerritories.length === 0) return null;
+
+    // 全局粮草净流量（国库视角，不含俸禄）
+    const globalGrainNet = calcGlobalGrainNet(ctx.ledgers.get(actor.id));
+    // 加一营是否仍可负担：净流量 - 单营月粮耗 ≥ 0
+    if (globalGrainNet - AVG_GRAIN_PER_BATTALION < 0) return null;
 
     // 当前总营数
     let totalBattalions = 0;
@@ -134,15 +155,13 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
 
     const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
-    const moneyRatio = capitalMoney / CONSCRIPT_MONEY_COST;
-
-    // 粮草评估：轻量估算月净粮草，判断征兵后是否仍为正
-    const netGrain = estimateNetGrain(actor, controlledZhou, ctx.armies, ctx.battalions, undefined, {
-      characters: ctx.characters,
-      territories: ctx.territories,
-      getControlledZhou: (cid) => getControlledZhouPure(cid, ctx.territories),
-    });
-    const netGrainAfter = netGrain - AVG_GRAIN_PER_BATTALION;
+    // moneyRatio：可征兵州国库总和 / 单营成本（衡量"还能征几营"）
+    let recruitablePoolMoney = 0;
+    for (const r of recruitableTerritories) {
+      const t = ctx.territories.get(r.territoryId);
+      recruitablePoolMoney += t?.treasury?.money ?? 0;
+    }
+    const moneyRatio = recruitablePoolMoney / CONSCRIPT_MONEY_COST;
 
     const modifiers: WeightModifier[] = [
       { label: '基础', add: 10 },
@@ -155,11 +174,6 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
       // 财政驱动
       ...(moneyRatio > 5 ? [{ label: '财力雄厚', add: 10 }] : []),
       ...(moneyRatio < 2 ? [{ label: '财力紧张', add: -10 }] : []),
-
-      // 粮草驱动
-      ...(netGrainAfter < 0 ? [{ label: '征兵后粮草为负', factor: 0 }] : []),
-      ...(netGrain < AVG_GRAIN_PER_BATTALION * 2 ? [{ label: '粮草余量不足', add: -15 }] : []),
-      ...(netGrain > AVG_GRAIN_PER_BATTALION * 5 ? [{ label: '粮草充裕', add: 10 }] : []),
 
       // 人格驱动
       { label: '尚武', add: personality.boldness * 15 },
@@ -187,21 +201,18 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const milStore = useMilitaryStore.getState();
 
     let count = 0;
+    const terrStore = useTerritoryStore.getState();
     for (const { territoryId } of data.recruitableTerritories) {
       if (count >= 2) break;
-      const freshCapitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
-      if (freshCapitalMoney < CONSCRIPT_MONEY_COST) break;
+      // 征兵扣本州国库，按本州金钱判断
+      const freshTerritory = terrStore.territories.get(territoryId);
+      const freshTreasuryMoney = freshTerritory?.treasury?.money ?? actor.resources.money;
+      if (freshTreasuryMoney < CONSCRIPT_MONEY_COST) continue; // 该州不够，试下一个
 
-      // 粮草检查：用最新 Store 状态实时判断征兵后净粮草是否为正
-      const controlledZhou = getControlledZhou(actor.id, ctx);
-      const netGrain = estimateNetGrain(
-        actor, controlledZhou, milStore.armies, milStore.battalions, undefined, {
-          characters: ctx.characters,
-          territories: ctx.territories,
-          getControlledZhou: (cid) => getControlledZhouPure(cid, ctx.territories),
-        },
-      );
-      if (netGrain - AVG_GRAIN_PER_BATTALION < 0) break;
+      // 全局粮草检查：每加一营前重算，避免本轮内连征多营导致超载
+      // executeAsNpc 是副作用阶段，允许读 LedgerStore 拿最新账本
+      const globalGrainNet = calcGlobalGrainNet(useLedgerStore.getState().allLedgers.get(actor.id));
+      if (globalGrainNet - AVG_GRAIN_PER_BATTALION < 0) break;
 
       // 选营数最少的军队扩编
       let bestArmyId = data.armyIds[0];

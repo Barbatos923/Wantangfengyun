@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Modal, ModalHeader, Button } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import type { Decision } from '@engine/decision';
+import { formatAmount } from '@ui/utils/formatAmount';
 
 interface DecisionDetailModalProps {
   decision: Decision;
@@ -213,7 +214,7 @@ export default function DecisionDetailModal({ decision, onClose, onExecuted }: D
             <h3 className="text-xs font-bold text-[var(--color-text-muted)] mb-1">花费</h3>
             <div className="flex gap-4 text-sm">
               {currentCost.money > 0 && (
-                <span className="text-[var(--color-accent-gold)]">金钱 -{currentCost.money}</span>
+                <span className="text-[var(--color-accent-gold)]">金钱 -{formatAmount(currentCost.money)}</span>
               )}
               {currentCost.prestige > 0 && (
                 <span className="text-[var(--color-text)]">名望 -{currentCost.prestige}</span>

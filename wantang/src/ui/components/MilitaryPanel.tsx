@@ -12,7 +12,9 @@ import { calcPeaceAcceptance } from '@engine/military/warCalc';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { useTurnManager } from '@engine/TurnManager';
 import { diffMonths } from '@engine/dateUtils';
-import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish } from '@engine/interaction/militaryAction';
+import { executeRecruit, executeReward, executeCreateArmy, executeSetCommander, executeTransferBattalion, executeDisbandBattalion, executeReplenish, RECRUIT_COST_PER_SOLDIER } from '@engine/interaction/militaryAction';
+import { getCapitalBalance } from '@engine/territory/treasuryUtils';
+import { formatAmount } from '@ui/utils/formatAmount';
 import { executeCreateCampaign } from '@engine/interaction/campaignAction';
 import type { Army, Battalion, UnitType } from '@engine/military/types';
 import type { War, Campaign } from '@engine/military/types';
@@ -185,13 +187,18 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
     }
   }
 
-  // 征兵检查
+  // 征兵检查（兵源 + 本州国库金钱）
+  const RECRUIT_MONEY_COST = MAX_BATTALION_STRENGTH * RECRUIT_COST_PER_SOLDIER;
   const canRecruit = (() => {
     if (!recruitArmyId || !recruitTerritoryId) return false;
     const territory = territories.get(recruitTerritoryId);
     if (!territory) return false;
     const available = getAvailableRecruits(territory);
-    return available >= MAX_BATTALION_STRENGTH;
+    if (available < MAX_BATTALION_STRENGTH) return false;
+    // 征兵扣本州国库金钱
+    const treasuryMoney = territory.treasury?.money ?? 0;
+    if (treasuryMoney < RECRUIT_MONEY_COST) return false;
+    return true;
   })();
 
   const recruitAvailableCount = (() => {
@@ -212,8 +219,8 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
   // 每兵每点士气 = 5/6 贯，即 moraleGain = rewardAmount × 6 / (totalStrength × 5)
   const rewardArmy = rewardArmyId ? armies.get(rewardArmyId) ?? null : null;
   const rewardArmyStrength = rewardArmy ? getArmyStrength(rewardArmy, battalions) : 0;
-  const playerMoney = player?.resources.money ?? 0;
-  const canReward = rewardArmyId && rewardAmount > 0 && playerMoney >= rewardAmount && rewardArmyStrength > 0;
+  const capitalMoney = playerId ? getCapitalBalance(playerId).money : 0;
+  const canReward = rewardArmyId && rewardAmount > 0 && capitalMoney >= rewardAmount && rewardArmyStrength > 0;
   const rewardMoraleGain = rewardArmyStrength > 0
     ? rewardAmount * 6 / (rewardArmyStrength * 5)
     : 0;
@@ -529,16 +536,26 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     );
                   })}
                 </select>
-                {recruitTerritoryId && (
-                  <p className="text-xs text-[var(--color-text-muted)] mt-1">
-                    当前可征兵：{recruitAvailableCount} 人
-                    {recruitAvailableCount < MAX_BATTALION_STRENGTH && (
-                      <span className="text-[var(--color-accent-red,#e74c3c)]">
-                        {' '}（不足一营 {MAX_BATTALION_STRENGTH} 人，无法征募）
-                      </span>
-                    )}
-                  </p>
-                )}
+                {recruitTerritoryId && (() => {
+                  const recT = territories.get(recruitTerritoryId);
+                  const recTreasury = recT?.treasury?.money ?? 0;
+                  const moneyShort = recTreasury < RECRUIT_MONEY_COST;
+                  return (
+                    <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                      当前可征兵：{recruitAvailableCount} 人 · 本州国库 {formatAmount(recTreasury)} 钱（需 {formatAmount(RECRUIT_MONEY_COST)}）
+                      {recruitAvailableCount < MAX_BATTALION_STRENGTH && (
+                        <span className="text-[var(--color-accent-red,#e74c3c)]">
+                          {' '}（不足一营 {MAX_BATTALION_STRENGTH} 人）
+                        </span>
+                      )}
+                      {moneyShort && (
+                        <span className="text-[var(--color-accent-red,#e74c3c)]">
+                          {' '}（国库不足）
+                        </span>
+                      )}
+                    </p>
+                  );
+                })()}
               </div>
 
               {/* 选择兵种 */}
@@ -587,7 +604,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
                 }`}
               >
-                确认招募（消耗 {MAX_BATTALION_STRENGTH} 人口）
+                确认招募（消耗 {MAX_BATTALION_STRENGTH} 人口 + {formatAmount(RECRUIT_MONEY_COST)} 钱）
               </button>
 
               {/* 补充兵员 */}
@@ -612,7 +629,9 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     <div className="space-y-1">
                       {underStrengthBats.map(({ bat, armyName, homeTerr, available }) => {
                         const deficit = MAX_BATTALION_STRENGTH - bat.currentStrength;
-                        const canReplenish = available >= deficit && deficit > 0;
+                        const replenishCost = deficit * RECRUIT_COST_PER_SOLDIER;
+                        const homeTreasuryMoney = homeTerr?.treasury?.money ?? 0;
+                        const canReplenish = available >= deficit && deficit > 0 && homeTreasuryMoney >= replenishCost;
                         // 检查籍贯地是否属于玩家
                         const homeController = homeTerr?.posts.find((p: Post) => {
                           const tpl = positionMap.get(p.templateId);
@@ -634,7 +653,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                               }}
                               className="shrink-0 px-2 py-0.5 rounded border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-bg-surface)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             >
-                              补充{deficit}人
+                              补充{deficit}人（{formatAmount(replenishCost)}钱）
                             </button>
                           </div>
                         );
@@ -695,7 +714,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
               {/* 赏赐金额 */}
               <div>
                 <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1.5">
-                  赏赐金额（当前：{playerMoney.toLocaleString()} 钱）
+                  赏赐金额（治所国库：{formatAmount(capitalMoney)} 钱）
                 </label>
                 <div className="flex gap-2 mb-2">
                   {REWARD_PRESETS.map((amount) => (
@@ -708,7 +727,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           : 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)]'
                       }`}
                     >
-                      {amount.toLocaleString()}
+                      {formatAmount(amount)}
                     </button>
                   ))}
                 </div>
@@ -726,7 +745,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     {rewardArmyStrength > 0 && (
                       <span>（{rewardArmyStrength}人，每兵{(rewardAmount / rewardArmyStrength).toFixed(1)}贯）</span>
                     )}
-                    {playerMoney < rewardAmount && (
+                    {capitalMoney < rewardAmount && (
                       <span className="text-[var(--color-accent-red,#e74c3c)]">（钱财不足）</span>
                     )}
                   </p>
@@ -743,7 +762,7 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                     : 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed'
                 }`}
               >
-                确认赏赐（消耗 {rewardAmount.toLocaleString()} 钱）
+                确认赏赐（消耗 {formatAmount(rewardAmount)} 钱）
               </button>
             </div>
           )}

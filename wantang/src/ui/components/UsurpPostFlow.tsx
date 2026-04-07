@@ -3,6 +3,8 @@ import { Modal, ModalHeader, Button } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { getUsurpablePosts, previewUsurp, executeUsurp } from '@engine/interaction';
 import type { Post } from '@engine/territory/types';
+import { formatAmount } from '@ui/utils/formatAmount';
+import { getCapitalBalance } from '@engine/territory/treasuryUtils';
 
 interface UsurpPostFlowProps {
   targetId: string;
@@ -48,8 +50,12 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
     );
   }
 
+  const capitalMoney = getCapitalBalance(playerId).money;
+  const canAffordActive = activePreview ? capitalMoney >= activePreview.cost.money && (player?.resources.prestige ?? 0) >= activePreview.cost.prestige : false;
+
   function renderPreview() {
     if (!activePreview) return null;
+    const moneyShort = capitalMoney < activePreview.cost.money;
     return (
       <div className="space-y-2">
         <div className="text-sm text-[var(--color-text)]">
@@ -61,7 +67,9 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
         </div>
         <div className="flex gap-3 text-xs">
           {activePreview.cost.money > 0 && (
-            <span className="text-[var(--color-accent-gold)]">金钱 -{activePreview.cost.money}</span>
+            <span className={moneyShort ? 'text-[var(--color-accent-red,#e74c3c)]' : 'text-[var(--color-accent-gold)]'}>
+              金钱 -{formatAmount(activePreview.cost.money)}（治所国库 {formatAmount(capitalMoney)}）
+            </span>
           )}
           {activePreview.cost.prestige > 0 && (
             <span className="text-[var(--color-text)]">名望 -{activePreview.cost.prestige}</span>
@@ -85,8 +93,8 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
           <>
             <p className="text-sm text-[var(--color-text-muted)]">确认篡夺以下头衔？</p>
             {renderPreview()}
-            <Button variant="danger" className="mt-2 w-full py-2 font-bold" onClick={() => handleUsurp(usurpable[0])}>
-              确认篡夺
+            <Button variant="danger" className="mt-2 w-full py-2 font-bold" disabled={!canAffordActive} onClick={() => handleUsurp(usurpable[0])}>
+              {canAffordActive ? '确认篡夺' : '资源不足'}
             </Button>
           </>
         ) : selected === null ? (
@@ -115,7 +123,7 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
             {renderPreview()}
             <div className="flex gap-2 mt-2">
               <Button variant="default" className="flex-1 py-2 font-bold" onClick={() => setSelected(null)}>返回</Button>
-              <Button variant="danger" className="flex-1 py-2 font-bold" onClick={() => handleUsurp(selected)}>确认篡夺</Button>
+              <Button variant="danger" className="flex-1 py-2 font-bold" disabled={!canAffordActive} onClick={() => handleUsurp(selected)}>{canAffordActive ? '确认篡夺' : '资源不足'}</Button>
             </div>
           </>
         )}

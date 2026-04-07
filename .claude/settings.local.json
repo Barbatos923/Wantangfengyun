@@ -77,7 +77,8 @@
       "Bash(gh repo:*)",
       "WebFetch(domain:github.com)",
       "Bash(gh api:*)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(pnpm tsc:*)"
     ]
   }
 }

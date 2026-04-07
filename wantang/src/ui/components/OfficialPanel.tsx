@@ -10,6 +10,7 @@ import { positionMap } from '@data/positions';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { useTurnManager } from '@engine/TurnManager';
 import type { Post } from '@engine/territory/types';
+import { formatAmount } from '@ui/utils/formatAmount';
 
 interface OfficialPanelProps {
   onClose: () => void;
@@ -258,8 +259,8 @@ const OfficialPanel: React.FC<OfficialPanelProps> = ({ onClose }) => {
                   <div className="px-3 py-2 rounded border border-[var(--color-border)] flex items-center justify-between">
                     <span className="text-xs text-[var(--color-text-muted)]">月俸</span>
                     <span className="text-sm text-[var(--color-text)]">
-                      钱{Math.floor(salary.money)}&nbsp;
-                      粮{Math.floor(salary.grain)}
+                      钱{formatAmount(salary.money)}&nbsp;
+                      粮{formatAmount(salary.grain)}
                     </span>
                   </div>
                 </>

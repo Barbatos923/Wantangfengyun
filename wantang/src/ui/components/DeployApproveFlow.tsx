@@ -110,6 +110,8 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
     // 驳回后设置 6 个月（180 天）冷却
     const now = useTurnManager.getState().currentDate;
     useNpcStore.getState().setDeployRejectCooldown(actorId, addDays(now, 180));
+    // 同时清掉 buffer 中其他 drafter 留下的残留草案，避免下一轮 NpcEngine 再推
+    useNpcStore.getState().clearDeploymentDraft(actorId);
     useNpcStore.getState().removePlayerTask(task!.id);
     onClose();
   }

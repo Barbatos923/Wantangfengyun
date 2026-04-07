@@ -13,6 +13,7 @@ import OpinionPopup from './OpinionPopup';
 import { getRankTitle, getSubordinates, getDirectControlLimit, getDynamicTitle, getHeldPosts, getActualController } from '@engine/official/officialUtils';
 import { rankMap } from '@data/ranks';
 import { positionMap } from '@data/positions';
+import { formatAmount } from '@ui/utils/formatAmount';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { getTotalTreasury } from '@engine/territory/treasuryUtils';
 import { useWarStore } from '@engine/military/WarStore';
@@ -348,21 +349,21 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                 }
               }
             }
-            const items = [
-              { label: '国库钱', value: treasury.money },
-              { label: '国库粮', value: treasury.grain },
-              { label: '私产钱', value: character.resources.money },
-              { label: '私产粮', value: character.resources.grain },
+            const items: { label: string; value: number; wan?: boolean }[] = [
+              { label: '国库钱', value: treasury.money, wan: true },
+              { label: '国库粮', value: treasury.grain, wan: true },
+              { label: '私产钱', value: character.resources.money, wan: true },
+              { label: '私产粮', value: character.resources.grain, wan: true },
               { label: '名望', value: character.resources.prestige },
               { label: '正统性', value: character.resources.legitimacy },
               { label: '兵力', value: totalTroops },
             ];
             return (
               <div className="grid grid-cols-4 gap-1 text-center">
-                {items.map(({ label, value }) => (
+                {items.map(({ label, value, wan }) => (
                   <div key={label}>
                     <div className="text-[10px] text-[var(--color-text-muted)]">{label}</div>
-                    <div className="text-sm text-[var(--color-text)] font-bold">{Math.floor(value)}</div>
+                    <div className="text-sm text-[var(--color-text)] font-bold">{wan ? formatAmount(value) : Math.floor(value)}</div>
                   </div>
                 ))}
               </div>

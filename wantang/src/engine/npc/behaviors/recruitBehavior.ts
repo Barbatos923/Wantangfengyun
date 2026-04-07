@@ -5,7 +5,7 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
-import { executeReplenish } from '@engine/interaction/militaryAction';
+import { executeReplenish, RECRUIT_COST_PER_SOLDIER } from '@engine/interaction/militaryAction';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
@@ -83,8 +83,16 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
       { label: '贪财', add: -personality.greed * 20 },
       { label: '尚武', add: personality.boldness * 10 },
 
-      // 硬切：capital 国库没钱不补
-      ...((ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money) < 50 ? [{ label: '资金不足', factor: 0 }] : []),
+      // 硬切：所有弱营所在州国库都凑不出补员费时跳过
+      // （补员扣 homeTerritory 国库，不是 capital）
+      ...((() => {
+        const anyAffordable = weakBattalions.some(b => {
+          const t = ctx.territories.get(b.territoryId);
+          const treasuryMoney = t?.treasury?.money ?? actor.resources.money;
+          return treasuryMoney >= b.deficit * RECRUIT_COST_PER_SOLDIER;
+        });
+        return anyAffordable ? [] : [{ label: '资金不足', factor: 0 }];
+      })()),
     ];
 
     const weight = calcWeight(modifiers);
@@ -99,7 +107,9 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
     for (const bat of sorted) {
       if (count >= 3) break;
       const freshTerritory = useTerritoryStore.getState().territories.get(bat.territoryId);
-      if ((freshTerritory?.treasury?.money ?? actor.resources.money) < 50) break;
+      const treasuryMoney = freshTerritory?.treasury?.money ?? actor.resources.money;
+      const cost = bat.deficit * RECRUIT_COST_PER_SOLDIER;
+      if (treasuryMoney < cost) continue; // 该州凑不出，跳过这一营试下一个
       executeReplenish(bat.battalionId, bat.territoryId, bat.deficit, actor.id);
       count++;
     }

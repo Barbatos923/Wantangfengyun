@@ -10,8 +10,6 @@ import { useTurnManager } from '@engine/TurnManager';
 import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 import { positionMap } from '@data/positions';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
-import { useWarStore } from '@engine/military/WarStore';
-import { toAbsoluteDay } from '@engine/dateUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助：获取 defender 直接控制的州级领地 ID ────────────
@@ -78,8 +76,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
       )) continue;
 
       // 停战检查
-      const currentDay = toAbsoluteDay(ctx.date);
-      const truce = useWarStore.getState().hasTruce(actor.id, target.id, currentDay);
+      const truce = ctx.hasTruce(actor.id, target.id);
 
       // 评估宣战理由
       const warCtx: WarContext = {

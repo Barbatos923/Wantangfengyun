@@ -101,7 +101,8 @@ export interface NpcBehavior<TData = unknown> {
 // ── NPC 决策上下文（月结快照） ───────────────────────────
 
 /**
- * 每月初构建一次的全局快照，避免在 N×M 决策循环中高频读 Store。
+ * 每日 NPC tick 开始时构建的全局快照，避免在 N×M 决策循环中高频读 Store，
+ * 并保证同一 tick 内所有 behavior 看到一致的世界状态（不被前序 executeAsNpc 干扰）。
  * generateTask 必须只用 context 参数，不直接调 getState()。
  */
 export interface NpcContext {
@@ -120,6 +121,7 @@ export interface NpcContext {
   // lazy-cached 查询
   getOpinion: (aId: string, bId: string) => number;
   getMilitaryStrength: (charId: string) => number;
+  hasTruce: (a: string, b: string) => boolean;
 
   // 臣属索引
   vassalIndex: Map<string, Set<string>>;  // overlordId → Set<vassalId>
@@ -137,6 +139,9 @@ export interface NpcContext {
   // 国库预聚合
   capitalTreasury: Map<string, { money: number; grain: number }>;  // charId → capital 州国库
   totalTreasury: Map<string, { money: number; grain: number }>;    // charId → 所有州国库之和
+
+  // 上月月结账本快照（economySystem 写入 LedgerStore.allLedgers）
+  ledgers: Map<string, import('@engine/official/types').MonthlyLedger>;
 
   // 铨选共享状态（可变，行为 execute 时填充）
   appointedThisRound: Set<string>;

@@ -83,6 +83,13 @@ export const deployApproveBehavior: NpcBehavior<DeployApproveData> = {
     const draft = useNpcStore.getState().deploymentDrafts.get(actor.id);
     if (!draft || draft.length === 0) return null;
 
+    // 去重：玩家已有 deploy-approve 任务时，不重复推送
+    // （第二个 drafter 的草案留在 buffer 里，等待玩家处理完当前任务后下一轮再合并）
+    const hasExisting = useNpcStore.getState().playerTasks.some(
+      t => t.type === 'deploy-approve' && t.actorId === actor.id,
+    );
+    if (hasExisting) return null;
+
     return {
       data: { entries: draft },
       weight: 100,

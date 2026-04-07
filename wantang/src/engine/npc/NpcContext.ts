@@ -9,6 +9,8 @@ import { useWarStore } from '@engine/military/WarStore';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
+import { useLedgerStore } from '@engine/official/LedgerStore';
+import { toAbsoluteDay } from '@engine/dateUtils';
 
 /**
  * 一次性从所有 Store 读取快照，构建 NpcContext。
@@ -82,6 +84,10 @@ export function buildNpcContext(): NpcContext {
 
   const activeWars = warState.getActiveWars();
 
+  // ── 停战检查（闭包捕获 warState + 当前绝对日） ──
+  const currentDay = toAbsoluteDay(turnState.currentDate);
+  const hasTruce = (a: string, b: string) => warState.hasTruce(a, b, currentDay);
+
   // ── 国库预聚合 ──
 
   const capitalTreasury = new Map<string, { money: number; grain: number }>();
@@ -120,6 +126,7 @@ export function buildNpcContext(): NpcContext {
     expectedLegitimacyCache: expectedLegitimacy,
     getOpinion,
     getMilitaryStrength,
+    hasTruce,
     vassalIndex,
     armies,
     battalions,
@@ -129,6 +136,7 @@ export function buildNpcContext(): NpcContext {
     activeWars,
     capitalTreasury,
     totalTreasury,
+    ledgers: useLedgerStore.getState().allLedgers,
     appointedThisRound: new Set(),
   };
 }

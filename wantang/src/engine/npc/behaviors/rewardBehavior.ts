@@ -12,21 +12,20 @@ import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
 
-/** 找到角色所有需要赏赐的军队（士气 < 阈值），按士气升序 */
-function findArmiesNeedingReward(actorId: string, threshold: number): {
+/** 找到角色所有需要赏赐的军队（士气 < 阈值），按士气升序。读 ctx 快照 */
+function findArmiesNeedingReward(actorId: string, threshold: number, ctx: NpcContext): {
   armyId: string;
   avgMorale: number;
 }[] {
-  const milStore = useMilitaryStore.getState();
-  const armies = milStore.getArmiesByOwner(actorId);
   const result: { armyId: string; avgMorale: number }[] = [];
 
-  for (const army of armies) {
+  for (const army of ctx.armies.values()) {
+    if (army.ownerId !== actorId) continue;
     if (army.battalionIds.length === 0) continue;
     let sum = 0;
     let count = 0;
     for (const batId of army.battalionIds) {
-      const bat = milStore.battalions.get(batId);
+      const bat = ctx.battalions.get(batId);
       if (bat) { sum += bat.morale; count++; }
     }
     if (count === 0) continue;
@@ -61,13 +60,13 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
     const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
     // 危险军队（< 30）→ 强制赏赐全部
-    const critical = findArmiesNeedingReward(actor.id, 30);
+    const critical = findArmiesNeedingReward(actor.id, 30, ctx);
     if (critical.length > 0) {
       return { data: { armies: critical, lowestMorale: critical[0].avgMorale }, weight: 100, forced: true };
     }
 
     // 正常情况：收集士气 < 50 的军队，低 weight 使大约一年赏赐一次
-    const needReward = findArmiesNeedingReward(actor.id, 50);
+    const needReward = findArmiesNeedingReward(actor.id, 50, ctx);
     if (needReward.length === 0) return null;
 
     const modifiers: WeightModifier[] = [

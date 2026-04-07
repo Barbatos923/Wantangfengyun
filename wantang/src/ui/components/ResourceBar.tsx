@@ -5,16 +5,15 @@ import { useLedgerStore } from '@engine/official/LedgerStore';
 import { getActualController, getDirectControlLimit } from '@engine/official/officialUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { getTotalTreasury } from '@engine/territory/treasuryUtils';
+import { formatAmount, formatAmountSigned } from '@ui/utils/formatAmount';
 
 function formatValue(value: number): string {
-  if (value >= 10000) return `${(value / 10000).toFixed(1)}万`;
-  return Math.floor(value).toLocaleString();
+  return formatAmount(value);
 }
 
 function formatChange(change: number): string {
   if (change === 0) return '';
-  const sign = change > 0 ? '+' : '';
-  return `${sign}${Math.floor(change)}`;
+  return formatAmountSigned(change);
 }
 
 interface ResourceItem {
@@ -85,16 +84,16 @@ const ResourceBar: React.FC = () => {
     const treasury = getTotalTreasury(player.id, territories, controllerIndex);
 
     const treasuryMoneyTitle = playerLedger
-      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.money)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.money)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.money)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.money)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.money)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.money)}`
+      ? `领地产出: ${formatAmount(playerLedger.territoryIncome.money)}\n属下上缴: ${formatAmount(playerLedger.vassalTribute.money)}\n回拨收入: ${formatAmount(playerLedger.redistributionReceived.money)}\n属下俸禄: -${formatAmount(playerLedger.subordinateSalaries.money)}\n回拨支出: -${formatAmount(playerLedger.redistributionPaid.money)}\n上缴领主: -${formatAmount(playerLedger.overlordTribute.money)}`
       : undefined;
     const treasuryGrainTitle = playerLedger
-      ? `领地产出: ${Math.floor(playerLedger.territoryIncome.grain)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.grain)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.grain)}\n军事维持: -${Math.floor(playerLedger.militaryMaintenance.grain)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.grain)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.grain)}`
+      ? `领地产出: ${formatAmount(playerLedger.territoryIncome.grain)}\n属下上缴: ${formatAmount(playerLedger.vassalTribute.grain)}\n回拨收入: ${formatAmount(playerLedger.redistributionReceived.grain)}\n军事维持: -${formatAmount(playerLedger.militaryMaintenance.grain)}\n回拨支出: -${formatAmount(playerLedger.redistributionPaid.grain)}\n上缴领主: -${formatAmount(playerLedger.overlordTribute.grain)}`
       : undefined;
     const privateMoneyTitle = playerLedger
-      ? `职位俸禄: ${Math.floor(playerLedger.positionSalary.money)}`
+      ? `职位俸禄: ${formatAmount(playerLedger.positionSalary.money)}`
       : undefined;
     const privateGrainTitle = playerLedger
-      ? `职位俸禄: ${Math.floor(playerLedger.positionSalary.grain)}`
+      ? `职位俸禄: ${formatAmount(playerLedger.positionSalary.grain)}`
       : undefined;
 
     return [

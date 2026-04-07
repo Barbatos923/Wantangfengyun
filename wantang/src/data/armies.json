@@ -2,7 +2,7 @@
   {
     "id": "army-shence",
     "name": "神策军",
-    "postId": null,
+    "postId": "post-cishi-changan",
     "ownerId": "char-yizong",
     "commanderId": "char-zhangzhifang",
     "locationId": "zhou-changan",

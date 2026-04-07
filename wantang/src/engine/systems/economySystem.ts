@@ -127,6 +127,12 @@ export function runEconomySystem(_date: GameDate): void {
   if (playerLedger) {
     useLedgerStore.getState().updatePlayerLedger(playerLedger);
   }
+  // 缓存所有角色 ledger，供 NPC 决策行为读取
+  {
+    const allLedgers = new Map<string, MonthlyLedger>();
+    for (const { id, ledger } of ledgers) allLedgers.set(id, ledger);
+    useLedgerStore.getState().setAllLedgers(allLedgers);
+  }
 
   const charsForBankruptcy = useCharacterStore.getState().getAliveCharacters();
   const updatedTerritories = useTerritoryStore.getState().territories;

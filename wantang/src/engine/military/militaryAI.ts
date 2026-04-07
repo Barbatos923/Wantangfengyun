@@ -5,7 +5,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from './MilitaryStore';
 import { getControlledZhou } from '@engine/official/postQueries';
-import { estimateNetGrain } from './militaryCalc';
+import { useLedgerStore } from '@engine/official/LedgerStore';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { unitTypeMap } from '@data/unitTypes';
 import type { Character } from '@engine/character/types';
@@ -184,13 +184,13 @@ function aiDisbandBattalions(
   // 2. 财政裁减：净粮草为负时裁弱营
   // 重新获取最新状态（空壳营已裁）
   const freshArmies = milStore.getArmiesByOwner(char.id);
-  const terrStore = useTerritoryStore.getState();
-  const charStore = useCharacterStore.getState();
-  let netGrain = estimateNetGrain(char, controlledZhou, milStore.armies, milStore.battalions, milStore.ownerArmyIndex, {
-    characters: charStore.characters,
-    territories: terrStore.territories,
-    getControlledZhou: (cid) => getControlledZhou(cid, terrStore.territories),
-  });
+  // 用本月 ledger 评估净粮草（economySystem 已在本月结跑过，数据最新且精确）
+  // 首月无 ledger 时跳过财政裁营
+  const ledger = useLedgerStore.getState().allLedgers.get(char.id);
+  if (!ledger) return;
+  let netGrain =
+    (ledger.territoryIncome.grain + ledger.vassalTribute.grain + ledger.redistributionReceived.grain)
+    - (ledger.militaryMaintenance.grain + ledger.redistributionPaid.grain + ledger.overlordTribute.grain);
 
   if (netGrain >= 0) return;
 

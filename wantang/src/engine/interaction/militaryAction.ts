@@ -33,7 +33,7 @@ export function executeRecruit(
   }
 }
 
-/** 赏赐：扣玩家钱，提升全军士气 */
+/** 赏赐：扣 capital 州国库，提升全军士气 */
 export function executeReward(
   playerId: string,
   armyId: string,

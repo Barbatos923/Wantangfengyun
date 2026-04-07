@@ -3,6 +3,9 @@ import type { Territory } from '@engine/territory/types';
 import { ALL_BUILDINGS, buildingMap } from '@data/buildings';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { executeBuild } from '@engine/interaction';
+import { formatAmount } from '@ui/utils/formatAmount';
+
+// 注：建设扣本州国库（buildAction.ts），不是私产。下面 canAfford 判断也用本州国库。
 
 interface BuildMenuProps {
   territory: Territory;
@@ -15,8 +18,10 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
   const isUpgrade = slot.buildingId !== null;
 
   const player = useCharacterStore((s) => s.playerId ? s.characters.get(s.playerId) : undefined);
-  const playerMoney = player?.resources.money ?? 0;
-  const playerGrain = player?.resources.grain ?? 0;
+  // 建设扣本州国库（无 treasury 时 fallback 私产）
+  const treasury = territory.treasury;
+  const availableMoney = treasury ? treasury.money : (player?.resources.money ?? 0);
+  const availableGrain = treasury ? treasury.grain : (player?.resources.grain ?? 0);
 
   // IDs of buildings already built in this territory (to exclude duplicates)
   const builtIds = new Set(
@@ -58,7 +63,7 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
       const moneyCost = def.costMoney * targetLevel;
       const grainCost = def.costGrain * targetLevel;
       const duration = def.constructionMonths * targetLevel;
-      const canAfford = playerMoney >= moneyCost && playerGrain >= grainCost;
+      const canAfford = availableMoney >= moneyCost && availableGrain >= grainCost;
 
       return (
         <>
@@ -72,11 +77,11 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
 
           <div className="mb-3 text-xs space-y-1">
             <div className="flex gap-3">
-              <span className={playerMoney >= moneyCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
-                钱 {moneyCost}
+              <span className={availableMoney >= moneyCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
+                钱 {formatAmount(moneyCost)}
               </span>
-              <span className={playerGrain >= grainCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
-                粮 {grainCost}
+              <span className={availableGrain >= grainCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
+                粮 {formatAmount(grainCost)}
               </span>
               <span className="text-[var(--color-text-muted)]">工期 {duration} 月</span>
             </div>
@@ -130,7 +135,7 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
             const moneyCost = b.costMoney;
             const grainCost = b.costGrain;
             const duration = b.constructionMonths;
-            const canAfford = playerMoney >= moneyCost && playerGrain >= grainCost;
+            const canAfford = availableMoney >= moneyCost && availableGrain >= grainCost;
 
             const effects: string[] = [];
             if (b.moneyPerLevel) effects.push(`钱+${b.moneyPerLevel}/月`);
@@ -162,11 +167,11 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
                 </div>
                 <div className="text-xs text-[var(--color-text-muted)] mb-1">{b.description}</div>
                 <div className="flex gap-3 text-xs flex-wrap">
-                  <span className={playerMoney >= moneyCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
-                    钱 {moneyCost}
+                  <span className={availableMoney >= moneyCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
+                    钱 {formatAmount(moneyCost)}
                   </span>
-                  <span className={playerGrain >= grainCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
-                    粮 {grainCost}
+                  <span className={availableGrain >= grainCost ? 'text-[var(--color-text)]' : 'text-[var(--color-accent-red)]'}>
+                    粮 {formatAmount(grainCost)}
                   </span>
                   <span className="text-[var(--color-text-muted)]">工期 {duration} 月</span>
                 </div>
