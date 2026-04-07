@@ -159,7 +159,6 @@ const MAX_FISCAL_DISBAND = 2;
 function aiDisbandBattalions(
   char: Character,
   armies: Army[],
-  controlledZhou: Territory[],
 ): void {
   const milStore = useMilitaryStore.getState();
   const battalions = milStore.battalions;
@@ -251,6 +250,6 @@ export function runMilitaryAI(): void {
 
     // 4. 裁营
     const armiesAfterRebalance = milStore.getArmiesByOwner(char.id);
-    aiDisbandBattalions(char, armiesAfterRebalance, controlledZhou);
+    aiDisbandBattalions(char, armiesAfterRebalance);
   }
 }

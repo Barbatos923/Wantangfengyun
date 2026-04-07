@@ -3,10 +3,6 @@
 import type { Territory } from '@engine/territory/types';
 import type { Character } from '@engine/character/types';
 import type { Battalion, Army, UnitTypeDef } from './types';
-import { unitTypeMap } from '@data/unitTypes';
-import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
-import { getEffectiveAbilities } from '@engine/character/characterUtils';
-import { getTributeRatio } from '@engine/official/economyCalc';
 
 // ===== 兵役人口 =====
 

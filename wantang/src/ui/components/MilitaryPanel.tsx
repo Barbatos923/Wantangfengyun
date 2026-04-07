@@ -108,7 +108,6 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
 
   // Stores
   const playerId = useCharacterStore((s) => s.playerId);
-  const player = useCharacterStore((s) => (playerId ? s.characters.get(playerId) : undefined));
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
   const battalions = useMilitaryStore((s) => s.battalions);
