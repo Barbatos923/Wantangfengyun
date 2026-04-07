@@ -49,7 +49,7 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
           boldness: personality.boldness,
           rationality: personality.rationality,
         },
-        money: actor.resources.money,
+        money: ctx.totalTreasury.get(actor.id)?.money ?? actor.resources.money,
         monthlyIncome: 0, // 简化：暂不计算月收入
       });
 

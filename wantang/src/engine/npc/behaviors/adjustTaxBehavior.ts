@@ -34,8 +34,9 @@ export const adjustTaxBehavior: NpcBehavior<AdjustTaxData> = {
     const maxUrgency = targets[0].urgency;
     const minUrgency = targets[targets.length - 1].urgency;
 
-    // 优先放权（讨好不满臣属），但资金紧张时不降税
-    if (maxUrgency > APPEASE_THRESHOLD && actor.resources.money >= 20000) {
+    // 优先放权（讨好不满臣属），但 capital 国库紧张时不降税
+    const capitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+    if (maxUrgency > APPEASE_THRESHOLD && capitalMoney >= 20000) {
       for (const t of targets) {
         if (t.urgency <= APPEASE_THRESHOLD) break;
         const vassal = ctx.characters.get(t.vassalId);

@@ -107,11 +107,16 @@ export const buildBehavior: NpcBehavior<BuildOption> = {
       // 状态驱动
       ...(isAtWar ? [{ label: '战时无心种田', add: -20 }] : []),
 
-      // 硬切：资金不足（需留余钱）
-      ...(actor.resources.money < option.moneyCost * 1.5
-        ? [{ label: '资金不够', factor: 0 }] : []),
-      ...(actor.resources.grain < option.grainCost * 1.5
-        ? [{ label: '粮食不够', factor: 0 }] : []),
+      // 硬切：本州国库不足（需留余钱）
+      ...(() => {
+        const tb = ctx.territories.get(option.territoryId)?.treasury;
+        const tMoney = tb?.money ?? actor.resources.money;
+        const tGrain = tb?.grain ?? actor.resources.grain;
+        return [
+          ...(tMoney < option.moneyCost * 1.5 ? [{ label: '资金不够', factor: 0 }] : []),
+          ...(tGrain < option.grainCost * 1.5 ? [{ label: '粮食不够', factor: 0 }] : []),
+        ];
+      })(),
     ];
 
     const weight = calcWeight(modifiers);

@@ -170,8 +170,11 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
           // 硬切（factor=0）
           ...(opinion > 20 ? [{ label: '朋友', factor: 0 }] : []),
-          ...(actor.resources.money < 0 && actor.resources.grain < 0
-            ? [{ label: '破产', factor: 0 }] : []),
+          ...(() => {
+            const tt = ctx.totalTreasury.get(actor.id);
+            const broke = tt ? (tt.money < 0 && tt.grain < 0) : (actor.resources.money < 0 && actor.resources.grain < 0);
+            return broke ? [{ label: '破产', factor: 0 }] : [];
+          })(),
           ...(isAtWar(actor.id, ctx.activeWars)
             ? [{ label: '已在战争中', factor: 0.3 }] : []),
         ];

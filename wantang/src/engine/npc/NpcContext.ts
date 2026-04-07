@@ -82,6 +82,32 @@ export function buildNpcContext(): NpcContext {
 
   const activeWars = warState.getActiveWars();
 
+  // ── 国库预聚合 ──
+
+  const capitalTreasury = new Map<string, { money: number; grain: number }>();
+  const totalTreasury = new Map<string, { money: number; grain: number }>();
+
+  for (const char of characters.values()) {
+    if (!char.alive) continue;
+    // capital 州国库
+    if (char.capital) {
+      const t = territories.get(char.capital);
+      if (t?.treasury) {
+        capitalTreasury.set(char.id, { money: t.treasury.money, grain: t.treasury.grain });
+      }
+    }
+    // 总国库
+    const terrIds = controllerIndex.get(char.id);
+    if (terrIds && terrIds.size > 0) {
+      let money = 0, grain = 0;
+      for (const tid of terrIds) {
+        const t = territories.get(tid);
+        if (t?.treasury) { money += t.treasury.money; grain += t.treasury.grain; }
+      }
+      totalTreasury.set(char.id, { money, grain });
+    }
+  }
+
   return {
     date: { ...turnState.currentDate },
     era: turnState.era,
@@ -101,6 +127,8 @@ export function buildNpcContext(): NpcContext {
     postIndex,
     holderIndex,
     activeWars,
+    capitalTreasury,
+    totalTreasury,
     appointedThisRound: new Set(),
   };
 }

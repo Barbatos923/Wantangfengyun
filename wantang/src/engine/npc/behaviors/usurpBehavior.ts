@@ -43,9 +43,10 @@ export const usurpBehavior: NpcBehavior<UsurpData> = {
         const result = canUsurpPost(actor.id, post, t, ctx.territories, ctx.characters, ctx.activeWars);
         if (!result.eligible) continue;
 
-        // 资源检查
+        // 资源检查（金钱看 capital 国库，声望看私产）
         const cost = calcPostManageCost('usurp', t.tier);
-        if (actor.resources.money < cost.money || actor.resources.prestige < cost.prestige) continue;
+        const capMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+        if (capMoney < cost.money || actor.resources.prestige < cost.prestige) continue;
 
         const ratio = calcRealmControlRatio(t.id, actor.id, ctx.territories, ctx.characters);
         const opinion = ctx.getOpinion(actor.id, post.holderId);

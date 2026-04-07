@@ -20,8 +20,9 @@ export const createEmperorBehavior: NpcBehavior<CreateEmperorData> = {
     const result = canCreateEmperor(actor.id, ctx.territories, ctx.characters, ctx.era);
     if (!result.eligible) return null;
 
-    // 资源检查
-    if (actor.resources.money < 1_000_000 || actor.resources.prestige < 500) return null;
+    // 资源检查（金钱看 capital 国库，声望看私产）
+    const capMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+    if (capMoney < 1_000_000 || actor.resources.prestige < 500) return null;
 
     // 满足称帝条件 → 高权重，几乎必然执行
     return { data: { ratio: 0.8 }, weight: 100 };

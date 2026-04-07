@@ -134,6 +134,10 @@ export interface NpcContext {
   // 战争状态
   activeWars: War[];
 
+  // 国库预聚合
+  capitalTreasury: Map<string, { money: number; grain: number }>;  // charId → capital 州国库
+  totalTreasury: Map<string, { money: number; grain: number }>;    // charId → 所有州国库之和
+
   // 铨选共享状态（可变，行为 execute 时填充）
   appointedThisRound: Set<string>;
 }

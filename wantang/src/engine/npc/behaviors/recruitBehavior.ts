@@ -7,6 +7,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import { executeReplenish } from '@engine/interaction/militaryAction';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
@@ -82,8 +83,8 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
       { label: '贪财', add: -personality.greed * 20 },
       { label: '尚武', add: personality.boldness * 10 },
 
-      // 硬切：没钱不补
-      ...(actor.resources.money < 50 ? [{ label: '资金不足', factor: 0 }] : []),
+      // 硬切：capital 国库没钱不补
+      ...((ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money) < 50 ? [{ label: '资金不足', factor: 0 }] : []),
     ];
 
     const weight = calcWeight(modifiers);
@@ -97,7 +98,8 @@ export const recruitBehavior: NpcBehavior<RecruitData> = {
     let count = 0;
     for (const bat of sorted) {
       if (count >= 3) break;
-      if (actor.resources.money < 50) break;
+      const freshTerritory = useTerritoryStore.getState().territories.get(bat.territoryId);
+      if ((freshTerritory?.treasury?.money ?? actor.resources.money) < 50) break;
       executeReplenish(bat.battalionId, bat.territoryId, bat.deficit, actor.id);
       count++;
     }

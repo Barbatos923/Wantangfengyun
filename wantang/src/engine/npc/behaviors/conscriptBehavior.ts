@@ -111,8 +111,9 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const armies = getOwnedArmies(actor.id, ctx);
     if (armies.length === 0) return null;
 
-    // 必须有足够金钱
-    if (actor.resources.money < CONSCRIPT_MONEY_COST * MIN_MONEY_MULTIPLIER) return null;
+    // 必须有足够金钱（检查 capital 国库）
+    const capitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+    if (capitalMoney < CONSCRIPT_MONEY_COST * MIN_MONEY_MULTIPLIER) return null;
 
     // 控制的州
     const controlledZhou = getControlledZhou(actor.id, ctx);
@@ -133,7 +134,7 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
 
     const isAtWar = ctx.activeWars.some(w => isWarParticipant(actor.id, w));
 
-    const moneyRatio = actor.resources.money / CONSCRIPT_MONEY_COST;
+    const moneyRatio = capitalMoney / CONSCRIPT_MONEY_COST;
 
     // 粮草评估：轻量估算月净粮草，判断征兵后是否仍为正
     const netGrain = estimateNetGrain(actor, controlledZhou, ctx.armies, ctx.battalions, undefined, {
@@ -188,7 +189,8 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     let count = 0;
     for (const { territoryId } of data.recruitableTerritories) {
       if (count >= 2) break;
-      if (actor.resources.money < CONSCRIPT_MONEY_COST) break;
+      const freshCapitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+      if (freshCapitalMoney < CONSCRIPT_MONEY_COST) break;
 
       // 粮草检查：用最新 Store 状态实时判断征兵后净粮草是否为正
       const controlledZhou = getControlledZhou(actor.id, ctx);

@@ -33,9 +33,10 @@ export const createKingdomBehavior: NpcBehavior<CreateTitleData> = {
       if (t.tier === 'guo' && rankLevel < 17) continue;
       if (t.tier === 'dao' && rankLevel < 12) continue;
 
-      // 资源检查
+      // 资源检查（金钱看 capital 国库，声望看私产）
       const cost = calcPostManageCost('create', t.tier);
-      if (actor.resources.money < cost.money || actor.resources.prestige < cost.prestige) continue;
+      const capMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+      if (capMoney < cost.money || actor.resources.prestige < cost.prestige) continue;
 
       // 先算 ratio 做早期剪枝
       const ratio = calcRealmControlRatio(t.id, actor.id, ctx.territories, ctx.characters);

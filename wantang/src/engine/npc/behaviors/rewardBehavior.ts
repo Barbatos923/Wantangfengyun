@@ -7,6 +7,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { executeReward } from '@engine/interaction/militaryAction';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { getCapitalBalance } from '@engine/territory/treasuryUtils';
 import { registerBehavior } from './index';
 
 // ── 辅助 ────────────────────────────────────────────────
@@ -51,7 +52,8 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
   playerMode: 'skip',
 
   generateTask(actor: Character, ctx: NpcContext): BehaviorTaskResult<RewardData> | null {
-    if (actor.resources.money <= 0) return null;
+    const capitalMoney = ctx.capitalTreasury.get(actor.id)?.money ?? actor.resources.money;
+    if (capitalMoney <= 0) return null;
 
     const personality = ctx.personalityCache.get(actor.id);
     if (!personality) return null;
@@ -86,7 +88,9 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
     // 逐支赏赐，直到钱花完
     for (const entry of data.armies) {
       const fresh = useCharacterStore.getState().getCharacter(actor.id);
-      if (!fresh || fresh.resources.money <= 0) break;
+      if (!fresh) break;
+      const freshCapitalMoney = getCapitalBalance(actor.id).money;
+      if (freshCapitalMoney <= 0) break;
 
       const milStore = useMilitaryStore.getState();
       const army = milStore.armies.get(entry.armyId);
@@ -99,7 +103,7 @@ export const rewardBehavior: NpcBehavior<RewardData> = {
       }
       if (totalStrength === 0) continue;
 
-      const money = fresh.resources.money;
+      const money = freshCapitalMoney;
       // 按军队数量均分预算：基准 10 万贯 / 剩余军队数
       const remaining = data.armies.indexOf(entry);
       const armiesLeft = data.armies.length - remaining;
