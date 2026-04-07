@@ -87,6 +87,7 @@ function generateCharacters(count: number): Character[] {
         virtue: randInt(0, 500),
         isCivil: Math.random() > 0.5,
       } : undefined,
+      redistributionRate: 60,
     };
 
     chars.push(char);

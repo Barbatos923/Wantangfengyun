@@ -180,7 +180,7 @@ export function calculateMonthlyLedger(
 
   // ── 回拨 ──
   let redistributionPaid = { ...zero };
-  const redistributionRate = (char.redistributionRate ?? 0) / 100;
+  const redistributionRate = char.redistributionRate / 100;
 
   if (redistributionRate > 0 && (vassalTribute.money > 0 || vassalTribute.grain > 0)) {
     redistributionPaid = {
@@ -225,7 +225,7 @@ export function calculateMonthlyLedger(
         }
       }
 
-      const overlordRedistRate = (overlord.redistributionRate ?? 0) / 100;
+      const overlordRedistRate = overlord.redistributionRate / 100;
       if (overlordRedistRate > 0) {
         const totalMoney = totalTributeToOverlord.money;
         const totalGrain = totalTributeToOverlord.grain;

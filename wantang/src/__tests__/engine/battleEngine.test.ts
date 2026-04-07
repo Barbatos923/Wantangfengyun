@@ -54,6 +54,7 @@ function makeChar(military = 10, overrides: Partial<Character['abilities']> = {}
     isPlayer: false,
     isRuler: false,
     title: '',
+    redistributionRate: 60,
   };
 }
 

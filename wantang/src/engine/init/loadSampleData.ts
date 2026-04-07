@@ -26,6 +26,18 @@ export function loadSampleData(): void {
   useTerritoryStore.getState().initTerritories(territories);
   useTerritoryStore.getState().initCentralPosts(centralPosts);
 
+  // 为缺少 capital 的有领地角色自动补充治所
+  {
+    const charStore = useCharacterStore.getState();
+    const { controllerIndex } = useTerritoryStore.getState();
+    for (const charId of controllerIndex.keys()) {
+      const c = charStore.characters.get(charId);
+      if (c && c.alive && !c.capital) {
+        charStore.refreshCapital(charId);
+      }
+    }
+  }
+
   // 初始化军队
   const armies = createAllArmies();
   const battalions = createAllBattalions();

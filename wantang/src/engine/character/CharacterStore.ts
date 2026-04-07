@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import type { Character, OpinionEntry } from './types';
 import type { OfficialData } from '../official/types';
 import { isCivilByAbilities } from '../official/officialUtils';
+import { resolveCapital } from '@engine/territory/treasuryUtils';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 
 interface CharacterStoreState {
   characters: Map<string, Character>;
@@ -38,6 +40,10 @@ interface CharacterStoreState {
 
   // 刷新 isRuler（从岗位推导）
   refreshIsRuler: (rulerIds: Set<string>) => void;
+
+  // 治所
+  setCapital: (charId: string, zhouId: string) => void;
+  refreshCapital: (charId: string) => void;
 }
 
 export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
@@ -351,6 +357,30 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         ...c,
         official: { ...c.official, rankLevel: level },
       });
+      return { characters: chars };
+    });
+  },
+
+  setCapital: (charId, zhouId) => {
+    set((state) => {
+      const chars = new Map(state.characters);
+      const c = chars.get(charId);
+      if (!c) return state;
+      chars.set(charId, { ...c, capital: zhouId });
+      return { characters: chars };
+    });
+  },
+
+  refreshCapital: (charId) => {
+    const { territories, controllerIndex, holderIndex } = useTerritoryStore.getState();
+    const newCapital = resolveCapital(charId, territories, controllerIndex, holderIndex);
+    const char = get().characters.get(charId);
+    if (!char || char.capital === newCapital) return;
+    set((state) => {
+      const chars = new Map(state.characters);
+      const c = chars.get(charId);
+      if (!c) return state;
+      chars.set(charId, { ...c, capital: newCapital });
       return { characters: chars };
     });
   },

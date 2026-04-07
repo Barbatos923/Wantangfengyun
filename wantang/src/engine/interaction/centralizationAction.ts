@@ -109,7 +109,7 @@ export function executeRedistributionChange(playerId: string, delta: number): vo
   const charStore = useCharacterStore.getState();
   const player = charStore.characters.get(playerId);
   if (!player) return;
-  const currentRate = player.redistributionRate ?? 0;
+  const currentRate = player.redistributionRate;
   const newRate = Math.max(0, Math.min(100, currentRate + delta));
   if (newRate === currentRate) return;
   charStore.updateCharacter(playerId, { redistributionRate: newRate });

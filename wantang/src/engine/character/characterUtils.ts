@@ -227,7 +227,7 @@ export function calculateBaseOpinion(
     }
 
     // 回拨率（B 的 redistributionRate）
-    const redistRate = b.redistributionRate ?? 0;
+    const redistRate = b.redistributionRate;
     opinion += Math.floor((redistRate - 60) / 10) * 5;
 
     // 岗位相关（从缓存读取）
@@ -344,7 +344,7 @@ export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: nu
       if (taxVal !== 0) entries.push({ label: `赋税等级（${taxLevel}级）`, value: taxVal });
     }
 
-    const redistRate = b.redistributionRate ?? 0;
+    const redistRate = b.redistributionRate;
     const redistVal = Math.floor((redistRate - 60) / 10) * 5;
     if (redistVal !== 0) entries.push({ label: `回拨率（${redistRate}%）`, value: redistVal });
 

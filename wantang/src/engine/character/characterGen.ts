@@ -112,6 +112,7 @@ export function generateFillerCharacter(opts: {
     isRuler: false,
     title: '',
     official: { rankLevel, virtue, isCivil },
+    redistributionRate: 60,
   };
 }
 

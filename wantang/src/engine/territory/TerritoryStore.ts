@@ -101,6 +101,11 @@ interface TerritoryStoreState {
   removePost: (postId: string) => void;
   startConstruction: (territoryId: string, construction: Construction) => void;
   advanceConstructions: (territoryId: string) => void;
+
+  // 国库操作
+  addTreasury: (territoryId: string, patch: { money?: number; grain?: number }) => void;
+  batchMutateTreasury: (mutator: (territories: Map<string, Territory>) => Map<string, Territory>) => void;
+  getTreasurySum: (charId: string) => { money: number; grain: number };
 }
 
 export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
@@ -565,6 +570,45 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
       });
       return { territories: terrs };
     });
+  },
+
+  // ===== 国库操作 =====
+
+  addTreasury: (territoryId, patch) => {
+    set((state) => {
+      const t = state.territories.get(territoryId);
+      if (!t || t.tier !== 'zhou' || !t.treasury) return state;
+      const terrs = new Map(state.territories);
+      terrs.set(territoryId, {
+        ...t,
+        treasury: {
+          money: t.treasury.money + (patch.money ?? 0),
+          grain: t.treasury.grain + (patch.grain ?? 0),
+        },
+      });
+      return { territories: terrs };
+    });
+  },
+
+  batchMutateTreasury: (mutator) => {
+    set((state) => ({ territories: mutator(state.territories) }));
+  },
+
+  getTreasurySum: (charId) => {
+    const { controllerIndex, territories } = get();
+    const terrIds = controllerIndex.get(charId);
+    let money = 0;
+    let grain = 0;
+    if (terrIds) {
+      for (const tid of terrIds) {
+        const t = territories.get(tid);
+        if (t?.treasury) {
+          money += t.treasury.money;
+          grain += t.treasury.grain;
+        }
+      }
+    }
+    return { money, grain };
   },
 
   advanceConstructions: (territoryId) => {

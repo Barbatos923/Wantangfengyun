@@ -58,7 +58,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
     }
   }
 
-  const redistributionRate = player?.redistributionRate ?? 0;
+  const redistributionRate = player?.redistributionRate ?? 60; // player 可能为 undefined
 
   return (
     <div

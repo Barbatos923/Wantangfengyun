@@ -80,7 +80,7 @@ export interface Character {
   // 效忠
   overlordId?: string;
   centralization?: CentralizationLevel;
-  redistributionRate?: number;
+  redistributionRate: number;
 
   // 标记
   isPlayer: boolean;
@@ -91,6 +91,10 @@ export interface Character {
 
   // 官职 (Phase 2)
   official?: OfficialData;
+
+  // 治所（国库系统）
+  capital?: string;           // 治所州 ID
+  capitalCooldown?: number;   // 迁都冷却（绝对天数）
 
   // 交互冷却（absoluteDay）
   lastDemandFealtyDay?: number;

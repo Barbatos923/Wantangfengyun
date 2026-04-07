@@ -29,7 +29,7 @@ export const adjustRedistributionBehavior: NpcBehavior<AdjustRedistributionData>
 
     // 平均 urgency
     const avgUrgency = targets.reduce((sum, t) => sum + t.urgency, 0) / targets.length;
-    const currentRate = actor.redistributionRate ?? 0;
+    const currentRate = actor.redistributionRate;
 
     // 放权：多臣属同时不满 → 提高回拨率
     if (avgUrgency > 20 && currentRate < 80) {

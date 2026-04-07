@@ -110,6 +110,7 @@ function makeChar(id: string, overlordId?: string, isRuler = false): Character {
     isRuler,
     title: '',
     overlordId,
+    redistributionRate: 60,
   };
 }
 

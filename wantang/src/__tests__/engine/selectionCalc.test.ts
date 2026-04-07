@@ -58,6 +58,7 @@ function makeCandidate(
     isPlayer: false, isRuler: false, title: '',
     overlordId,
     official: { rankLevel, virtue, isCivil: true },
+    redistributionRate: 60,
   };
 }
 

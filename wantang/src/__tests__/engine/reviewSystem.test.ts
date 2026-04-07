@@ -53,6 +53,7 @@ function makeChar(ability: number, virtue: number, isMilitary = false): Characte
     relationships: [],
     isPlayer: false, isRuler: false, title: '',
     official: { rankLevel: 15, virtue, isCivil: true },
+    redistributionRate: 60,
   };
 }
 

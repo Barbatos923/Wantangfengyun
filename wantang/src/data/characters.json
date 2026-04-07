@@ -27,8 +27,8 @@
     "stress": 40,
     "alive": true,
     "resources": {
-      "money": 200000,
-      "grain": 500000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 80,
       "legitimacy": 85
     },
@@ -42,7 +42,8 @@
       "rankLevel": 29,
       "virtue": 1000,
       "isCivil": true
-    }
+    },
+    "capital": "zhou-changan"
   },
   {
     "id": "char-luyan",
@@ -77,7 +78,7 @@
     "relationships": [],
     "overlordId": "char-yizong",
     "centralization": 3,
-    "redistributionRate": 0,
+    "redistributionRate": 60,
     "isPlayer": false,
     "isRuler": false,
     "title": "宰相",
@@ -127,7 +128,8 @@
       "rankLevel": 25,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-liwei",
@@ -170,7 +172,8 @@
       "rankLevel": 22,
       "virtue": 900,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-zhangzhifang",
@@ -213,7 +216,8 @@
       "rankLevel": 18,
       "virtue": 750,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-chenjingxuan",
@@ -255,7 +259,8 @@
       "rankLevel": 13,
       "virtue": 600,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-yushe",
@@ -298,7 +303,8 @@
       "rankLevel": 22,
       "virtue": 880,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-peizhao",
@@ -341,7 +347,8 @@
       "rankLevel": 20,
       "virtue": 900,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-xiaochu",
@@ -384,7 +391,8 @@
       "rankLevel": 20,
       "virtue": 870,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-liuzhan",
@@ -427,7 +435,8 @@
       "rankLevel": 18,
       "virtue": 920,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-zhengqi",
@@ -470,7 +479,8 @@
       "rankLevel": 18,
       "virtue": 860,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-wangning",
@@ -512,7 +522,8 @@
       "rankLevel": 14,
       "virtue": 780,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-cuiyin",
@@ -554,7 +565,8 @@
       "rankLevel": 14,
       "virtue": 750,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-sunwei",
@@ -596,7 +608,8 @@
       "rankLevel": 12,
       "virtue": 700,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-zhaoyi",
@@ -638,7 +651,8 @@
       "rankLevel": 10,
       "virtue": 680,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-lizheng",
@@ -680,7 +694,8 @@
       "rankLevel": 12,
       "virtue": 720,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-qianfu",
@@ -722,7 +737,8 @@
       "rankLevel": 10,
       "virtue": 700,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-zhoubao",
@@ -765,7 +781,8 @@
       "rankLevel": 14,
       "virtue": 740,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-lufang",
@@ -807,7 +824,8 @@
       "rankLevel": 10,
       "virtue": 690,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-heqian",
@@ -849,7 +867,8 @@
       "rankLevel": 8,
       "virtue": 650,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-fangxuan",
@@ -891,7 +910,8 @@
       "rankLevel": 8,
       "virtue": 640,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ducong",
@@ -918,8 +938,8 @@
     "stress": 35,
     "alive": true,
     "resources": {
-      "money": 80000,
-      "grain": 150000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 35,
       "legitimacy": 60
     },
@@ -933,7 +953,9 @@
       "rankLevel": 18,
       "virtue": 850,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-fengxiang"
   },
   {
     "id": "char-zhengcongdang",
@@ -943,7 +965,9 @@
     "birthYear": 813,
     "clan": "郑",
     "family": {
-      "childrenIds": ["char-zheng-yanqiu"]
+      "childrenIds": [
+        "char-zheng-yanqiu"
+      ]
     },
     "abilities": {
       "military": 14,
@@ -960,8 +984,8 @@
     "stress": 30,
     "alive": true,
     "resources": {
-      "money": 100000,
-      "grain": 200000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 45,
       "legitimacy": 80
     },
@@ -975,7 +999,9 @@
       "rankLevel": 20,
       "virtue": 900,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-taiyuan"
   },
   {
     "id": "char-zhangyunshen",
@@ -1005,8 +1031,8 @@
     "stress": 40,
     "alive": true,
     "resources": {
-      "money": 90000,
-      "grain": 180000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 40,
       "legitimacy": 80
     },
@@ -1020,7 +1046,9 @@
       "rankLevel": 18,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-youzhou"
   },
   {
     "id": "char-wangjingchong",
@@ -1030,7 +1058,9 @@
     "birthYear": 830,
     "clan": "王",
     "family": {
-      "childrenIds": ["char-wang-chongwen"]
+      "childrenIds": [
+        "char-wang-chongwen"
+      ]
     },
     "abilities": {
       "military": 14,
@@ -1047,8 +1077,8 @@
     "stress": 25,
     "alive": true,
     "resources": {
-      "money": 80000,
-      "grain": 160000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 35,
       "legitimacy": 80
     },
@@ -1062,7 +1092,9 @@
       "rankLevel": 18,
       "virtue": 780,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-zhenzhou"
   },
   {
     "id": "char-hanyunzhong",
@@ -1072,7 +1104,9 @@
     "birthYear": 820,
     "clan": "韩",
     "family": {
-      "childrenIds": ["char-han-junxiong"]
+      "childrenIds": [
+        "char-han-junxiong"
+      ]
     },
     "abilities": {
       "military": 16,
@@ -1090,8 +1124,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 90000,
-      "grain": 180000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 40,
       "legitimacy": 80
     },
@@ -1105,7 +1139,9 @@
       "rankLevel": 18,
       "virtue": 750,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-weizhou"
   },
   {
     "id": "char-tuobasigong",
@@ -1133,8 +1169,8 @@
     "stress": 15,
     "alive": true,
     "resources": {
-      "money": 40000,
-      "grain": 80000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 25,
       "legitimacy": 60
     },
@@ -1148,7 +1184,9 @@
       "rankLevel": 16,
       "virtue": 720,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xiazhou"
   },
   {
     "id": "char-cuiyanzeng",
@@ -1158,7 +1196,9 @@
     "birthYear": 815,
     "clan": "崔",
     "family": {
-      "childrenIds": ["char-cui-zhihe"]
+      "childrenIds": [
+        "char-cui-zhihe"
+      ]
     },
     "abilities": {
       "military": 10,
@@ -1175,8 +1215,8 @@
     "stress": 30,
     "alive": true,
     "resources": {
-      "money": 100000,
-      "grain": 200000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 40,
       "legitimacy": 80
     },
@@ -1190,7 +1230,9 @@
       "rankLevel": 18,
       "virtue": 850,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yangzhou"
   },
   {
     "id": "char-liutong",
@@ -1217,8 +1259,8 @@
     "stress": 25,
     "alive": true,
     "resources": {
-      "money": 70000,
-      "grain": 140000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 30,
       "legitimacy": 80
     },
@@ -1232,7 +1274,9 @@
       "rankLevel": 18,
       "virtue": 820,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-chengdu"
   },
   {
     "id": "char-xiaoye",
@@ -1260,8 +1304,8 @@
     "stress": 35,
     "alive": true,
     "resources": {
-      "money": 50000,
-      "grain": 100000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 30,
       "legitimacy": 80
     },
@@ -1275,7 +1319,9 @@
       "rankLevel": 20,
       "virtue": 880,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xingyuan"
   },
   {
     "id": "char-lupan",
@@ -1302,8 +1348,8 @@
     "stress": 25,
     "alive": true,
     "resources": {
-      "money": 40000,
-      "grain": 80000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 25,
       "legitimacy": 60
     },
@@ -1317,7 +1363,9 @@
       "rankLevel": 16,
       "virtue": 760,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-lingzhou"
   },
   {
     "id": "char-lihongfu",
@@ -1344,8 +1392,8 @@
     "stress": 22,
     "alive": true,
     "resources": {
-      "money": 35000,
-      "grain": 70000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 22,
       "legitimacy": 80
     },
@@ -1359,7 +1407,9 @@
       "rankLevel": 16,
       "virtue": 750,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-jingzhou-ly"
   },
   {
     "id": "char-zhanghuaishen",
@@ -1387,8 +1437,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -1402,7 +1452,9 @@
       "rankLevel": 16,
       "virtue": 760,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-shazhou"
   },
   {
     "id": "char-jiaweiqing",
@@ -1428,8 +1480,8 @@
     "stress": 22,
     "alive": true,
     "resources": {
-      "money": 25000,
-      "grain": 50000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 15,
       "legitimacy": 60
     },
@@ -1443,7 +1495,9 @@
       "rankLevel": 14,
       "virtue": 700,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-fangzhou"
   },
   {
     "id": "char-sundang",
@@ -1469,8 +1523,8 @@
     "stress": 24,
     "alive": true,
     "resources": {
-      "money": 25000,
-      "grain": 50000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 15,
       "legitimacy": 60
     },
@@ -1484,7 +1538,9 @@
       "rankLevel": 14,
       "virtue": 720,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-suizhou"
   },
   {
     "id": "char-gaopian",
@@ -1513,8 +1569,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 120000,
-      "grain": 300000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 60,
       "legitimacy": 60
     },
@@ -1528,7 +1584,9 @@
       "rankLevel": 18,
       "virtue": 820,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-jiaozhou"
   },
   {
     "id": "char-liguochang",
@@ -1558,8 +1616,8 @@
     "stress": 22,
     "alive": true,
     "resources": {
-      "money": 50000,
-      "grain": 100000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 30,
       "legitimacy": 60
     },
@@ -1573,7 +1631,9 @@
       "rankLevel": 14,
       "virtue": 720,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yunzhou"
   },
   {
     "id": "char-likeyong",
@@ -1609,7 +1669,8 @@
     "overlordId": "char-liguochang",
     "isPlayer": false,
     "isRuler": false,
-    "title": "少年"
+    "title": "少年",
+    "redistributionRate": 60
   },
   {
     "id": "char-zhuwen",
@@ -1644,7 +1705,8 @@
     "relationships": [],
     "isPlayer": false,
     "isRuler": false,
-    "title": "平民"
+    "title": "平民",
+    "redistributionRate": 60
   },
   {
     "id": "char-wangxianzhi",
@@ -1680,7 +1742,8 @@
     "relationships": [],
     "isPlayer": false,
     "isRuler": true,
-    "title": "草军首领"
+    "title": "草军首领",
+    "redistributionRate": 60
   },
   {
     "id": "char-npc-binning",
@@ -1706,8 +1769,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -1721,7 +1784,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-binzhou"
   },
   {
     "id": "char-npc-zhenguo",
@@ -1747,8 +1812,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -1762,7 +1827,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-tongzhou"
   },
   {
     "id": "char-npc-shanzhou",
@@ -1788,8 +1855,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -1803,7 +1870,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-shanzhou"
   },
   {
     "id": "char-npc-zhaoyi",
@@ -1829,8 +1898,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -1844,7 +1913,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-luzhou"
   },
   {
     "id": "char-npc-yiwu",
@@ -1870,8 +1941,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -1885,7 +1956,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-dingzhou"
   },
   {
     "id": "char-npc-xuanwu",
@@ -1911,8 +1984,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -1926,7 +1999,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-bianzhou"
   },
   {
     "id": "char-npc-yicheng",
@@ -1952,8 +2027,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -1967,7 +2042,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-huazhou"
   },
   {
     "id": "char-npc-tianping",
@@ -1993,8 +2070,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2008,7 +2085,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yunzhou-sd"
   },
   {
     "id": "char-npc-taining",
@@ -2034,8 +2113,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2049,7 +2128,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yanzhou"
   },
   {
     "id": "char-npc-wuning",
@@ -2075,8 +2156,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2090,7 +2171,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xuzhou"
   },
   {
     "id": "char-npc-pinglu",
@@ -2116,8 +2199,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2131,7 +2214,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-qingzhou"
   },
   {
     "id": "char-npc-zhongwu",
@@ -2157,8 +2242,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2172,7 +2257,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xuchang"
   },
   {
     "id": "char-npc-fengguo",
@@ -2198,8 +2285,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2213,7 +2300,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-caizhou"
   },
   {
     "id": "char-npc-shannan-e",
@@ -2239,8 +2328,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -2254,7 +2343,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xiangyang"
   },
   {
     "id": "char-npc-jingnan",
@@ -2280,8 +2371,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2295,7 +2386,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-jiangling"
   },
   {
     "id": "char-npc-wuchang",
@@ -2321,8 +2414,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2336,7 +2429,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-ezhou"
   },
   {
     "id": "char-npc-zhenhai",
@@ -2362,8 +2457,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -2377,7 +2472,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-runzhou"
   },
   {
     "id": "char-npc-zhendong",
@@ -2403,8 +2500,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2418,7 +2515,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yuezhou"
   },
   {
     "id": "char-npc-weiwu",
@@ -2444,8 +2543,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2459,7 +2558,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-fuzhou"
   },
   {
     "id": "char-npc-xuanshe",
@@ -2485,8 +2586,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2500,7 +2601,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-xuanzhou"
   },
   {
     "id": "char-npc-zhennan",
@@ -2526,8 +2629,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -2541,7 +2644,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-hongzhou"
   },
   {
     "id": "char-npc-hunan",
@@ -2567,8 +2672,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2582,7 +2687,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-tanzhou"
   },
   {
     "id": "char-npc-dongchuan",
@@ -2608,8 +2715,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2623,7 +2730,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-zizhou"
   },
   {
     "id": "char-npc-qinghai",
@@ -2649,8 +2758,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 80
     },
@@ -2664,7 +2773,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-guangzhou"
   },
   {
     "id": "char-npc-lingnan-w",
@@ -2690,8 +2801,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2705,7 +2816,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-yongzhou"
   },
   {
     "id": "char-npc-jingjiang",
@@ -2731,8 +2844,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2746,7 +2859,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-guizhou"
   },
   {
     "id": "char-npc-tianshui",
@@ -2772,8 +2887,8 @@
     "stress": 20,
     "alive": true,
     "resources": {
-      "money": 30000,
-      "grain": 60000,
+      "money": 1000,
+      "grain": 2000,
       "prestige": 20,
       "legitimacy": 60
     },
@@ -2787,7 +2902,9 @@
       "rankLevel": 16,
       "virtue": 800,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60,
+    "capital": "zhou-qinzhou"
   },
   {
     "id": "char-li-xuan",
@@ -2829,7 +2946,8 @@
       "rankLevel": 20,
       "virtue": 200,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-zhang-jian",
@@ -2871,7 +2989,8 @@
       "rankLevel": 12,
       "virtue": 150,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-weizhaodu",
@@ -2912,7 +3031,8 @@
       "rankLevel": 18,
       "virtue": 820,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-liuye",
@@ -2953,7 +3073,8 @@
       "rankLevel": 20,
       "virtue": 800,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-zhengwei",
@@ -2994,7 +3115,8 @@
       "rankLevel": 18,
       "virtue": 830,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-yangfugong",
@@ -3035,7 +3157,8 @@
       "rankLevel": 22,
       "virtue": 500,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-tianlingzi",
@@ -3077,7 +3200,8 @@
       "rankLevel": 20,
       "virtue": 400,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-ximentaishen",
@@ -3118,7 +3242,8 @@
       "rankLevel": 20,
       "virtue": 550,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-peitan",
@@ -3160,7 +3285,8 @@
       "rankLevel": 20,
       "virtue": 890,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-cuiyanchao",
@@ -3201,7 +3327,8 @@
       "rankLevel": 25,
       "virtue": 880,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-zhengyanxiu",
@@ -3242,7 +3369,8 @@
       "rankLevel": 20,
       "virtue": 850,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-ct-cuihan",
@@ -3283,7 +3411,8 @@
       "rankLevel": 20,
       "virtue": 840,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-0",
@@ -3321,7 +3450,8 @@
       "rankLevel": 9,
       "virtue": 553,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-1",
@@ -3359,7 +3489,8 @@
       "rankLevel": 14,
       "virtue": 678,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-2",
@@ -3397,7 +3528,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-3",
@@ -3435,7 +3567,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-4",
@@ -3473,7 +3606,8 @@
       "rankLevel": 9,
       "virtue": 553,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-5",
@@ -3511,7 +3645,8 @@
       "rankLevel": 14,
       "virtue": 678,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-6",
@@ -3549,7 +3684,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-7",
@@ -3587,7 +3723,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-8",
@@ -3625,7 +3762,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-9",
@@ -3663,7 +3801,8 @@
       "rankLevel": 11,
       "virtue": 603,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-10",
@@ -3701,7 +3840,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-11",
@@ -3739,7 +3879,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-12",
@@ -3777,7 +3918,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-13",
@@ -3815,7 +3957,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-14",
@@ -3853,7 +3996,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-15",
@@ -3891,7 +4035,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-16",
@@ -3929,7 +4074,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-17",
@@ -3967,7 +4113,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-18",
@@ -4005,7 +4152,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-19",
@@ -4043,7 +4191,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-20",
@@ -4081,7 +4230,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-21",
@@ -4119,7 +4269,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-22",
@@ -4157,7 +4308,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-23",
@@ -4195,7 +4347,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-24",
@@ -4233,7 +4386,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-25",
@@ -4271,7 +4425,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-26",
@@ -4309,7 +4464,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-27",
@@ -4347,7 +4503,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-28",
@@ -4385,7 +4542,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-29",
@@ -4423,7 +4581,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-30",
@@ -4461,7 +4620,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-31",
@@ -4499,7 +4659,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-32",
@@ -4537,7 +4698,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-33",
@@ -4575,7 +4737,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-34",
@@ -4613,7 +4776,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-35",
@@ -4651,7 +4815,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-36",
@@ -4689,7 +4854,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-37",
@@ -4727,7 +4893,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-38",
@@ -4765,7 +4932,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-39",
@@ -4803,7 +4971,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-40",
@@ -4841,7 +5010,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-41",
@@ -4879,7 +5049,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-42",
@@ -4917,7 +5088,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-43",
@@ -4955,7 +5127,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-44",
@@ -4993,7 +5166,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-45",
@@ -5031,7 +5205,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-46",
@@ -5069,7 +5244,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-47",
@@ -5107,7 +5283,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-48",
@@ -5145,7 +5322,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-49",
@@ -5183,7 +5361,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-50",
@@ -5221,7 +5400,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-51",
@@ -5259,7 +5439,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-52",
@@ -5297,7 +5478,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-53",
@@ -5335,7 +5517,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-54",
@@ -5373,7 +5556,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-55",
@@ -5411,7 +5595,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-56",
@@ -5449,7 +5634,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-57",
@@ -5487,7 +5673,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-58",
@@ -5525,7 +5712,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-59",
@@ -5563,7 +5751,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-60",
@@ -5601,7 +5790,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-61",
@@ -5639,7 +5829,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-62",
@@ -5677,7 +5868,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-63",
@@ -5715,7 +5907,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-64",
@@ -5753,7 +5946,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-65",
@@ -5791,7 +5985,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-66",
@@ -5829,7 +6024,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-67",
@@ -5867,7 +6063,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-68",
@@ -5905,7 +6102,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-69",
@@ -5943,7 +6141,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-70",
@@ -5981,7 +6180,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-71",
@@ -6019,7 +6219,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-72",
@@ -6057,7 +6258,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-73",
@@ -6095,7 +6297,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-74",
@@ -6133,7 +6336,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-75",
@@ -6171,7 +6375,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-76",
@@ -6209,7 +6414,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-77",
@@ -6247,7 +6453,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-78",
@@ -6285,7 +6492,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-79",
@@ -6323,7 +6531,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-80",
@@ -6361,7 +6570,8 @@
       "rankLevel": 9,
       "virtue": 620,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-81",
@@ -6399,7 +6609,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-82",
@@ -6437,7 +6648,8 @@
       "rankLevel": 11,
       "virtue": 670,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-83",
@@ -6475,7 +6687,8 @@
       "rankLevel": 7,
       "virtue": 570,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-84",
@@ -6513,7 +6726,8 @@
       "rankLevel": 7,
       "virtue": 570,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-85",
@@ -6551,7 +6765,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-86",
@@ -6589,7 +6804,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-87",
@@ -6627,7 +6843,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-88",
@@ -6665,7 +6882,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-89",
@@ -6703,7 +6921,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-90",
@@ -6741,7 +6960,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-91",
@@ -6779,7 +6999,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-92",
@@ -6817,7 +7038,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-93",
@@ -6855,7 +7077,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-94",
@@ -6893,7 +7116,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-95",
@@ -6931,7 +7155,8 @@
       "rankLevel": 20,
       "virtue": 895,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-96",
@@ -6969,7 +7194,8 @@
       "rankLevel": 14,
       "virtue": 745,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-97",
@@ -7007,7 +7233,8 @@
       "rankLevel": 13,
       "virtue": 720,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-98",
@@ -7045,7 +7272,8 @@
       "rankLevel": 10,
       "virtue": 645,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-99",
@@ -7083,7 +7311,8 @@
       "rankLevel": 8,
       "virtue": 595,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-100",
@@ -7121,7 +7350,8 @@
       "rankLevel": 4,
       "virtue": 593,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-gen-101",
@@ -7159,7 +7389,8 @@
       "rankLevel": 3,
       "virtue": 568,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-zheng-yanqiu",
@@ -7201,7 +7432,8 @@
       "rankLevel": 10,
       "virtue": 300,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-wang-chongwen",
@@ -7243,7 +7475,8 @@
       "rankLevel": 8,
       "virtue": 200,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-han-junxiong",
@@ -7286,7 +7519,8 @@
       "rankLevel": 10,
       "virtue": 250,
       "isCivil": false
-    }
+    },
+    "redistributionRate": 60
   },
   {
     "id": "char-cui-zhihe",
@@ -7328,6 +7562,7 @@
       "rankLevel": 10,
       "virtue": 320,
       "isCivil": true
-    }
+    },
+    "redistributionRate": 60
   }
 ]
