@@ -405,7 +405,6 @@ export function executeReassign(
 ): boolean {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
-  const date = useTurnManager.getState().currentDate;
 
   const targetPost = terrStore.findPost(territorialPostId);
   if (!targetPost?.holderId) return true;

@@ -228,7 +228,6 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
       if (directZhou.length <= limit) return;
 
       // 仍然超额，说明剩余州全是治所州，授道来连带释放治所州
-      const directDao = getControlledDaoFromCtx(actor.id, territories);
       for (let i = 0; i < 10; i++) {
         const freshTerritories = useTerritoryStore.getState().territories;
         const freshZhou = getControlledZhouFromCtx(actor.id, freshTerritories);

@@ -13,7 +13,6 @@ import { findAppointRightHolder } from '@engine/character/successionUtils';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { executeReassign, executeReassignSuccess, executeReassignRebel, previewReassignChance, submitReassignProposal } from '@engine/interaction';
 import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
-import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import {
   isCentralOfficial,
