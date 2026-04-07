@@ -7,6 +7,7 @@ import { useLedgerStore } from '@engine/official/LedgerStore';
 import { getActualController } from '@engine/official/officialUtils';
 import { getRealmZhouCount } from '@engine/official/postQueries';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { getTotalTreasury } from '@engine/territory/treasuryUtils';
 
 function formatValue(value: number): string {
   if (value >= 10000) return `${(value / 10000).toFixed(1)}万`;
@@ -95,9 +96,13 @@ const ResourceBar: React.FC = () => {
       ? `领地产出: ${Math.floor(playerLedger.territoryIncome.grain)}\n职位俸禄: ${Math.floor(playerLedger.positionSalary.grain)}\n属下上缴: ${Math.floor(playerLedger.vassalTribute.grain)}\n回拨收入: ${Math.floor(playerLedger.redistributionReceived.grain)}\n属下俸禄: -${Math.floor(playerLedger.subordinateSalaries.grain)}\n回拨支出: -${Math.floor(playerLedger.redistributionPaid.grain)}\n上缴领主: -${Math.floor(playerLedger.overlordTribute.grain)}`
       : undefined;
 
+    // 国库总额 = 所有控制州国库之和
+    const controllerIndex = useTerritoryStore.getState().controllerIndex;
+    const treasury = getTotalTreasury(player.id, territories, controllerIndex);
+
     return [
-      { label: '钱(贯)', icon: '💰', value: player.resources.money, change: monthlyMoney, title: moneyTitle },
-      { label: '粮(斛)', icon: '🌾', value: player.resources.grain, change: monthlyGrain, title: grainTitle },
+      { label: '国库(贯)', icon: '💰', value: treasury.money, change: monthlyMoney, title: moneyTitle },
+      { label: '国库(斛)', icon: '🌾', value: treasury.grain, change: monthlyGrain, title: grainTitle },
       { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
       { label: '正统性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
       { label: '兵力', icon: '⚔', value: totalTroops, change: 0 },

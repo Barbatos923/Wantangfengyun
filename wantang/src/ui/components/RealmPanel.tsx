@@ -176,6 +176,49 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
           {/* Tab 2: 经济 */}
           {activeTab === 'economy' && (
             <div className="space-y-4">
+              {/* 治所与国库概览 */}
+              {player && (() => {
+                const capitalId = player.capital;
+                const capitalT = capitalId ? territories.get(capitalId) : undefined;
+                const capitalTreasury = capitalT?.treasury;
+                const controllerIndex = useTerritoryStore.getState().controllerIndex;
+                const controlled = controllerIndex.get(player.id);
+                let totalMoney = 0, totalGrain = 0;
+                if (controlled) {
+                  for (const tid of controlled) {
+                    const t = territories.get(tid);
+                    if (t?.treasury) { totalMoney += t.treasury.money; totalGrain += t.treasury.grain; }
+                  }
+                }
+                return (
+                  <div className="rounded border border-[var(--color-border)] overflow-hidden">
+                    <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                      <span className="text-xs font-bold text-[var(--color-accent-gold)]">国库概览</span>
+                    </div>
+                    <div className="divide-y divide-[var(--color-border)]">
+                      <div className="flex justify-between px-3 py-2 text-sm">
+                        <span className="text-[var(--color-text-muted)]">治所</span>
+                        <span className="text-[var(--color-text)]">{capitalT ? capitalT.name : '无'}</span>
+                      </div>
+                      {capitalTreasury && (
+                        <div className="flex justify-between px-3 py-2 text-sm">
+                          <span className="text-[var(--color-text-muted)]">治所国库</span>
+                          <span className="text-[var(--color-text)]">钱{Math.floor(capitalTreasury.money)} 粮{Math.floor(capitalTreasury.grain)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between px-3 py-2 text-sm font-bold">
+                        <span className="text-[var(--color-text)]">国库总计</span>
+                        <span className="text-[var(--color-accent-gold)]">钱{Math.floor(totalMoney)} 粮{Math.floor(totalGrain)}</span>
+                      </div>
+                      <div className="flex justify-between px-3 py-2 text-sm">
+                        <span className="text-[var(--color-text-muted)]">私产</span>
+                        <span className="text-[var(--color-text)]">钱{Math.floor(player.resources.money)} 粮{Math.floor(player.resources.grain)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {!playerLedger ? (
                 <p className="text-center text-[var(--color-text-muted)] py-4 text-sm">尚无经济数据</p>
               ) : (
