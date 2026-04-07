@@ -14,6 +14,7 @@ import {
 } from '@engine/official/postManageCalc';
 import type { Post, TerritoryTier } from '@engine/territory/types';
 import { syncArmyForPost, capitalZhouSeat, refreshPostCaches, refreshLegitimacyForChar, promoteOverlordIfNeeded } from '@engine/official/postTransfer';
+import { debitCapitalTreasury, getCapitalBalance } from '@engine/territory/treasuryUtils';
 
 // ── 确定领地对应的 grantsControl 模板 ID ─────────────────────
 
@@ -54,9 +55,10 @@ export function executeCreateKingdom(
   const tpl = positionMap.get(templateId);
   if (!tpl) return;
 
-  // 扣除资源
+  // 扣除资源：金钱从 capital 国库扣，声望从私产扣
   const cost = calcPostManageCost('create', territory.tier);
-  charStore.addResources(actorId, { money: -cost.money, prestige: -cost.prestige });
+  debitCapitalTreasury(actorId, { money: cost.money });
+  charStore.addResources(actorId, { prestige: -cost.prestige });
 
   // 创建岗位
   const newPost: Post = {
@@ -148,7 +150,8 @@ registerDecision({
 
     const actor = useCharacterStore.getState().getCharacter(actorId);
     const cost = calcPostManageCost('create', 'guo');
-    if (actor && actor.resources.money < cost.money) reasons.push(`金钱不足（需 ${cost.money}）`);
+    const balance = getCapitalBalance(actorId);
+    if (balance.money < cost.money) reasons.push(`金钱不足（需 ${cost.money}，治所国库 ${Math.floor(balance.money)}）`);
     if (actor && actor.resources.prestige < cost.prestige) reasons.push(`名望不足（需 ${cost.prestige}）`);
 
     return { executable: reasons.length === 0, reasons };
@@ -213,7 +216,8 @@ registerDecision({
 
     const actor = useCharacterStore.getState().getCharacter(actorId);
     const cost = calcPostManageCost('create', 'dao');
-    if (actor && actor.resources.money < cost.money) reasons.push(`金钱不足（需 ${cost.money}）`);
+    const balance = getCapitalBalance(actorId);
+    if (balance.money < cost.money) reasons.push(`金钱不足（需 ${cost.money}，治所国库 ${Math.floor(balance.money)}）`);
     if (actor && actor.resources.prestige < cost.prestige) reasons.push(`名望不足（需 ${cost.prestige}）`);
 
     return { executable: reasons.length === 0, reasons };

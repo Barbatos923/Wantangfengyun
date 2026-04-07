@@ -10,6 +10,8 @@ import type { Territory } from './types';
 import type { Character } from '@engine/character/types';
 import { positionMap } from '@data/positions';
 import { findPath } from '@engine/military/marchCalc';
+import { useTerritoryStore } from './TerritoryStore';
+import { useCharacterStore } from '@engine/character/CharacterStore';
 
 // ===== 治所选择 =====
 
@@ -152,4 +154,71 @@ export function findNearestFriendlyZhou(
   }
 
   return bestZhou;
+}
+
+// ===== Store 级别扣费辅助（交互/决议用） =====
+
+/**
+ * 从指定州国库扣费。无 treasury 时 fallback 到角色私产。
+ */
+export function debitTreasury(
+  territoryId: string,
+  charId: string,
+  amount: { money?: number; grain?: number },
+): void {
+  const terrStore = useTerritoryStore.getState();
+  const t = terrStore.territories.get(territoryId);
+  if (t?.treasury) {
+    terrStore.addTreasury(territoryId, {
+      money: -(amount.money ?? 0),
+      grain: -(amount.grain ?? 0),
+    });
+  } else {
+    // fallback 到私产
+    useCharacterStore.getState().addResources(charId, {
+      money: amount.money ? -amount.money : undefined,
+      grain: amount.grain ? -amount.grain : undefined,
+    });
+  }
+}
+
+/**
+ * 从角色治所州国库扣费。无 capital 时 fallback 到私产。
+ */
+export function debitCapitalTreasury(
+  charId: string,
+  amount: { money?: number; grain?: number },
+): void {
+  const char = useCharacterStore.getState().characters.get(charId);
+  if (char?.capital) {
+    debitTreasury(char.capital, charId, amount);
+  } else {
+    // 无治所，从私产扣
+    useCharacterStore.getState().addResources(charId, {
+      money: amount.money ? -amount.money : undefined,
+      grain: amount.grain ? -amount.grain : undefined,
+    });
+  }
+}
+
+/**
+ * 获取角色治所州国库余额（Store 便捷版）。无 capital 返回私产余额。
+ */
+export function getCapitalBalance(charId: string): { money: number; grain: number } {
+  const charStore = useCharacterStore.getState();
+  const char = charStore.characters.get(charId);
+  if (char?.capital) {
+    const t = useTerritoryStore.getState().territories.get(char.capital);
+    if (t?.treasury) return { ...t.treasury };
+  }
+  // fallback：返回私产
+  return char ? { money: char.resources.money, grain: char.resources.grain } : { money: 0, grain: 0 };
+}
+
+/**
+ * 获取指定州国库余额（Store 便捷版）。无 treasury 返回 {0,0}。
+ */
+export function getTerritoryBalance(territoryId: string): { money: number; grain: number } {
+  const t = useTerritoryStore.getState().territories.get(territoryId);
+  return t?.treasury ? { ...t.treasury } : { money: 0, grain: 0 };
 }

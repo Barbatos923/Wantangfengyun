@@ -2,9 +2,9 @@
 
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { useCharacterStore } from '@engine/character/CharacterStore';
 import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import type { UnitType } from '@engine/military/types';
+import { debitTreasury, debitCapitalTreasury } from '@engine/territory/treasuryUtils';
 
 /** 每兵征募费用（贯） */
 export const RECRUIT_COST_PER_SOLDIER = 20;
@@ -21,7 +21,8 @@ export function executeRecruit(
   useMilitaryStore.getState().recruitBattalion(armyId, territoryId, unitType, name);
   const householdsLost = Math.floor(MAX_BATTALION_STRENGTH / 5);
   const moneyCost = MAX_BATTALION_STRENGTH * RECRUIT_COST_PER_SOLDIER;
-  useCharacterStore.getState().addResources(army.ownerId, { money: -moneyCost });
+  // 征兵费从 homeTerritory（兵源州）国库扣
+  debitTreasury(territoryId, army.ownerId, { money: moneyCost });
   const territory = useTerritoryStore.getState().territories.get(territoryId);
   if (territory) {
     useTerritoryStore.getState().updateTerritory(territoryId, {
@@ -41,7 +42,8 @@ export function executeReward(
 ): void {
   const army = useMilitaryStore.getState().armies.get(armyId);
   if (!army) return;
-  useCharacterStore.getState().addResources(playerId, { money: -amount });
+  // 赏赐从 capital 国库扣
+  debitCapitalTreasury(playerId, { money: amount });
   useMilitaryStore.getState().batchMutateBattalions((batsMap) => {
     for (const batId of army.battalionIds) {
       const bat = batsMap.get(batId);
@@ -94,7 +96,8 @@ export function executeReplenish(
   payerId: string,
 ): void {
   const moneyCost = deficit * RECRUIT_COST_PER_SOLDIER;
-  useCharacterStore.getState().addResources(payerId, { money: -moneyCost });
+  // 补员费从 homeTerritory（兵源州）国库扣
+  debitTreasury(territoryId, payerId, { money: moneyCost });
   useMilitaryStore.getState().updateBattalion(battalionId, { currentStrength: MAX_BATTALION_STRENGTH });
   const territory = useTerritoryStore.getState().territories.get(territoryId);
   if (territory) {

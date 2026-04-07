@@ -10,6 +10,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { EventPriority } from '@engine/types';
 import { canUsurpPost, calcRealmControlRatio, calcPostManageCost } from '@engine/official/postManageCalc';
+import { debitCapitalTreasury } from '@engine/territory/treasuryUtils';
 import {
   seatPost,
   syncArmyForPost,
@@ -125,10 +126,11 @@ export function executeUsurp(postId: string, actorId: string): void {
   const territory = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
   const tpl = positionMap.get(post.templateId);
 
-  // ── 扣除资源 ──
+  // ── 扣除资源：金钱从 capital 国库扣，声望从私产扣 ──
   const tier = territory?.tier ?? 'dao';
   const cost = calcPostManageCost('usurp', tier);
-  charStore.addResources(actorId, { money: -cost.money, prestige: -cost.prestige });
+  debitCapitalTreasury(actorId, { money: cost.money });
+  charStore.addResources(actorId, { prestige: -cost.prestige });
 
   // ── 岗位易手 ──
   seatPost(postId, actorId, actorId, date);
