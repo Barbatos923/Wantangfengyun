@@ -152,6 +152,29 @@ export function executeCallToArms(
   }
 }
 
+// ── 召集参战前置校验（任务接受/超时时调用） ─────────────────
+
+/** 校验召集参战的前提是否仍然成立 */
+export function validateCallToArms(
+  targetId: string,
+  summonerId: string,
+  warId: string,
+): boolean {
+  const charStore = useCharacterStore.getState();
+  const target = charStore.characters.get(targetId);
+  const summoner = charStore.characters.get(summonerId);
+  if (!target?.alive || !summoner?.alive) return false;
+  // 召集者仍是目标的直属领主
+  if (target.overlordId !== summonerId) return false;
+  const war = useWarStore.getState().wars.get(warId);
+  if (!war || war.status !== 'active') return false;
+  // 召集者仍在该战争中
+  if (!isWarParticipant(summonerId, war)) return false;
+  // 目标尚未参战
+  if (isWarParticipant(targetId, war)) return false;
+  return true;
+}
+
 // ── 执行加入战争 ────────────────────────────────────────────
 
 export function executeJoinWar(

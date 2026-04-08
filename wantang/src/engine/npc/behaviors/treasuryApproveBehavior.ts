@@ -27,20 +27,20 @@ interface TreasuryApproveData {
 
 const REJECT_CD_DAYS = 30;
 
-/** 执行单条调拨：金额 clamp 到源州余额，避免余额不足导致整条静默丢弃 */
-export function executeTreasuryEntry(entry: TreasuryEntry, rulerId: string): void {
-  if (entry.fromZhouId === entry.toZhouId) return;
-  if (entry.amount <= 0) return;
+/** 执行单条调拨：金额 clamp 到源州余额。返回是否实际执行了调拨 */
+export function executeTreasuryEntry(entry: TreasuryEntry, rulerId: string): boolean {
+  if (entry.fromZhouId === entry.toZhouId) return false;
+  if (entry.amount <= 0) return false;
 
   const terrStore = useTerritoryStore.getState();
   const fromT = terrStore.territories.get(entry.fromZhouId);
-  if (!fromT?.treasury) return;
+  if (!fromT?.treasury) return false;
 
   const available = entry.resource === 'money' ? fromT.treasury.money : fromT.treasury.grain;
-  if (available <= 0) return;
+  if (available <= 0) return false;
 
   const amount = Math.min(entry.amount, Math.floor(available));
-  if (amount <= 0) return;
+  if (amount <= 0) return false;
 
   executeTransferTreasury(
     rulerId,
@@ -48,6 +48,7 @@ export function executeTreasuryEntry(entry: TreasuryEntry, rulerId: string): voi
     entry.toZhouId,
     entry.resource === 'money' ? { money: amount } : { grain: amount },
   );
+  return true;
 }
 
 /**
@@ -119,6 +120,7 @@ function notifyPlayerRejected(rulerId: string, drafterId: string): void {
         label: '知道了',
         description: '接受驳回，等待 30 日冷却',
         effects: [],
+        effectKey: 'noop:notification',
         onSelect: () => { /* no-op */ },
       },
     ],
@@ -161,12 +163,13 @@ export const treasuryApproveBehavior: NpcBehavior<TreasuryApproveData> = {
     const passed = roll <= rate;
 
     if (passed) {
-      // 通过：执行所有 entries，通知玩家草拟人
+      // 通过：执行所有 entries，仅通知有成功条目的玩家草拟人
       for (const sub of data.submissions) {
+        let anySuccess = false;
         for (const entry of sub.entries) {
-          executeTreasuryEntry(entry, actor.id);
+          if (executeTreasuryEntry(entry, actor.id)) anySuccess = true;
         }
-        notifyPlayerApproved(actor.id, sub.drafterId);
+        if (anySuccess) notifyPlayerApproved(actor.id, sub.drafterId);
       }
     } else {
       // 不通过：每个 drafter 加 30 天 CD，弹窗通知玩家

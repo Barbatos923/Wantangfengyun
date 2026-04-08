@@ -495,6 +495,8 @@ export function submitReassignProposal(
           label: '准奏',
           description: '批准调任提案',
           effects: [],
+          effectKey: 'reassignProposal:approve',
+          effectData: { territorialPostId, replacementId, emperorId },
           onSelect: () => {
             executeReassign(territorialPostId, replacementId, emperorId);
           },
@@ -503,6 +505,8 @@ export function submitReassignProposal(
           label: '驳回',
           description: '否决此提案',
           effects: [],
+          effectKey: 'reassignProposal:reject',
+          effectData: {},
           onSelect: () => { /* 无操作 */ },
         },
       ],

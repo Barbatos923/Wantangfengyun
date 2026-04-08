@@ -223,6 +223,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
             label: '知道了',
             description: '准备迎战。',
             effects: [],
+            effectKey: 'noop:notification',
             onSelect: () => { /* 已执行 */ },
           },
         ],

@@ -105,6 +105,8 @@ export const adjustTaxBehavior: NpcBehavior<AdjustTaxData> = {
             effects: [
               { label: '赋税等级', value: data.delta, type: data.delta > 0 ? 'negative' : 'positive' },
             ],
+            effectKey: 'adjustTax:acknowledge',
+            effectData: { vassalId: data.vassalId, actorId: actor.id, delta: data.delta },
             onSelect: () => {
               executeTaxChange(data.vassalId, actor.id, data.delta);
             },

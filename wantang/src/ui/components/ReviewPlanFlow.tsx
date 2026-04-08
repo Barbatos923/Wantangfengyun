@@ -38,7 +38,8 @@ export default function ReviewPlanFlow({ onClose }: ReviewPlanFlowProps) {
   function handleApprove() {
     for (const entry of plan!.entries) {
       const post = useTerritoryStore.getState().findPost(entry.postId);
-      const tpl = post ? positionMap.get(post.templateId) : null;
+      if (!post || post.holderId !== entry.holderId) continue; // 岗位已换人，跳过
+      const tpl = positionMap.get(post.templateId) ?? null;
       executeDismiss(entry.postId, entry.legalAppointerId, tpl?.grantsControl ? { vacateOnly: true } : undefined);
     }
     if (task) useNpcStore.getState().removePlayerTask(task.id);

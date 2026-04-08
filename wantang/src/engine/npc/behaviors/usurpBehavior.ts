@@ -98,6 +98,7 @@ export const usurpBehavior: NpcBehavior<UsurpData> = {
             label: '知道了',
             description: '失去了这个头衔。',
             effects: [],
+            effectKey: 'noop:notification',
             onSelect: () => { /* 已执行 */ },
           },
         ],

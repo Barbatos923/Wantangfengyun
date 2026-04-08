@@ -68,7 +68,7 @@ function findBestBuildOption(actorId: string, ctx: NpcContext): BuildOption | nu
             targetLevel,
             moneyCost,
             grainCost,
-            duration: bDef.constructionMonths,
+            duration: bDef.constructionMonths * targetLevel,
           };
         }
       }

@@ -85,6 +85,8 @@ export const adjustRedistributionBehavior: NpcBehavior<AdjustRedistributionData>
             effects: [
               { label: '回拨率', value: data.delta, type: data.delta > 0 ? 'positive' : 'negative' },
             ],
+            effectKey: 'adjustRedistribution:acknowledge',
+            effectData: { actorId: actor.id, delta: data.delta },
             onSelect: () => {
               executeRedistributionChange(actor.id, data.delta);
             },

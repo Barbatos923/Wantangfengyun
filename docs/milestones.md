@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-08
+> **最后更新**：2026-04-09
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -347,6 +347,21 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - Batch5：UI重构（ResourceBar/CharacterPanel/RealmPanel 国库/私产分离显示）+ 迁都/国库运输交互
 - ✅ Console.log 梳理重构（2026-04-08）：删除15处调试残留 + 引入 `engine/debugLog.ts` 收敛30处NPC/交互/军编流水到6类开关，默认全关；保留压测脚本与BUG/FALLBACK warn/error。控制台从57→12
 - ✅ 存档/读档系统 MVP（2026-04-08）：CK3 风格命名存档 + 自动续档双轨。`engine/persistence/` 5 文件（saveSchema/serialize/deserialize/migrations/saveManager）+ ESC/⚙ 唤起 SystemMenu/SaveDialog/LoadDialog UI。Stateful seedrandom 决定性 RNG（防 SL + bug 复现）。`SaveStorageBackend` 接口隔离 IndexedDB → 未来桌面端只换一个文件即可移植到真实文件系统。8 个 store 全部覆盖，索引由 initXxx 自动重建。
+- ✅ GPT 5.4 外部评审 BugFix 第一批（2026-04-09）：
+  - StoryEvent 存档恢复：数据驱动 effectKey + effectData + 中央 `storyEffectResolver.ts`（25 个 effectKey，执行前状态校验），全量迁移 22 个调用点
+  - StoryEvent 快捷键屏蔽：TimeControl 键盘事件在弹窗期间 early return（Space/+/- 屏蔽，Escape 保留）
+  - 绝嗣臣属跟随上交：新增 `escheatReceiver` 使臣属优先跟随法理上交接收人（`primaryHeir → escheatReceiver → overlordId`）
+- ✅ GPT 5.4 外部评审 BugFix 第二批（2026-04-09，12处）：
+  - 好感口径统一：`calculateBaseOpinion` 第三参数修正（negotiateTax + demandRights 共4处 overlordExpLeg → actorExpLeg）
+  - 议定进奉边界：`||`/`&&` 逻辑运算符错误修正（3处恒真/恒假条件）
+  - 改制漏设 reviewBaseline：`executeToggleSuccession` 宗法→流官时补设考课基线
+  - 征兵粮草判断：`conscriptBehavior` 用本地递减替代循环内重读月初快照
+  - 围城防守一致性：siegeCalc 三函数从单 defenderId → defenderIds Set，守方阵营全员参与
+  - 审批任务校验：召集参战（validateCallToArms）+ 考课罢免（holderId 一致性）+ 任命（appointee 存活）
+  - 审批零执行吞单：deploy/treasury 的 executeEntry 返回 boolean，仅通知有成功条目的草拟人
+  - 调兵审批 UI：handleApprove 改用本地编辑后的 entries，玩家删除/改目标操作生效
+  - 补给阻断双重扣粮：economyCalc 军费汇总跳过 blocked 项
+  - NPC 建筑工期：`constructionMonths` → `constructionMonths * targetLevel`
 
 **待做（后续系统）：**
 - 更多个人交互

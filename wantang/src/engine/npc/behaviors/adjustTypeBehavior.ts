@@ -120,6 +120,8 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
             effects: [
               { label: '职类', value: data.toMilitary ? 5 : 0, type: data.toMilitary ? 'positive' : 'neutral' },
             ],
+            effectKey: 'adjustType:accept',
+            effectData: { postId: data.postId, territoryId: data.territoryId },
             onSelect: () => {
               executeToggleType(data.postId, data.territoryId);
             },
@@ -130,6 +132,8 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
             effects: [
               { label: '独立战争', value: 0, type: 'negative' },
             ],
+            effectKey: 'adjustType:rebel',
+            effectData: { vassalId: data.vassalId, actorId: actor.id },
             onSelect: () => {
               const date = useTurnManager.getState().currentDate;
               useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {

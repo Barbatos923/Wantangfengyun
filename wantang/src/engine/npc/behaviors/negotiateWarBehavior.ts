@@ -87,6 +87,8 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
             label: '接受和谈',
             description: '双方握手言和，战争结束。',
             effects: [],
+            effectKey: 'negotiateWar:accept',
+            effectData: { warId: data.warId },
             onSelect: () => {
               settleWar(data.warId, 'whitePeace');
             },
@@ -95,6 +97,8 @@ export const negotiateWarBehavior: NpcBehavior<NegotiateData> = {
             label: '拒绝和谈',
             description: '继续战争，直到分出胜负。',
             effects: [],
+            effectKey: 'negotiateWar:reject',
+            effectData: {},
             onSelect: () => {
               // 拒绝和谈，无额外效果
             },

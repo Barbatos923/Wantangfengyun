@@ -7,7 +7,7 @@ import { findEmperorId } from '@engine/official/postQueries';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
-import { executeJoinWar } from '@engine/interaction/joinWarAction';
+import { executeJoinWar, validateCallToArms } from '@engine/interaction/joinWarAction';
 import type { Post } from '@engine/territory/types';
 import SelectionFlow from './SelectionFlow';
 import TransferPlanFlow from './TransferPlanFlow';
@@ -165,7 +165,7 @@ const AlertBar: React.FC = () => {
               <span>{summoner?.name ?? '?'}召集你参加对{enemyName}的{cbName}</span>
               <button
                 className="ml-1 px-1.5 py-0.5 rounded bg-[var(--color-accent-green)]/30 text-[var(--color-accent-green)] hover:bg-[var(--color-accent-green)]/50"
-                onClick={() => { executeJoinWar(task.actorId, data.warId, data.side); useNpcStore.getState().removePlayerTask(task.id); }}
+                onClick={() => { if (validateCallToArms(task.actorId, data.summonerId, data.warId)) { executeJoinWar(task.actorId, data.warId, data.side); } useNpcStore.getState().removePlayerTask(task.id); }}
               >接受</button>
               <button
                 className="px-1.5 py-0.5 rounded bg-[var(--color-accent-red)]/30 text-[var(--color-accent-red)] hover:bg-[var(--color-accent-red)]/50"

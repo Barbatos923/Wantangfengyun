@@ -148,6 +148,7 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
           label: '知道了',
           description: '接受驳回，等待 30 日冷却',
           effects: [],
+          effectKey: 'noop:notification',
           onSelect: () => { /* no-op */ },
         },
       ],
@@ -155,16 +156,14 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
   }
 
   function handleApprove() {
+    // 使用玩家编辑后的本地 entries（已过滤/删除/改目标），按 drafter 跟踪执行结果
+    const succeededDrafterIds = new Set<string>();
     for (const entry of entries) {
-      executeDeployEntry(entry, actorId);
+      if (executeDeployEntry(entry, actorId)) {
+        succeededDrafterIds.add(entry.drafterId);
+      }
     }
-    // 通知玩家草拟人（去重）
-    const drafterIds = new Set<string>();
-    const data = task!.data as { submissions?: DeploySubmission[] };
-    if (data.submissions) {
-      for (const s of data.submissions) drafterIds.add(s.drafterId);
-    }
-    for (const did of drafterIds) notifyDrafterApproved(did);
+    for (const did of succeededDrafterIds) notifyDrafterApproved(did);
     useNpcStore.getState().removePlayerTask(task!.id);
     onClose();
   }

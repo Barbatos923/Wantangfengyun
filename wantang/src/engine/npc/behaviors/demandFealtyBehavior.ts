@@ -122,6 +122,8 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
             effects: [
               { label: '好感', value: -10, type: 'negative' },
             ],
+            effectKey: 'demandFealty:accept',
+            effectData: { targetId: data.targetId, actorId: actor.id },
             onSelect: () => {
               const charStore = useCharacterStore.getState();
               charStore.updateCharacter(data.targetId, { overlordId: actor.id });
@@ -138,6 +140,8 @@ export const demandFealtyBehavior: NpcBehavior<DemandFealtyData> = {
             effects: [
               { label: '好感', value: -15, type: 'negative' },
             ],
+            effectKey: 'demandFealty:reject',
+            effectData: { targetId: data.targetId, actorId: actor.id },
             onSelect: () => {
               useCharacterStore.getState().addOpinion(data.targetId, actor.id, {
                 reason: '拒绝效忠',

@@ -39,12 +39,12 @@ const REJECT_CD_DAYS = 30;
  * 执行一条部署：创建调动行营（warId=''）→ 设定行军目标。
  * 军队已在目标位置时跳过。
  */
-export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): void {
-  if (entry.fromLocationId === entry.targetLocationId) return;
+export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): boolean {
+  if (entry.fromLocationId === entry.targetLocationId) return false;
 
   // 校验军队仍然存在且归属正确
   const army = useMilitaryStore.getState().getArmy(entry.armyId);
-  if (!army || army.ownerId !== rulerId) return;
+  if (!army || army.ownerId !== rulerId) return false;
 
   const territories = useTerritoryStore.getState().territories;
   const characters = useCharacterStore.getState().characters;
@@ -61,7 +61,7 @@ export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): voi
     if (import.meta.env.DEV) {
       console.warn(`[Deploy] No path: army ${entry.armyId} from ${entry.fromLocationId} to ${entry.targetLocationId}`);
     }
-    return;
+    return false;
   }
 
   // 创建调动行营
@@ -79,7 +79,9 @@ export function executeDeployEntry(entry: DeploymentEntry, rulerId: string): voi
 
   if (newCampId) {
     useWarStore.getState().setCampaignTarget(newCampId, entry.targetLocationId, path);
+    return true;
   }
+  return false;
 }
 
 // ── 通过率计算 ──────────────────────────────────────────
@@ -161,6 +163,7 @@ function notifyPlayerRejected(rulerId: string, drafterId: string): void {
         label: '知道了',
         description: '接受驳回，等待 30 日冷却',
         effects: [],
+        effectKey: 'noop:notification',
         onSelect: () => { /* no-op */ },
       },
     ],
@@ -206,12 +209,13 @@ export const deployApproveBehavior: NpcBehavior<DeployApproveData> = {
     const passed = roll <= rate;
 
     if (passed) {
-      // 通过：执行所有 entries，通知玩家草拟人
+      // 通过：执行所有 entries，仅通知有成功条目的玩家草拟人
       for (const sub of data.submissions) {
+        let anySuccess = false;
         for (const entry of sub.entries) {
-          executeDeployEntry(entry, actor.id);
+          if (executeDeployEntry(entry, actor.id)) anySuccess = true;
         }
-        notifyPlayerApproved(actor.id, sub.drafterId);
+        if (anySuccess) notifyPlayerApproved(actor.id, sub.drafterId);
       }
     } else {
       // 不通过：每个 drafter 加 30 天 CD，弹窗通知玩家

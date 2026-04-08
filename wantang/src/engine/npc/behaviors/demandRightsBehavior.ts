@@ -140,6 +140,8 @@ export const demandRightsBehavior: NpcBehavior<DemandRightsData> = {
             effects: [
               { label: rightLabel, value: 0, type: 'neutral' },
             ],
+            effectKey: 'demandRights:grant',
+            effectData: { postId: data.postId, right: data.right, capitalZhouId: data.capitalZhouId, actorId: actor.id, targetId: data.targetId },
             onSelect: () => {
               const charStore = useCharacterStore.getState();
               if (data.right === 'appointRight') {
@@ -161,6 +163,8 @@ export const demandRightsBehavior: NpcBehavior<DemandRightsData> = {
             effects: [
               { label: '好感', value: -25, type: 'negative' },
             ],
+            effectKey: 'demandRights:refuse',
+            effectData: { actorId: actor.id, targetId: data.targetId },
             onSelect: () => {
               useCharacterStore.getState().addOpinion(actor.id, data.targetId, {
                 reason: '拒绝授权',

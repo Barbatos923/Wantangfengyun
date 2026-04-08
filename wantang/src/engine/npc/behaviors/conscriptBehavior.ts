@@ -201,6 +201,8 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
     const milStore = useMilitaryStore.getState();
 
     let count = 0;
+    // 基准粮草净流量（月初账本快照），后续每征一营递减 AVG_GRAIN_PER_BATTALION
+    let grainNetRemaining = calcGlobalGrainNet(useLedgerStore.getState().allLedgers.get(actor.id));
     const terrStore = useTerritoryStore.getState();
     for (const { territoryId } of data.recruitableTerritories) {
       if (count >= 2) break;
@@ -209,10 +211,8 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
       const freshTreasuryMoney = freshTerritory?.treasury?.money ?? actor.resources.money;
       if (freshTreasuryMoney < CONSCRIPT_MONEY_COST) continue; // 该州不够，试下一个
 
-      // 全局粮草检查：每加一营前重算，避免本轮内连征多营导致超载
-      // executeAsNpc 是副作用阶段，允许读 LedgerStore 拿最新账本
-      const globalGrainNet = calcGlobalGrainNet(useLedgerStore.getState().allLedgers.get(actor.id));
-      if (globalGrainNet - AVG_GRAIN_PER_BATTALION < 0) break;
+      // 全局粮草检查：每加一营前校验，连征时递减避免超载
+      if (grainNetRemaining - AVG_GRAIN_PER_BATTALION < 0) break;
 
       // 选营数最少的军队扩编
       let bestArmyId = data.armyIds[0];
@@ -231,6 +231,7 @@ export const conscriptBehavior: NpcBehavior<ConscriptData> = {
       const unitType = pickUnitType(boldness);
       const name = genBattalionName(army.name, unitType, army.battalionIds.length);
       executeRecruit(bestArmyId, territoryId, unitType, name);
+      grainNetRemaining -= AVG_GRAIN_PER_BATTALION;
       count++;
     }
   },

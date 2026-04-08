@@ -171,6 +171,8 @@ export const revokeBehavior: NpcBehavior<RevokeData> = {
             label: '忍辱接受',
             description: '服从上级决定，交出领地。',
             effects: [],
+            effectKey: 'revoke:accept',
+            effectData: { postId: data.postId, actorId: actor.id },
             onSelect: () => {
               executeDismiss(data.postId, actor.id);
             },
@@ -181,6 +183,8 @@ export const revokeBehavior: NpcBehavior<RevokeData> = {
             effects: [
               { label: '好感', value: -30, type: 'negative' },
             ],
+            effectKey: 'revoke:rebel',
+            effectData: { targetId: data.targetId, actorId: actor.id },
             onSelect: () => {
               const date = useTurnManager.getState().currentDate;
               useCharacterStore.getState().addOpinion(data.targetId, actor.id, {

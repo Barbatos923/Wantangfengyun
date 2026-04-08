@@ -134,6 +134,8 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
             effects: [
               { label: '继承法', value: opinionValue, type: data.toClan ? 'positive' : 'negative' },
             ],
+            effectKey: 'adjustSuccession:accept',
+            effectData: { postId: data.postId, capitalZhouId: data.capitalZhouId },
             onSelect: () => {
               const territories = useTerritoryStore.getState().territories;
               executeToggleSuccession(data.postId, data.capitalZhouId, territories);
@@ -145,6 +147,8 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
             effects: [
               { label: '独立战争', value: 0, type: 'negative' },
             ],
+            effectKey: 'adjustSuccession:rebel',
+            effectData: { vassalId: data.vassalId, actorId: actor.id },
             onSelect: () => {
               const date = useTurnManager.getState().currentDate;
               useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {

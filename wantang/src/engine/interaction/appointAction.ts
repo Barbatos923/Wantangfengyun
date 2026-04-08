@@ -124,6 +124,10 @@ export function executeAppoint(
   appointerId: string,
   vacateOldPost?: boolean,
 ): void {
+  // 候选人必须仍然存活
+  const appointeeCheck = useCharacterStore.getState().characters.get(appointeeId);
+  if (!appointeeCheck?.alive) return;
+
   // ── 升调/平调：先清空候选人的当前岗位 ──
   if (vacateOldPost) {
     const ts = useTerritoryStore.getState();

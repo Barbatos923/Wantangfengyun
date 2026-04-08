@@ -130,6 +130,8 @@ export const adjustAppointRightBehavior: NpcBehavior<AdjustAppointRightData> = {
             effects: [
               { label: '辟署权', value: opinionValue, type: data.grant ? 'positive' : 'negative' },
             ],
+            effectKey: 'adjustAppointRight:accept',
+            effectData: { postId: data.postId },
             onSelect: () => {
               executeToggleAppointRight(data.postId);
             },
@@ -140,6 +142,8 @@ export const adjustAppointRightBehavior: NpcBehavior<AdjustAppointRightData> = {
             effects: [
               { label: '独立战争', value: 0, type: 'negative' },
             ],
+            effectKey: 'adjustAppointRight:rebel',
+            effectData: { vassalId: data.vassalId, actorId: actor.id },
             onSelect: () => {
               const date = useTurnManager.getState().currentDate;
               useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {

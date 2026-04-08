@@ -20,7 +20,7 @@ export const SAVE_VERSION = 1;
 /** 存档槽 ID 常量（MVP 期固定单槽） */
 export const CURRENT_SAVE_SLOT = 'current';
 
-/** StoryEvent 序列化形式：strip onSelect 函数指针（读档后用 noop 恢复，已弹出的旧选项不再响应是可接受退化） */
+/** StoryEvent 序列化形式：strip onSelect 函数指针。effectKey + effectData 保留，读档后由 storyEffectResolver 重建回调。 */
 export type SerializedStoryEventOption = Omit<StoryEventOption, 'onSelect'>;
 export interface SerializedStoryEvent extends Omit<StoryEvent, 'options'> {
   options: SerializedStoryEventOption[];

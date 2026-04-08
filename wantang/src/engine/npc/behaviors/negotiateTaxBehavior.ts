@@ -105,6 +105,8 @@ export const negotiateTaxBehavior: NpcBehavior<NegotiateTaxData> = {
             effects: [
               { label: '好感', value: 5, type: 'positive' },
             ],
+            effectKey: 'negotiateTax:accept',
+            effectData: { actorId: actor.id, targetId: data.targetId, delta: data.delta },
             onSelect: () => {
               executeTaxChange(actor.id, data.targetId, data.delta);
               useCharacterStore.getState().addOpinion(actor.id, data.targetId, {
@@ -120,6 +122,8 @@ export const negotiateTaxBehavior: NpcBehavior<NegotiateTaxData> = {
             effects: [
               { label: '好感', value: -15, type: 'negative' },
             ],
+            effectKey: 'negotiateTax:reject',
+            effectData: { actorId: actor.id, targetId: data.targetId, delta: data.delta },
             onSelect: () => {
               useCharacterStore.getState().addOpinion(actor.id, data.targetId, {
                 reason: '议定进奉失败',

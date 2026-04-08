@@ -196,6 +196,8 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
             label: '服从调任',
             description: '交出领地，入京任职。',
             effects: [],
+            effectKey: 'reassign:serve',
+            effectData: { territorialPostId: data.territorialPostId, replacementId: data.replacementId, emperorId: actor.id },
             onSelect: () => {
               executeReassignSuccess(data.territorialPostId, data.replacementId, actor.id);
             },
@@ -206,6 +208,8 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
             effects: [
               { label: '好感', value: -30, type: 'negative' },
             ],
+            effectKey: 'reassign:rebel',
+            effectData: { playerId: ctx.playerId!, emperorId: actor.id },
             onSelect: () => {
               executeReassignRebel(ctx.playerId!, actor.id);
             },
@@ -237,6 +241,7 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
               label: '知悉',
               description: '赴任就职。',
               effects: [],
+              effectKey: 'noop:notification',
               onSelect: () => { /* 已执行 */ },
             },
           ],
@@ -368,6 +373,8 @@ export const chancellorReassignBehavior: NpcBehavior<ChancellorReassignData> = {
             label: '服从调任',
             description: '交出领地，入京任职。',
             effects: [],
+            effectKey: 'reassign:serve',
+            effectData: { territorialPostId: data.territorialPostId, replacementId: data.replacementId, emperorId },
             onSelect: () => {
               executeReassignSuccess(data.territorialPostId, data.replacementId, emperorId);
             },
@@ -378,6 +385,8 @@ export const chancellorReassignBehavior: NpcBehavior<ChancellorReassignData> = {
             effects: [
               { label: '好感', value: -30, type: 'negative' },
             ],
+            effectKey: 'reassign:rebel',
+            effectData: { playerId: ctx.playerId!, emperorId },
             onSelect: () => {
               executeReassignRebel(ctx.playerId!, emperorId);
             },
@@ -409,6 +418,7 @@ export const chancellorReassignBehavior: NpcBehavior<ChancellorReassignData> = {
               label: '知悉',
               description: '赴任就职。',
               effects: [],
+              effectKey: 'noop:notification',
               onSelect: () => { /* 已执行 */ },
             },
           ],

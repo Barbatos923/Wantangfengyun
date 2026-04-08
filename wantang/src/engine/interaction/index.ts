@@ -36,7 +36,7 @@ export {
 export { executeDeclareWar } from './declareWarAction';
 export { executeBuild } from './buildAction';
 export { getRevokablePosts, calcRevokeChance, previewRevokeChance, executeRevoke } from './revokeAction';
-export { executeJoinWar, getJoinableWars, getCallableWars, calcCallToArmsChance, executeCallToArms } from './joinWarAction';
+export { executeJoinWar, validateCallToArms, getJoinableWars, getCallableWars, calcCallToArmsChance, executeCallToArms } from './joinWarAction';
 export type { JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult } from './joinWarAction';
 export { getUsurpablePosts, previewUsurp, executeUsurp } from './usurpPostAction';
 export type { UsurpPreview } from './usurpPostAction';

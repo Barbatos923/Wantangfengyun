@@ -56,7 +56,7 @@ registerInteraction({
       return '冷却中';
     }
     const level = player.centralization ?? 2;
-    if (level <= 1 && level >= 4) return '税率已在极限';
+    if (level <= 1 || level >= 4) return '税率已在极限';
     return '条件不满足';
   },
   paramType: 'negotiateTax',
@@ -74,7 +74,7 @@ function canNegotiateTax(player: Character, target: Character): boolean {
   }
 
   const level = player.centralization ?? 2;
-  return level > 1 || level < 4;
+  return level > 1 && level < 4;
 }
 
 // ── 纯函数版（供 NPC 使用） ──────────────────────────────
@@ -87,7 +87,7 @@ export function canNegotiateTaxPure(
   if (!actor.isRuler) return false;
   if (actor.overlordId !== overlord.id) return false;
   const level = actor.centralization ?? 2;
-  return level > 1 || level < 4;
+  return level > 1 && level < 4;
 }
 
 // ── 成功率计算（纯函数） ──────────────────────────────────
@@ -179,8 +179,8 @@ export function previewNegotiateTax(
   if (!actor || !overlord) return { chance: 0, breakdown: { base: 0, opinion: 0, power: 0, personality: 0 } };
 
   const terrState = useTerritoryStore.getState();
-  const overlordExpLeg = terrState.expectedLegitimacy.get(overlordId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, overlordExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);
@@ -200,8 +200,8 @@ export function executeNegotiateTax(
   if (!actor || !overlord) return { success: false, chance: 0, breakdown: { base: 0, opinion: 0, power: 0, personality: 0 } };
 
   const terrState = useTerritoryStore.getState();
-  const overlordExpLeg = terrState.expectedLegitimacy.get(overlordId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, overlordExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);

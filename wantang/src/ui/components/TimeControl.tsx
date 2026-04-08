@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTurnManager } from '../../engine';
 import type { GameDate } from '../../engine';
 import { Era, GameSpeed } from '../../engine';
+import { useStoryEventBus } from '@engine/storyEventBus';
 import EraPopup from './EraPopup';
 
 interface ReignEra {
@@ -115,6 +116,8 @@ const TimeControl: React.FC = () => {
     const handleKey = (e: KeyboardEvent) => {
       // 忽略在输入框中的按键
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      // StoryEvent 弹窗期间屏蔽时间控制快捷键
+      if (useStoryEventBus.getState().storyEventQueue.length > 0) return;
 
       if (e.code === 'Space') {
         e.preventDefault();

@@ -19,6 +19,10 @@ export interface StoryEventOption {
   effects: StoryEventEffect[];
   successChance?: number;     // 0-100
   onSelect: () => void;
+  /** 数据驱动效果标识（存档可恢复）。读档后 onSelect 被 noop 替代，EventModal 走 effectKey 路径重建回调。 */
+  effectKey?: string;
+  /** effectKey 对应的参数，纯数据，可序列化。各 effectKey 有固定字段约定，见 storyEffectResolver.ts。 */
+  effectData?: Record<string, unknown>;
 }
 
 /** 中心弹出框事件 */

@@ -275,8 +275,8 @@ export function previewDemandRights(
   if (!actor || !overlord) return { chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 } };
 
   const terrState = useTerritoryStore.getState();
-  const overlordExpLeg = terrState.expectedLegitimacy.get(overlordId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, overlordExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);
@@ -297,8 +297,8 @@ export function executeDemandRights(
   if (!actor || !overlord) return { success: false, chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 } };
 
   const terrState = useTerritoryStore.getState();
-  const overlordExpLeg = terrState.expectedLegitimacy.get(overlordId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, overlordExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);

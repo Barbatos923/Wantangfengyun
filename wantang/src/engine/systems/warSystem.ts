@@ -18,7 +18,7 @@ import { findPath } from '@engine/military/marchCalc.ts';
 import { getArmyMarchSpeed } from '@engine/military/militaryCalc.ts';
 import { unitTypeMap } from '@data/unitTypes.ts';
 import {
-  isOnAttackerSide, isOnDefenderSide, getWarSide, getPrimaryEnemyId,
+  isOnAttackerSide, isOnDefenderSide, getWarSide,
 } from '@engine/military/warParticipantUtils.ts';
 
 // ── 辅助函数 ─────────────────────────────────────────────
@@ -458,16 +458,28 @@ export function runWarSystem(date: GameDate): void {
 
     const war = useWarStore.getState().wars.get(siege.warId);
     if (!war) continue;
-    const defenderId = getPrimaryEnemyId(campaign.ownerId, war) ?? war.defenderId;
 
     const milState = useMilitaryStore.getState();
 
+    // 收集该州内所有守方阵营军队的 owner（含盟友驻军），统一参与守城计算
+    const attackerSide = getWarSide(campaign.ownerId, war);
+    const defenderIds = new Set<string>();
+    const armiesHere = milState.locationArmyIndex.get(siege.territoryId);
+    if (armiesHere) {
+      for (const aId of armiesHere) {
+        const a = milState.armies.get(aId);
+        if (!a) continue;
+        const side = getWarSide(a.ownerId, war);
+        if (side && side !== attackerSide) defenderIds.add(a.ownerId);
+      }
+    }
+
     const dim = getDaysInMonth(date.month);
 
-    const defStats = siegeUtils.calcDefenderStats(siege.territoryId, defenderId, milState.armies, milState.battalions);
+    const defStats = siegeUtils.calcDefenderStats(siege.territoryId, defenderIds, milState.armies, milState.battalions);
     const monthlyAttritionRate = siegeUtils.calcDefenderAttritionRate(defStats.avgElite, defStats.avgMorale);
     siegeUtils.applyDefenderAttrition(
-      siege.territoryId, defenderId, monthlyAttritionRate / dim,
+      siege.territoryId, defenderIds, monthlyAttritionRate / dim,
       milState.armies, milState.battalions,
       useMilitaryStore.getState().batchMutateBattalions,
     );
@@ -482,7 +494,8 @@ export function runWarSystem(date: GameDate): void {
     }
     const troops = siegeUtils.calcCampaignTroops(allArmyIds, milAfter.armies, milAfter.battalions);
     const siegeValue = siegeUtils.calcTotalSiegeValue(allArmyIds, milAfter.armies, milAfter.battalions);
-    const defenderTroops = siegeUtils.calcDefenderTroops(siege.territoryId, defenderId, milAfter.armies, milAfter.battalions);
+    // 损耗后重新收集守方 IDs（可能有人被清空，但 Set 不变即可）
+    const defenderTroops = siegeUtils.calcDefenderTroops(siege.territoryId, defenderIds, milAfter.armies, milAfter.battalions);
     const monthlyProgress = siegeUtils.calcMonthlyProgress(troops, siegeValue, terr, defenderTroops);
     const dailyProgress = monthlyProgress / dim;
     const newProgress = Math.min(100, siege.progress + dailyProgress);
@@ -490,7 +503,7 @@ export function runWarSystem(date: GameDate): void {
     if (newProgress >= 100) {
       // 城破！
       siegeUtils.applyDefenderAttrition(
-        siege.territoryId, defenderId, 1.0,
+        siege.territoryId, defenderIds, 1.0,
         useMilitaryStore.getState().armies, useMilitaryStore.getState().battalions,
         useMilitaryStore.getState().batchMutateBattalions,
       );

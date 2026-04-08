@@ -125,6 +125,7 @@ export const dismissBehavior: NpcBehavior<DismissData> = {
             label: '知道了',
             description: '接受上级的决定。',
             effects: [],
+            effectKey: 'noop:notification',
             onSelect: () => { /* 已执行，无需额外操作 */ },
           },
         ],

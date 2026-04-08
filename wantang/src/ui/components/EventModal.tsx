@@ -4,6 +4,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { traitMap } from '@data/traits';
 import { useStoryEventBus, type StoryEventOption } from '@engine/storyEventBus';
+import { resolveStoryEffect } from '@engine/storyEffectResolver';
 import { usePanelStore } from '@ui/stores/panelStore';
 
 // ── 角色卡片 ──────────────────────────────────────────────
@@ -151,7 +152,11 @@ const EventModal: React.FC = () => {
   if (!event) return null;
 
   const handleSelect = (option: StoryEventOption) => {
-    option.onSelect();
+    if (option.effectKey) {
+      resolveStoryEffect(option.effectKey, option.effectData ?? {});
+    } else {
+      option.onSelect();
+    }
     popStoryEvent();
   };
 

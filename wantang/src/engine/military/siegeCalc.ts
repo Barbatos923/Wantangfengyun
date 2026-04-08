@@ -45,17 +45,17 @@ export function calcDefenderAttritionRate(
 
 /**
  * 计算某州内防守方的总兵力。
- * 防守方 = 领地控制者拥有的、驻扎在该州的军队。
+ * 防守方 = 属于守方阵营、驻扎在该州的所有军队。
  */
 export function calcDefenderTroops(
   territoryId: string,
-  defenderId: string,
+  defenderIds: ReadonlySet<string>,
   armies: Map<string, Army>,
   battalions: Map<string, Battalion>,
 ): number {
   let total = 0;
   for (const army of armies.values()) {
-    if (army.ownerId !== defenderId || army.locationId !== territoryId) continue;
+    if (!defenderIds.has(army.ownerId) || army.locationId !== territoryId) continue;
     for (const batId of army.battalionIds) {
       const bat = battalions.get(batId);
       if (bat) total += bat.currentStrength;
@@ -69,7 +69,7 @@ export function calcDefenderTroops(
  */
 export function calcDefenderStats(
   territoryId: string,
-  defenderId: string,
+  defenderIds: ReadonlySet<string>,
   armies: Map<string, Army>,
   battalions: Map<string, Battalion>,
 ): { avgElite: number; avgMorale: number } {
@@ -77,7 +77,7 @@ export function calcDefenderStats(
   let totalMorale = 0;
   let totalStrength = 0;
   for (const army of armies.values()) {
-    if (army.ownerId !== defenderId || army.locationId !== territoryId) continue;
+    if (!defenderIds.has(army.ownerId) || army.locationId !== territoryId) continue;
     for (const batId of army.battalionIds) {
       const bat = battalions.get(batId);
       if (bat && bat.currentStrength > 0) {
@@ -100,7 +100,7 @@ export function calcDefenderStats(
  */
 export function applyDefenderAttrition(
   territoryId: string,
-  defenderId: string,
+  defenderIds: ReadonlySet<string>,
   attritionRate: number,
   armies: Map<string, Army>,
   _battalions: Map<string, Battalion>,
@@ -108,7 +108,7 @@ export function applyDefenderAttrition(
 ): void {
   const batIdsToAttrit: string[] = [];
   for (const army of armies.values()) {
-    if (army.ownerId !== defenderId || army.locationId !== territoryId) continue;
+    if (!defenderIds.has(army.ownerId) || army.locationId !== territoryId) continue;
     for (const batId of army.battalionIds) {
       batIdsToAttrit.push(batId);
     }

@@ -83,6 +83,7 @@ export function runCharacterSystem(date: GameDate): void {
 
       // 一、每个岗位根据自身 successionLaw 独立处理
       let primaryHeir: string | null = null;
+      let escheatReceiver: string | null = null; // 绝嗣上交时最高 tier 岗位接收人
       let hadClanPost = false;
       const vacantPostNames: string[] = [];
 
@@ -139,6 +140,7 @@ export function runCharacterSystem(date: GameDate): void {
           }
 
           if (!primaryHeir && heir) primaryHeir = heir;
+          if (!escheatReceiver && !heir && receiver) escheatReceiver = receiver;
           hadClanPost = true;
 
         } else {
@@ -186,8 +188,8 @@ export function runCharacterSystem(date: GameDate): void {
         });
       }
 
-      // 二、附庸转移（一次性，给 primaryHeir；无 heir 则给 overlord）
-      const vassalReceiver = primaryHeir ?? deadChar.overlordId ?? null;
+      // 二、附庸转移（一次性，给 primaryHeir；绝嗣上交则跟随最高 tier 岗位接收人；兜底给 overlord）
+      const vassalReceiver = primaryHeir ?? escheatReceiver ?? deadChar.overlordId ?? null;
       if (vassalReceiver) {
         charStore.batchMutate(chars => {
           for (const [id, c] of chars) {

@@ -8,7 +8,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { findEmperorId } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { useNpcStore } from './NpcStore';
-import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
+import { executeAppoint, executeDismiss, executeJoinWar, validateCallToArms } from '@engine/interaction';
 import { executeTreasuryEntry } from './behaviors/treasuryApproveBehavior';
 import { executeDeployEntry } from './behaviors/deployApproveBehavior';
 import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
@@ -195,17 +195,20 @@ function handleExpiredPlayerTasks(date: GameDate): void {
         autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
       }
     } else if (task.type === 'review') {
-      // 玩家超时未处理考课 → 自动执行所有罢免
+      // 玩家超时未处理考课 → 自动执行所有罢免（校验持有人未换）
       const data = task.data as { entries: ReviewEntry[] };
       for (const entry of data.entries) {
         const post = useTerritoryStore.getState().findPost(entry.postId);
-        const tpl = post ? positionMap.get(post.templateId) : null;
+        if (!post || post.holderId !== entry.holderId) continue; // 岗位已换人，跳过
+        const tpl = positionMap.get(post.templateId) ?? null;
         executeDismiss(entry.postId, entry.legalAppointerId, tpl?.grantsControl ? { vacateOnly: true } : undefined);
       }
     } else if (task.type === 'callToArms') {
-      // 召集参战超时 → 自动接受
-      const data = task.data as { warId: string; side: 'attacker' | 'defender' };
-      executeJoinWar(task.actorId, data.warId, data.side);
+      // 召集参战超时 → 校验后自动接受（条件失效则静默跳过）
+      const data = task.data as { warId: string; side: 'attacker' | 'defender'; summonerId: string };
+      if (validateCallToArms(task.actorId, data.summonerId, data.warId)) {
+        executeJoinWar(task.actorId, data.warId, data.side);
+      }
     } else if (task.type === 'treasury-approve') {
       // 玩家超时未审批国库草案 → 必定通过（不走概率裁决，避免 NPC 替玩家做决定）
       const data = task.data as { submissions: TreasurySubmission[] };

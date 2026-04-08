@@ -3,6 +3,7 @@
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
 import type { CentralizationLevel, Post, Territory } from '@engine/territory/types';
@@ -84,12 +85,38 @@ export function executeToggleSuccession(
   if (!post) return;
   const newLaw = post.successionLaw === 'clan' ? 'bureaucratic' as const : 'clan' as const;
   const patch: Partial<Post> = { successionLaw: newLaw };
-  if (newLaw === 'bureaucratic') patch.designatedHeirId = null;
+  if (newLaw === 'bureaucratic') {
+    patch.designatedHeirId = null;
+    // 改为流官时补设 reviewBaseline，使现任持有人进入考课周期
+    if (post.holderId) {
+      const date = useTurnManager.getState().currentDate;
+      const terr = post.territoryId ? territories.get(post.territoryId) : undefined;
+      const holder = useCharacterStore.getState().characters.get(post.holderId);
+      patch.reviewBaseline = {
+        population: terr?.basePopulation ?? 0,
+        virtue: holder?.official?.virtue ?? 0,
+        date: { year: date.year, month: date.month, day: date.day },
+      };
+    }
+  }
   terrStore.updatePost(post.id, patch);
   if (capitalZhouId) {
     const capZhou = territories.get(capitalZhouId);
     const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-    if (capPost) terrStore.updatePost(capPost.id, patch);
+    if (capPost) {
+      const capPatch: Partial<Post> = { ...patch };
+      // 治所州岗位的 reviewBaseline 需要用治所州自己的人口数据
+      if (newLaw === 'bureaucratic' && capPost.holderId) {
+        const date = useTurnManager.getState().currentDate;
+        const capHolder = useCharacterStore.getState().characters.get(capPost.holderId);
+        capPatch.reviewBaseline = {
+          population: capZhou?.basePopulation ?? 0,
+          virtue: capHolder?.official?.virtue ?? 0,
+          date: { year: date.year, month: date.month, day: date.day },
+        };
+      }
+      terrStore.updatePost(capPost.id, capPatch);
+    }
   }
 
 }

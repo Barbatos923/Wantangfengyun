@@ -148,6 +148,7 @@ export const transferVassalBehavior: NpcBehavior<TransferVassalData> = {
             label: '知道了',
             description: '接受新的效忠关系。',
             effects: [],
+            effectKey: 'noop:notification',
             onSelect: () => { /* 已执行 */ },
           },
         ],

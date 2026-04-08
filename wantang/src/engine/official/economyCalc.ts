@@ -327,14 +327,13 @@ export function calculateMonthlyLedger(
       territories, characters, controllerIndex, ownerArmyIndex,
     );
     for (const ms of militarySupply) {
-      if (ms.grainCost === 0) continue;
+      if (ms.grainCost === 0 || ms.blocked) continue; // blocked 不扣粮（月结时只扣士气）
       militaryMaintenance.grain += ms.grainCost;
       if (ms.fromPrivate) {
         privateChange.grain -= ms.grainCost;
       } else if (ms.supplyZhouId) {
         addTC(ms.supplyZhouId, { grain: -ms.grainCost });
       }
-      // blocked 的不扣粮（月结时扣士气）
     }
   } else {
     // 兜底：无 controllerIndex 时用旧逻辑（向后兼容 UI 预览等场景）
