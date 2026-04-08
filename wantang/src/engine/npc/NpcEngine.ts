@@ -13,6 +13,7 @@ import { executeTreasuryEntry } from './behaviors/treasuryApproveBehavior';
 import { executeDeployEntry } from './behaviors/deployApproveBehavior';
 import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import type { DeploySubmission } from '@engine/military/deployCalc';
+import { debugLog } from '@engine/debugLog';
 import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
@@ -281,7 +282,7 @@ function passesPostGate(actor: import('@engine/character/types').Character, beha
 const EMPEROR_DEBUG_ID = 'char-yizong';
 
 function logEmperor(tag: string, msg: string): void {
-  console.log(`[皇帝AI] [${tag}] ${msg}`);
+  debugLog('emperor', `[皇帝AI] [${tag}] ${msg}`);
 }
 
 // ── 日结入口 ───────────────────────────────────────────────

@@ -8,6 +8,7 @@ import { executeTaxChange } from '@engine/interaction';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
 import { registerBehavior } from './index';
+import { debugLog } from '@engine/debugLog';
 
 interface AdjustTaxData {
   vassalId: string;
@@ -85,7 +86,7 @@ export const adjustTaxBehavior: NpcBehavior<AdjustTaxData> = {
     const TAX_LABELS: Record<number, string> = { 1: '放任', 2: '一般', 3: '严控', 4: '压榨' };
     const newLevel = data.currentLevel + data.delta;
     const vassalName = ctx.characters.get(data.vassalId)?.name ?? data.vassalId;
-    console.log(`[政策] ${actor.name} → ${vassalName}：赋税 ${TAX_LABELS[data.currentLevel]}(${data.currentLevel}) → ${TAX_LABELS[newLevel]}(${newLevel})`);
+    debugLog('policy', `[政策] ${actor.name} → ${vassalName}：赋税 ${TAX_LABELS[data.currentLevel]}(${data.currentLevel}) → ${TAX_LABELS[newLevel]}(${newLevel})`);
 
     // 玩家是目标臣属 → 信息型通知
     if (data.vassalId === ctx.playerId) {

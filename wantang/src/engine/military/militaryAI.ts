@@ -11,6 +11,7 @@ import { unitTypeMap } from '@data/unitTypes';
 import type { Character } from '@engine/character/types';
 import type { Army, Battalion } from './types';
 import type { Territory } from '@engine/territory/types';
+import { debugLog } from '@engine/debugLog';
 
 // ── 建军 ────────────────────────────────────────────────────────────────
 
@@ -35,7 +36,7 @@ function aiCreateArmy(
   const name = `${location.name}军`;
   const milStore = useMilitaryStore.getState();
   milStore.createArmy(name, char.id, location.id);
-  console.log(`[军编] ${char.name}：建军「${name}」驻${location.name}`);
+  debugLog('military', `[军编] ${char.name}：建军「${name}」驻${location.name}`);
 }
 
 // ── 换将 ────────────────────────────────────────────────────────────────
@@ -90,7 +91,7 @@ function aiFillCommanders(
       if (best) {
         milStore.updateArmy(army.id, { commanderId: best.id });
         assignedIds.add(best.id);
-        console.log(`[军编] ${char.name}：${army.name} 补将 → ${charStore.getCharacter(best.id)?.name ?? best.id}（military=${best.military}）`);
+        debugLog('military', `[军编] ${char.name}：${army.name} 补将 → ${charStore.getCharacter(best.id)?.name ?? best.id}（military=${best.military}）`);
       }
     } else {
       // 优化：有更强人选
@@ -101,7 +102,7 @@ function aiFillCommanders(
         milStore.updateArmy(army.id, { commanderId: better.id });
         assignedIds.add(better.id);
         assignedIds.delete(currentId!);
-        console.log(`[军编] ${char.name}：${army.name} 换将 → ${charStore.getCharacter(better.id)?.name ?? better.id}（military=${better.military}，原${current!.name}=${currentMil}）`);
+        debugLog('military', `[军编] ${char.name}：${army.name} 换将 → ${charStore.getCharacter(better.id)?.name ?? better.id}（military=${better.military}，原${current!.name}=${currentMil}）`);
       }
     }
   }
@@ -145,7 +146,7 @@ function aiRebalanceBattalions(
 
   if (weakestBat) {
     milStore.transferBattalion(weakestBat.id, minArmy.id);
-    console.log(`[军编] ${char.name}：调营 ${weakestBat.name} 从${maxArmy.name} → ${minArmy.name}`);
+    debugLog('military', `[军编] ${char.name}：调营 ${weakestBat.name} 从${maxArmy.name} → ${minArmy.name}`);
   }
 }
 
@@ -176,7 +177,7 @@ function aiDisbandBattalions(
   for (const bat of ownerBattalions) {
     if (bat.currentStrength < SHELL_BATTALION_THRESHOLD) {
       milStore.disbandBattalion(bat.id);
-      console.log(`[军编] ${char.name}：裁空壳营 ${bat.name}（strength=${bat.currentStrength}）`);
+      debugLog('military', `[军编] ${char.name}：裁空壳营 ${bat.name}（strength=${bat.currentStrength}）`);
     }
   }
 
@@ -212,7 +213,7 @@ function aiDisbandBattalions(
     milStore.disbandBattalion(bat.id);
     netGrain += grainSaved;
     disbanded++;
-    console.log(`[军编] ${char.name}：财政裁营 ${bat.name}（strength=${bat.currentStrength}，净粮草=${Math.round(netGrain)}）`);
+    debugLog('military', `[军编] ${char.name}：财政裁营 ${bat.name}（strength=${bat.currentStrength}，净粮草=${Math.round(netGrain)}）`);
   }
 }
 

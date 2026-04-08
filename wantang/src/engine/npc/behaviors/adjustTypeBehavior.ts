@@ -2,6 +2,7 @@
 
 import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from '../types';
 import { calcWeight } from '../types';
+import { debugLog } from '@engine/debugLog';
 import type { Character } from '@engine/character/types';
 import {
   evaluateAppeasementTargets,
@@ -101,7 +102,7 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
     const postName = post ? (positionMap.get(post.templateId)?.name ?? '') : '';
     const newTypeLabel = data.toMilitary ? '军事' : '民政';
     const vassalName = ctx.characters.get(data.vassalId)?.name ?? data.vassalId;
-    console.log(`[政策] ${actor.name} → ${vassalName}：${terrName}${postName} 改为${newTypeLabel}制`);
+    debugLog('policy', `[政策] ${actor.name} → ${vassalName}：${terrName}${postName} 改为${newTypeLabel}制`);
 
     if (data.vassalId === ctx.playerId) {
       const event: StoryEvent = {

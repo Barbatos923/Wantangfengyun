@@ -157,16 +157,6 @@ export function findNearestFriendlyZhou(
 }
 
 // ===== DEBUG 监测 =====
-// 在浏览器控制台 `window.__DEBUG_TREASURY__ = true` 可临时开启
-// watchlist 中的角色，所有 debit 都会打 log；其他角色只打 fallback 警告
-const TREASURY_WATCHLIST = new Set<string>([
-  'char-yizong',        // 玩家：唐懿宗
-  'char-zhengcongdang', // 节度使例子：郑从谠
-  'char-gaopian',       // 刺史例子：高骈
-]);
-function debugEnabled(): boolean {
-  return typeof window !== 'undefined' && (window as unknown as { __DEBUG_TREASURY__?: boolean }).__DEBUG_TREASURY__ === true;
-}
 function fmtAmt(a: { money?: number; grain?: number }): string {
   return `money=${a.money ?? 0} grain=${a.grain ?? 0}`;
 }
@@ -184,9 +174,6 @@ export function debitTreasury(
   const terrStore = useTerritoryStore.getState();
   const t = terrStore.territories.get(territoryId);
   if (t?.treasury) {
-    if (debugEnabled() && TREASURY_WATCHLIST.has(charId)) {
-      console.log(`[TREASURY] debit 州=${t.name}(${territoryId}) char=${charId} ${fmtAmt(amount)}`);
-    }
     terrStore.addTreasury(territoryId, {
       money: -(amount.money ?? 0),
       grain: -(amount.grain ?? 0),
@@ -210,9 +197,6 @@ export function debitCapitalTreasury(
 ): void {
   const char = useCharacterStore.getState().characters.get(charId);
   if (char?.capital) {
-    if (debugEnabled() && TREASURY_WATCHLIST.has(charId)) {
-      console.log(`[TREASURY] debitCapital char=${charId} capital=${char.capital} ${fmtAmt(amount)}`);
-    }
     debitTreasury(char.capital, charId, amount);
   } else {
     // 无治所，从私产扣

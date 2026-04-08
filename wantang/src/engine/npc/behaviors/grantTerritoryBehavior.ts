@@ -8,6 +8,7 @@ import { getDirectControlLimit, getVassals } from '@engine/official/postQueries'
 import { canGrantTerritory } from '@engine/official/appointValidation';
 import { executeAppoint, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
 import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
+import { debugLog } from '@engine/debugLog';
 import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
@@ -208,12 +209,12 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
         if (grantPost.successionLaw === 'clan') {
           const capitalZhouId = territories.get(grant.territory.id)?.capitalZhouId;
           executeToggleSuccession(grant.postId, capitalZhouId, useTerritoryStore.getState().territories);
-          console.log(`[自身政策] ${actor.name}：${grant.territory.name} 授出前改为流官`);
+          debugLog('policy', `[自身政策] ${actor.name}：${grant.territory.name} 授出前改为流官`);
         }
         const freshPost = useTerritoryStore.getState().findPost(grant.postId);
         if (freshPost?.hasAppointRight) {
           executeToggleAppointRight(grant.postId);
-          console.log(`[自身政策] ${actor.name}：${grant.territory.name} 授出前收回辟署权`);
+          debugLog('policy', `[自身政策] ${actor.name}：${grant.territory.name} 授出前收回辟署权`);
         }
       }
 
@@ -241,7 +242,7 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
         const daoGrant = pickDaoToGrant(freshDao);
         if (!daoGrant) break;
 
-        console.log(`[授予领地] ${actor.name}：授予道级领地 ${daoGrant.territory.name} → ${vassal.name}`);
+        debugLog('policy', `[授予领地] ${actor.name}：授予道级领地 ${daoGrant.territory.name} → ${vassal.name}`);
         executeAppoint(daoGrant.postId, vassal.id, actor.id);
         autoTransferChildrenAfterAppoint(daoGrant.postId, actor.id);
       }

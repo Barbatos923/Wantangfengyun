@@ -6,6 +6,7 @@ import type { War } from '@engine/military/types';
 import type { Personality } from '@data/traits';
 import { getWarSide } from '@engine/military/warParticipantUtils';
 import { registerInteraction } from './registry';
+import { debugLog } from '@engine/debugLog';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -276,7 +277,7 @@ export function executeDemandFealty(
   const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
   charStore.updateCharacter(playerId, { lastDemandFealtyDay: currentDay });
 
-  console.log(`[要求效忠] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
+  debugLog('interaction', `[要求效忠] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
 
   if (success) {
     charStore.updateCharacter(targetId, { overlordId: playerId });

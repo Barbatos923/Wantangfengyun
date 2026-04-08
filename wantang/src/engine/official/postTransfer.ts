@@ -9,6 +9,7 @@ import type { Post } from '@engine/territory/types';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
 import { positionMap } from '@data/positions';
 import { collectRulerIds, getHeldPosts } from './postQueries';
 import { getHighestBaseLegitimacy, getRankLegitimacyCap } from './legitimacyCalc';
@@ -48,9 +49,55 @@ export function vacatePost(postId: string): void {
 
 // ── 2. 军队跟随岗位转移 ──────────────────────────────────────
 
-/** 岗位绑定军队的 owner 随岗位转给新持有人 */
+/**
+ * 把指定军队从所有"非新 owner"的行营 armyIds / incomingArmies 中移除。
+ * 用于岗位易手 / 领地转手时，军队归属变更后清理外阵营行营的悬挂引用，
+ * 防止"D 的军队还挂在 C 的行营里"这类语义不变量被破坏。
+ * 移除后行营 armyIds 与 incomingArmies 都为空 → 自动解散空行营。
+ */
+function purgeArmiesFromForeignCampaigns(armyIds: string[], newOwnerId: string): void {
+  if (armyIds.length === 0) return;
+  const armyIdSet = new Set(armyIds);
+  const warStore = useWarStore.getState();
+  const toDisband: string[] = [];
+
+  for (const campaign of warStore.campaigns.values()) {
+    if (campaign.ownerId === newOwnerId) continue;
+    const newArmyIds = campaign.armyIds.filter((id) => !armyIdSet.has(id));
+    const newIncoming = campaign.incomingArmies.filter((ia) => !armyIdSet.has(ia.armyId));
+    if (
+      newArmyIds.length === campaign.armyIds.length &&
+      newIncoming.length === campaign.incomingArmies.length
+    ) {
+      continue; // 不受影响
+    }
+    if (newArmyIds.length === 0 && newIncoming.length === 0) {
+      toDisband.push(campaign.id); // 行营彻底空了 → 解散
+    } else {
+      warStore.updateCampaign(campaign.id, { armyIds: newArmyIds, incomingArmies: newIncoming });
+    }
+  }
+
+  for (const id of toDisband) {
+    warStore.disbandCampaign(id);
+  }
+}
+
+/**
+ * 岗位绑定军队的 owner 随岗位转给新持有人。
+ * 同时把这些军队从所有外阵营行营的 armyIds / incomingArmies 中清理出去。
+ */
 export function syncArmyForPost(postId: string, newOwnerId: string): void {
-  useMilitaryStore.getState().syncArmyOwnersByPost(postId, newOwnerId);
+  const milStore = useMilitaryStore.getState();
+  // 快照即将被转移的军队（必须在 syncArmyOwnersByPost 之前，否则 ownerId 已改）
+  const affected: string[] = [];
+  for (const army of milStore.armies.values()) {
+    if (army.postId === postId && army.ownerId !== newOwnerId) {
+      affected.push(army.id);
+    }
+  }
+  milStore.syncArmyOwnersByPost(postId, newOwnerId);
+  purgeArmiesFromForeignCampaigns(affected, newOwnerId);
 }
 
 /** 岗位绑定军队变为私兵（postId → null，保留原 owner） */

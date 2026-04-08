@@ -2,6 +2,7 @@
 
 import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from '../types';
 import { calcWeight } from '../types';
+import { debugLog } from '@engine/debugLog';
 import type { Character } from '@engine/character/types';
 import {
   canNegotiateTaxPure,
@@ -81,7 +82,7 @@ export const negotiateTaxBehavior: NpcBehavior<NegotiateTaxData> = {
   executeAsNpc(actor: Character, data: NegotiateTaxData, ctx: NpcContext) {
     const currentLevel = actor.centralization ?? 2;
     const newLevel = currentLevel + data.delta;
-    console.log(`[议定进奉] NPC ${actor.name} → ${ctx.characters.get(data.targetId)?.name ?? data.targetId}：${TAX_LABELS[currentLevel]}(${currentLevel}) → ${TAX_LABELS[newLevel]}(${newLevel})`);
+    debugLog('policy', `[议定进奉] NPC ${actor.name} → ${ctx.characters.get(data.targetId)?.name ?? data.targetId}：${TAX_LABELS[currentLevel]}(${currentLevel}) → ${TAX_LABELS[newLevel]}(${newLevel})`);
 
     // 记录冷却
     const cd = toAbsoluteDay(ctx.date);

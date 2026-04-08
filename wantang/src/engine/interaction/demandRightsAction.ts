@@ -5,6 +5,7 @@ import type { Territory, TerritoryTier } from '@engine/territory/types';
 import type { Personality } from '@data/traits';
 import type { NpcContext } from '@engine/npc/types';
 import { registerInteraction } from './registry';
+import { debugLog } from '@engine/debugLog';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -312,7 +313,7 @@ export function executeDemandRights(
   charStore.updateCharacter(actorId, { lastDemandRightsDay: currentDay });
 
   const rightLabel = right === 'appointRight' ? '辟署权' : '宗法继承权';
-  console.log(`[逼迫授权] ${actor.name} → ${overlord.name} (${rightLabel}) | chance=${chance}% → ${success ? '成功' : '失败'}`);
+  debugLog('interaction', `[逼迫授权] ${actor.name} → ${overlord.name} (${rightLabel}) | chance=${chance}% → ${success ? '成功' : '失败'}`);
 
   if (success) {
     // 授权

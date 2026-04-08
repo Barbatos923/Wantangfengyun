@@ -6,6 +6,7 @@ import type { War } from '@engine/military/types';
 import type { Personality } from '@data/traits';
 import { getWarSide } from '@engine/military/warParticipantUtils';
 import { registerInteraction } from './registry';
+import { debugLog } from '@engine/debugLog';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
@@ -328,7 +329,7 @@ export function executePledgeAllegiance(
   if (success) patch.overlordId = targetId; // overlordId 变更自动重置 centralization 为 undefined（等效默认2级）
   charStore.updateCharacter(playerId, patch);
 
-  console.log(`[归附] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
+  debugLog('interaction', `[归附] ${player.name} → ${target.name} | chance=${chance}% → ${success ? '成功' : '失败'}`);
 
   if (success) {
     charStore.addOpinion(targetId, playerId, {

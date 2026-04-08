@@ -3,6 +3,7 @@
 import type { Character } from '@engine/character/types';
 import type { Personality } from '@data/traits';
 import { registerInteraction } from './registry';
+import { debugLog } from '@engine/debugLog';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -215,7 +216,7 @@ export function executeNegotiateTax(
   charStore.updateCharacter(actorId, { lastNegotiateTaxDay: currentDay });
 
   const dirLabel = delta < 0 ? '降低' : '提高';
-  console.log(`[议定进奉] ${actor.name} → ${overlord.name} (${dirLabel}) | chance=${chance}% → ${success ? '成功' : '失败'}`);
+  debugLog('interaction', `[议定进奉] ${actor.name} → ${overlord.name} (${dirLabel}) | chance=${chance}% → ${success ? '成功' : '失败'}`);
 
   if (success) {
     executeTaxChange(actorId, overlordId, delta);

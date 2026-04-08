@@ -7,6 +7,7 @@ import { getOwnPolicyPosts } from '../policyCalc';
 import { executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
+import { debugLog } from '@engine/debugLog';
 
 interface AdjustOwnPolicyData {
   postId: string;
@@ -82,10 +83,10 @@ export const adjustOwnPolicyBehavior: NpcBehavior<AdjustOwnPolicyData> = {
     if (data.action === 'toClan') {
       const territories = useTerritoryStore.getState().territories;
       executeToggleSuccession(data.postId, data.capitalZhouId, territories);
-      console.log(`[自身政策] ${actor.name}：${terrName} 改为世袭`);
+      debugLog('policy', `[自身政策] ${actor.name}：${terrName} 改为世袭`);
     } else {
       executeToggleAppointRight(data.postId);
-      console.log(`[自身政策] ${actor.name}：${terrName} 授予辟署权`);
+      debugLog('policy', `[自身政策] ${actor.name}：${terrName} 授予辟署权`);
     }
   },
 };

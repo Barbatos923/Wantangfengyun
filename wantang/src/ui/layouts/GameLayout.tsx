@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ResourceBar from '../components/ResourceBar';
 import SideMenu from '../components/SideMenu';
 import AlertBar from '../components/AlertBar';
@@ -9,10 +9,24 @@ import BottomBar from '../components/BottomBar';
 import LeftPanel from '../components/LeftPanel';
 import WarOverlay from '../components/WarOverlay';
 import DrafterTokenOverlay from '../components/DrafterTokenOverlay';
+import SaveErrorToast from '../components/SaveErrorToast';
+import SystemMenu from '../components/SystemMenu';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
 
 const GameLayout: React.FC = () => {
   const panelOpen = usePanelOpen();
+  const [showSystemMenu, setShowSystemMenu] = useState(false);
+
+  // ESC 键唤起/收起系统菜单
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowSystemMenu((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
@@ -52,6 +66,21 @@ const GameLayout: React.FC = () => {
 
       {/* 中心弹出框（最高层级） */}
       <EventModal />
+
+      {/* 右上角系统菜单按钮 */}
+      <button
+        onClick={() => setShowSystemMenu(true)}
+        className="fixed top-2 right-2 z-30 w-9 h-9 rounded bg-[var(--color-bg-panel)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)] transition-colors flex items-center justify-center text-lg"
+        title="系统菜单 (ESC)"
+      >
+        ⚙
+      </button>
+
+      {/* 系统菜单 */}
+      {showSystemMenu && <SystemMenu onClose={() => setShowSystemMenu(false)} />}
+
+      {/* 存档失败提示 */}
+      <SaveErrorToast />
     </div>
   );
 };

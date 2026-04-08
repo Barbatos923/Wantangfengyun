@@ -6,6 +6,7 @@ import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
+import { debugLog } from '@engine/debugLog';
 
 
 registerInteraction({
@@ -47,7 +48,7 @@ export function executeDeclareWar(
     const attackerName = charStore.getCharacter(playerId)?.name ?? '???';
     const defenderName = charStore.getCharacter(targetId)?.name ?? '???';
     const CB_LABELS: Record<string, string> = { annexation: '武力兼并', claim: '法理宣称', independence: '独立' };
-    console.log(`[战争] 宣战：${attackerName} → ${defenderName}（${CB_LABELS[casusBelli] ?? casusBelli}）`);
+    debugLog('war', `[战争] 宣战：${attackerName} → ${defenderName}（${CB_LABELS[casusBelli] ?? casusBelli}）`);
 
     useTurnManager.getState().addEvent({
       id: crypto.randomUUID(),

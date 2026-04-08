@@ -8,6 +8,7 @@ import { executeRedistributionChange } from '@engine/interaction';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
 import { registerBehavior } from './index';
+import { debugLog } from '@engine/debugLog';
 
 interface AdjustRedistributionData {
   delta: number; // +10 放权 / -10 集权
@@ -62,7 +63,7 @@ export const adjustRedistributionBehavior: NpcBehavior<AdjustRedistributionData>
 
   executeAsNpc(actor: Character, data: AdjustRedistributionData, ctx: NpcContext) {
     const newRate = data.currentRate + data.delta;
-    console.log(`[政策] ${actor.name}：回拨率 ${data.currentRate}% → ${newRate}%`);
+    debugLog('policy', `[政策] ${actor.name}：回拨率 ${data.currentRate}% → ${newRate}%`);
     const isPlayerVassal = ctx.playerId
       ? ctx.characters.get(ctx.playerId)?.overlordId === actor.id
       : false;

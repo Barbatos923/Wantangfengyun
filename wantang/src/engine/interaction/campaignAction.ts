@@ -21,14 +21,6 @@ export function executeSetCampaignTarget(
   targetId: string,
   path: string[],
 ): void {
-  // DEBUG: 追踪唐懿宗行军目标
-  const campaign = useWarStore.getState().campaigns.get(campaignId);
-  if (campaign?.ownerId === 'char-yizong') {
-    const territories = useTerritoryStore.getState().territories;
-    const targetName = territories.get(targetId)?.name ?? targetId;
-    const pathNames = path.map(id => territories.get(id)?.name ?? id).join(' → ');
-    console.log(`[DEBUG-懿宗] 设定行军目标: ${targetName}, 路径=[${pathNames}]`);
-  }
   useWarStore.getState().setCampaignTarget(campaignId, targetId, path);
 }
 
@@ -136,13 +128,6 @@ export function executeCreateCampaign(
       const time = getMusteringTime(army.locationId, locationId, territories);
       if (time > maxMustering) maxMustering = time;
     }
-  }
-
-  // DEBUG: 追踪唐懿宗行营组建
-  if (ownerId === 'char-yizong') {
-    const armyNames = validArmyIds.map(id => armies.get(id)?.name ?? id).join(', ');
-    const locName = territories.get(locationId)?.name ?? locationId;
-    console.log(`[DEBUG-懿宗] 组建行营: warId=${warId || '调兵'}, 地点=${locName}, 军队=[${armyNames}]`);
   }
 
   const newCampaign = useWarStore.getState().createCampaign(

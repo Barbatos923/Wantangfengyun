@@ -64,7 +64,7 @@ const SideMenu: React.FC = () => {
                 { label: '威望', value: 10, type: 'positive' },
                 { label: '金钱', value: -50, type: 'negative' },
               ],
-              onSelect: () => console.log('[测试事件] 选择：出兵迎敌'),
+              onSelect: () => {},
             },
             {
               label: '和谈纳贡',
@@ -74,7 +74,7 @@ const SideMenu: React.FC = () => {
                 { label: '金钱', value: -100, type: 'negative' },
                 { label: '威望', value: -5, type: 'negative' },
               ],
-              onSelect: () => console.log('[测试事件] 选择：和谈纳贡'),
+              onSelect: () => {},
             },
             {
               label: '按兵不动',
@@ -82,14 +82,12 @@ const SideMenu: React.FC = () => {
               effects: [
                 { label: '威望', value: -15, type: 'negative' },
               ],
-              onSelect: () => console.log('[测试事件] 选择：按兵不动'),
+              onSelect: () => {},
             },
           ],
         };
         useStoryEventBus.getState().pushStoryEvent(testEvent);
       }
-    } else {
-      console.log(`[SideMenu] Clicked: ${label}`);
     }
   };
 
@@ -106,6 +104,7 @@ const SideMenu: React.FC = () => {
           <span className="text-xs mt-0.5">{item.label}</span>
         </button>
       ))}
+
       {showGovernmentPanel && <GovernmentPanel onClose={() => setShowGovernmentPanel(false)} />}
       {showRealmPanel && <RealmPanel onClose={() => setShowRealmPanel(false)} />}
       {showOfficialPanel && <OfficialPanel onClose={() => setShowOfficialPanel(false)} />}

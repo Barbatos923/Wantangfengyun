@@ -315,20 +315,6 @@ export const useTerritoryStore = create<TerritoryStoreState>((set, get) => ({
 
       const newPost = { ...oldPost, ...patch };
 
-      // DEBUG: 岗位持有人变动监测（仅输出 ID，避免循环依赖 CharacterStore）
-      if (patch.holderId !== undefined && patch.holderId !== oldPost.holderId) {
-        const tpl = positionMap.get(oldPost.templateId);
-        const terrName = oldPost.territoryId ? state.territories.get(oldPost.territoryId)?.name : '中央';
-        const postName = tpl?.name ?? oldPost.templateId;
-        const fromId = oldPost.holderId ?? '空缺';
-        const toId = patch.holderId ?? '空缺';
-        const reason = patch.appointedBy === 'succession' ? '继承'
-          : patch.appointedBy === 'escheat' ? '绝嗣上交'
-          : patch.appointedBy ? `由${patch.appointedBy}任命`
-          : '未知';
-        console.log(`[岗位变动] ${terrName} ${postName}: ${fromId} → ${toId} (${reason})`);
-      }
-
       // 更新 postIndex
       const newPostIndex = new Map(state.postIndex);
       newPostIndex.set(postId, newPost);

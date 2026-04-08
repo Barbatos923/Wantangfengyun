@@ -8,6 +8,7 @@ import { EventPriority } from '@engine/types';
 import { positionMap } from '@data/positions';
 import type { War } from './types';
 import { TRUCE_DURATION_DAYS } from './types';
+import { debugLog } from '@engine/debugLog';
 import { isWarParticipant } from './warParticipantUtils';
 import { getWarPrestigeReward } from './warCalc';
 import { toAbsoluteDay } from '@engine/dateUtils';
@@ -91,7 +92,7 @@ function emitWarEndEvent(war: War, result: War['result']): void {
     : '双方和谈';
 
   const CB_LABELS: Record<string, string> = { annexation: '武力兼并', deJureClaim: '法理宣称', independence: '独立' };
-  console.log(`[战争] 结束：${attackerName} vs ${defenderName}（${CB_LABELS[war.casusBelli] ?? war.casusBelli}）→ ${resultText}`);
+  debugLog('war', `[战争] 结束：${attackerName} vs ${defenderName}（${CB_LABELS[war.casusBelli] ?? war.casusBelli}）→ ${resultText}`);
 
   turnMgr.addEvent({
     id: crypto.randomUUID(),

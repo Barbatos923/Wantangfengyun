@@ -496,13 +496,18 @@ export function runWarSystem(date: GameDate): void {
       );
 
       terrStore.updateTerritory(siege.territoryId, { occupiedBy: campaign.ownerId });
-      // 城破：解散该领地所有非攻方军队（守军溃散），不再转移给攻方
+      // 城破：仅解散和围攻方处于不同战争阵营的守军（敌方），不动盟友 / 第三方过境军队
       const milForDisband = useMilitaryStore.getState();
       const armiesAtLocation = milForDisband.locationArmyIndex.get(siege.territoryId);
-      if (armiesAtLocation) {
+      const warForSiege = useWarStore.getState().wars.get(siege.warId);
+      const besiegerSide = warForSiege ? getWarSide(campaign.ownerId, warForSiege) : null;
+      if (armiesAtLocation && warForSiege && besiegerSide) {
         for (const armyId of [...armiesAtLocation]) {
           const army = milForDisband.armies.get(armyId);
-          if (army && army.ownerId !== campaign.ownerId) {
+          if (!army) continue;
+          const armySide = getWarSide(army.ownerId, warForSiege);
+          // 严格判定：必须明确属于对面阵营才解散；同阵营盟友 / 与本战争无关的中立第三方均不动
+          if (armySide && armySide !== besiegerSide) {
             useMilitaryStore.getState().disbandArmy(armyId);
           }
         }
@@ -603,13 +608,6 @@ export function runWarSystem(date: GameDate): void {
       }
 
       if (bestTarget && bestPath && bestPath.length > 1) {
-        // DEBUG: 追踪唐懿宗行营AI决策
-        if (campaign.ownerId === 'char-yizong') {
-          const targetName = territories.get(bestTarget)?.name ?? bestTarget;
-          const locName = territories.get(campaign.locationId)?.name ?? campaign.locationId;
-          const pathNames = bestPath.map(id => territories.get(id)?.name ?? id).join(' → ');
-          console.log(`[DEBUG-懿宗] 行营AI: 从${locName}出发, 目标=${targetName}, 路径=[${pathNames}]`);
-        }
         useWarStore.getState().setCampaignTarget(campaign.id, bestTarget, bestPath);
       }
     }

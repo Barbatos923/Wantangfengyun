@@ -7,6 +7,7 @@
 import type { Character } from '@engine/character/types';
 import type { Post } from '@engine/territory/types';
 import { registerInteraction } from './registry';
+import { debugLog } from '@engine/debugLog';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
@@ -434,7 +435,7 @@ export function executeReassign(
 
   const success = random() * 100 < chance;
 
-  console.log(`[调任] ${appointer.name} 调任 ${territorial.name} → ${replacement.name}（成功率 ${chance}%）→ ${success ? '成功' : '拒绝（独立战争）'}`);
+  debugLog('interaction', `[调任] ${appointer.name} 调任 ${territorial.name} → ${replacement.name}（成功率 ${chance}%）→ ${success ? '成功' : '拒绝（独立战争）'}`);
 
   if (!success) {
     executeReassignRebel(territorialId, appointerId);
@@ -516,7 +517,7 @@ export function submitReassignProposal(
   const approved = random() * 100 < chance;
   const chancellor = useCharacterStore.getState().getCharacter(chancellorId);
   const emperor = useCharacterStore.getState().getCharacter(emperorId);
-  console.log(`[调任提案] ${chancellor?.name ?? '?'} 提议调任（批准率 ${chance}%）→ 皇帝${emperor?.name ?? '?'} ${approved ? '批准' : '驳回'}`);
+  debugLog('interaction', `[调任提案] ${chancellor?.name ?? '?'} 提议调任（批准率 ${chance}%）→ 皇帝${emperor?.name ?? '?'} ${approved ? '批准' : '驳回'}`);
   if (!approved) {
     return { type: 'emperor-reject' };
   }

@@ -2,6 +2,7 @@
 
 import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from '../types';
 import { calcWeight } from '../types';
+import { debugLog } from '@engine/debugLog';
 import type { Character } from '@engine/character/types';
 import {
   evaluateAppeasementTargets,
@@ -114,7 +115,7 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
     const postName = post ? (positionMap.get(post.templateId)?.name ?? '') : '';
     const actionLabel = data.toClan ? '改为世袭' : '改为流官';
     const vassalName = ctx.characters.get(data.vassalId)?.name ?? data.vassalId;
-    console.log(`[政策] ${actor.name} → ${vassalName}：${terrName}${postName} ${actionLabel}`);
+    debugLog('policy', `[政策] ${actor.name} → ${vassalName}：${terrName}${postName} ${actionLabel}`);
     const opinionValue = data.toClan ? (CLAN_SUCCESSION_OPINION[data.tier] ?? 0) : 0;
 
     if (data.vassalId === ctx.playerId) {

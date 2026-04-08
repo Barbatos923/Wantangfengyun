@@ -345,8 +345,8 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - Batch3：交互/决议消费者迁移（征兵/建设/赏赐/称王/称帝/篡夺从对应国库扣）
   - Batch4：10个NPC行为迁移到国库检查
   - Batch5：UI重构（ResourceBar/CharacterPanel/RealmPanel 国库/私产分离显示）+ 迁都/国库运输交互
-
-**待做（当前优先）：**
+- ✅ Console.log 梳理重构（2026-04-08）：删除15处调试残留 + 引入 `engine/debugLog.ts` 收敛30处NPC/交互/军编流水到6类开关，默认全关；保留压测脚本与BUG/FALLBACK warn/error。控制台从57→12
+- ✅ 存档/读档系统 MVP（2026-04-08）：CK3 风格命名存档 + 自动续档双轨。`engine/persistence/` 5 文件（saveSchema/serialize/deserialize/migrations/saveManager）+ ESC/⚙ 唤起 SystemMenu/SaveDialog/LoadDialog UI。Stateful seedrandom 决定性 RNG（防 SL + bug 复现）。`SaveStorageBackend` 接口隔离 IndexedDB → 未来桌面端只换一个文件即可移植到真实文件系统。8 个 store 全部覆盖，索引由 initXxx 自动重建。
 
 **待做（后续系统）：**
 - 更多个人交互

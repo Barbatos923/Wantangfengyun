@@ -2,6 +2,7 @@
 
 import type { NpcBehavior, NpcContext, BehaviorTaskResult, WeightModifier } from '../types';
 import { calcWeight } from '../types';
+import { debugLog } from '@engine/debugLog';
 import type { Character } from '@engine/character/types';
 import type { DemandableRight } from '@engine/interaction/demandRightsAction';
 import {
@@ -116,7 +117,7 @@ export const demandRightsBehavior: NpcBehavior<DemandRightsData> = {
 
   executeAsNpc(actor: Character, data: DemandRightsData, ctx: NpcContext) {
     const rightLabel = data.right === 'appointRight' ? '辟署权' : '宗法继承权';
-    console.log(`[逼迫授权] NPC ${actor.name} → ${ctx.characters.get(data.targetId)?.name ?? data.targetId}：${data.territoryName}${data.postName} ${rightLabel}`);
+    debugLog('policy', `[逼迫授权] NPC ${actor.name} → ${ctx.characters.get(data.targetId)?.name ?? data.targetId}：${data.territoryName}${data.postName} ${rightLabel}`);
 
     // 记录冷却
     const cd = toAbsoluteDay(ctx.date);

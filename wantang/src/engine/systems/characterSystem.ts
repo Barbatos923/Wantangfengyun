@@ -13,6 +13,7 @@ import {
 } from '@engine/character/characterUtils.ts';
 import { clamp } from '@engine/utils.ts';
 import { randInt } from '@engine/random.ts';
+import { debugLog } from '@engine/debugLog';
 import { resolveHeir, findParentAuthority, selectDesignatedHeir } from '@engine/character/successionUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -114,7 +115,7 @@ export function runCharacterSystem(date: GameDate): void {
             const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
             const terrName = post.territoryId ? territories.get(post.territoryId)?.name : '?';
             const receiverChar = charStore.getCharacter(receiver);
-            console.log(`[继承] ${terrName} ${tplName}: 死者=${charStore.getCharacter(deadId)?.name} → receiver=${receiverChar?.name}(${receiver}) heir=${heir ? '宗法' : '绝嗣上交'}`);
+            debugLog('inheritance', `[继承] ${terrName} ${tplName}: 死者=${charStore.getCharacter(deadId)?.name} → receiver=${receiverChar?.name}(${receiver}) heir=${heir ? '宗法' : '绝嗣上交'}`);
           }
           if (receiver) {
             const appointedBy = heir ? 'succession' : 'escheat';
@@ -408,7 +409,7 @@ export function runCharacterSystem(date: GameDate): void {
         const heirName = bestHeir ? chars.get(bestHeir)?.name : '无';
         const terrName = post.territoryId ? territories.get(post.territoryId)?.name : '?';
         const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
-        console.log(`[留后] ${char.name}（${terrName}${tplName}）指定留后：${heirName}`);
+        debugLog('inheritance', `[留后] ${char.name}（${terrName}${tplName}）指定留后：${heirName}`);
         terrStore.updatePost(post.id, { designatedHeirId: bestHeir });
 
         // 治所联动

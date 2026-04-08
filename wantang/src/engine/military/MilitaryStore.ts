@@ -43,9 +43,6 @@ interface MilitaryState {
 
   // 岗位绑定的军队 ownerId 同步
   syncArmyOwnersByPost: (postId: string, newOwnerId: string) => void;
-
-  // 领地易手时转移驻军（仅用于战争场景）
-  transferArmiesAtTerritory: (territoryId: string, newOwnerId: string) => void;
 }
 
 export const useMilitaryStore = create<MilitaryState>((set, get) => ({
@@ -558,37 +555,4 @@ export const useMilitaryStore = create<MilitaryState>((set, get) => ({
     });
   },
 
-  transferArmiesAtTerritory: (territoryId, newOwnerId) => {
-    set((state) => {
-      const armies = new Map(state.armies);
-      const ownerArmyIndex = new Map(state.ownerArmyIndex);
-      let changed = false;
-
-      for (const army of armies.values()) {
-        if (army.locationId === territoryId && army.ownerId !== newOwnerId) {
-          const oldOwnerId = army.ownerId;
-          armies.set(army.id, { ...army, ownerId: newOwnerId, commanderId: null });
-          changed = true;
-
-          // 从旧 owner 索引移除
-          const oldSet = ownerArmyIndex.get(oldOwnerId);
-          if (oldSet) {
-            const newSet = new Set(oldSet);
-            newSet.delete(army.id);
-            ownerArmyIndex.set(oldOwnerId, newSet);
-          }
-
-          // 加入新 owner 索引
-          const newSet = ownerArmyIndex.get(newOwnerId);
-          if (newSet) {
-            ownerArmyIndex.set(newOwnerId, new Set([...newSet, army.id]));
-          } else {
-            ownerArmyIndex.set(newOwnerId, new Set([army.id]));
-          }
-        }
-      }
-
-      return changed ? { armies, ownerArmyIndex } : state;
-    });
-  },
 }));
