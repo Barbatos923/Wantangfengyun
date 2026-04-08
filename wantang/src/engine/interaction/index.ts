@@ -76,3 +76,4 @@ export {
 } from './pledgeAllegianceAction';
 export type { PledgeAllegianceChanceResult, PledgeAllegianceResult } from './pledgeAllegianceAction';
 export { canTransferTreasury, executeTransferTreasury } from './treasuryTransferAction';
+export { submitTreasuryDraftAction } from './submitTreasuryDraftAction';

@@ -14,6 +14,7 @@ import TransferPlanFlow from './TransferPlanFlow';
 import ReviewPlanFlow from './ReviewPlanFlow';
 import DeployApproveFlow from './DeployApproveFlow';
 import DeployDraftFlow from './DeployDraftFlow';
+import TreasuryApproveFlow from './TreasuryApproveFlow';
 
 const AlertBar: React.FC = () => {
   const playerId = useCharacterStore((s) => s.playerId);
@@ -23,11 +24,13 @@ const AlertBar: React.FC = () => {
   const [reviewPlanOpen, setReviewPlanOpen] = useState(false);
   const [deployApproveOpen, setDeployApproveOpen] = useState(false);
   const [deployDraftOpen, setDeployDraftOpen] = useState(false);
+  const [treasuryApproveOpen, setTreasuryApproveOpen] = useState(false);
   const playerTasks = useNpcStore((s) => s.playerTasks);
   const draftPlan = useNpcStore((s) => s.draftPlan);
   const appointApproveTask = useMemo(() => playerTasks.find(t => t.type === 'appoint-approve') ?? null, [playerTasks]);
   const reviewTask = useMemo(() => playerTasks.find(t => t.type === 'review') ?? null, [playerTasks]);
   const deployApproveTask = useMemo(() => playerTasks.find(t => t.type === 'deploy-approve') ?? null, [playerTasks]);
+  const treasuryApproveTask = useMemo(() => playerTasks.find(t => t.type === 'treasury-approve') ?? null, [playerTasks]);
   const callToArmsTasks = useMemo(() => playerTasks.filter(t => t.type === 'callToArms'), [playerTasks]);
   const characters = useCharacterStore((s) => s.characters);
   const wars = useWarStore((s) => s.wars);
@@ -67,7 +70,7 @@ const AlertBar: React.FC = () => {
   const standingTasks = useMemo(() => playerTasks.filter(t => t.standing), [playerTasks]);
 
   // ── 审批弹窗打开时自动暂停时间，全部关闭后恢复 ──
-  const anyModalOpen = selectionOpen || draftOpen || transferPlanOpen || reviewPlanOpen || deployApproveOpen || deployDraftOpen;
+  const anyModalOpen = selectionOpen || draftOpen || transferPlanOpen || reviewPlanOpen || deployApproveOpen || deployDraftOpen || treasuryApproveOpen;
   const wasPausedRef = useRef(false);
 
   useEffect(() => {
@@ -84,7 +87,7 @@ const AlertBar: React.FC = () => {
     }
   }, [anyModalOpen]);
 
-  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && standingTasks.length === 0 && draftPosts.length === 0 && callToArmsTasks.length === 0) return null;
+  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && !treasuryApproveTask && standingTasks.length === 0 && draftPosts.length === 0 && callToArmsTasks.length === 0) return null;
 
   return (
     <>
@@ -145,6 +148,22 @@ const AlertBar: React.FC = () => {
             <span>{(deployApproveTask.data as { entries: unknown[] }).entries.length}项调兵待审批</span>
           </div>
         )}
+        {/* 国库调拨审批 */}
+        {treasuryApproveTask && (() => {
+          const data = treasuryApproveTask.data as { submissions?: { entries: unknown[] }[] };
+          const total = (data.submissions ?? []).reduce((acc, s) => acc + s.entries.length, 0);
+          if (total === 0) return null;
+          return (
+            <div
+              className="flex items-center gap-1 bg-yellow-500/20 text-yellow-400 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-yellow-500/30 transition-colors border border-yellow-500/40"
+              onClick={() => setTreasuryApproveOpen(true)}
+              title="点击审批国库调拨方案"
+            >
+              <span>💰</span>
+              <span>{total}项调拨待审批</span>
+            </div>
+          );
+        })()}
         {/* 召集参战 */}
         {callToArmsTasks.map(task => {
           const data = task.data as { warId: string; side: 'attacker' | 'defender'; summonerId: string };
@@ -162,7 +181,7 @@ const AlertBar: React.FC = () => {
               <button
                 className="px-1.5 py-0.5 rounded bg-[var(--color-accent-red)]/30 text-[var(--color-accent-red)] hover:bg-[var(--color-accent-red)]/50"
                 onClick={() => {
-                  useCharacterStore.getState().setOpinion(task.actorId, data.summonerId, { reason: '拒绝参战', value: -30, decayable: true });
+                  useCharacterStore.getState().addOpinion(task.actorId, data.summonerId, { reason: '拒绝参战', value: -30, decayable: true });
                   useNpcStore.getState().removePlayerTask(task.id);
                 }}
               >拒绝(-30)</button>
@@ -208,6 +227,12 @@ const AlertBar: React.FC = () => {
           visible={deployApproveOpen}
           onOpen={() => setDeployApproveOpen(true)}
           onClose={() => setDeployApproveOpen(false)}
+        />
+      )}
+      {treasuryApproveTask && (
+        <TreasuryApproveFlow
+          visible={treasuryApproveOpen}
+          onClose={() => setTreasuryApproveOpen(false)}
         />
       )}
       {standingTasks.some(t => t.type === 'deploy-draft') && (

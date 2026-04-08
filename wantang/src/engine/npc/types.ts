@@ -143,6 +143,9 @@ export interface NpcContext {
   // 上月月结账本快照（economySystem 写入 LedgerStore.allLedgers）
   ledgers: Map<string, import('@engine/official/types').MonthlyLedger>;
 
+  // 州国库滚动历史快照（最近 N 月净变动，treasury draft 等行为预测用）
+  treasuryHistory: Map<string, { money: number[]; grain: number[] }>;
+
   // 铨选共享状态（可变，行为 execute 时填充）
   appointedThisRound: Set<string>;
 }

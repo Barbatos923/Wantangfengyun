@@ -8,6 +8,7 @@ import MapPlaceholder from '../components/MapPlaceholder';
 import BottomBar from '../components/BottomBar';
 import LeftPanel from '../components/LeftPanel';
 import WarOverlay from '../components/WarOverlay';
+import DrafterTokenOverlay from '../components/DrafterTokenOverlay';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
 
 const GameLayout: React.FC = () => {
@@ -37,6 +38,8 @@ const GameLayout: React.FC = () => {
           <div className="absolute right-16 bottom-4 z-10">
             <WarOverlay />
           </div>
+          {/* 草拟人令牌（左下角，仅当玩家持有草拟岗位时显示） */}
+          <DrafterTokenOverlay />
           <MapPlaceholder />
         </div>
 

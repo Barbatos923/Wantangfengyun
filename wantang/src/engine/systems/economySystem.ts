@@ -54,6 +54,11 @@ export function runEconomySystem(_date: GameDate): void {
     }
   }
 
+  // 推入州国库滚动历史（用于 treasury draft 等行为预测，不进存档）
+  if (globalTreasuryChanges.size > 0) {
+    useLedgerStore.getState().pushTreasuryHistory(globalTreasuryChanges);
+  }
+
   if (globalTreasuryChanges.size > 0) {
     terrStore.batchMutateTreasury((terrs) => {
       const newTerrs = new Map(terrs);

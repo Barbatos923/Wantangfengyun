@@ -377,6 +377,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 | 中 | UI 组件直写 Store | CentralizationFlow / RealmPanel / BuildMenu / OfficialPanel / DeclareWarFlow | ✅ 已抽离到 Action 层 |
 | 中 | 单元测试覆盖不足 | src/__tests__/ 14 文件 318 测试 | ✅ 已大幅补充 |
 | 低 | 压力系统字段存在但无月度逻辑 | Character.stress | 待设计 |
+| 中 | 皇帝建模为 central scope 特殊岗位（grantsControl=false、无 territoryId），导致每次写"按 ruler 找 tier / 找皇帝控制的领地 / grantsControl 扫描"时都要 if 特判，已重复踩坑多次（deployCalc / treasuryDraftCalc / postQueries 等） | data/positions.ts: pos-emperor | 待重构：给皇帝绑定一个 tier='tianxia' 的虚拟领地，pos-emperor 改为该领地的 grantsControl 主岗，统一所有 controllerIndex/holderIndex/tier 路径，消除特判 |
 
 ---
 

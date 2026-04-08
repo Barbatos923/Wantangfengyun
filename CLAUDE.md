@@ -140,6 +140,8 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - `schedule`：`daily`（默认 push-task）/ `monthly-slot`（哈希槽位+品级分档）
 - 新增行为：`NpcBehavior` → `registerBehavior()` → 自动调度
 - 军事编制 AI（`militaryAI.ts`，militarySystem 中调用，跳过玩家）
+- **push-task 过期默认行为**：新增 push-task behavior 时必须问"executeAsNpc 跑一遍是不是就是我想要的过期默认行为？"。是 → 通用 fallback 自动处理；否（NPC 路径含概率拒绝/条件性拒绝/会做对玩家不利的决定）→ 必须在 `NpcEngine.handleExpiredPlayerTasks` 加显式 `else if` 分支，明确"超时不管时玩家希望发生什么"，禁止让 NPC 替玩家做决定
+- **草拟-审批双 behavior 范式**：新增"草拟人产出方案 → 审批人决定执行"类系统时，先读 **`docs/reference/draft-approve-pattern.md`**。要点：Submission 结构必须带 drafterId；三层 in-flight 锁（CD + buffer + playerTask）；urgency 分档 forced；玩家草拟入口走独立 React UI 而非 PlayerTask（避免 standing 模式 bug）；驳回 CD 在 drafter 维度而非 ruler。当前实现：treasuryDraftBehavior + treasuryApproveBehavior
 
 ---
 

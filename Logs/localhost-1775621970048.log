@@ -1,0 +1,243 @@
+economySystem.ts:64 [国库历史] push 49 州（其中 4 州本月有负值）
+treasuryDraftBehavior.ts:67 [国库草拟] 李远恩(char-g) → ruler=char-y urgency=2.4月 entries=1 ['zhou-l→zhou-c grain:225105']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=100 [forced] (urgency=100 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:104 [国库草拟] ✓ 李远恩 提交草案到 ruler=char-y（buffer 现 1 条）
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.4月 entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+economySystem.ts:64 [国库历史] push 49 州（其中 4 州本月有负值）
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=4.1月 entries=1 ['zhou-x→zhou-w grain:91949']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.7月 entries=1 ['zhou-x→zhou-w grain:90814']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:67 [国库草拟] 袁远恩(char-g) → ruler=char-h urgency=3.4月 entries=1 ['zhou-x→zhou-w grain:80321']
+treasuryDraftBehavior.ts:97 [国库草拟] ↑ weight=60 (urgency=60 +理性0 谨慎0 勤奋0)
+treasuryDraftBehavior.ts:104 [国库草拟] ✓ 袁远恩 提交草案到 ruler=char-h（buffer 现 1 条）
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 3 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 4 州本月有负值）
+economySystem.ts:64 [国库历史] push 49 州（其中 4 州本月有负值）

@@ -78,7 +78,8 @@
       "WebFetch(domain:github.com)",
       "Bash(gh api:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(awk NR>=170 && NR<=185:*)"
     ]
   }
 }

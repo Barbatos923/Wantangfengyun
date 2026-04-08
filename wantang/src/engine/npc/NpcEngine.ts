@@ -9,6 +9,8 @@ import { findEmperorId } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { useNpcStore } from './NpcStore';
 import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
+import { executeTreasuryEntry } from './behaviors/treasuryApproveBehavior';
+import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
@@ -31,6 +33,8 @@ import './behaviors/revokeBehavior';
 import './behaviors/transferVassalBehavior';
 import './behaviors/deployDraftBehavior';
 import './behaviors/deployApproveBehavior';
+import './behaviors/treasuryDraftBehavior';
+import './behaviors/treasuryApproveBehavior';
 import './behaviors/conscriptBehavior';
 import './behaviors/callToArmsBehavior';
 import './behaviors/joinWarBehavior';
@@ -199,6 +203,14 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       // 召集参战超时 → 自动接受
       const data = task.data as { warId: string; side: 'attacker' | 'defender' };
       executeJoinWar(task.actorId, data.warId, data.side);
+    } else if (task.type === 'treasury-approve') {
+      // 玩家超时未审批国库草案 → 必定通过（不走概率裁决，避免 NPC 替玩家做决定）
+      const data = task.data as { submissions: TreasurySubmission[] };
+      for (const sub of data.submissions) {
+        for (const entry of sub.entries) {
+          executeTreasuryEntry(entry, task.actorId);
+        }
+      }
     } else {
       // 通用 behavior dispatch（用于未来 push-task 行为）
       const behavior = getAllBehaviors().find(b => b.id === task.type);

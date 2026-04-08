@@ -1,0 +1,66 @@
+economySystem.ts:69 [国库月结] 净负 4 州：长安(钱93925/粮-87670) / 镇州(钱18503/粮-4554) / 魏州(钱18963/粮-21034) / 夏州(钱7636/粮-7441)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:225105']
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-h entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=32 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:225105']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=韩允中(char-h) submissions=1 rate=89% roll=21 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-h entries=1 ['zhou-x→zhou-w grain:84921']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=82 → ✓ 通过
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=韩允中(char-h) submissions=1 rate=89% roll=0 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 4 州：长安(钱98226/粮-78114) / 镇州(钱19109/粮-3324) / 魏州(钱19295/粮-16353) / 夏州(钱7788/粮-2135)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:27558']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=13 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:27558']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=86 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 3 州：长安(钱102225/粮-68898) / 镇州(钱19661/粮-2190) / 魏州(钱19587/粮-13736)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:29909']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=67 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:29909']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=43 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 3 州：长安(钱107063/粮-59425) / 镇州(钱20194/粮-1119) / 魏州(钱19877/粮-13153)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:32152']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=91 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:32152']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=33 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 3 州：长安(钱110673/粮-49754) / 镇州(钱20681/粮-129) / 魏州(钱20136/粮-12619)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:34283']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=15 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:31283']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=36 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 2 州：长安(钱114310/粮-40850) / 魏州(钱20385/粮-12120)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:36301']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=23 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:36301']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=98 → ✕ 拒绝
+economySystem.ts:69 [国库月结] 净负 2 州：长安(钱117704/粮-36753) / 魏州(钱20587/粮-16117)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:38206']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=66 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:38206']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=46 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 2 州：长安(钱121858/粮-32913) / 魏州(钱20798/粮-15695)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-h entries=1 ['zhou-x→zhou-w grain:60019']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=韩允中(char-h) submissions=1 rate=89% roll=21 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-h entries=1 ['zhou-x→zhou-w grain:60019']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=韩允中(char-h) submissions=1 rate=89% roll=20 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-c → ruler=char-y entries=1 ['zhou-l→zhou-c grain:40000']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=唐懿宗(char-y) submissions=1 rate=91% roll=65 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 2 州：洛阳(钱28547/粮-155080) / 魏州(钱20992/粮-15307)
+economySystem.ts:69 [国库月结] 净负 1 州：魏州(钱21732/粮-13714)
+economySystem.ts:69 [国库月结] 净负 1 州：魏州(钱22285/粮-18123)
+economySystem.ts:69 [国库月结] 净负 1 州：魏州(钱22423/粮-15847)
+economySystem.ts:69 [国库月结] 净负 2 州：魏州(钱22566/粮-15561) / 瀛州(钱12138/粮-31925)
+economySystem.ts:69 [国库月结] 净负 2 州：魏州(钱22728/粮-15302) / 瀛州(钱12208/粮-31784)
+economySystem.ts:69 [国库月结] 净负 2 州：魏州(钱22816/粮-19126) / 瀛州(钱12235/粮-35930)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-h entries=1 ['zhou-x→zhou-w grain:71132']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=韩允中(char-h) submissions=1 rate=89% roll=91 → ✕ 拒绝
+economySystem.ts:69 [国库月结] 净负 1 州：瀛州(钱12294/粮-35811)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-z entries=1 ['zhou-y→zhou-y grain:114685']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=张允伸(char-z) submissions=1 rate=89% roll=32 → ✓ 通过
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-z entries=1 ['zhou-y→zhou-y grain:114685']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=张允伸(char-z) submissions=1 rate=89% roll=25 → ✓ 通过
+economySystem.ts:69 [国库月结] 净负 1 州：瀛州(钱12349/粮-35702)
+economySystem.ts:69 [国库月结] 净负 1 州：瀛州(钱12399/粮-35601)
+economySystem.ts:69 [国库月结] 净负 1 州：瀛州(钱12446/粮-35509)
+economySystem.ts:69 [国库月结] 净负 1 州：瀛州(钱12488/粮-35423)
+NpcStore.ts:83 [国库草拟] 提交 drafter=char-g → ruler=char-z entries=1 ['zhou-y→zhou-y grain:36575']
+treasuryApproveBehavior.ts?t=1775625897506:116 [国库审批] ruler=张允伸(char-z) submissions=1 rate=89% roll=81 → ✓ 通过

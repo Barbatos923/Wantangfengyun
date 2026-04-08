@@ -137,6 +137,7 @@ export function buildNpcContext(): NpcContext {
     capitalTreasury,
     totalTreasury,
     ledgers: useLedgerStore.getState().allLedgers,
+    treasuryHistory: useLedgerStore.getState().treasuryHistory,
     appointedThisRound: new Set(),
   };
 }
