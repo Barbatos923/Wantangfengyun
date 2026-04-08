@@ -166,6 +166,9 @@ export function getTransferableChildren(
     const holder = charStore.getCharacter(mainPost.holderId);
     if (!holder?.alive) continue;
     if (holder.overlordId === newHolderId) continue;
+    // 外部更高 tier 的占领者：他另有更高级别主岗，不是该领地的"法理下级"，跳过
+    // （例：魏博节度使武力兼并河东道下的潞州后，仍持魏博 dao 主岗 → 不应被卷入河东道易主级联）
+    if (getHighestTierRank(mainPost.holderId) > (TIER_RANK[desc.tier] ?? 0)) continue;
 
     // 任命者自己的臣属：始终可转移
     if (holder.overlordId === appointerId) {

@@ -71,6 +71,8 @@ src/
 所有岗位变更**必须通过 `postTransfer.ts` 原子操作**，禁止内联 `updatePost` + 级联。
 详细操作清单和各场景调用表见 **`docs/reference/post-transfer-table.md`**。
 
+**法理级联禁止吸入外部占领者**：`getTransferableChildren` 等递归 `childIds` 找"法理下级主岗持有人"的逻辑，必须过滤掉**自身已有更高 tier 主岗的占领者**（如魏博节度使武力兼并潞州后仍是 dao 级 ruler）。判定：`getHighestTierRank(holder) > descTier` 则跳过。否则会出现"河东节度使易主时，把占领潞州的魏博节度使一起卷成新河东的臣属"这类经典边缘 BUG。`cascadeChildOverlord` 当前不加该过滤（同级效忠场景未来可能用到），但 `getTransferableChildren` 必须加。
+
 ### 治所州联动
 道级 `capitalZhouId` 治所州随道级主岗联动（任命/罢免/继承/战争/铨选跳过/篡夺前置）。
 **注意**：`capitalZhouSeat` 不自带 `cascadeSecondaryOverlord`，需调用方手动补充。
@@ -141,7 +143,7 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - 新增行为：`NpcBehavior` → `registerBehavior()` → 自动调度
 - 军事编制 AI（`militaryAI.ts`，militarySystem 中调用，跳过玩家）
 - **push-task 过期默认行为**：新增 push-task behavior 时必须问"executeAsNpc 跑一遍是不是就是我想要的过期默认行为？"。是 → 通用 fallback 自动处理；否（NPC 路径含概率拒绝/条件性拒绝/会做对玩家不利的决定）→ 必须在 `NpcEngine.handleExpiredPlayerTasks` 加显式 `else if` 分支，明确"超时不管时玩家希望发生什么"，禁止让 NPC 替玩家做决定
-- **草拟-审批双 behavior 范式**：新增"草拟人产出方案 → 审批人决定执行"类系统时，先读 **`docs/reference/draft-approve-pattern.md`**。要点：Submission 结构必须带 drafterId；三层 in-flight 锁（CD + buffer + playerTask）；urgency 分档 forced；玩家草拟入口走独立 React UI 而非 PlayerTask（避免 standing 模式 bug）；驳回 CD 在 drafter 维度而非 ruler。当前实现：treasuryDraftBehavior + treasuryApproveBehavior
+- **草拟-审批双 behavior 范式**：新增"草拟人产出方案 → 审批人决定执行"类系统时，先读 **`docs/reference/draft-approve-pattern.md`**。要点：Submission 结构必须带 drafterId；三层 in-flight 锁（CD + buffer + playerTask）；urgency 分档 forced；玩家草拟入口走独立 React UI 而非 PlayerTask（避免 standing 模式 bug）；驳回 CD 在 drafter 维度而非 ruler；审批 behavior 的 executeAsNpc 顶部必须过滤已死草拟人（草拟到审批可跨多日）。当前实现：treasury（draft + approve）+ deploy（draft + approve）。deploy 额外加"战时跳过"锁——战争 AI 归战争引擎，draft behavior 不感知前线，仅服务和平期边境集结。
 
 ---
 

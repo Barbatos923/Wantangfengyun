@@ -10,7 +10,9 @@ import { positionMap } from '@data/positions';
 import { useNpcStore } from './NpcStore';
 import { executeAppoint, executeDismiss, executeJoinWar } from '@engine/interaction';
 import { executeTreasuryEntry } from './behaviors/treasuryApproveBehavior';
+import { executeDeployEntry } from './behaviors/deployApproveBehavior';
 import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
+import type { DeploySubmission } from '@engine/military/deployCalc';
 import { autoTransferChildrenAfterAppoint } from '@engine/official/postTransfer';
 import { buildNpcContext } from './NpcContext';
 import { getAllBehaviors } from './behaviors/index';
@@ -209,6 +211,14 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       for (const sub of data.submissions) {
         for (const entry of sub.entries) {
           executeTreasuryEntry(entry, task.actorId);
+        }
+      }
+    } else if (task.type === 'deploy-approve') {
+      // 玩家超时未审批调兵草案 → 必定通过（不走概率裁决，避免 NPC 替玩家做决定）
+      const data = task.data as { submissions: DeploySubmission[] };
+      for (const sub of data.submissions) {
+        for (const entry of sub.entries) {
+          executeDeployEntry(entry, task.actorId);
         }
       }
     } else {

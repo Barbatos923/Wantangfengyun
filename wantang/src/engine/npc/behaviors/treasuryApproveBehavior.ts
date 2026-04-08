@@ -149,6 +149,13 @@ export const treasuryApproveBehavior: NpcBehavior<TreasuryApproveData> = {
   },
 
   executeAsNpc(actor: Character, data: TreasuryApproveData, ctx: NpcContext): void {
+    // 过滤掉草拟人已死的 submission（草拟到审批之间可能跨多日）
+    const submissions = data.submissions.filter((s) => ctx.characters.get(s.drafterId)?.alive);
+    if (submissions.length === 0) {
+      useNpcStore.getState().clearTreasuryDraft(actor.id);
+      return;
+    }
+    data = { submissions };
     const rate = calcApprovalRate(actor.id, data.submissions, ctx);
     const roll = random() * 100;
     const passed = roll <= rate;

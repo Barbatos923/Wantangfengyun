@@ -13,7 +13,6 @@ import SelectionFlow from './SelectionFlow';
 import TransferPlanFlow from './TransferPlanFlow';
 import ReviewPlanFlow from './ReviewPlanFlow';
 import DeployApproveFlow from './DeployApproveFlow';
-import DeployDraftFlow from './DeployDraftFlow';
 import TreasuryApproveFlow from './TreasuryApproveFlow';
 
 const AlertBar: React.FC = () => {
@@ -23,7 +22,6 @@ const AlertBar: React.FC = () => {
   const [transferPlanOpen, setTransferPlanOpen] = useState(false);
   const [reviewPlanOpen, setReviewPlanOpen] = useState(false);
   const [deployApproveOpen, setDeployApproveOpen] = useState(false);
-  const [deployDraftOpen, setDeployDraftOpen] = useState(false);
   const [treasuryApproveOpen, setTreasuryApproveOpen] = useState(false);
   const playerTasks = useNpcStore((s) => s.playerTasks);
   const draftPlan = useNpcStore((s) => s.draftPlan);
@@ -67,10 +65,8 @@ const AlertBar: React.FC = () => {
   }, [allVacancies, isEmperor, playerId, draftPlan]);
 
   // 常驻任务（standing）
-  const standingTasks = useMemo(() => playerTasks.filter(t => t.standing), [playerTasks]);
-
   // ── 审批弹窗打开时自动暂停时间，全部关闭后恢复 ──
-  const anyModalOpen = selectionOpen || draftOpen || transferPlanOpen || reviewPlanOpen || deployApproveOpen || deployDraftOpen || treasuryApproveOpen;
+  const anyModalOpen = selectionOpen || draftOpen || transferPlanOpen || reviewPlanOpen || deployApproveOpen || treasuryApproveOpen;
   const wasPausedRef = useRef(false);
 
   useEffect(() => {
@@ -87,23 +83,11 @@ const AlertBar: React.FC = () => {
     }
   }, [anyModalOpen]);
 
-  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && !treasuryApproveTask && standingTasks.length === 0 && draftPosts.length === 0 && callToArmsTasks.length === 0) return null;
+  if (directPosts.length === 0 && !appointApproveTask && !reviewTask && !deployApproveTask && !treasuryApproveTask && draftPosts.length === 0 && callToArmsTasks.length === 0) return null;
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-2 p-3">
-        {/* 常驻任务（standing）：始终在最左侧 */}
-        {standingTasks.map(st => st.type === 'deploy-draft' && (
-          <div
-            key={st.id}
-            className="flex items-center gap-1 bg-teal-500/20 text-teal-400 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-teal-500/30 transition-colors border border-teal-500/40"
-            onClick={() => setDeployDraftOpen(true)}
-            title="点击草拟调兵方案"
-          >
-            <span>&#9997;</span>
-            <span>调兵草拟</span>
-          </div>
-        ))}
         {/* 审批链：皇帝审批调动名单 */}
         {appointApproveTask && (appointApproveTask.data as { entries: unknown[] }).entries.length > 0 && (
           <div
@@ -138,16 +122,21 @@ const AlertBar: React.FC = () => {
           </div>
         )}
         {/* 调兵审批 */}
-        {deployApproveTask && (deployApproveTask.data as { entries: unknown[] }).entries.length > 0 && (
-          <div
-            className="flex items-center gap-1 bg-[var(--color-accent-green)]/20 text-[var(--color-accent-green)] px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-[var(--color-accent-green)]/30 transition-colors border border-[var(--color-accent-green)]/40"
-            onClick={() => setDeployApproveOpen(true)}
-            title="点击审批调兵方案"
-          >
-            <span>&#9876;</span>
-            <span>{(deployApproveTask.data as { entries: unknown[] }).entries.length}项调兵待审批</span>
-          </div>
-        )}
+        {deployApproveTask && (() => {
+          const data = deployApproveTask.data as { submissions?: { entries: unknown[] }[] };
+          const total = (data.submissions ?? []).reduce((acc, s) => acc + s.entries.length, 0);
+          if (total === 0) return null;
+          return (
+            <div
+              className="flex items-center gap-1 bg-[var(--color-accent-green)]/20 text-[var(--color-accent-green)] px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-[var(--color-accent-green)]/30 transition-colors border border-[var(--color-accent-green)]/40"
+              onClick={() => setDeployApproveOpen(true)}
+              title="点击审批调兵方案"
+            >
+              <span>&#9876;</span>
+              <span>{total}项调兵待审批</span>
+            </div>
+          );
+        })()}
         {/* 国库调拨审批 */}
         {treasuryApproveTask && (() => {
           const data = treasuryApproveTask.data as { submissions?: { entries: unknown[] }[] };
@@ -233,13 +222,6 @@ const AlertBar: React.FC = () => {
         <TreasuryApproveFlow
           visible={treasuryApproveOpen}
           onClose={() => setTreasuryApproveOpen(false)}
-        />
-      )}
-      {standingTasks.some(t => t.type === 'deploy-draft') && (
-        <DeployDraftFlow
-          visible={deployDraftOpen}
-          onOpen={() => setDeployDraftOpen(true)}
-          onClose={() => setDeployDraftOpen(false)}
         />
       )}
     </>

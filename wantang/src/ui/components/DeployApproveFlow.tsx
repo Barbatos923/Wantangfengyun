@@ -1,6 +1,7 @@
 // ===== 调兵审批弹窗 =====
-// 玩家作为批准人（节度使/皇帝）审批 NPC 草拟的调兵方案。
+// 玩家作为批准人（节度使/皇帝/王/刺史）审批属官草拟的调兵方案。
 // 支持逐条删除、编辑目的地（地图选点）、全部批准/驳回。
+// 驳回 → 给所有 submission 的 drafter 加 30 天 CD 并通知。
 
 import { useState, useEffect } from 'react';
 import { Modal, ModalHeader, Button } from './base';
@@ -8,11 +9,14 @@ import { useNpcStore } from '@engine/npc/NpcStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
+import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTurnManager } from '@engine/TurnManager';
+import { useStoryEventBus } from '@engine/storyEventBus';
+import { EventPriority } from '@engine/types';
 import { addDays } from '@engine/dateUtils';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { executeDeployEntry } from '@engine/npc/behaviors/deployApproveBehavior';
-import type { DeploymentEntry } from '@engine/military/deployCalc';
+import type { DeploymentEntry, DeploySubmission } from '@engine/military/deployCalc';
 
 interface DeployApproveFlowProps {
   visible: boolean;
@@ -20,14 +24,19 @@ interface DeployApproveFlowProps {
   onOpen: () => void;
 }
 
+interface EditableEntry extends DeploymentEntry {
+  drafterId: string;
+}
+
 export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployApproveFlowProps) {
   const task = useNpcStore((s) => s.playerTasks.find(t => t.type === 'deploy-approve') ?? null);
   const territories = useTerritoryStore((s) => s.territories);
   const armies = useMilitaryStore((s) => s.armies);
+  const characters = useCharacterStore((s) => s.characters);
   const date = useTurnManager((s) => s.currentDate);
 
-  // 本地可编辑副本
-  const [entries, setEntries] = useState<DeploymentEntry[]>([]);
+  // 本地可编辑副本（拍平 submissions，记住每条来自哪个 drafter）
+  const [entries, setEntries] = useState<EditableEntry[]>([]);
   const [editedIndices, setEditedIndices] = useState<Set<number>>(new Set());
 
   // 地图选点：选点期间隐藏 Modal 但保持挂载
@@ -35,16 +44,25 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
   const mapSelectionResult = usePanelStore((s) => s.mapSelectionResult);
 
-  // 初始化本地副本，过滤掉已失效的 entries（军队不存在/已在行营/不再属于批准人）
+  // 初始化本地副本：拍平 submissions，过滤已失效条目
   useEffect(() => {
     if (task) {
-      const raw = (task.data as { entries: DeploymentEntry[] }).entries;
+      const data = task.data as { submissions?: DeploySubmission[]; entries?: DeploymentEntry[] };
       const campaignArmyIds = new Set<string>();
       for (const c of useWarStore.getState().campaigns.values()) {
         for (const aid of c.armyIds) campaignArmyIds.add(aid);
         for (const ia of c.incomingArmies) campaignArmyIds.add(ia.armyId);
       }
-      const valid = raw.filter(e => {
+      const flat: EditableEntry[] = [];
+      if (data.submissions) {
+        for (const s of data.submissions) {
+          for (const e of s.entries) flat.push({ ...e, drafterId: s.drafterId });
+        }
+      } else if (data.entries) {
+        // 兼容旧数据结构（存档迁移期）
+        for (const e of data.entries) flat.push({ ...e, drafterId: '' });
+      }
+      const valid = flat.filter(e => {
         const army = armies.get(e.armyId);
         return army && army.ownerId === task.actorId && !campaignArmyIds.has(e.armyId);
       });
@@ -58,7 +76,6 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
     if (selectingIndex === null) return;
     if (mapSelectionActive) return; // 仍在选择中
 
-    // 选择完成（有结果）或取消（无结果）
     if (mapSelectionResult) {
       const idx = selectingIndex;
       const territoryId = mapSelectionResult;
@@ -72,7 +89,7 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
       });
     }
     setSelectingIndex(null);
-    onOpen(); // 选点结束后自动重新打开弹窗
+    onOpen();
   }, [mapSelectionActive, mapSelectionResult, selectingIndex]);
 
   if (!task) return null;
@@ -94,29 +111,80 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
 
   function handleEditTarget(index: number) {
     setSelectingIndex(index);
-    onClose(); // 关闭弹窗让地图可交互
+    onClose();
     usePanelStore.getState().startMapSelection('点击地图选择调兵目的地');
+  }
+
+  function notifyDrafterApproved(drafterId: string) {
+    const playerId = useCharacterStore.getState().playerId;
+    if (drafterId !== playerId || drafterId === actorId) return;
+    const ruler = characters.get(actorId);
+    const now = useTurnManager.getState().currentDate;
+    useTurnManager.getState().addEvent({
+      id: crypto.randomUUID(),
+      date: { ...now },
+      type: '草案批准',
+      actors: [actorId, drafterId],
+      territories: [],
+      description: `${ruler?.name ?? '?'} 批准了你呈递的调兵方案。`,
+      priority: EventPriority.Normal,
+    });
+  }
+
+  function notifyDrafterRejected(drafterId: string) {
+    const playerId = useCharacterStore.getState().playerId;
+    if (drafterId !== playerId || drafterId === actorId) return;
+    const ruler = characters.get(actorId);
+    useStoryEventBus.getState().pushStoryEvent({
+      id: crypto.randomUUID(),
+      title: '草案被驳回',
+      description: `${ruler?.name ?? '?'}审阅了你呈递的调兵草案，未予批准。30 日内，你不得再次草拟此事。`,
+      actors: [
+        { characterId: actorId, role: '审批人' },
+        { characterId: drafterId, role: '草拟人（你）' },
+      ],
+      options: [
+        {
+          label: '知道了',
+          description: '接受驳回，等待 30 日冷却',
+          effects: [],
+          onSelect: () => { /* no-op */ },
+        },
+      ],
+    });
   }
 
   function handleApprove() {
     for (const entry of entries) {
       executeDeployEntry(entry, actorId);
     }
+    // 通知玩家草拟人（去重）
+    const drafterIds = new Set<string>();
+    const data = task!.data as { submissions?: DeploySubmission[] };
+    if (data.submissions) {
+      for (const s of data.submissions) drafterIds.add(s.drafterId);
+    }
+    for (const did of drafterIds) notifyDrafterApproved(did);
     useNpcStore.getState().removePlayerTask(task!.id);
     onClose();
   }
 
   function handleReject() {
-    // 驳回后设置 6 个月（180 天）冷却
+    // 驳回 = 给 task 中所有 drafter 加 30 天 CD + 通知
     const now = useTurnManager.getState().currentDate;
-    useNpcStore.getState().setDeployRejectCooldown(actorId, addDays(now, 180));
-    // 同时清掉 buffer 中其他 drafter 留下的残留草案，避免下一轮 NpcEngine 再推
-    useNpcStore.getState().clearDeploymentDraft(actorId);
+    const data = task!.data as { submissions?: DeploySubmission[] };
+    if (data.submissions) {
+      const cdUntil = addDays(now, 30);
+      for (const s of data.submissions) {
+        useNpcStore.getState().setDeployDrafterCooldown(s.drafterId, cdUntil);
+        notifyDrafterRejected(s.drafterId);
+      }
+    }
+    useNpcStore.getState().clearDeployDraft(actorId);
     useNpcStore.getState().removePlayerTask(task!.id);
     onClose();
   }
 
-  // 隐藏条件：未打开 或 选点期间（组件保持挂载以保留 state）
   if (!visible || isSelecting) return null;
 
   const titleDate = date ? `${date.year}年${date.month}月` : '';
@@ -137,6 +205,7 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
             const army = armies.get(entry.armyId);
             const fromTerr = territories.get(entry.fromLocationId);
             const toTerr = territories.get(entry.targetLocationId);
+            const drafter = entry.drafterId ? characters.get(entry.drafterId) : null;
             const isEdited = editedIndices.has(i);
 
             return (
@@ -148,17 +217,16 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
                     : 'border-[var(--color-border)] bg-[var(--color-bg)]'
                 }`}
               >
-                {/* 军队名 */}
                 <div className="flex-1 min-w-0">
                   <span className="text-sm text-[var(--color-text)] font-medium">
                     {army?.name ?? '未知军队'}
                   </span>
                   <div className="text-xs text-[var(--color-text-muted)] mt-0.5">
                     {fromTerr?.name ?? '?'} → {toTerr?.name ?? '?'}
+                    {drafter && <span className="ml-2 text-[var(--color-text-muted)]">（{drafter.name} 拟）</span>}
                     {isEdited && <span className="ml-1 text-[var(--color-accent-gold)]">(已修改)</span>}
                   </div>
                 </div>
-                {/* 编辑目的地 */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -167,7 +235,6 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
                 >
                   改派
                 </Button>
-                {/* 删除 */}
                 <Button
                   variant="ghost"
                   size="sm"

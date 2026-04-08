@@ -59,6 +59,9 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
   const panStart = useRef({ x: 0, y: 0 });
   const panOrigin = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  // 已分配的 ruler 颜色缓存（持久跨 re-render）：一旦分配就不再变，
+  // 避免领地易主时已有 ruler 的颜色被冲突回避算法重新偏移
+  const colorAssignmentCache = useRef<Map<string, number>>(new Map());
 
   const territories = useTerritoryStore((s) => s.territories);
   const characters = useCharacterStore((s) => s.characters);
@@ -99,20 +102,28 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
       }
     }
 
-    // 分配颜色：哈希起始 + 碰撞偏移
-    const map = new Map<string, number>(); // charId → paletteIndex
+    // 分配颜色：复用缓存 + 仅为新 ruler 跑冲突回避
+    const cache = colorAssignmentCache.current;
     const result = new Map<string, string>();
     const allCharIds = [...new Set(zhouColorMap.values())];
 
     for (const charId of allCharIds) {
+      // 已缓存 → 直接复用，不再受邻居关系变化影响
+      const cached = cache.get(charId);
+      if (cached !== undefined) {
+        result.set(charId, CONTROLLER_PALETTE[cached]);
+        continue;
+      }
+
+      // 新 ruler：哈希起始 + 与已分配（缓存中）的相邻势力做冲突回避
       let idx = hashIdx(charId);
       const neighborChars = neighbors.get(charId);
-      // 检查是否与已分配颜色的相邻势力碰撞，最多尝试 paletteLen 次
       for (let attempt = 0; attempt < paletteLen; attempt++) {
         let conflict = false;
         if (neighborChars) {
           for (const nb of neighborChars) {
-            if (map.has(nb) && map.get(nb) === idx) {
+            const nbIdx = cache.get(nb);
+            if (nbIdx !== undefined && nbIdx === idx) {
               conflict = true;
               break;
             }
@@ -121,7 +132,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
         if (!conflict) break;
         idx = (idx + 1) % paletteLen;
       }
-      map.set(charId, idx);
+      cache.set(charId, idx);
       result.set(charId, CONTROLLER_PALETTE[idx]);
     }
 

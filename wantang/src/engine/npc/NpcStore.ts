@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import type { TransferPlan, PlayerTask } from './types';
-import type { DeploymentEntry } from '@engine/military/deployCalc';
+import type { DeploymentEntry, DeploySubmission } from '@engine/military/deployCalc';
 import type { TreasuryEntry, TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import type { GameDate } from '@engine/types';
 import { isDateReached } from '@engine/dateUtils';
@@ -13,15 +13,16 @@ interface NpcStoreState {
   draftPlan: TransferPlan | null;
   setDraftPlan: (plan: TransferPlan | null) => void;
 
-  /** 调兵部署草案缓冲区：rulerId → 待批方案 */
-  deploymentDrafts: Map<string, DeploymentEntry[]>;
-  addDeploymentDraft: (rulerId: string, entries: DeploymentEntry[]) => void;
-  clearDeploymentDraft: (rulerId: string) => void;
+  /** 调兵部署草案缓冲区：rulerId → 提交列表（每个 submission 携带 drafterId） */
+  deployDrafts: Map<string, DeploySubmission[]>;
+  addDeployDraft: (rulerId: string, drafterId: string, entries: DeploymentEntry[]) => void;
+  getDeployDraft: (rulerId: string) => DeploySubmission[] | undefined;
+  clearDeployDraft: (rulerId: string) => void;
 
-  /** 调兵驳回冷却：rulerId → 冷却截止日 */
-  deployRejectCooldowns: Map<string, GameDate>;
-  setDeployRejectCooldown: (rulerId: string, until: GameDate) => void;
-  isDeployCooldown: (rulerId: string, now: GameDate) => boolean;
+  /** 调兵草案驳回冷却（drafter 维度）：drafterId → 冷却截止日 */
+  deployDrafterCooldowns: Map<string, GameDate>;
+  setDeployDrafterCooldown: (drafterId: string, until: GameDate) => void;
+  isDeployDrafterCooldown: (drafterId: string, now: GameDate) => boolean;
 
   /** 国库调拨草案缓冲区：rulerId → 提交列表（每个 submission 携带 drafterId） */
   treasuryDrafts: Map<string, TreasurySubmission[]>;
@@ -48,28 +49,29 @@ export const useNpcStore = create<NpcStoreState>((set, get) => ({
   setDraftPlan: (plan) => set({ draftPlan: plan }),
 
   // 调兵部署草案
-  deploymentDrafts: new Map(),
-  addDeploymentDraft: (rulerId, entries) => set((s) => {
-    const drafts = new Map(s.deploymentDrafts);
+  deployDrafts: new Map(),
+  addDeployDraft: (rulerId, drafterId, entries) => set((s) => {
+    const drafts = new Map(s.deployDrafts);
     const existing = drafts.get(rulerId) ?? [];
-    drafts.set(rulerId, [...existing, ...entries]);
-    return { deploymentDrafts: drafts };
+    drafts.set(rulerId, [...existing, { drafterId, entries }]);
+    return { deployDrafts: drafts };
   }),
-  clearDeploymentDraft: (rulerId) => set((s) => {
-    const drafts = new Map(s.deploymentDrafts);
+  getDeployDraft: (rulerId) => get().deployDrafts.get(rulerId),
+  clearDeployDraft: (rulerId) => set((s) => {
+    const drafts = new Map(s.deployDrafts);
     drafts.delete(rulerId);
-    return { deploymentDrafts: drafts };
+    return { deployDrafts: drafts };
   }),
 
-  // 调兵驳回冷却
-  deployRejectCooldowns: new Map(),
-  setDeployRejectCooldown: (rulerId, until) => set((s) => {
-    const cds = new Map(s.deployRejectCooldowns);
-    cds.set(rulerId, until);
-    return { deployRejectCooldowns: cds };
+  // 草拟人维度的驳回冷却
+  deployDrafterCooldowns: new Map(),
+  setDeployDrafterCooldown: (drafterId, until) => set((s) => {
+    const cds = new Map(s.deployDrafterCooldowns);
+    cds.set(drafterId, until);
+    return { deployDrafterCooldowns: cds };
   }),
-  isDeployCooldown: (rulerId, now) => {
-    const until = get().deployRejectCooldowns.get(rulerId);
+  isDeployDrafterCooldown: (drafterId, now) => {
+    const until = get().deployDrafterCooldowns.get(drafterId);
     if (!until) return false;
     return !isDateReached(now, until);
   },

@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-07
+> **最后更新**：2026-04-08
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -191,7 +191,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 **NPC Engine（31 个行为）**：
 - ✅ 框架：日结化调度、哈希槽位+品级分档、push-task/skip/auto-execute/standing 四种 playerMode
 - ✅ 行政行为：铨选 / 考课 / 罢免 / 皇帝调任 / 宰相调任
-- ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / 调兵草拟 / 调兵批准 / 召集参战 / 干涉战争 / 退出战争
+- ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / **调兵草拟+审批（draft-approve范式）** / 召集参战 / 干涉战争 / 退出战争
 - ✅ 领地行为：授予领地 / 剥夺领地 / 转移臣属 / 要求效忠 / 归附 / 逼迫授权 / 议定进奉
 - ✅ 政策行为：调税 / 调职类 / 调辟署权 / 调继承法 / 调回拨率 / 自身政策调整（通用讨好评估 `evaluateAppeasementTargets` + 权限校验 `hasAuthorityOverPost`）
 - ✅ 决议行为：称王建镇 / 称帝 / 篡夺
@@ -325,6 +325,18 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 修复 `heirIds` 变量作用域Bug（characterSystem 死亡继承 crash）
 - ✅ overlord变更日志增加调用栈追踪；皇帝AI行为全量监测（`[皇帝AI]` 标签）
 - ✅ 宣战UI区分宣战成本与战争后果，独立战争标注胜败结果
+
+**调兵草拟-审批重构 + B 模式智能化 + postTransfer 占领者 BUG**（2026-04-08）：
+- ✅ deploy 系统对齐 treasury 草拟-审批范式：NpcStore buffer 改 Submission 结构（带 drafterId）+ CD 改 drafter 维度
+- ✅ deployDraftBehavior：playerMode `'standing'` → `'skip'`，消灭 standing 分桶 bug；新增"战时跳过"锁，战争 AI 归战争引擎
+- ✅ deployApproveBehavior：概率审批（base 100，好感±5，兵力≥0.7/0.9 罚 -5/-10）+ 通过 toast / 拒绝 storyEvent + drafter CD
+- ✅ DrafterTokenOverlay 多 token（金"职"国库 + 绿"兵"调兵），战时红边禁用；删除旧 DeployDraftFlow.tsx
+- ✅ NpcEngine.handleExpiredPlayerTasks 加 deploy-approve 显式分支（玩家超时必定通过）
+- ✅ 新建 `submitDeployDraftAction.ts`
+- ✅ B 模式重写：威胁评估对象改为"沿overlord链向上第一个有辟署权的人"（真正能独立开战的最近独立势力）；planDeployments 按敌驻军兵力贪心匹配派兵（demand 排序，战力≤demand 取最大、否则取最小，仍受 deployRatio 上限）
+- ✅ 性能优化：assessBorderThreats 一次性预聚合 `appointRightSet` + `strengthByLocation`，O(1) 查询
+- ✅ 审批 behavior 过滤已死草拟人（deploy + treasury 同步）
+- ✅ **postTransfer 边缘 BUG 修复**：`getTransferableChildren` 法理级联收集时，必须跳过"自身已有更高 tier 主岗"的占领者。复现路径：唐懿宗称王→新河东节度使于琮上任→占领潞州的魏博节度使韩允中被错误纳入河东级联。修复一行 `if (getHighestTierRank(holderId) > TIER_RANK[desc.tier]) continue;`，规约写入 CLAUDE.md §五。
 
 **已完成（金钱系统重构）：**
 - ✅ 金钱系统重构（区分私财与国库）— 5批次完成
