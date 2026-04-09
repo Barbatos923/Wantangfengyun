@@ -14,14 +14,12 @@ import { useTurnManager } from '@engine/TurnManager';
 import { toAbsoluteDay } from '@engine/dateUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
-import { getActualController } from '@engine/official/postQueries';
+import { getActualController, getSovereigntyTier, findEmperorId } from '@engine/official/postQueries';
 import { random } from '@engine/random';
 import { buildZhouAdjacency } from '@engine/military/deployCalc';
 
 /** 归附冷却天数（约半年） */
 export const PLEDGE_ALLEGIANCE_COOLDOWN_DAYS = 180;
-
-const TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
 
 /** 注册归附交互 */
 registerInteraction({
@@ -29,25 +27,17 @@ registerInteraction({
   name: '归附',
   icon: '🏳️',
   canShow: (player, target) => {
-    // 宽松：双方独立 + target tier 更高
+    // 宽松：双方独立 + target 主权层级更高
+    // 注意：层级口径用 getSovereigntyTier，而不是直辖领地 tier 最大值——后者会丢皇帝身份
+    // （pos-emperor 不是 grantsControl），导致独立 dao ruler 看不到归附皇帝的入口。
     if (player.id === target.id) return false;
     if (!target.alive) return false;
     if (player.overlordId != null || target.overlordId != null) return false;
     const terrStore = useTerritoryStore.getState();
-    const playerTerrs = terrStore.controllerIndex.get(player.id);
-    const targetTerrs = terrStore.controllerIndex.get(target.id);
-    if (!playerTerrs?.size || !targetTerrs?.size) return false;
-    let playerMaxTier = 0;
-    for (const tId of playerTerrs) {
-      const t = terrStore.territories.get(tId);
-      if (t) playerMaxTier = Math.max(playerMaxTier, TIER_RANK[t.tier] ?? 0);
-    }
-    let targetMaxTier = 0;
-    for (const tId of targetTerrs) {
-      const t = terrStore.territories.get(tId);
-      if (t) targetMaxTier = Math.max(targetMaxTier, TIER_RANK[t.tier] ?? 0);
-    }
-    return targetMaxTier > playerMaxTier;
+    const playerTier = getSovereigntyTier(player.id, terrStore.territories, terrStore.centralPosts);
+    const targetTier = getSovereigntyTier(target.id, terrStore.territories, terrStore.centralPosts);
+    if (playerTier === 0 || targetTier === 0) return false;
+    return targetTier > playerTier;
   },
   canExecuteCheck: (player, target) => {
     if (canPledgeAllegiance(player, target)) return null;
@@ -86,6 +76,7 @@ function canPledgeAllegiance(player: Character, target: Character): boolean {
     terrStore.controllerIndex,
     charStore.vassalIndex,
     activeWars,
+    terrStore.centralPosts,
   );
 }
 
@@ -108,6 +99,7 @@ export function canPledgeAllegiancePure(
   controllerIndex: Map<string, Set<string>>,
   vassalIndex: Map<string, Set<string>>,
   activeWars?: War[],
+  centralPosts?: import('@engine/territory/types').Post[],
 ): boolean {
   if (!target.alive) return false;
   if (player.id === target.id) return false;
@@ -123,22 +115,17 @@ export function canPledgeAllegiancePure(
     return playerSide && targetSide && playerSide !== targetSide;
   })) return false;
 
-  // 头衔等级检查：target 最高 tier 必须严格高于 player
+  // 主权层级检查：target 必须严格高于 player（口径用 getSovereigntyTier，含皇帝身份）
+  const cps = centralPosts ?? [];
+  const playerTier = getSovereigntyTier(player.id, territories, cps);
+  const targetTier = getSovereigntyTier(target.id, territories, cps);
+  if (playerTier === 0 || targetTier === 0) return false;
+  if (targetTier <= playerTier) return false;
+
+  // 至少各自有一块领地（用于后续邻接检查）
   const playerTerritories = controllerIndex.get(player.id);
   const targetTerritories = controllerIndex.get(target.id);
   if (!playerTerritories?.size || !targetTerritories?.size) return false;
-
-  let playerMaxTier = 0;
-  for (const tId of playerTerritories) {
-    const t = territories.get(tId);
-    if (t) playerMaxTier = Math.max(playerMaxTier, TIER_RANK[t.tier] ?? 0);
-  }
-  let targetMaxTier = 0;
-  for (const tId of targetTerritories) {
-    const t = territories.get(tId);
-    if (t) targetMaxTier = Math.max(targetMaxTier, TIER_RANK[t.tier] ?? 0);
-  }
-  if (targetMaxTier <= playerMaxTier) return false;
 
   // 领地相邻检查：player 控制的州 与 target 势力范围内的州 存在邻接边
   // target 势力范围 = target 本人 + 所有直接/间接臣属 控制的州
@@ -225,9 +212,12 @@ function isDejureVassalOf(
   targetId: string,
   territories: Map<string, Territory>,
   controllerIndex: Map<string, Set<string>>,
+  centralPosts: import('@engine/territory/types').Post[],
 ): boolean {
   const playerTerritories = controllerIndex.get(playerId);
   if (!playerTerritories) return false;
+  // tianxia 父级"控制者"= 当前皇帝（pos-emperor 不是 grantsControl，getActualController 会漏）
+  const emperorId = findEmperorId(territories, centralPosts);
   for (const tId of playerTerritories) {
     let current = territories.get(tId);
     const visited = new Set<string>();
@@ -236,7 +226,8 @@ function isDejureVassalOf(
       visited.add(current.parentId);
       const parent = territories.get(current.parentId);
       if (!parent) break;
-      if (getActualController(parent) === targetId) return true;
+      const parentRuler = parent.tier === 'tianxia' ? emperorId : getActualController(parent);
+      if (parentRuler === targetId) return true;
       current = parent;
     }
   }
@@ -282,6 +273,8 @@ export interface PledgeAllegianceResult {
   success: boolean;
   chance: number;
   breakdown: PledgeAllegianceChanceResult['breakdown'];
+  /** 执行瞬时校验失败（stale）：UI 显示"局势已发生变化"，不要等同于"对方拒绝" */
+  stale?: true;
 }
 
 /** 预览成功率（不执行，不掷骰） */
@@ -298,7 +291,7 @@ export function previewPledgeAllegiance(
   const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
   const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
   const personality = calcPersonality(target);
-  const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex);
+  const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex, terrState.centralPosts);
 
   return calcPledgeAllegianceChance(opinion, personality, isDejure);
 }
@@ -310,13 +303,20 @@ export function executePledgeAllegiance(
   const charStore = useCharacterStore.getState();
   const player = charStore.getCharacter(playerId);
   const target = charStore.getCharacter(targetId);
-  if (!player || !target) return { success: false, chance: 0, breakdown: { base: 70, dejure: 0, opinion: 0, personality: 0 } };
+  if (!player?.alive || !target?.alive) {
+    return { success: false, chance: 0, breakdown: { base: 70, dejure: 0, opinion: 0, personality: 0 }, stale: true };
+  }
+
+  // 瞬时重校验：仍独立 / 主权层级仍成立 / 仍相邻 / 不在敌对战争
+  if (!canPledgeAllegiance(player, target)) {
+    return { success: false, chance: 0, breakdown: { base: 70, dejure: 0, opinion: 0, personality: 0 }, stale: true };
+  }
 
   const terrState = useTerritoryStore.getState();
   const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
   const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
   const personality = calcPersonality(target);
-  const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex);
+  const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex, terrState.centralPosts);
 
   const { chance, breakdown } = calcPledgeAllegianceChance(opinion, personality, isDejure);
 

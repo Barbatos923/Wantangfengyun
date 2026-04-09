@@ -113,22 +113,44 @@ export function previewUsurp(playerId: string, targetId: string): UsurpPreview[]
 
 /**
  * 执行篡夺（引擎层，NPC 可直接调用）。
+ *
+ * 瞬时重校验：actor 仍存活 + post 仍有 holder + tier 合法 + canUsurpPost 仍通过
+ * + 资源仍足够。任一不过 → 返回 false 不写状态。
  */
-export function executeUsurp(postId: string, actorId: string): void {
+export function executeUsurp(postId: string, actorId: string): boolean {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
   const post = terrStore.findPost(postId);
-  if (!post || !post.holderId) return;
+  if (!post || !post.holderId) return false;
+
+  const actor = charStore.getCharacter(actorId);
+  if (!actor?.alive) return false;
 
   const oldHolderId = post.holderId;
   const territory = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
+  if (!territory || (territory.tier !== 'dao' && territory.tier !== 'guo')) return false;
   const tpl = positionMap.get(post.templateId);
 
+  // 瞬时重校验：canUsurpPost（控制比例 / 战争 / 同势力等）
+  const wars = useWarStore.getState().getActiveWars();
+  const elig = canUsurpPost(actorId, post, territory, terrStore.territories, charStore.characters, wars);
+  if (!elig.eligible) return false;
+
   // ── 扣除资源：金钱从 capital 国库扣，声望从私产扣 ──
-  const tier = territory?.tier ?? 'dao';
+  const tier = territory.tier;
   const cost = calcPostManageCost('usurp', tier);
+  // 资源仍足够（calcRealmControlRatio 在 canUsurpPost 已校验，但 cost 是独立资源）
+  if (actor.resources.prestige < cost.prestige) return false;
+  // capital 国库余额（无 capital 时 fallback 私产，与 debitCapitalTreasury 一致）
+  // 这里只做粗校验：私产 + capital 国库总额 >= cost.money
+  // （debitCapitalTreasury 内部已经 fallback，所以这里不做严格检查也不会扣到非法负值；
+  //  但月结允许州库负数，我们统一在交互层"扣前必须够"的纪律下加）
+  const capId = actor.capital;
+  const capitalMoney = capId ? (terrStore.territories.get(capId)?.treasury?.money ?? 0) : actor.resources.money;
+  if (capitalMoney < cost.money) return false;
+
   debitCapitalTreasury(actorId, { money: cost.money });
   charStore.addResources(actorId, { prestige: -cost.prestige });
 
@@ -176,7 +198,9 @@ export function executeUsurp(postId: string, actorId: string): void {
     type: '篡夺头衔',
     actors: [actorId, oldHolderId],
     territories: territory ? [territory.id] : [],
-    description: `${actorName}篡夺了${oldHolderName}的${territory?.name ?? ''}${tpl?.name ?? ''}`,
+    description: `${actorName}篡夺了${oldHolderName}的${territory.name}${tpl?.name ?? ''}`,
     priority: EventPriority.Major,
   });
+
+  return true;
 }

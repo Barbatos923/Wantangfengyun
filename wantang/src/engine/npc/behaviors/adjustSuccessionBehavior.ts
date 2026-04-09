@@ -12,7 +12,6 @@ import {
   CENTRALIZE_THRESHOLD,
 } from '../policyCalc';
 import { executeToggleSuccession, executeDeclareWar } from '@engine/interaction';
-import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
@@ -137,8 +136,7 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
             effectKey: 'adjustSuccession:accept',
             effectData: { postId: data.postId, capitalZhouId: data.capitalZhouId },
             onSelect: () => {
-              const territories = useTerritoryStore.getState().territories;
-              executeToggleSuccession(data.postId, data.capitalZhouId, territories);
+              executeToggleSuccession(data.postId);
             },
           },
           {
@@ -168,8 +166,7 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
       return;
     }
 
-    const territories = useTerritoryStore.getState().territories;
-    executeToggleSuccession(data.postId, data.capitalZhouId, territories);
+    executeToggleSuccession(data.postId);
   },
 };
 

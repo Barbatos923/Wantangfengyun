@@ -3,7 +3,7 @@ import type { IDBPDatabase } from 'idb';
 import type { GameEvent } from '@engine/types.ts';
 
 const DB_NAME = 'wantang-db';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 type WantangDB = IDBPDatabase;
 
@@ -16,11 +16,17 @@ export function initDB(): Promise<WantangDB> {
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           db.createObjectStore('saves', { keyPath: 'id' });
-          db.createObjectStore('chronicles', { keyPath: 'year' });
         }
-        if (oldVersion < 2) {
-          const eventStore = db.createObjectStore('events', { keyPath: 'id' });
-          eventStore.createIndex('by-year', 'year', { unique: false });
+        // v2 引入了无 playthrough 隔离的 events / chronicles，v3 改为按 playthroughId 命名空间，
+        // 旧表数据无法保留（缺少 pid 字段，跨周目串档），直接清空重建。
+        if (oldVersion < 3) {
+          if (db.objectStoreNames.contains('events')) db.deleteObjectStore('events');
+          if (db.objectStoreNames.contains('chronicles')) db.deleteObjectStore('chronicles');
+          const eventStore = db.createObjectStore('events', { keyPath: 'key' });
+          eventStore.createIndex('by-pid-year', ['playthroughId', 'year'], { unique: false });
+          eventStore.createIndex('by-pid', 'playthroughId', { unique: false });
+          const chronStore = db.createObjectStore('chronicles', { keyPath: 'key' });
+          chronStore.createIndex('by-pid', 'playthroughId', { unique: false });
         }
       },
     });
@@ -123,40 +129,65 @@ export const listSaves = () => currentBackend.listSaves();
 /** Delete a save by id. */
 export const deleteSave = (id: string) => currentBackend.deleteSave(id);
 
-/** Save generated chronicle text for a given year. */
-export async function saveChronicle(year: number, text: string): Promise<void> {
+/**
+ * Save generated chronicle text for a given year (按 playthroughId 命名空间)。
+ *
+ * 必须传 playthroughId，避免不同周目年份相同时覆盖彼此的史书文本。
+ */
+export async function saveChronicle(playthroughId: string, year: number, text: string): Promise<void> {
   const db = await initDB();
-  await db.put('chronicles', { year, text });
+  await db.put('chronicles', { key: `${playthroughId}::${year}`, playthroughId, year, text });
 }
 
-/** Load chronicle text for a given year. Returns undefined if not found. */
-export async function loadChronicle(year: number): Promise<string | undefined> {
+/** Load chronicle text for a given year (按 playthroughId 命名空间)。 */
+export async function loadChronicle(playthroughId: string, year: number): Promise<string | undefined> {
   const db = await initDB();
-  const record = await db.get('chronicles', year);
+  const record = await db.get('chronicles', `${playthroughId}::${year}`);
   return record?.text;
 }
 
 // ===== Event 归档 =====
 
-/** 将事件批量写入 IndexedDB（幂等，使用 put）。 */
-export async function archiveEvents(events: GameEvent[]): Promise<void> {
+/** 将事件批量写入 IndexedDB（幂等，按 playthroughId 命名空间）。 */
+export async function archiveEvents(playthroughId: string, events: GameEvent[]): Promise<void> {
   const db = await initDB();
   const tx = db.transaction('events', 'readwrite');
   for (const e of events) {
-    await tx.store.put({ ...e, year: e.date.year, month: e.date.month });
+    await tx.store.put({
+      ...e,
+      key: `${playthroughId}::${e.id}`,
+      playthroughId,
+      year: e.date.year,
+      month: e.date.month,
+    });
   }
   await tx.done;
 }
 
-/** 从 IndexedDB 加载指定年份的归档事件。 */
-export async function loadArchivedEvents(year: number): Promise<GameEvent[]> {
+/** 从 IndexedDB 加载指定年份的归档事件（按 playthroughId 过滤）。 */
+export async function loadArchivedEvents(playthroughId: string, year: number): Promise<GameEvent[]> {
   const db = await initDB();
-  return db.getAllFromIndex('events', 'by-year', year);
+  return db.getAllFromIndex('events', 'by-pid-year', [playthroughId, year]);
 }
 
-/** 从 IndexedDB 加载指定年份范围的归档事件。 */
-export async function loadArchivedEventsByRange(startYear: number, endYear: number): Promise<GameEvent[]> {
+/** 从 IndexedDB 加载指定年份范围的归档事件（按 playthroughId 过滤）。 */
+export async function loadArchivedEventsByRange(
+  playthroughId: string,
+  startYear: number,
+  endYear: number,
+): Promise<GameEvent[]> {
   const db = await initDB();
-  const range = IDBKeyRange.bound(startYear, endYear);
-  return db.getAllFromIndex('events', 'by-year', range);
+  const range = IDBKeyRange.bound([playthroughId, startYear], [playthroughId, endYear]);
+  return db.getAllFromIndex('events', 'by-pid-year', range);
+}
+
+/** 删除某 playthrough 名下所有归档事件 + 史书（用于新游戏/读档前清理本地残留）。 */
+export async function purgePlaythroughArchives(playthroughId: string): Promise<void> {
+  const db = await initDB();
+  const tx = db.transaction(['events', 'chronicles'], 'readwrite');
+  const evKeys = await tx.objectStore('events').index('by-pid').getAllKeys(playthroughId);
+  for (const k of evKeys) await tx.objectStore('events').delete(k);
+  const chKeys = await tx.objectStore('chronicles').index('by-pid').getAllKeys(playthroughId);
+  for (const k of chKeys) await tx.objectStore('chronicles').delete(k);
+  await tx.done;
 }

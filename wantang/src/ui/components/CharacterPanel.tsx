@@ -119,19 +119,8 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const pinned = usePanelStore((s) => s.pinned);
   const canGoBack = usePanelStore((s) => s.stack.length > 1);
 
-  if (!character) return null;
-
-  const effective = getEffectiveAbilities(character);
-  const age = currentYear - character.birthYear;
-  const traits = character.traitIds.map((id) => traitMap.get(id)).filter(Boolean);
-
-  // Related characters
-  const spouse = character.family.spouseId ? characters.get(character.family.spouseId) : undefined;
-  const overlord = character.overlordId ? characters.get(character.overlordId) : undefined;
-  const firstChild = character.family.childrenIds.length > 0 ? characters.get(character.family.childrenIds[0]) : undefined;
-
-  // Controlled territories
-  const controlledTerritories = Array.from(territories.values()).filter((t) => getActualController(t) === characterId);
+  // 注：不能在这里 early-return —— 后面还有 useWarStore / useMemo 等 Hook，character 在
+  // 生命周期内"有→无"切换会导致 Hook 数量不一致。所有非 Hook 派生值挪到全部 Hook 之后再算。
 
   // Active wars (responsive subscription)
   const wars = useWarStore((s) => s.wars);
@@ -161,6 +150,20 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
     }
     return result;
   }, [truces, currentAbsDay, characterId, characters]);
+
+  if (!character) return null;
+
+  const effective = getEffectiveAbilities(character);
+  const age = currentYear - character.birthYear;
+  const traits = character.traitIds.map((id) => traitMap.get(id)).filter(Boolean);
+
+  // Related characters
+  const spouse = character.family.spouseId ? characters.get(character.family.spouseId) : undefined;
+  const overlord = character.overlordId ? characters.get(character.overlordId) : undefined;
+  const firstChild = character.family.childrenIds.length > 0 ? characters.get(character.family.childrenIds[0]) : undefined;
+
+  // Controlled territories
+  const controlledTerritories = Array.from(territories.values()).filter((t) => getActualController(t) === characterId);
 
   return (
     <div className="flex flex-col h-full">
@@ -761,12 +764,14 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
       {taxNegResult && (
         <Modal size="sm" onOverlayClick={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }}>
-          <ModalHeader title={taxNegResult.success ? '议定成功' : '议定失败'} onClose={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }} />
+          <ModalHeader title={taxNegResult.stale ? '操作未生效' : (taxNegResult.success ? '议定成功' : '议定失败')} onClose={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }} />
           <div className="px-5 py-4 flex flex-col gap-3">
-            <p className={`text-sm ${taxNegResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {taxNegResult.success
-                ? `${character?.name ?? ''}同意调整进奉等级`
-                : `${character?.name ?? ''}拒绝了你的请求，关系恶化`}
+            <p className={`text-sm ${taxNegResult.stale ? 'text-[var(--color-accent-red)]' : (taxNegResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]')}`}>
+              {taxNegResult.stale
+                ? '局势已发生变化，议定未生效。'
+                : (taxNegResult.success
+                  ? `${character?.name ?? ''}同意调整进奉等级`
+                  : `${character?.name ?? ''}拒绝了你的请求，关系恶化`)}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setTaxNegResult(null); setTaxNegPreview(null); setTaxNegDelta(null); setActiveInteraction(null); }}>确定</Button>
           </div>
@@ -888,12 +893,14 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
       {/* 召集参战：结果 */}
       {ctaResult && (
         <Modal size="sm" onOverlayClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>
-          <ModalHeader title={ctaResult.success ? '召集成功' : '召集被拒'} onClose={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }} />
+          <ModalHeader title={ctaResult.stale ? '操作未生效' : (ctaResult.success ? '召集成功' : '召集被拒')} onClose={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }} />
           <div className="px-5 py-4 flex flex-col gap-3">
-            <p className={`text-sm ${ctaResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {ctaResult.success
-                ? `${ctaResult.targetName}响应号召，加入战争`
-                : `${ctaResult.targetName}拒绝了召集（好感-30）`}
+            <p className={`text-sm ${ctaResult.stale ? 'text-[var(--color-accent-red)]' : (ctaResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]')}`}>
+              {ctaResult.stale
+                ? '局势已发生变化，召集未生效。'
+                : (ctaResult.success
+                  ? `${ctaResult.targetName}响应号召，加入战争`
+                  : `${ctaResult.targetName}拒绝了召集（好感-30）`)}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setCtaResult(null); setCtaPreview(null); setActiveInteraction(null); }}>确定</Button>
           </div>
@@ -929,12 +936,14 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
       {/* 要求效忠：结果 */}
       {fealtyResult && (
         <Modal size="sm" onOverlayClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>
-          <ModalHeader title={fealtyResult.success ? '效忠成功' : '要求被拒'} onClose={() => { setFealtyResult(null); setFealtyPreview(null); }} />
+          <ModalHeader title={fealtyResult.stale ? '操作未生效' : (fealtyResult.success ? '效忠成功' : '要求被拒')} onClose={() => { setFealtyResult(null); setFealtyPreview(null); }} />
           <div className="px-5 py-4 flex flex-col gap-3">
-            <p className={`text-sm ${fealtyResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {fealtyResult.success
-                ? `${character?.name ?? ''}宣誓效忠于${playerChar?.name ?? '我'}`
-                : `${character?.name ?? ''}对此无动于衷`}
+            <p className={`text-sm ${fealtyResult.stale ? 'text-[var(--color-accent-red)]' : (fealtyResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]')}`}>
+              {fealtyResult.stale
+                ? '局势已发生变化，要求效忠未生效。'
+                : (fealtyResult.success
+                  ? `${character?.name ?? ''}宣誓效忠于${playerChar?.name ?? '我'}`
+                  : `${character?.name ?? ''}对此无动于衷`)}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setFealtyResult(null); setFealtyPreview(null); }}>确定</Button>
           </div>
@@ -970,12 +979,14 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
       {/* 归附：结果 */}
       {pledgeResult && (
         <Modal size="sm" onOverlayClick={() => { setPledgeResult(null); setPledgePreview(null); }}>
-          <ModalHeader title={pledgeResult.success ? '归附成功' : '归附被拒'} onClose={() => { setPledgeResult(null); setPledgePreview(null); }} />
+          <ModalHeader title={pledgeResult.stale ? '操作未生效' : (pledgeResult.success ? '归附成功' : '归附被拒')} onClose={() => { setPledgeResult(null); setPledgePreview(null); }} />
           <div className="px-5 py-4 flex flex-col gap-3">
-            <p className={`text-sm ${pledgeResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
-              {pledgeResult.success
-                ? `${playerChar?.name ?? '我'}成功归附${character?.name ?? ''}`
-                : `${character?.name ?? ''}拒绝了你的归附请求`}
+            <p className={`text-sm ${pledgeResult.stale ? 'text-[var(--color-accent-red)]' : (pledgeResult.success ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]')}`}>
+              {pledgeResult.stale
+                ? '局势已发生变化，归附未生效。'
+                : (pledgeResult.success
+                  ? `${playerChar?.name ?? '我'}成功归附${character?.name ?? ''}`
+                  : `${character?.name ?? ''}拒绝了你的归附请求`)}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setPledgeResult(null); setPledgePreview(null); }}>确定</Button>
           </div>

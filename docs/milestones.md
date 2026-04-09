@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-09
+> **最后更新**：2026-04-10
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ░░░░░░░░░░░░    0%  ⬜ 未开始
-Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全
+Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave（Game Over + 战争接续 + 18+ execute stale 契约）
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -362,6 +362,16 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - 调兵审批 UI：handleApprove 改用本地编辑后的 entries，玩家删除/改目标操作生效
   - 补给阻断双重扣粮：economyCalc 军费汇总跳过 blocked 项
   - NPC 建筑工期：`constructionMonths` → `constructionMonths * targetLevel`
+- ✅ **2026-04-10 系统性 BugFix Wave**（"从 demo 到成品"的边缘 case 全面收口）：
+  - **Phase A 死亡接续 P0**：① 战争领袖死亡自动转交（`WarStore.replaceLeader` + `successorByDead` Map），不再静默白和平 ② 玩家绝嗣 Game Over：`TurnManager.dynastyExtinct` + saveSchema v3→v4 + `GameOverScreen` 全屏覆盖 + `deserialize` 无条件覆盖 playerId（含 null）
+  - **Phase B 即时弹窗执行层重校验**（18+ execute 函数）：统一契约 void→boolean / Result+stale / 判别联合。覆盖 Appoint / DemandFealty / PledgeAllegiance / CallToArms / NegotiateTax / DemandRights / Reassign（含 expectedTerritorialId 防"旧弹窗作用到新人"）/ DeclareWar / TransferVassal / Revoke / Usurp / Dismiss / Recruit / Reward / Replenish / CreateArmy / SetCommander / TransferBattalion / Build。每个 execute 重跑当前合法性 + UI 三态接住（成功/概率落败/stale 文案统一"局势已发生变化"）
+  - **皇帝盲点系统化修复**：新建 `postQueries.ts:getSovereigntyTier`（含 `findEmperorId === charId → 4` 特判），归附交互 canShow / canPledgeAllegiancePure / isDejureVassalOf 三处全部修复（独立节度使原本看不到归附皇帝入口）
+  - **治所州 cascade 漏洞收尾**：characterSystem NPC 半年留后改 `executeDesignateHeir`、eraSystem 时代切换改宗法改 `executeToggleSuccession`（最后两处绕过统一入口的 updatePost）
+  - **events/chronicles 周目隔离**：DB v2→v3，复合主键 `${pid}::${id}`，新增 `purgePlaythroughArchives` 防跨周目串档
+  - **CampaignPopup 集结/行军互斥**：incomingArmies>0 禁行军；marching 禁增援；addArmy 子界面状态切换兜底
+  - **NpcEngine 4 处任命链接住 boolean**：executeTransferPlan / handleDraftSubmission(direct+imperial) / handleExpiredPlayerTasks(appoint-approve) 失败 continue 跳过 autoTransferChildrenAfterAppoint
+  - **CLAUDE.md 4 条新硬约束**：① 即时交互执行层（升格自决议章节，覆盖 18+ 函数）② StoryEvent effectKey/effectData/resolver 数据化 ③ 玩家生命周期/Game Over 4 件事并发 ④ 测试原则改白名单（4 类高价值集成测试允许写）
+  - **影响**：复盘文档 `docs/reference/项目诊断-已确认问题-2026-04-10.md` 列出的 14 条已确认问题 + 次一级风险 #1 全部闭合（剩 #2 populationSystem/socialSystem 死亡引用残存待下一轮）
 
 **待做（后续系统）：**
 - 更多个人交互

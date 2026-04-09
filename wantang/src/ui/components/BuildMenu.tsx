@@ -23,15 +23,23 @@ const BuildMenu: React.FC<BuildMenuProps> = ({ territory, slotIndex, onClose }) 
   const availableMoney = treasury ? treasury.money : (player?.resources.money ?? 0);
   const availableGrain = treasury ? treasury.grain : (player?.resources.grain ?? 0);
 
-  // IDs of buildings already built in this territory (to exclude duplicates)
-  const builtIds = new Set(
-    territory.buildings.map((b) => b.buildingId).filter((id): id is string => id !== null)
-  );
+  // IDs of buildings already built OR currently under construction in this territory
+  // （后者防止"唯一建筑施工中又被点出第二次"）
+  const builtIds = new Set<string>([
+    ...territory.buildings.map((b) => b.buildingId).filter((id): id is string => id !== null),
+    ...territory.constructions.map((c) => c.buildingId),
+  ]);
 
   function handleBuild(buildingId: string, targetLevel: number, moneyCost: number, grainCost: number, duration: number) {
     const playerId = useCharacterStore.getState().playerId;
     if (!playerId) return;
-    executeBuild(playerId, territory.id, slotIndex, buildingId, targetLevel, moneyCost, grainCost, duration);
+    const ok = executeBuild(playerId, territory.id, slotIndex, buildingId, targetLevel, moneyCost, grainCost, duration);
+    if (!ok) {
+      // 引擎层二次校验失败：提示并保持弹窗打开（玩家自行关闭/重选）
+      // eslint-disable-next-line no-alert
+      alert('本州已有工程在施工，无法同时开启新建造。');
+      return;
+    }
     onClose();
   }
 

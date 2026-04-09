@@ -30,7 +30,7 @@ interface AdjustTaxAckData { vassalId: string; actorId: string; delta: number }
 interface AdjustRedistributionAckData { actorId: string; delta: number }
 interface ReassignServeData { territorialPostId: string; replacementId: string; emperorId: string }
 interface ReassignRebelData { playerId: string; emperorId: string }
-interface ReassignProposalData { territorialPostId: string; replacementId: string; emperorId: string }
+interface ReassignProposalData { territorialPostId: string; replacementId: string; emperorId: string; expectedTerritorialId: string }
 
 // ── 校验辅助 ─────────────────────────────────────────────────
 
@@ -79,8 +79,7 @@ export function resolveStoryEffect(effectKey: string, effectData: Record<string,
       if (d.right === 'appointRight') {
         executeToggleAppointRight(d.postId);
       } else {
-        const territories = useTerritoryStore.getState().territories;
-        executeToggleSuccession(d.postId, d.capitalZhouId, territories);
+        executeToggleSuccession(d.postId);
       }
       useCharacterStore.getState().addOpinion(d.actorId, d.targetId, { reason: '授权感激', value: 5, decayable: true });
       break;
@@ -153,7 +152,7 @@ export function resolveStoryEffect(effectKey: string, effectData: Record<string,
     case 'adjustType:accept': {
       const d = effectData as unknown as AdjustTypeAcceptData;
       if (!postExists(d.postId)) return;
-      executeToggleType(d.postId, d.territoryId);
+      executeToggleType(d.postId);
       break;
     }
     case 'adjustType:rebel': {
@@ -169,8 +168,7 @@ export function resolveStoryEffect(effectKey: string, effectData: Record<string,
     case 'adjustSuccession:accept': {
       const d = effectData as unknown as AdjustSuccessionAcceptData;
       if (!postExists(d.postId)) return;
-      const territories = useTerritoryStore.getState().territories;
-      executeToggleSuccession(d.postId, d.capitalZhouId, territories);
+      executeToggleSuccession(d.postId);
       break;
     }
     case 'adjustSuccession:rebel': {
@@ -217,7 +215,7 @@ export function resolveStoryEffect(effectKey: string, effectData: Record<string,
     case 'reassignProposal:approve': {
       const d = effectData as unknown as ReassignProposalData;
       if (!isAlive(d.replacementId) || !isAlive(d.emperorId) || !postExists(d.territorialPostId)) return;
-      executeReassign(d.territorialPostId, d.replacementId, d.emperorId);
+      executeReassign(d.territorialPostId, d.replacementId, d.emperorId, d.expectedTerritorialId);
       break;
     }
     case 'reassignProposal:reject':

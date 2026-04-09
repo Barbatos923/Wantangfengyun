@@ -11,6 +11,7 @@ import WarOverlay from '../components/WarOverlay';
 import DrafterTokenOverlay from '../components/DrafterTokenOverlay';
 import SaveErrorToast from '../components/SaveErrorToast';
 import SystemMenu from '../components/SystemMenu';
+import GameOverScreen from '../components/GameOverScreen';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
 
 const GameLayout: React.FC = () => {
@@ -81,6 +82,9 @@ const GameLayout: React.FC = () => {
 
       {/* 存档失败提示 */}
       <SaveErrorToast />
+
+      {/* 王朝覆灭终局屏（仅 dynastyExtinct 时显示） */}
+      <GameOverScreen />
     </div>
   );
 };

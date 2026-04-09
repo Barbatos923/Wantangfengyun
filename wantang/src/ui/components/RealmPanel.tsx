@@ -8,6 +8,7 @@ import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getHeldPosts } from '@engine/official/officialUtils';
 import { positionMap } from '@data/positions';
 import { executeRedistributionChange, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
+import { isCapitalZhouOfDao } from '@engine/npc/policyCalc';
 import { formatAmount, formatAmountSigned } from '@ui/utils/formatAmount';
 import InlineTreasuryTransferRow from './InlineTreasuryTransferRow';
 
@@ -370,22 +371,35 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                         const tpl = positionMap.get(post.templateId);
                         const terr = post.territoryId ? territories.get(post.territoryId) : undefined;
                         const terrName = terr?.name;
-                        const capitalZhouId = terr?.capitalZhouId;
                         const isClan = post.successionLaw === 'clan';
+                        // 治所州主岗：不是独立政策目标，由父道主岗联动。保留行展示但禁用按钮 + tooltip 提示
+                        const isCapZhou = post.territoryId
+                          ? isCapitalZhouOfDao(post.territoryId, territories)
+                          : false;
+                        const editable = canEdit && !isCapZhou;
+                        const capZhouTooltip = '由所在道的主岗统一控制，请在对应道级岗位调整政策';
                         return (
                           <div
                             key={post.id}
-                            className="flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)]"
+                            className={`flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)] ${
+                              isCapZhou ? 'opacity-60' : ''
+                            }`}
+                            title={isCapZhou ? capZhouTooltip : undefined}
                           >
                             <div className="min-w-0">
                               <span className="text-sm text-[var(--color-text)]">
                                 {terrName ? `${terrName} ` : ''}{tpl?.name ?? ''}
                               </span>
+                              {isCapZhou && (
+                                <div className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
+                                  由所在道的主岗统一控制
+                                </div>
+                              )}
                             </div>
                             <div className="flex gap-1.5 shrink-0">
-                              {canEdit ? (
+                              {editable ? (
                                 <button
-                                  onClick={() => executeToggleSuccession(post.id, capitalZhouId, territories)}
+                                  onClick={() => executeToggleSuccession(post.id)}
                                   className={`text-xs px-2 py-0.5 rounded font-bold border transition-colors ${
                                     isClan
                                       ? 'text-amber-400 border-amber-400/50 hover:bg-amber-400/10'
@@ -401,7 +415,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                                   {isClan ? '世袭' : '流官'}
                                 </span>
                               )}
-                              {canEdit ? (
+                              {editable ? (
                                 <button
                                   onClick={() => executeToggleAppointRight(post.id)}
                                   className={`text-xs px-2 py-0.5 rounded font-bold border transition-colors ${

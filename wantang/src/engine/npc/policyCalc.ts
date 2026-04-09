@@ -75,7 +75,23 @@ export interface PolicyPost {
   hasAppointRight: boolean;
 }
 
-/** 获取臣属持有的 grantsControl 岗位 + 所属领地信息 */
+/**
+ * 判定一个 territory 是否是某个父道的治所州。
+ * 治所州主岗在政策层不是独立目标——所有 post 政策（successionLaw / hasAppointRight /
+ * territoryType / designatedHeirId）都必须从道主岗发起、由 executeToggleX 内部联动写入治所州。
+ * 详见 CLAUDE.md `### 治所州联动` 章节。
+ */
+export function isCapitalZhouOfDao(
+  territoryId: string,
+  territories: Map<string, Territory>,
+): boolean {
+  const t = territories.get(territoryId);
+  if (!t || t.tier !== 'zhou' || !t.parentId) return false;
+  const parent = territories.get(t.parentId);
+  return parent?.tier === 'dao' && parent.capitalZhouId === territoryId;
+}
+
+/** 获取臣属持有的 grantsControl 岗位 + 所属领地信息（已过滤治所州主岗） */
 export function getVassalPolicyPosts(vassalId: string, ctx: NpcContext): PolicyPost[] {
   const postIds = ctx.holderIndex.get(vassalId);
   if (!postIds) return [];
@@ -88,6 +104,8 @@ export function getVassalPolicyPosts(vassalId: string, ctx: NpcContext): PolicyP
     if (!tpl?.grantsControl) continue;
     const terr = ctx.territories.get(post.territoryId);
     if (!terr) continue;
+    // 过滤治所州主岗：它不是独立政策目标，由父道主岗的 executeToggleX 联动
+    if (isCapitalZhouOfDao(terr.id, ctx.territories)) continue;
 
     result.push({
       postId: post.id,

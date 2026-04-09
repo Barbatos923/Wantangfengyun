@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTurnManager } from '@engine/TurnManager';
 import { type GameEvent } from '@engine/types';
 import { diffDays } from '@engine/dateUtils';
@@ -193,8 +193,10 @@ const EventToast: React.FC = () => {
   const dismissAll = useNotificationStore((s) => s.dismissAll);
   const [battleEvent, setBattleEvent] = useState<GameEvent | null>(null);
 
-  // 跟踪已渲染过的事件 ID，用于入场动画判断
-  const seenIdsRef = useRef<Set<string>>(new Set());
+  // 跟踪已渲染过的事件 ID，用于入场动画判断。
+  // 改用 state 而非 ref：render 阶段读 ref 不纯，并发渲染下不可靠；这里 toast 列表很短，
+  // 多一次 commit 后的 setState 重渲成本可忽略。
+  const [seenIds, setSeenIds] = useState<Set<string>>(() => new Set());
 
   const visibleEvents = useMemo(() => {
     return events
@@ -208,12 +210,17 @@ const EventToast: React.FC = () => {
       .slice(-5);
   }, [events, currentDate, dismissedIds, playerId, characters]);
 
-  // 更新已见 ID
+  // 渲染提交后再补 seen，避免 render 阶段写 ref / state（用 functional setter 防止循环）
   useEffect(() => {
-    const newSeen = new Set(seenIdsRef.current);
-    for (const e of visibleEvents) newSeen.add(e.id);
-    seenIdsRef.current = newSeen;
-  });
+    setSeenIds((prev) => {
+      let changed = false;
+      const next = new Set(prev);
+      for (const e of visibleEvents) {
+        if (!next.has(e.id)) { next.add(e.id); changed = true; }
+      }
+      return changed ? next : prev;
+    });
+  }, [visibleEvents]);
 
   if (visibleEvents.length === 0) return null;
 
@@ -235,7 +242,7 @@ const EventToast: React.FC = () => {
             key={event.id}
             event={event}
             playerId={playerId}
-            isNew={!seenIdsRef.current.has(event.id)}
+            isNew={!seenIds.has(event.id)}
             onClick={() => handleClick(event)}
             onDismiss={() => dismissEvent(event.id)}
           />

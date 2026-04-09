@@ -8,7 +8,7 @@ import {
   executeToggleAppointRight,
 } from '@engine/interaction';
 import { positionMap } from '@data/positions';
-import { hasAuthorityOverPost } from '@engine/npc/policyCalc';
+import { hasAuthorityOverPost, isCapitalZhouOfDao } from '@engine/npc/policyCalc';
 
 import type { Post } from '@engine/territory/types';
 
@@ -41,6 +41,8 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
       if (post.holderId !== targetId) continue;
       const tpl = positionMap.get(post.templateId);
       if (!tpl?.grantsControl) continue;
+      // 治所州主岗不是独立政策目标，由父道主岗联动
+      if (isCapitalZhouOfDao(terr.id, territories)) continue;
       controlPosts.push({
         post,
         territoryId: terr.id,
@@ -114,7 +116,7 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                         {/* 职类 */}
                         {canToggleType && canSetPolicy && (
                           <button
-                            onClick={() => executeToggleType(entry.post.id, entry.territoryId)}
+                            onClick={() => executeToggleType(entry.post.id)}
                             className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${
                               isMilitary
                                 ? 'border-blue-400/50 text-blue-400 hover:bg-blue-400/10'
@@ -126,7 +128,7 @@ const CentralizationFlow: React.FC<CentralizationFlowProps> = ({ targetId, onClo
                         )}
                         {/* 继承法 */}
                         {canSetPolicy && <button
-                          onClick={() => executeToggleSuccession(entry.post.id, entry.capitalZhouId, territories)}
+                          onClick={() => executeToggleSuccession(entry.post.id)}
                           className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${
                             isClan
                               ? 'border-amber-400/50 text-amber-400 hover:bg-amber-400/10'

@@ -123,7 +123,7 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
             effectKey: 'adjustType:accept',
             effectData: { postId: data.postId, territoryId: data.territoryId },
             onSelect: () => {
-              executeToggleType(data.postId, data.territoryId);
+              executeToggleType(data.postId);
             },
           },
           {
@@ -153,7 +153,7 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
       return;
     }
 
-    executeToggleType(data.postId, data.territoryId);
+    executeToggleType(data.postId);
   },
 };
 

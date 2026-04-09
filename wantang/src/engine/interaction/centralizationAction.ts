@@ -6,7 +6,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
-import type { CentralizationLevel, Post, Territory } from '@engine/territory/types';
+import type { CentralizationLevel, Post } from '@engine/territory/types';
 
 // 军/民模板切换映射
 export const MILITARY_TO_CIVIL: Record<string, string> = {
@@ -55,11 +55,17 @@ export function executeTaxChange(targetId: string, _playerId: string, delta: num
   refreshPlayerLedger();
 }
 
-/** 切换职类（军事 ↔ 民政） */
-export function executeToggleType(postId: string, territoryId: string): void {
+/**
+ * 切换职类（军事 ↔ 民政）。
+ *
+ * 治所州联动（CLAUDE.md `### 治所州联动`）：道级主岗变化时，治所州主岗的 templateId
+ * 与 territory.territoryType 一并按对照表同步切换；治所州 holder 与道主岗不一致也强制
+ * 写入——这种状态本身就是非法脱绑。
+ */
+export function executeToggleType(postId: string): void {
   const terrStore = useTerritoryStore.getState();
   const post = terrStore.findPost(postId);
-  if (!post) return;
+  if (!post?.territoryId) return;
   const tpl = positionMap.get(post.templateId);
   if (!tpl) return;
   const isMilitary = tpl.territoryType === 'military';
@@ -69,20 +75,42 @@ export function executeToggleType(postId: string, territoryId: string): void {
   if (!newTemplateId) return;
   const newType = isMilitary ? 'civil' as const : 'military' as const;
   terrStore.updatePost(post.id, { templateId: newTemplateId });
-  terrStore.updateTerritory(territoryId, { territoryType: newType });
+  terrStore.updateTerritory(post.territoryId, { territoryType: newType });
+
+  // 治所州联动：道级主岗 → 治所州 zhou 级主岗也跟着切
+  const terr = terrStore.territories.get(post.territoryId);
+  if (terr?.tier === 'dao' && terr.capitalZhouId) {
+    const capZhou = terrStore.territories.get(terr.capitalZhouId);
+    const capPost = capZhou?.posts.find((p) => positionMap.get(p.templateId)?.grantsControl);
+    if (capPost) {
+      const capTpl = positionMap.get(capPost.templateId);
+      if (capTpl) {
+        const capIsMil = capTpl.territoryType === 'military';
+        const capNewTemplateId = capIsMil
+          ? MILITARY_TO_CIVIL[capPost.templateId]
+          : CIVIL_TO_MILITARY[capPost.templateId];
+        if (capNewTemplateId && capIsMil === isMilitary) {
+          terrStore.updatePost(capPost.id, { templateId: capNewTemplateId });
+        }
+      }
+      terrStore.updateTerritory(terr.capitalZhouId, { territoryType: newType });
+    }
+  }
 
   refreshPlayerLedger();
 }
 
-/** 切换继承法（宗法 ↔ 流官） */
-export function executeToggleSuccession(
-  postId: string,
-  capitalZhouId: string | undefined,
-  territories: Map<string, Territory>,
-): void {
+/**
+ * 切换继承法（宗法 ↔ 流官）。
+ *
+ * 治所州联动（CLAUDE.md `### 治所州联动`）：道级主岗变化时自动联动治所州主岗，
+ * capitalZhouId 由 post.territoryId 内部自查，调用方无需传入。
+ */
+export function executeToggleSuccession(postId: string): void {
   const terrStore = useTerritoryStore.getState();
   const post = terrStore.findPost(postId);
   if (!post) return;
+  const territories = terrStore.territories;
   const newLaw = post.successionLaw === 'clan' ? 'bureaucratic' as const : 'clan' as const;
   const patch: Partial<Post> = { successionLaw: newLaw };
   if (newLaw === 'bureaucratic') {
@@ -100,8 +128,11 @@ export function executeToggleSuccession(
     }
   }
   terrStore.updatePost(post.id, patch);
-  if (capitalZhouId) {
-    const capZhou = territories.get(capitalZhouId);
+
+  // 治所州联动：道级主岗 → 治所州 zhou 级主岗
+  const terr = post.territoryId ? territories.get(post.territoryId) : undefined;
+  if (terr?.tier === 'dao' && terr.capitalZhouId) {
+    const capZhou = territories.get(terr.capitalZhouId);
     const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
     if (capPost) {
       const capPatch: Partial<Post> = { ...patch };
@@ -118,10 +149,14 @@ export function executeToggleSuccession(
       terrStore.updatePost(capPost.id, capPatch);
     }
   }
-
 }
 
-/** 切换辟署权 */
+/**
+ * 切换辟署权。
+ *
+ * 治所州联动（CLAUDE.md `### 治所州联动`）：道级主岗变化时治所州主岗一并强制写入，
+ * 不因 holder 不一致跳过。
+ */
 export function executeToggleAppointRight(postId: string): void {
   const terrStore = useTerritoryStore.getState();
   const post = terrStore.findPost(postId);
@@ -129,6 +164,15 @@ export function executeToggleAppointRight(postId: string): void {
   const newValue = !post.hasAppointRight;
   terrStore.updatePost(postId, { hasAppointRight: newValue });
 
+  // 治所州联动：道级主岗 → 治所州 zhou 级主岗
+  const terr = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
+  if (terr?.tier === 'dao' && terr.capitalZhouId) {
+    const capZhou = terrStore.territories.get(terr.capitalZhouId);
+    const capPost = capZhou?.posts.find((p) => positionMap.get(p.templateId)?.grantsControl);
+    if (capPost) {
+      terrStore.updatePost(capPost.id, { hasAppointRight: newValue });
+    }
+  }
 }
 
 /** 变更回拨率 */
@@ -158,13 +202,14 @@ export function executeDesignateHeir(postId: string, heirId: string | null): voi
     if (!tpl?.grantsControl) continue;
     terrStore.updatePost(p.id, { designatedHeirId: heirId });
 
-    // 治所联动
+    // 治所联动：以道为权威源强制覆盖治所州主岗的留后，不因 holder 不一致跳过
+    // （holder 不一致本身就是非法脱绑状态，详见 CLAUDE.md `### 治所州联动`）
     if (p.territoryId) {
       const terr = territories.get(p.territoryId);
-      if (terr?.capitalZhouId) {
+      if (terr?.tier === 'dao' && terr.capitalZhouId) {
         const capZhou = territories.get(terr.capitalZhouId);
         const capPost = capZhou?.posts.find(cp => positionMap.get(cp.templateId)?.grantsControl);
-        if (capPost && capPost.holderId === post.holderId) {
+        if (capPost) {
           terrStore.updatePost(capPost.id, { designatedHeirId: heirId });
         }
       }

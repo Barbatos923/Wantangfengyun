@@ -30,46 +30,63 @@ interface EditableEntry extends DeploymentEntry {
 
 export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployApproveFlowProps) {
   const task = useNpcStore((s) => s.playerTasks.find(t => t.type === 'deploy-approve') ?? null);
+  if (!task) return null;
+  // 用 task.id 作为 key 让 React 帮我们做 buffer 重置：换 task → 子组件重 mount → useState
+  // 初始化器自然跑一次，无需 useEffect 同步派生 state（旧实现会在 task 引用变化但 id 相同时
+  // 反复重置编辑，且无法表达"任务变了→当前编辑作废"的语义）。
+  return (
+    <DeployApproveBody
+      key={task.id}
+      task={task}
+      visible={visible}
+      onClose={onClose}
+      onOpen={onOpen}
+    />
+  );
+}
+
+interface DeployApproveBodyProps {
+  task: NonNullable<ReturnType<typeof useNpcStore.getState>['playerTasks'][number]>;
+  visible: boolean;
+  onClose: () => void;
+  onOpen: () => void;
+}
+
+function DeployApproveBody({ task, visible, onClose, onOpen }: DeployApproveBodyProps) {
   const territories = useTerritoryStore((s) => s.territories);
   const armies = useMilitaryStore((s) => s.armies);
   const characters = useCharacterStore((s) => s.characters);
   const date = useTurnManager((s) => s.currentDate);
 
-  // 本地可编辑副本（拍平 submissions，记住每条来自哪个 drafter）
-  const [entries, setEntries] = useState<EditableEntry[]>([]);
+  // 本地可编辑副本：mount 时从 task 一次性派生，编辑期不再被任何外部 effect 覆盖。
+  const [entries, setEntries] = useState<EditableEntry[]>(() => {
+    const data = task.data as { submissions?: DeploySubmission[]; entries?: DeploymentEntry[] };
+    const campaignArmyIds = new Set<string>();
+    for (const c of useWarStore.getState().campaigns.values()) {
+      for (const aid of c.armyIds) campaignArmyIds.add(aid);
+      for (const ia of c.incomingArmies) campaignArmyIds.add(ia.armyId);
+    }
+    const flat: EditableEntry[] = [];
+    if (data.submissions) {
+      for (const s of data.submissions) {
+        for (const e of s.entries) flat.push({ ...e, drafterId: s.drafterId });
+      }
+    } else if (data.entries) {
+      // 兼容旧数据结构（存档迁移期）
+      for (const e of data.entries) flat.push({ ...e, drafterId: '' });
+    }
+    const armiesNow = useMilitaryStore.getState().armies;
+    return flat.filter((e) => {
+      const army = armiesNow.get(e.armyId);
+      return army && army.ownerId === task.actorId && !campaignArmyIds.has(e.armyId);
+    });
+  });
   const [editedIndices, setEditedIndices] = useState<Set<number>>(new Set());
 
   // 地图选点：选点期间隐藏 Modal 但保持挂载
   const [selectingIndex, setSelectingIndex] = useState<number | null>(null);
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
   const mapSelectionResult = usePanelStore((s) => s.mapSelectionResult);
-
-  // 初始化本地副本：拍平 submissions，过滤已失效条目
-  useEffect(() => {
-    if (task) {
-      const data = task.data as { submissions?: DeploySubmission[]; entries?: DeploymentEntry[] };
-      const campaignArmyIds = new Set<string>();
-      for (const c of useWarStore.getState().campaigns.values()) {
-        for (const aid of c.armyIds) campaignArmyIds.add(aid);
-        for (const ia of c.incomingArmies) campaignArmyIds.add(ia.armyId);
-      }
-      const flat: EditableEntry[] = [];
-      if (data.submissions) {
-        for (const s of data.submissions) {
-          for (const e of s.entries) flat.push({ ...e, drafterId: s.drafterId });
-        }
-      } else if (data.entries) {
-        // 兼容旧数据结构（存档迁移期）
-        for (const e of data.entries) flat.push({ ...e, drafterId: '' });
-      }
-      const valid = flat.filter(e => {
-        const army = armies.get(e.armyId);
-        return army && army.ownerId === task.actorId && !campaignArmyIds.has(e.armyId);
-      });
-      setEntries(valid);
-      setEditedIndices(new Set());
-    }
-  }, [task]);
 
   // 地图选择完成 → 更新 entry + 恢复显示
   useEffect(() => {
@@ -90,9 +107,7 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
     }
     setSelectingIndex(null);
     onOpen();
-  }, [mapSelectionActive, mapSelectionResult, selectingIndex]);
-
-  if (!task) return null;
+  }, [mapSelectionActive, mapSelectionResult, selectingIndex, onOpen]);
 
   const actorId = task.actorId;
   const isSelecting = selectingIndex !== null;
@@ -164,14 +179,14 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
       }
     }
     for (const did of succeededDrafterIds) notifyDrafterApproved(did);
-    useNpcStore.getState().removePlayerTask(task!.id);
+    useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 
   function handleReject() {
     // 驳回 = 给 task 中所有 drafter 加 30 天 CD + 通知
     const now = useTurnManager.getState().currentDate;
-    const data = task!.data as { submissions?: DeploySubmission[] };
+    const data = task.data as { submissions?: DeploySubmission[] };
     if (data.submissions) {
       const cdUntil = addDays(now, 30);
       for (const s of data.submissions) {
@@ -180,7 +195,7 @@ export default function DeployApproveFlow({ visible, onClose, onOpen }: DeployAp
       }
     }
     useNpcStore.getState().clearDeployDraft(actorId);
-    useNpcStore.getState().removePlayerTask(task!.id);
+    useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 

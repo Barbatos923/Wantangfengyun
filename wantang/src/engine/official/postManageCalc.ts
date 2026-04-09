@@ -162,6 +162,11 @@ export function canCreateEmperor(
 ): EligibilityResult {
   if (era !== Era.LuanShi) return { eligible: false, reason: '只有乱世才可称帝' };
 
+  // 必须先独立：与建国/建镇的 promoteOverlordIfNeeded 路径保持一致，
+  // 避免出现"皇帝仍是别人附庸"的制度冲突。
+  const actor = characters.get(actorId);
+  if (actor?.overlordId) return { eligible: false, reason: '必须先脱离效忠链才可称帝' };
+
   // 检查是否已有皇帝
   for (const t of territories.values()) {
     if (t.tier === 'tianxia') {

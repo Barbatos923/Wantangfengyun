@@ -41,22 +41,31 @@ export function executeCreateKingdom(
   actorId: string,
   territoryId: string,
   config?: CreatePostConfig,
-): void {
+): boolean {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
   const territory = terrStore.territories.get(territoryId);
-  if (!territory) return;
+  if (!territory) return false;
 
   const effectiveType = config?.territoryType ?? territory.territoryType;
   const templateId = resolveTemplateId(territory.tier, effectiveType);
-  if (!templateId) return;
+  if (!templateId) return false;
   const tpl = positionMap.get(templateId);
-  if (!tpl) return;
+  if (!tpl) return false;
+
+  // 执行瞬间二次校验：弹窗打开期间世界状态可能变化（资源被花掉、领地易主、控制率下降）
+  const eligibility = canCreatePost(actorId, territoryId, terrStore.territories, charStore.characters);
+  if (!eligibility.eligible) return false;
+
+  const cost = calcPostManageCost('create', territory.tier);
+  const balance = getCapitalBalance(actorId);
+  if (balance.money < cost.money) return false;
+  const actor = charStore.getCharacter(actorId);
+  if (!actor || actor.resources.prestige < cost.prestige) return false;
 
   // 扣除资源：金钱从 capital 国库扣，声望从私产扣
-  const cost = calcPostManageCost('create', territory.tier);
   debitCapitalTreasury(actorId, { money: cost.money });
   charStore.addResources(actorId, { prestige: -cost.prestige });
 
@@ -112,6 +121,8 @@ export function executeCreateKingdom(
     description: `${charStore.getCharacter(actorId)?.name ?? ''}在${territory.name}设${tpl.name}`,
     priority: EventPriority.Major,
   });
+
+  return true;
 }
 
 // ── 决议注册 ──────────────────────────────────────────────────
@@ -177,8 +188,8 @@ registerDecision({
   },
 
   execute: (actorId, targetId, config) => {
-    if (!targetId) return;
-    executeCreateKingdom(actorId, targetId, config as CreatePostConfig | undefined);
+    if (!targetId) return false;
+    return executeCreateKingdom(actorId, targetId, config as CreatePostConfig | undefined);
   },
 });
 
@@ -243,7 +254,7 @@ registerDecision({
   },
 
   execute: (actorId, targetId, config) => {
-    if (!targetId) return;
-    executeCreateKingdom(actorId, targetId, config as CreatePostConfig | undefined);
+    if (!targetId) return false;
+    return executeCreateKingdom(actorId, targetId, config as CreatePostConfig | undefined);
   },
 });

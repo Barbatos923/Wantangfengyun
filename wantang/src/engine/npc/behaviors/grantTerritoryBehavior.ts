@@ -207,8 +207,7 @@ export const grantTerritoryBehavior: NpcBehavior<GrantTerritoryData> = {
       const grantPost = useTerritoryStore.getState().findPost(grant.postId);
       if (grantPost) {
         if (grantPost.successionLaw === 'clan') {
-          const capitalZhouId = territories.get(grant.territory.id)?.capitalZhouId;
-          executeToggleSuccession(grant.postId, capitalZhouId, useTerritoryStore.getState().territories);
+          executeToggleSuccession(grant.postId);
           debugLog('policy', `[自身政策] ${actor.name}：${grant.territory.name} 授出前改为流官`);
         }
         const freshPost = useTerritoryStore.getState().findPost(grant.postId);

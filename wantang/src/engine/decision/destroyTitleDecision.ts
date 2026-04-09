@@ -28,19 +28,26 @@ export function getDestroyablePosts(actorId: string): Post[] {
 
 // ── 执行函数（引擎层，NPC 可直接调用） ───────────────────────
 
-export function executeDestroyTitle(actorId: string, postId: string): void {
+export function executeDestroyTitle(actorId: string, postId: string): boolean {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
   const post = terrStore.findPost(postId);
-  if (!post || post.holderId !== actorId) return;
+  if (!post || post.holderId !== actorId) return false;
 
   const territory = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
   const tpl = positionMap.get(post.templateId);
 
-  // 扣除资源
+  // 执行瞬间二次校验：弹窗打开期间持有岗位 / 资源都可能变化
+  const grantsPosts = getHeldGrantsPosts(actorId);
+  const eligibility = canDestroyPost(actorId, post, grantsPosts);
+  if (!eligibility.eligible) return false;
   const cost = calcPostManageCost('destroy', 'guo');
+  const actor = charStore.getCharacter(actorId);
+  if (!actor || actor.resources.prestige < cost.prestige) return false;
+
+  // 扣除资源
   charStore.addResources(actorId, { prestige: -cost.prestige });
 
   // 对 guo 下 de jure dao 控制者施加好感惩罚
@@ -80,6 +87,8 @@ export function executeDestroyTitle(actorId: string, postId: string): void {
     description: `${charStore.getCharacter(actorId)?.name ?? ''}销毁了${territory?.name ?? ''}${tpl?.name ?? '岗位'}`,
     priority: EventPriority.Major,
   });
+
+  return true;
 }
 
 // ── 决议注册 ──────────────────────────────────────────────────
@@ -128,7 +137,7 @@ registerDecision({
   },
 
   execute: (actorId, targetId) => {
-    if (!targetId) return;
-    executeDestroyTitle(actorId, targetId);
+    if (!targetId) return false;
+    return executeDestroyTitle(actorId, targetId);
   },
 });

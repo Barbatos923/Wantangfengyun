@@ -27,6 +27,12 @@ interface WarState {
   getWarsByCharacter(charId: string): War[];
   addParticipant(warId: string, charId: string, side: 'attacker' | 'defender'): void;
   removeParticipant(warId: string, charId: string): void;
+  /**
+   * 战争领袖死亡时，把 attackerId / defenderId 替换为继承人。
+   * 仅当 newLeader 当前未在敌对一方时执行；若 newLeader 已在同侧 participants 中，从那里移除。
+   * 返回 true 表示替换成功；false 表示 newLeader 在敌对一方或其他原因无法替换。
+   */
+  replaceLeader(warId: string, oldLeader: string, newLeader: string): boolean;
 
   // 行营
   createCampaign(
@@ -185,6 +191,36 @@ export const useWarStore = create<WarState>()((set, get) => ({
     });
   },
 
+  replaceLeader(warId, oldLeader, newLeader) {
+    let ok = false;
+    set((state) => {
+      const war = state.wars.get(warId);
+      if (!war) return {};
+      // 判定 oldLeader 是哪一方
+      const isAttacker = war.attackerId === oldLeader;
+      const isDefender = war.defenderId === oldLeader;
+      if (!isAttacker && !isDefender) return {};
+      // newLeader 不能在敌对一方（继承人偶尔可能恰好是敌方臣属）
+      const enemyList = isAttacker ? war.defenderParticipants : war.attackerParticipants;
+      const enemyLeader = isAttacker ? war.defenderId : war.attackerId;
+      if (newLeader === enemyLeader || enemyList.includes(newLeader)) return {};
+      const wars = new Map(state.wars);
+      const sameSideList = isAttacker ? war.attackerParticipants : war.defenderParticipants;
+      // 如果 newLeader 已经在同侧 participants 中，移除（升任领袖）
+      const filteredSame = sameSideList.filter((id) => id !== newLeader);
+      wars.set(warId, {
+        ...war,
+        attackerId: isAttacker ? newLeader : war.attackerId,
+        defenderId: isDefender ? newLeader : war.defenderId,
+        attackerParticipants: isAttacker ? filteredSame : war.attackerParticipants,
+        defenderParticipants: isDefender ? filteredSame : war.defenderParticipants,
+      });
+      ok = true;
+      return { wars };
+    });
+    return ok;
+  },
+
   // ── 行营 ────────────────────────────────────────────────────────────────
 
   createCampaign(warId, ownerId, commanderId, armyIds, locationId) {
@@ -202,7 +238,6 @@ export const useWarStore = create<WarState>()((set, get) => ({
       routeProgress: 0,
       marchProgress: 0,
       status: 'idle',
-      musteringTurnsLeft: 0,
     };
     set((state) => {
       const campaigns = new Map(state.campaigns);
@@ -224,6 +259,9 @@ export const useWarStore = create<WarState>()((set, get) => ({
     set((state) => {
       const existing = state.campaigns.get(campaignId);
       if (!existing) return {};
+      // 集结期间禁止行军：incomingArmies 的 turnsLeft 是基于当前 locationId 算的，
+      // 行军会让 locationId 变化导致集结目标失真。等所有军队到位后再下行军令。
+      if (existing.incomingArmies.length > 0) return {};
       const campaigns = new Map(state.campaigns);
       campaigns.set(campaignId, {
         ...existing,

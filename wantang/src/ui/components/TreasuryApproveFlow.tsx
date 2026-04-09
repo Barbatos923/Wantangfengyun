@@ -2,7 +2,7 @@
 // 玩家作为批准人（皇帝/王/节度使/刺史）审批属官草拟的国库调拨方案。
 // 支持逐条编辑（来源/目标/资源/金额）、删除、全部批准/驳回。
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Modal, ModalHeader, Button } from './base';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -19,27 +19,33 @@ interface TreasuryApproveFlowProps {
 
 export default function TreasuryApproveFlow({ visible, onClose }: TreasuryApproveFlowProps) {
   const task = useNpcStore((s) => s.playerTasks.find((t) => t.type === 'treasury-approve') ?? null);
+  if (!task) return null;
+  // 用 task.id 作为 key 让子组件 remount → buffer 自动重置；不再需要 useEffect 同步派生 state。
+  return <TreasuryApproveBody key={task.id} task={task} visible={visible} onClose={onClose} />;
+}
+
+interface TreasuryApproveBodyProps {
+  task: NonNullable<ReturnType<typeof useNpcStore.getState>['playerTasks'][number]>;
+  visible: boolean;
+  onClose: () => void;
+}
+
+function TreasuryApproveBody({ task, visible, onClose }: TreasuryApproveBodyProps) {
   const territories = useTerritoryStore((s) => s.territories);
   const controllerIndex = useTerritoryStore((s) => s.controllerIndex);
   const date = useTurnManager((s) => s.currentDate);
 
-  const [entries, setEntries] = useState<TreasuryEntry[]>([]);
-
-  // 初始化本地副本：从所有 submissions 拍平 entries
-  useEffect(() => {
-    if (task) {
-      const data = task.data as { submissions?: TreasurySubmission[]; entries?: TreasuryEntry[] };
-      const flat: TreasuryEntry[] = [];
-      if (data.submissions) {
-        for (const s of data.submissions) flat.push(...s.entries.map((e) => ({ ...e })));
-      } else if (data.entries) {
-        flat.push(...data.entries.map((e) => ({ ...e })));
-      }
-      setEntries(flat);
+  // 本地可编辑副本：mount 时从 task 一次性派生
+  const [entries, setEntries] = useState<TreasuryEntry[]>(() => {
+    const data = task.data as { submissions?: TreasurySubmission[]; entries?: TreasuryEntry[] };
+    const flat: TreasuryEntry[] = [];
+    if (data.submissions) {
+      for (const s of data.submissions) flat.push(...s.entries.map((e) => ({ ...e })));
+    } else if (data.entries) {
+      flat.push(...data.entries.map((e) => ({ ...e })));
     }
-  }, [task]);
-
-  if (!task) return null;
+    return flat;
+  });
 
   const actorId = task.actorId;
 
@@ -64,14 +70,14 @@ export default function TreasuryApproveFlow({ visible, onClose }: TreasuryApprov
     for (const entry of entries) {
       executeTreasuryEntry(entry, actorId);
     }
-    useNpcStore.getState().removePlayerTask(task!.id);
+    useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 
   function handleReject() {
     // 驳回 = 给 task 中所有 drafter 加 30 天 CD
     const now = useTurnManager.getState().currentDate;
-    const data = task!.data as { submissions?: TreasurySubmission[] };
+    const data = task.data as { submissions?: TreasurySubmission[] };
     if (data.submissions) {
       const cdUntil = addDays(now, 30);
       for (const s of data.submissions) {
@@ -79,7 +85,7 @@ export default function TreasuryApproveFlow({ visible, onClose }: TreasuryApprov
       }
     }
     useNpcStore.getState().clearTreasuryDraft(actorId);
-    useNpcStore.getState().removePlayerTask(task!.id);
+    useNpcStore.getState().removePlayerTask(task.id);
     onClose();
   }
 

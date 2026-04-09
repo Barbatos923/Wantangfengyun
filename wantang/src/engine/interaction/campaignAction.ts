@@ -33,6 +33,11 @@ export function executeAddArmyToCampaign(
   const campaign = warStore.campaigns.get(campaignId);
   if (!campaign) return;
 
+  // 行军中禁止增援：getMusteringTime 用 campaign.locationId 算，但 marching 行营每天换位置，
+  // 算出的 ETA 既不是"追上移动中的行营"也不是"先到旧驻地再跟进"，会出现增援军在到位日凭空
+  // 落到新位置的语义漂移。等行营停下（idle/sieging）再增援。
+  if (campaign.status === 'marching') return;
+
   const army = useMilitaryStore.getState().armies.get(armyId);
   if (!army) return;
 
@@ -120,28 +125,29 @@ export function executeCreateCampaign(
     }
   }
 
-  // 计算最大集结时间
-  let maxMustering = 0;
+  // 按集结时间拆分：0 → 立即编入 armyIds；>0 → incomingArmies 通道
+  // （warSystem 每日 drain incomingArmies，归零时编入 armyIds 并移动 army.locationId）
+  const arrivedIds: string[] = [];
+  const incoming: { armyId: string; turnsLeft: number }[] = [];
   for (const aid of validArmyIds) {
     const army = armies.get(aid);
-    if (army) {
-      const time = getMusteringTime(army.locationId, locationId, territories);
-      if (time > maxMustering) maxMustering = time;
-    }
+    if (!army) continue;
+    const time = getMusteringTime(army.locationId, locationId, territories);
+    if (time === 0) arrivedIds.push(aid);
+    else incoming.push({ armyId: aid, turnsLeft: time });
   }
 
   const newCampaign = useWarStore.getState().createCampaign(
     warId,
     ownerId,
     bestCommander || ownerId,
-    validArmyIds,
+    arrivedIds,
     locationId,
   );
 
-  if (maxMustering > 0) {
+  if (incoming.length > 0) {
     useWarStore.getState().updateCampaign(newCampaign.id, {
-      status: 'mustering',
-      musteringTurnsLeft: maxMustering,
+      incomingArmies: incoming,
     });
   }
 }

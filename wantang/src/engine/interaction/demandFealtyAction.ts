@@ -219,6 +219,8 @@ export interface DemandFealtyResult {
   success: boolean;
   chance: number;
   breakdown: FealtyChanceResult['breakdown'];
+  /** 执行瞬时校验失败（stale）：UI 应显示"局势已发生变化"，不要按 success=false 当作概率落败处理 */
+  stale?: true;
 }
 
 /** 计算某角色名下所有军队的总兵力 */
@@ -259,7 +261,14 @@ export function executeDemandFealty(
   const charStore = useCharacterStore.getState();
   const player = charStore.getCharacter(playerId);
   const target = charStore.getCharacter(targetId);
-  if (!player || !target) return { success: false, chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 } };
+  if (!player?.alive || !target?.alive) {
+    return { success: false, chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
+
+  // 瞬时重校验：弹窗打开后关系/资格可能变化，必须再跑一次 canDemandFealty
+  if (!canDemandFealty(player, target)) {
+    return { success: false, chance: 0, breakdown: { base: 50, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
 
   const terrState2 = useTerritoryStore.getState();
   const playerExpectedLeg2 = terrState2.expectedLegitimacy.get(playerId) ?? null;

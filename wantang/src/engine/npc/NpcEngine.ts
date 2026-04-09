@@ -61,7 +61,9 @@ import './behaviors/negotiateTaxBehavior';
 /** 批量执行调动方案（TransferPlanFlow UI 调用） */
 export function executeTransferPlan(plan: TransferPlan): void {
   for (const entry of plan.entries) {
-    executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+    // executeAppoint 失败 → 该条目岗位/资格已变化，跳过法理下级转移
+    // （否则会把转移作用到从未生效的任命后果上）
+    if (!executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost)) continue;
     autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
   }
 }
@@ -147,9 +149,9 @@ function handleDraftSubmission(date: GameDate): void {
     }
   }
 
-  // 辟署权域：立即执行
+  // 辟署权域：立即执行（失败 → 跳过该条目的后续法理下级转移）
   for (const entry of directEntries) {
-    executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+    if (!executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost)) continue;
     autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
   }
 
@@ -171,7 +173,7 @@ function handleDraftSubmission(date: GameDate): void {
         deduped.set(entry.appointeeId, entry);
       }
       for (const entry of deduped.values()) {
-        executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+        if (!executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost)) continue;
         autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
       }
     }
@@ -191,7 +193,7 @@ function handleExpiredPlayerTasks(date: GameDate): void {
       // 皇帝超时未审批 → 自动批准执行
       const data = task.data as { entries: TransferPlan['entries'] };
       for (const entry of data.entries) {
-        executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost);
+        if (!executeAppoint(entry.postId, entry.appointeeId, entry.legalAppointerId, entry.vacateOldPost)) continue;
         autoTransferChildrenAfterAppoint(entry.postId, entry.legalAppointerId, true);
       }
     } else if (task.type === 'review') {

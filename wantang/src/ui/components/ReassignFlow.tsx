@@ -32,14 +32,13 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
 
   const [state, setState] = useState<FlowState>('select');
   const [selected, setSelected] = useState<ReassignCandidate | null>(null);
-  // result: true=成功, false=有地者抗命/皇帝驳回, null=未执行或异步审批
-  const [result, setResult] = useState<boolean | null>(null);
-  const [resultIsEmperorReject, setResultIsEmperorReject] = useState(false);
+  // result: 'success'=调任成功, 'rebel'=有地者抗命, 'reject'=皇帝驳回, 'stale'=瞬时校验失败, null=未执行
+  const [result, setResult] = useState<'success' | 'rebel' | 'reject' | 'stale' | null>(null);
   // 执行前锁定有地者名字（执行后角色状态变化会导致方向判断翻转）
   const [lockedTerritorialName, setLockedTerritorialName] = useState<string | null>(null);
 
-  if (!playerId || !target) return null;
-
+  // 注：early-return 必须在所有 Hook 之后，否则 target 在生命周期内"有→无"切换会触发
+  // React Hook 数量不一致报错。下方计算/useMemo 都允许 target 为空，最后再统一 return null。
   const emperorId = findEmperorId(territories, centralPosts);
   const isEmperor = playerId === emperorId;
   const isChancellor = centralPosts.some(p => p.templateId === 'pos-zaixiang' && p.holderId === playerId);
@@ -49,6 +48,7 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
 
   // 获取候选人
   const candidates = useMemo(() => {
+    if (!target) return [] as ReassignCandidate[];
     if (targetIsCentral) {
       // target 是京官 → 展示有地臣属
       return getTerritorialCandidates(targetId, characters, territories, centralPosts);
@@ -64,8 +64,9 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
       }
       return [];
     }
-  }, [targetId, targetIsCentral, characters, territories, centralPosts]);
+  }, [target, targetId, targetIsCentral, characters, territories, centralPosts]);
 
+  if (!playerId || !target) return null;
   if (candidates.length === 0) return null;
 
   // 计算成功率（有地者拒绝概率）
@@ -91,11 +92,13 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
     // 确定谁是有地者、谁是京官
     let territorialPostId: string;
     let replacementId: string;
+    let expectedTerritorialId: string;
 
     if (targetIsCentral) {
       // target=京官, selected=有地者
       territorialPostId = selected.post.id;
       replacementId = targetId;
+      expectedTerritorialId = selected.character.id;
     } else {
       // target=有地者, selected=京官
       const terrStore = useTerritoryStore.getState();
@@ -104,6 +107,7 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
       if (!controlPost) return;
       territorialPostId = controlPost.id;
       replacementId = selected.character.id;
+      expectedTerritorialId = targetId;
     }
 
     if (isChancellor && !isEmperor) {
@@ -115,8 +119,9 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
         onClose(); // 玩家皇帝异步审批
         return;
       }
-      setResultIsEmperorReject(pr.type === 'emperor-reject');
-      setResult(pr.type === 'success');
+      if (pr.type === 'emperor-reject') setResult('reject');
+      else if (pr.type === 'rebel') setResult('rebel');
+      else setResult('success');
       setState('result');
       return;
     }
@@ -126,8 +131,8 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
     setLockedTerritorialName(tName);
 
     // 皇帝直接执行
-    const success = executeReassign(territorialPostId, replacementId, emperorId);
-    setResult(success);
+    const r = executeReassign(territorialPostId, replacementId, emperorId, expectedTerritorialId);
+    setResult(r === 'success' ? 'success' : r === 'rebel' ? 'rebel' : 'stale');
     setState('result');
   }
 
@@ -146,14 +151,18 @@ export default function ReassignFlow({ targetId, onClose }: ReassignFlowProps) {
     let resultText: string;
     let resultColor: string;
 
-    if (resultIsEmperorReject) {
+    if (result === 'reject') {
       resultText = `皇帝驳回了调任提案，认为时机不当。`;
       resultColor = 'var(--color-warning, #eab308)';
-    } else if (result) {
+    } else if (result === 'success') {
       resultText = `调任成功！${territorialName}已交出领地入京。`;
       resultColor = 'var(--color-success, #22c55e)';
-    } else {
+    } else if (result === 'rebel') {
       resultText = `调任失败！${territorialName}不服从调令，发动了独立战争！`;
+      resultColor = 'var(--color-danger, #ef4444)';
+    } else {
+      // stale
+      resultText = `局势已发生变化，调任未生效。`;
       resultColor = 'var(--color-danger, #ef4444)';
     }
 

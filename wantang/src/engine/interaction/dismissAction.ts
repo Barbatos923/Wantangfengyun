@@ -50,19 +50,40 @@ export function getDismissablePosts(
   });
 }
 
-/** 执行罢免：统一流程，零特殊分支 */
+/**
+ * 执行罢免：统一流程，零特殊分支。
+ *
+ * 瞬时重校验：post 仍存在；非 vacateOnly 模式下，holder 仍是 dismisser 的臣属
+ * （vacateOnly 用于铨选/system 路径，dismisserId 可能是 'system' 或非领主，跳过严格检查）。
+ * 任一不过 → 返回 false 不写状态。
+ */
 export function executeDismiss(
   postId: string,
   dismisserId: string,
   opts?: { skipOpinion?: boolean; vacateOnly?: boolean },
-): void {
+): boolean {
   const terrStore = useTerritoryStore.getState();
   const date = useTurnManager.getState().currentDate;
   const post = terrStore.findPost(postId);
-  if (!post) return;
+  if (!post) return false;
 
   const tpl = positionMap.get(post.templateId);
   const previousHolderId = post.holderId;
+
+  // 严格校验仅对非 vacateOnly 路径（玩家/NPC 直接罢免）：
+  // - holder 仍存在
+  // - dismisser 仍存活
+  // - holder 仍是 dismisser 的直属臣属（vacateOnly 路径绕过此检查）
+  if (!opts?.vacateOnly) {
+    if (!previousHolderId) return false;
+    const charStore = useCharacterStore.getState();
+    const dismisser = charStore.getCharacter(dismisserId);
+    if (!dismisser?.alive) return false;
+    const holder = charStore.getCharacter(previousHolderId);
+    if (!holder?.alive) return false;
+    // dismisser 必须仍是 holder 的领主（自我罢免、system 罢免不走这条路径）
+    if (dismisserId !== 'system' && holder.overlordId !== dismisserId) return false;
+  }
 
   // ── 岗位持有人变更 ──
   if (tpl?.grantsControl) {
@@ -119,4 +140,6 @@ export function executeDismiss(
   // ── 缓存刷新 ──
   const affectedIds = [previousHolderId, tpl?.grantsControl ? dismisserId : null].filter(Boolean) as string[];
   refreshPostCaches(affectedIds);
+
+  return true;
 }

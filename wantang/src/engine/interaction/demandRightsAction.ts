@@ -14,7 +14,7 @@ import { toAbsoluteDay } from '@engine/dateUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
-import { hasAuthorityOverPost } from '@engine/npc/policyCalc';
+import { hasAuthorityOverPost, isCapitalZhouOfDao } from '@engine/npc/policyCalc';
 import { executeToggleAppointRight, executeToggleSuccession } from './centralizationAction';
 import { positionMap } from '@data/positions';
 import { random } from '@engine/random';
@@ -50,6 +50,8 @@ export interface DemandRightsResult {
   success: boolean;
   chance: number;
   breakdown: DemandRightsChanceResult['breakdown'];
+  /** 执行瞬时校验失败（stale）：UI 显示"局势已发生变化"，不要等同于"对方拒绝" */
+  stale?: true;
 }
 
 // ── 注册交互 ──────────────────────────────────────────────
@@ -125,6 +127,8 @@ function getDemandablePostsFromTerritories(
       if (post.holderId !== actorId) continue;
       const tpl = positionMap.get(post.templateId);
       if (!tpl?.grantsControl) continue;
+      // 治所州主岗不是独立政策目标，由父道主岗联动
+      if (isCapitalZhouOfDao(terr.id, territories)) continue;
 
       // overlord 必须有权限修改此岗位政策
       if (!hasAuthorityOverPost(overlordId, terr.id, territories)) continue;
@@ -174,6 +178,8 @@ export function getDemandablePostsFromCtx(
 
     const terr = ctx.territories.get(post.territoryId);
     if (!terr) continue;
+    // 治所州主岗不是独立政策目标，由父道主岗联动
+    if (isCapitalZhouOfDao(terr.id, ctx.territories)) continue;
 
     if (!hasAuthorityOverPost(overlordId, terr.id, ctx.territories)) continue;
 
@@ -294,7 +300,20 @@ export function executeDemandRights(
   const charStore = useCharacterStore.getState();
   const actor = charStore.getCharacter(actorId);
   const overlord = charStore.getCharacter(overlordId);
-  if (!actor || !overlord) return { success: false, chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 } };
+  if (!actor?.alive || !overlord?.alive) {
+    return { success: false, chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
+
+  // 瞬时重校验：actor 仍是 overlord 的臣属、冷却仍未过、岗位仍可逼迫该项权利
+  if (!canDemandRights(actor, overlord)) {
+    return { success: false, chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
+  // 选定的 postId/right 仍在可逼迫集合内
+  const demandable = getDemandablePosts(actorId, overlordId);
+  const matched = demandable.find((d) => d.postId === postId && d.availableRights.includes(right));
+  if (!matched) {
+    return { success: false, chance: 0, breakdown: { base: 5, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
 
   const terrState = useTerritoryStore.getState();
   const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
@@ -320,9 +339,7 @@ export function executeDemandRights(
     if (right === 'appointRight') {
       executeToggleAppointRight(postId);
     } else {
-      const post = terrState.findPost(postId);
-      const terr = post?.territoryId ? terrState.territories.get(post.territoryId) : undefined;
-      executeToggleSuccession(postId, terr?.capitalZhouId, terrState.territories);
+      executeToggleSuccession(postId);
     }
     // 上级对下级不满
     charStore.addOpinion(overlordId, actorId, {

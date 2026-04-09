@@ -47,10 +47,10 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
   } | null>(null);
   // 任命只能对空缺岗位，替换须先走罢免/剥夺流程
 
-  if (!player || !target) return null;
-
   // 获取玩家有权管理的所有岗位
-  const allPosts = useMemo(() => getAppointablePosts(player), [player]);
+  // 注：early-return 必须在所有 Hook 之后，否则 player/target 在生命周期内"有→无"切换会触发
+  // React Hook 数量不一致报错。useMemo 的空 player 路径返回空数组兜底。
+  const allPosts = useMemo(() => (player ? getAppointablePosts(player) : []), [player]);
 
   // ── 地方岗位按 guo → dao → zhou 组织 ──
   const localTree = useMemo(() => {
@@ -114,6 +114,8 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
     return map;
   }, [allPosts]);
 
+  if (!player || !target) return null;
+
   // ── 渲染单个岗位行 ──
   function renderPostRow(post: Post, displayName?: string) {
     const tpl = positionMap.get(post.templateId);
@@ -138,7 +140,13 @@ export default function AppointFlow({ targetId, onClose }: AppointFlowProps) {
         disabled={disabled}
         onClick={() => {
           if (disabled) return;
-          executeAppoint(post.id, targetId, player!.id);
+          const ok = executeAppoint(post.id, targetId, player!.id);
+          if (!ok) {
+            // 引擎层瞬时校验失败：弹窗资格快照已过期，提示并保持窗口避免 no-op
+            // eslint-disable-next-line no-alert
+            alert('局势已发生变化，任命未生效。');
+            return;
+          }
           // 检查法理下级可选转移
           const postTpl = positionMap.get(post.templateId);
           if (postTpl?.grantsControl && post.territoryId) {

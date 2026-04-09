@@ -22,6 +22,11 @@ export interface Decision {
   canExecute: (actorId: string) => { executable: boolean; reasons: string[] };
   /** 需要额外参数选择（如选择哪个 guo）时返回候选列表 */
   getTargets?: (actorId: string) => DecisionTarget[];
-  /** 执行决议（targetId 为 getTargets 返回的目标 ID，config 为额外配置） */
-  execute: (actorId: string, targetId?: string, config?: Record<string, unknown>) => void;
+  /**
+   * 执行决议（targetId 为 getTargets 返回的目标 ID，config 为额外配置）。
+   *
+   * 返回值：true 表示已落地，false 表示执行瞬间二次校验失败（资格/资源已变化），
+   * 上层（UI/NPC）应据此提示或重试，**不得**假定调用必然成功。
+   */
+  execute: (actorId: string, targetId?: string, config?: Record<string, unknown>) => boolean;
 }

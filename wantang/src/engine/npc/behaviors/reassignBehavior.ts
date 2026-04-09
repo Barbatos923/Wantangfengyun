@@ -222,8 +222,10 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
 
     // ── 玩家是京官（被外放者）→ 先执行，成功则纯通知 ──
     if (data.replacementId === ctx.playerId) {
-      const success = executeReassign(data.territorialPostId, data.replacementId, actor.id);
-      if (success) {
+      // territorialId 必须存在（前面已经 narrow 过 post 持有者非玩家分支）
+      if (!territorialId) return;
+      const result = executeReassign(data.territorialPostId, data.replacementId, actor.id, territorialId);
+      if (result === 'success') {
         const freshTerrStore = useTerritoryStore.getState();
         const freshPost = freshTerrStore.findPost(data.territorialPostId);
         const terrName = freshPost?.territoryId ? (freshTerrStore.territories.get(freshPost.territoryId)?.name ?? '') : '';
@@ -252,7 +254,9 @@ export const emperorReassignBehavior: NpcBehavior<EmperorReassignData> = {
     }
 
     // ── 无关玩家 → 正常执行 ──
-    executeReassign(data.territorialPostId, data.replacementId, actor.id);
+    if (territorialId) {
+      executeReassign(data.territorialPostId, data.replacementId, actor.id, territorialId);
+    }
   },
 };
 

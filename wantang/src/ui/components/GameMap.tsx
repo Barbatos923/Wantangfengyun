@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { getDynamicTitle, getActualController } from '@engine/official/officialUtils';
@@ -54,7 +54,10 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
   const [tooltip, setTooltip] = useState<{ lines: string[]; x: number; y: number } | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  // isPanning 双轨：ref 用于热路径（mousemove 不触发 re-render），state 仅驱动 cursor 显示。
+  // 直接在 render 里读 ref.current 不纯，并发渲染下不可靠。
   const isPanning = useRef(false);
+  const [isPanningCursor, setIsPanningCursor] = useState(false);
   const hasDragged = useRef(false);
   const panStart = useRef({ x: 0, y: 0 });
   const panOrigin = useRef({ x: 0, y: 0 });
@@ -75,7 +78,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
   );
 
   // charId → 颜色（哈希 + 相邻碰撞检测）
-  const charColorMap = useMemo(() => {
+  const charColorMapResult = useMemo(() => {
     const paletteLen = CONTROLLER_PALETTE.length;
 
     function hashIdx(id: string): number {
@@ -103,7 +106,9 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
     }
 
     // 分配颜色：复用缓存 + 仅为新 ruler 跑冲突回避
-    const cache = colorAssignmentCache.current;
+    // 注意：useMemo 在 render 阶段执行，**不能**直接 mutate ref。这里把上一次缓存复制成
+    // 局部 Map 工作，结束后通过 useEffect 提交回 ref。
+    const cache = new Map(colorAssignmentCache.current);
     const result = new Map<string, string>();
     const allCharIds = [...new Set(zhouColorMap.values())];
 
@@ -136,8 +141,15 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
       result.set(charId, CONTROLLER_PALETTE[idx]);
     }
 
-    return result;
+    return { result, nextCache: cache };
   }, [displayResult]);
+
+  // 渲染提交后再把扩充过的缓存写回 ref（避免 render 阶段 mutate ref）
+  useEffect(() => {
+    colorAssignmentCache.current = charColorMapResult.nextCache;
+  }, [charColorMapResult]);
+
+  const charColorMap = charColorMapResult.result;
 
   // 行营数据
   const campaignData = useWarStore((s) => s.campaigns);
@@ -170,6 +182,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return;
     isPanning.current = true;
+    setIsPanningCursor(true);
     hasDragged.current = false;
     panStart.current = { x: e.clientX, y: e.clientY };
     panOrigin.current = { ...pan };
@@ -186,6 +199,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
 
   const handleMouseUp = useCallback(() => {
     isPanning.current = false;
+    setIsPanningCursor(false);
   }, []);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -244,7 +258,7 @@ const GameMap: React.FC<GameMapProps> = ({ onSelectTerritory, onSelectCampaign, 
         overflow: 'hidden',
         background: 'var(--color-bg, #1a1a2e)',
         userSelect: 'none',
-        cursor: isPanning.current ? 'grabbing' : marchMode ? 'crosshair' : 'grab',
+        cursor: isPanningCursor ? 'grabbing' : marchMode ? 'crosshair' : 'grab',
       }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}

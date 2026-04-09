@@ -18,7 +18,7 @@ export default function RevokeFlow({ targetId, onClose }: RevokeFlowProps) {
   const territories = useTerritoryStore((s) => s.territories);
 
   const [selected, setSelected] = useState<Post | null>(null);
-  const [result, setResult] = useState<{ success: boolean } | null>(null);
+  const [result, setResult] = useState<'success' | 'rebel' | 'stale' | null>(null);
 
   if (!player || !target) return null;
 
@@ -30,8 +30,8 @@ export default function RevokeFlow({ targetId, onClose }: RevokeFlowProps) {
   const chance = activePost && playerId ? previewRevokeChance(playerId, targetId) : null;
 
   function handleRevoke(post: Post) {
-    const success = executeRevoke(post.id, player!.id);
-    setResult({ success });
+    const r = executeRevoke(post.id, player!.id);
+    setResult(r);
   }
 
   function renderPostLabel(post: Post) {
@@ -61,15 +61,19 @@ export default function RevokeFlow({ targetId, onClose }: RevokeFlowProps) {
   if (result !== null) {
     return (
       <Modal size="sm" onOverlayClick={onClose}>
-        <ModalHeader title="剥夺结果" onClose={onClose} />
+        <ModalHeader title={result === 'stale' ? '操作未生效' : '剥夺结果'} onClose={onClose} />
         <div className="px-5 py-4 flex flex-col gap-3">
-          {result.success ? (
+          {result === 'success' ? (
             <p className="text-sm text-[var(--color-success, #22c55e)]">
               剥夺成功！{target.name} 的领地已收归麾下。
             </p>
-          ) : (
+          ) : result === 'rebel' ? (
             <p className="text-sm text-[var(--color-danger, #ef4444)]">
               剥夺失败！{target.name} 不服从命令，发动了独立战争！
+            </p>
+          ) : (
+            <p className="text-sm text-[var(--color-danger, #ef4444)]">
+              局势已发生变化，剥夺未生效。
             </p>
           )}
           <Button variant="default" className="w-full py-2 font-bold" onClick={onClose}>

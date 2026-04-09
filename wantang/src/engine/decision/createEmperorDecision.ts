@@ -8,26 +8,39 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { Era, EventPriority } from '@engine/types';
 import { collectRulerIds, findEmperorId } from '@engine/official/postQueries';
 import { canCreateEmperor, calcPostManageCost } from '@engine/official/postManageCalc';
-import { refreshLegitimacyForChar } from '@engine/official/postTransfer';
+import { refreshLegitimacyForChar, promoteOverlordIfNeeded } from '@engine/official/postTransfer';
 import type { Post } from '@engine/territory/types';
 import { debitCapitalTreasury, getCapitalBalance } from '@engine/territory/treasuryUtils';
 
 // ── 执行函数（引擎层，NPC 可直接调用） ───────────────────────
 
-export function executeCreateEmperor(actorId: string): void {
+export function executeCreateEmperor(actorId: string): boolean {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
+  const era = useTurnManager.getState().era;
   const date = useTurnManager.getState().currentDate;
+
+  // 执行瞬间二次校验：弹窗打开期间局势/资源都可能变化
+  const eligibility = canCreateEmperor(actorId, terrStore.territories, charStore.characters, era);
+  if (!eligibility.eligible) return false;
+  if (era !== Era.LuanShi) return false;
+  const existingEmperor = findEmperorId(terrStore.territories, terrStore.centralPosts);
+  if (existingEmperor) return false;
 
   // 找到 tianxia 领地
   let tianxiaId: string | undefined;
   for (const t of terrStore.territories.values()) {
     if (t.tier === 'tianxia') { tianxiaId = t.id; break; }
   }
-  if (!tianxiaId) return;
+  if (!tianxiaId) return false;
+
+  const cost = calcPostManageCost('createEmperor', 'tianxia');
+  const balance = getCapitalBalance(actorId);
+  if (balance.money < cost.money) return false;
+  const actor = charStore.getCharacter(actorId);
+  if (!actor || actor.resources.prestige < cost.prestige) return false;
 
   // 扣除资源：金钱从 capital 国库扣，声望从私产扣
-  const cost = calcPostManageCost('createEmperor', 'tianxia');
   debitCapitalTreasury(actorId, { money: cost.money });
   charStore.addResources(actorId, { prestige: -cost.prestige });
 
@@ -52,6 +65,10 @@ export function executeCreateEmperor(actorId: string): void {
     stabilityProgress: 0,
   });
 
+  // 与建国/建镇路径对齐：tianxia tier=4，沿效忠链向上脱出至独立。
+  // canCreateEmperor 已经要求 overlordId 为空，这里是防御性兜底。
+  promoteOverlordIfNeeded(actorId, 4);
+
   // 配套三连 + 正统性刷新
   useMilitaryStore.getState().syncArmyOwnersByPost(newPost.id, actorId);
   charStore.refreshIsRuler(collectRulerIds(useTerritoryStore.getState().territories));
@@ -68,6 +85,8 @@ export function executeCreateEmperor(actorId: string): void {
     description: `${charStore.getCharacter(actorId)?.name ?? ''}称帝，天下归一，乱世终结`,
     priority: EventPriority.Major,
   });
+
+  return true;
 }
 
 // ── 决议注册 ──────────────────────────────────────────────────
@@ -104,7 +123,5 @@ registerDecision({
     return { executable: reasons.length === 0, reasons };
   },
 
-  execute: (actorId) => {
-    executeCreateEmperor(actorId);
-  },
+  execute: (actorId) => executeCreateEmperor(actorId),
 });

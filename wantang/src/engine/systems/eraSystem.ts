@@ -10,6 +10,7 @@ import { getHighestBaseLegitimacy } from '@engine/official/legitimacyCalc';
 import { getHeldPosts } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { refreshPostCaches, ensureAppointRight } from '@engine/official/postTransfer';
+import { executeToggleSuccession } from '@engine/interaction/centralizationAction';
 
 // ── 外部可调用：增加崩溃进度（如战争结算） ─────────────────────────────────────
 
@@ -112,13 +113,25 @@ function destroyEmperorPost(): void {
   }
 
   // 所有道级和国级的 grantsControl 主岗 → 宗法继承（割据独立体制）
-  const freshTerrStore = useTerritoryStore.getState();
-  for (const t of freshTerrStore.territories.values()) {
-    if (t.tier !== 'dao' && t.tier !== 'guo') continue;
-    for (const post of t.posts) {
-      const tpl = positionMap.get(post.templateId);
-      if (!tpl?.grantsControl) continue;
-      freshTerrStore.updatePost(post.id, { successionLaw: 'clan' });
+  // 走 executeToggleSuccession 统一入口：内部按"道为权威源"自动联动治所州主岗，
+  // 不再手写 updatePost 制造道-治所州政策脱绑（CLAUDE.md `### 治所州联动` 硬约束）。
+  // 注意先收集 postId 再调用，避免在迭代过程中通过 toggle 改变 territories Map。
+  {
+    const freshTerrStore = useTerritoryStore.getState();
+    const postIdsToFlip: string[] = [];
+    for (const t of freshTerrStore.territories.values()) {
+      if (t.tier !== 'dao' && t.tier !== 'guo') continue;
+      for (const post of t.posts) {
+        const tpl = positionMap.get(post.templateId);
+        if (!tpl?.grantsControl) continue;
+        // 只 toggle 当前还是 bureaucratic 的（toggle 会取反）
+        if (post.successionLaw === 'bureaucratic') {
+          postIdsToFlip.push(post.id);
+        }
+      }
+    }
+    for (const pid of postIdsToFlip) {
+      executeToggleSuccession(pid);
     }
   }
 

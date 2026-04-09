@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Modal, ModalHeader, Button } from './base';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useTurnManager } from '@engine/TurnManager';
 import type { Decision } from '@engine/decision';
 import { formatAmount } from '@ui/utils/formatAmount';
 
@@ -18,8 +20,15 @@ type SuccessionOption = 'clan' | 'bureaucratic';
 
 export default function DecisionDetailModal({ decision, onClose, onExecuted }: DecisionDetailModalProps) {
   const playerId = useCharacterStore((s) => s.playerId);
+  // 订阅 territories / characters / currentDate / era：弹窗打开期间这些都可能变化
+  // （时间继续推进、玩家在别处花钱、目标领地易主、时代切换…），必须随之重算资格。
+  useTerritoryStore((s) => s.territories);
+  useCharacterStore((s) => s.characters);
+  useTurnManager((s) => s.currentDate);
+  useTurnManager((s) => s.era);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
   const [executed, setExecuted] = useState(false);
+  const [staleError, setStaleError] = useState(false);
 
   // 创建配置
   const showConfig = CREATE_DECISION_IDS.has(decision.id);
@@ -43,8 +52,29 @@ export default function DecisionDetailModal({ decision, onClose, onExecuted }: D
     const config = showConfig
       ? { territoryType: terrType, successionLaw: succession, hasAppointRight: appointRight }
       : undefined;
-    decision.execute(playerId!, selectedTarget ?? undefined, config);
-    setExecuted(true);
+    const ok = decision.execute(playerId!, selectedTarget ?? undefined, config);
+    if (ok) {
+      setExecuted(true);
+    } else {
+      // execute 层二次校验失败：弹窗资格快照已过期，把按钮替换成提示
+      setStaleError(true);
+    }
+  }
+
+  if (staleError) {
+    return (
+      <Modal size="sm" zIndex={50} onOverlayClick={onClose}>
+        <ModalHeader title="无法执行" onClose={onClose} />
+        <div className="px-5 py-4 flex flex-col gap-3">
+          <p className="text-sm text-[var(--color-accent-red)]">
+            局势已发生变化，决议条件不再满足。请重新确认后再试。
+          </p>
+          <Button variant="default" className="w-full py-2 font-bold" onClick={onClose}>
+            关闭
+          </Button>
+        </div>
+      </Modal>
+    );
   }
 
   if (executed) {

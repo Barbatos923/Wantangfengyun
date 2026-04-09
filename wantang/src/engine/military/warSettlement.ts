@@ -159,6 +159,8 @@ function revertClanToBureaucratic(charId: string): void {
     if (!tpl?.grantsControl) continue;
     terrStore.updatePost(p.id, {
       successionLaw: 'bureaucratic',
+      // 清空旧的宗法留后，避免后续切回 clan 时旧 heir 复活（与 centralizationAction 行为对齐）
+      designatedHeirId: null,
       reviewBaseline: {
         population: terrStore.territories.get(p.territoryId ?? '')?.basePopulation ?? 0,
         virtue: useCharacterStore.getState().getCharacter(charId)?.official?.virtue ?? 0,

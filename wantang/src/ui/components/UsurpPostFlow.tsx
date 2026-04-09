@@ -17,7 +17,7 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
   const target = useCharacterStore((s) => s.characters.get(targetId));
 
   const [selected, setSelected] = useState<Post | null>(null);
-  const [executed, setExecuted] = useState(false);
+  const [executed, setExecuted] = useState<'success' | 'stale' | null>(null);
 
   if (!player || !target || !playerId) return null;
 
@@ -30,18 +30,24 @@ export default function UsurpPostFlow({ targetId, onClose }: UsurpPostFlowProps)
   const activePreview = activePost ? previews.find(p => p.post.id === activePost.id) : null;
 
   function handleUsurp(post: Post) {
-    executeUsurp(post.id, player!.id);
-    setExecuted(true);
+    const ok = executeUsurp(post.id, player!.id);
+    setExecuted(ok ? 'success' : 'stale');
   }
 
-  if (executed) {
+  if (executed !== null) {
     return (
       <Modal size="sm" onOverlayClick={onClose}>
-        <ModalHeader title="篡夺结果" onClose={onClose} />
+        <ModalHeader title={executed === 'stale' ? '操作未生效' : '篡夺结果'} onClose={onClose} />
         <div className="px-5 py-4 flex flex-col gap-3">
-          <p className="text-sm text-[var(--color-success, #22c55e)]">
-            篡夺成功！{activePreview?.territoryName}{activePreview?.postName}已归于你手。
-          </p>
+          {executed === 'success' ? (
+            <p className="text-sm text-[var(--color-success, #22c55e)]">
+              篡夺成功！{activePreview?.territoryName}{activePreview?.postName}已归于你手。
+            </p>
+          ) : (
+            <p className="text-sm text-[var(--color-accent-red)]">
+              局势已发生变化，篡夺未生效。
+            </p>
+          )}
           <Button variant="default" className="w-full py-2 font-bold" onClick={onClose}>
             关闭
           </Button>

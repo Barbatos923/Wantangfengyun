@@ -80,6 +80,8 @@ export function serializeGame(): SaveFile {
       events: turn.events,
       isPaused: turn.isPaused,
       seed: turn.seed,
+      playthroughId: turn.playthroughId,
+      dynastyExtinct: turn.dynastyExtinct,
     },
 
     storyEventQueue: storyBus.storyEventQueue.map(stripStoryEvent),

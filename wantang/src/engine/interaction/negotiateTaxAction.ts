@@ -36,6 +36,8 @@ export interface NegotiateTaxResult {
   success: boolean;
   chance: number;
   breakdown: NegotiateTaxChanceResult['breakdown'];
+  /** 执行瞬时校验失败（stale）：UI 显示"局势已发生变化"，不要等同于"对方拒绝" */
+  stale?: true;
 }
 
 // ── 注册交互 ──────────────────────────────────────────────
@@ -197,7 +199,14 @@ export function executeNegotiateTax(
   const charStore = useCharacterStore.getState();
   const actor = charStore.getCharacter(actorId);
   const overlord = charStore.getCharacter(overlordId);
-  if (!actor || !overlord) return { success: false, chance: 0, breakdown: { base: 0, opinion: 0, power: 0, personality: 0 } };
+  if (!actor?.alive || !overlord?.alive) {
+    return { success: false, chance: 0, breakdown: { base: 0, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
+
+  // 瞬时重校验：actor 仍是 overlord 的臣属、冷却仍未过、双方仍存活
+  if (!canNegotiateTax(actor, overlord)) {
+    return { success: false, chance: 0, breakdown: { base: 0, opinion: 0, power: 0, personality: 0 }, stale: true };
+  }
 
   const terrState = useTerritoryStore.getState();
   const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;

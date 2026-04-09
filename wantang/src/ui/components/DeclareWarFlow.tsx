@@ -74,7 +74,12 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     }
 
     const cost = selectedEval!.cost; // 含停战惩罚
-    executeDeclareWar(playerId, targetId, selectedCasus, selectedTargets, currentDate, cost);
+    const ok = executeDeclareWar(playerId, targetId, selectedCasus, selectedTargets, currentDate, cost);
+    if (!ok) {
+      // eslint-disable-next-line no-alert
+      alert('局势已发生变化，宣战未生效。');
+      return;
+    }
     onClose();
   };
 

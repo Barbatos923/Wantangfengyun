@@ -21,6 +21,10 @@ interface TurnManagerState {
   events: GameEvent[];
   isPaused: boolean;
   seed: string;
+  /** 周目命名空间 ID。每次新游戏/读档刷新，用于隔离 IndexedDB 中的 events / chronicles。 */
+  playthroughId: string;
+  /** 玩家王朝是否已绝嗣（Game Over）。绝嗣死亡时由 characterSystem 设为 true，UI 据此展示终局屏。 */
+  dynastyExtinct: boolean;
 
   advanceDay: () => void;
   advanceToNextMonth: () => void;
@@ -58,6 +62,8 @@ export const useTurnManager = create<TurnManagerState>((set, get) => ({
   events: [],
   isPaused: false,
   seed: (() => { const s = Date.now().toString(); initRng(s); return s; })(),
+  playthroughId: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `pt-${Date.now()}-${Math.random()}`),
+  dynastyExtinct: false,
 
   advanceDay: () => {
     const { currentDate } = get();
@@ -156,13 +162,13 @@ export const useTurnManager = create<TurnManagerState>((set, get) => ({
     );
 
     if (toArchive.length > 0) {
-      await archiveEvents(toArchive);
+      await archiveEvents(get().playthroughId, toArchive);
       set({ events: toKeep });
     }
   },
 
   loadArchivedEvents: (year: number) => {
-    return loadArchivedEventsFromDB(year);
+    return loadArchivedEventsFromDB(get().playthroughId, year);
   },
 
   setEraState: (patch) => {

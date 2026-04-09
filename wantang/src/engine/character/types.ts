@@ -95,6 +95,7 @@ export interface Character {
   // 治所（国库系统）
   capital?: string;           // 治所州 ID
   capitalCooldown?: number;   // 迁都冷却（绝对天数）
+  capitalManual?: boolean;    // true=玩家手动迁都过，refreshCapital 不会覆盖（除非 capital 失控）
 
   // 交互冷却（absoluteDay）
   lastDemandFealtyDay?: number;

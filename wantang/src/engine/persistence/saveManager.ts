@@ -4,7 +4,7 @@
 // exportToFile / importFromFile —— 玩家手动导出/导入 JSON 文件
 // newGame —— 清空存档并重新加载初始数据
 
-import { saveGame, loadGame, deleteSave, listSaves, type SaveListEntry } from '@engine/storage';
+import { saveGame, loadGame, deleteSave, listSaves, purgePlaythroughArchives, type SaveListEntry } from '@engine/storage';
 import { loadSampleData } from '@engine/init/loadSampleData';
 import { useSaveStatusStore } from '@ui/stores/saveStatusStore';
 import { useTurnManager } from '@engine/TurnManager';
@@ -20,9 +20,13 @@ import { deserializeGame } from './deserialize';
 
 /** 把 loadSampleData 不会重置的 store 全部清空，并把 TurnManager 重置为 870 年正月初二。 */
 function resetTransientStores(): void {
-  // TurnManager：重置时间/时代/事件/速度，新种子
+  // TurnManager：重置时间/时代/事件/速度，新种子，新 playthroughId（隔离归档/史书）
   const newSeed = Date.now().toString();
   initRng(newSeed);
+  const newPlaythroughId =
+    typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `pt-${Date.now()}-${Math.random()}`;
   useTurnManager.setState({
     currentDate: { year: 870, month: 1, day: 2 },
     speed: GameSpeed.Normal,
@@ -32,6 +36,8 @@ function resetTransientStores(): void {
     events: [],
     isPaused: false,
     seed: newSeed,
+    playthroughId: newPlaythroughId,
+    dynastyExtinct: false,
   });
 
   // WarStore
@@ -88,7 +94,14 @@ export async function loadCurrent(): Promise<boolean> {
 
 /** 新游戏：清空 current 槽 + 重置所有非 loadSampleData 管辖的 store + 走 loadSampleData 重新初始化。 */
 export async function newGame(): Promise<void> {
+  // 顺手把当前 playthroughId 的归档清掉，避免反复"开新档"在 IndexedDB 里堆垃圾。
+  // 注：新 playthroughId 在 resetTransientStores() 里生成，所以归档隔离靠 ID 不重复，
+  // 这里 purge 只是为了不留孤儿数据。
+  const oldPid = useTurnManager.getState().playthroughId;
   await deleteSave(CURRENT_SAVE_SLOT);
+  if (oldPid) {
+    try { await purgePlaythroughArchives(oldPid); } catch { /* 非致命 */ }
+  }
   resetTransientStores();
   loadSampleData();
 }

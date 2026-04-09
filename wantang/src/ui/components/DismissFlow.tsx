@@ -27,7 +27,12 @@ export default function DismissFlow({ targetId, onClose }: DismissFlowProps) {
   const isSingle = dismissable.length === 1;
 
   function handleDismiss(post: Post) {
-    executeDismiss(post.id, player!.id);
+    const ok = executeDismiss(post.id, player!.id);
+    if (!ok) {
+      // eslint-disable-next-line no-alert
+      alert('局势已发生变化，罢免未生效。');
+      return;
+    }
     onClose();
   }
 

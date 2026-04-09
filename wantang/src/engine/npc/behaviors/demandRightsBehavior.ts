@@ -14,7 +14,6 @@ import {
 } from '@engine/interaction';
 import { executeToggleAppointRight, executeToggleSuccession } from '@engine/interaction/centralizationAction';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
 import { toAbsoluteDay } from '@engine/dateUtils';
@@ -147,8 +146,7 @@ export const demandRightsBehavior: NpcBehavior<DemandRightsData> = {
               if (data.right === 'appointRight') {
                 executeToggleAppointRight(data.postId);
               } else {
-                const terrStore = useTerritoryStore.getState();
-                executeToggleSuccession(data.postId, data.capitalZhouId, terrStore.territories);
+                executeToggleSuccession(data.postId);
               }
               charStore.addOpinion(actor.id, data.targetId, {
                 reason: '授权感激',

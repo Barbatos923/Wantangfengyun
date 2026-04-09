@@ -150,23 +150,31 @@ export function previewRevokeChance(
 
 /**
  * 执行剥夺领地（含成功/失败判定）。
- * @returns true=成功，false=失败（触发独立战争）
+ * @returns 'success'=成功，'rebel'=失败（触发独立战争），'stale'=瞬时校验失败（无变化）
  */
+export type RevokeExecuteResult = 'success' | 'rebel' | 'stale';
+
 export function executeRevoke(
   postId: string,
   revokerId: string,
-): boolean {
+): RevokeExecuteResult {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
   const date = useTurnManager.getState().currentDate;
 
   const post = terrStore.findPost(postId);
-  if (!post || !post.holderId) return true;
+  // 岗位失效或已空缺：不再静默"成功"，明确标记 stale
+  if (!post || !post.holderId) return 'stale';
 
   const targetId = post.holderId;
   const target = charStore.getCharacter(targetId);
   const revoker = charStore.getCharacter(revokerId);
-  if (!target || !revoker) return true;
+  if (!target?.alive || !revoker?.alive) return 'stale';
+
+  // 瞬时重校验：target 仍是 revoker 的臣属 + revoker 仍有该岗位的辟署权
+  if (target.overlordId !== revokerId) return 'stale';
+  const revokablePosts = getRevokablePosts(revoker, target);
+  if (!revokablePosts.some((p) => p.id === postId)) return 'stale';
 
   // 计算好感：target 对 revoker 的好感
   const bExpectedLeg = terrStore.expectedLegitimacy.get(revokerId) ?? null;
@@ -189,7 +197,7 @@ export function executeRevoke(
 
   if (success) {
     executeDismiss(postId, revokerId);
-    return true;
+    return 'success';
   } else {
     // 失败：好感惩罚 + 独立战争
     charStore.addOpinion(targetId, revokerId, {
@@ -208,6 +216,6 @@ export function executeRevoke(
       { prestige: 0, legitimacy: 0 },
     );
 
-    return false;
+    return 'rebel';
   }
 }

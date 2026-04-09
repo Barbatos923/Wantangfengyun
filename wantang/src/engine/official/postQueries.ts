@@ -58,6 +58,39 @@ export function collectRulerIds(territories: Map<string, Territory>): Set<string
 }
 
 /**
+ * 角色的"主权层级"。
+ *
+ * 用于"谁比谁高"这类外交/制度判断（归附、晋升、效忠链上溯…），**与"直辖领地最高 tier"不同**：
+ * 必须包含皇帝身份。`pos-emperor` 不是 `grantsControl`，所以单纯扫 grantsControl 主岗会把
+ * 皇帝看成 0；这里显式把皇帝映射到 tianxia=4。
+ *
+ * 返回：1=zhou, 2=dao, 3=guo, 4=tianxia(皇帝)；都没有则 0。
+ *
+ * 新增类似比较时**优先复用本函数**，不要在调用处重新扫 controllerIndex/territories
+ * 取 tier 最大值——那一套口径会丢皇帝。
+ */
+const SOVEREIGNTY_TIER_RANK: Record<string, number> = { zhou: 1, dao: 2, guo: 3, tianxia: 4 };
+export function getSovereigntyTier(
+  charId: string,
+  territories: Map<string, Territory>,
+  centralPosts: Post[],
+): number {
+  // 皇帝身份直接映射到 tianxia
+  if (findEmperorId(territories, centralPosts) === charId) return SOVEREIGNTY_TIER_RANK.tianxia;
+  // 其余 ruler：扫 grantsControl 主岗取最高 tier
+  let max = 0;
+  for (const t of territories.values()) {
+    for (const p of t.posts) {
+      if (p.holderId !== charId) continue;
+      if (!positionMap.get(p.templateId)?.grantsControl) continue;
+      const r = SOVEREIGNTY_TIER_RANK[t.tier] ?? 0;
+      if (r > max) max = r;
+    }
+  }
+  return max;
+}
+
+/**
  * 获取角色持有的所有岗位（领地岗位 + 中央岗位）
  */
 export function getHeldPosts(

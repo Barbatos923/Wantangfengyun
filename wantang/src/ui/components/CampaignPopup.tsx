@@ -68,10 +68,11 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
     onClose();
   };
 
+  // 集结中状态由 incomingArmies.length > 0 派生（不再有 'mustering' status 字段）
+  const isMustering = campaign.incomingArmies.length > 0 && campaign.status === 'idle';
   const statusLabels: Record<Campaign['status'], string> = {
-    mustering: '集结中',
     marching: '行军中',
-    idle: '待命',
+    idle: isMustering ? `集结中（${campaign.incomingArmies.length}支在途）` : '待命',
     sieging: '围城中',
   };
 
@@ -137,19 +138,43 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
         {mode === 'main' && isOwner && (
           <div className="space-y-1.5">
             {campaign.status === 'idle' && onStartMarch && (
+              isMustering ? (
+                // 集结中（incomingArmies 非空）：WarStore.setCampaignTarget 会拒绝行军，
+                // 所以按钮直接禁用 + 提示，避免"按钮能点、目标能选、最后没结果"的假操作
+                <button
+                  disabled
+                  title="集结尚未完成，所有军队到位后才能下行军令"
+                  className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text-muted)] opacity-50 cursor-not-allowed"
+                >
+                  ⚔ 行军（集结尚未完成）
+                </button>
+              ) : (
+                <button
+                  onClick={() => onStartMarch(campaignId)}
+                  className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors"
+                >
+                  ⚔ 行军（在地图上选择目的地）
+                </button>
+              )
+            )}
+            {campaign.status === 'marching' ? (
+              // 行军中禁止增援：增援 ETA 是按 campaign.locationId 算的，marching 行营每天换位置，
+              // 引擎层 executeAddArmyToCampaign 会拒绝。等行营到位（idle/sieging）后再增援。
               <button
-                onClick={() => onStartMarch(campaignId)}
+                disabled
+                title="行军途中无法接收增援，等行营到位后再召集"
+                className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text-muted)] opacity-50 cursor-not-allowed"
+              >
+                + 召集军队（行军中暂不可用）
+              </button>
+            ) : (
+              <button
+                onClick={() => setMode('addArmy')}
                 className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors"
               >
-                ⚔ 行军（在地图上选择目的地）
+                + 召集军队
               </button>
             )}
-            <button
-              onClick={() => setMode('addArmy')}
-              className="w-full px-3 py-2 rounded border border-[var(--color-border)] text-xs text-left text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors"
-            >
-              + 召集军队
-            </button>
             {campaign.armyIds.length > 0 && (
               <button
                 onClick={() => setMode('removeArmy')}
@@ -195,7 +220,12 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
         {/* 召集军队 */}
         {mode === 'addArmy' && (
           <div className="space-y-1.5">
-            {availableArmies.length === 0 ? (
+            {campaign.status === 'marching' ? (
+              // 玩家在子界面中途行营状态变成 marching：列表禁用 + 提示，避免点击后被引擎层静默拒绝
+              <p className="text-xs text-[var(--color-accent-red)] py-2">
+                行营已开始行军，无法接收增援。请等到位后再召集。
+              </p>
+            ) : availableArmies.length === 0 ? (
               <p className="text-xs text-[var(--color-text-muted)] py-2">无可用军队</p>
             ) : (
               availableArmies.map((army) => {

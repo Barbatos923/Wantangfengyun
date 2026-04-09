@@ -89,16 +89,8 @@ export function runWarSystem(date: GameDate): void {
 
   for (const campaign of useWarStore.getState().campaigns.values()) {
 
-    // 集结中：倒计时
-    if (campaign.status === 'mustering') {
-      if (campaign.musteringTurnsLeft <= 1) {
-        useWarStore.getState().updateCampaign(campaign.id, { status: 'idle', musteringTurnsLeft: 0 });
-      } else {
-        useWarStore.getState().updateCampaign(campaign.id, { musteringTurnsLeft: campaign.musteringTurnsLeft - 1 });
-      }
-    }
     // 行军中：每日按 marchSpeed 累积推进
-    else if (campaign.status === 'marching' && campaign.route.length > 0) {
+    if (campaign.status === 'marching' && campaign.route.length > 0) {
       const milStore = useMilitaryStore.getState();
       let minSpeed = Infinity;
       for (const armyId of campaign.armyIds) {

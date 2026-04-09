@@ -14,6 +14,7 @@ import type { MonthlyLedger } from '@engine/official/types';
 import { RECRUIT_COST_PER_SOLDIER, executeRecruit } from '@engine/interaction/militaryAction';
 import { ALL_UNIT_TYPES } from '@data/unitTypes';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { random } from '@engine/random';
 import { registerBehavior } from './index';
 
 // ── 常量 ────────────────────────────────────────────────
@@ -94,12 +95,12 @@ function calcGlobalGrainNet(ledger: MonthlyLedger | undefined): number {
 /** 根据性格选择兵种 */
 function pickUnitType(boldness: number): UnitType {
   if (boldness > 0.6) {
-    return Math.random() < 0.5 ? 'heavyCavalry' : 'heavyInfantry';
+    return random() < 0.5 ? 'heavyCavalry' : 'heavyInfantry';
   }
   if (boldness < -0.3) {
-    return Math.random() < 0.5 ? 'archer' : 'lightInfantry';
+    return random() < 0.5 ? 'archer' : 'lightInfantry';
   }
-  const idx = Math.floor(Math.random() * ALL_UNIT_TYPES.length);
+  const idx = Math.floor(random() * ALL_UNIT_TYPES.length);
   return ALL_UNIT_TYPES[idx].id;
 }
 

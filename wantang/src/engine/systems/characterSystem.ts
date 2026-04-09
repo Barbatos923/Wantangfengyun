@@ -22,6 +22,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { useWarStore } from '@engine/military/WarStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { disbandParticipantCampaigns } from '@engine/interaction/withdrawWarAction';
+import { executeDesignateHeir } from '@engine/interaction/centralizationAction';
 import {
   seatPost,
   vacatePost,
@@ -56,6 +57,10 @@ export function runCharacterSystem(date: GameDate): void {
 
   // ===== 死亡角色：岗位自治继承 =====
   const heirIds = new Set<string>(); // 收集所有继承人，统一刷新正统性（提升到外层作用域供后续使用）
+  // 战争领袖接续用：每位死者的"主权继承人"。优先级与 vassalReceiver 一致：
+  // primaryHeir → escheatReceiver → deadChar.overlordId → null。死者在战争中是领袖时
+  // 由后续 war 清理循环转交 attackerId/defenderId。
+  const successorByDead = new Map<string, string | null>();
   if (deadIds.length > 0) {
     const territories = terrStore.territories;
     const milStore = useMilitaryStore.getState();
@@ -190,6 +195,8 @@ export function runCharacterSystem(date: GameDate): void {
 
       // 二、附庸转移（一次性，给 primaryHeir；绝嗣上交则跟随最高 tier 岗位接收人；兜底给 overlord）
       const vassalReceiver = primaryHeir ?? escheatReceiver ?? deadChar.overlordId ?? null;
+      // 战争领袖接续用同一接收人链；存活检查在使用处再做（此刻 receiver 还未必存在）
+      successorByDead.set(deadId, vassalReceiver);
       if (vassalReceiver) {
         charStore.batchMutate(chars => {
           for (const [id, c] of chars) {
@@ -293,6 +300,10 @@ export function runCharacterSystem(date: GameDate): void {
           charStore.updateCharacter(primaryHeir, { isPlayer: true });
           charStore.updateCharacter(deadId, { isPlayer: false });
         } else {
+          // 玩家绝嗣：清玩家位 + 标记王朝覆灭，UI 渲染 GameOverScreen
+          charStore.setPlayerId(null);
+          charStore.updateCharacter(deadId, { isPlayer: false });
+          useTurnManager.setState({ dynastyExtinct: true, isPaused: true });
           turnMgr.addEvent({
             id: crypto.randomUUID(),
             date: { year: date.year, month: date.month, day: date.day },
@@ -307,15 +318,41 @@ export function runCharacterSystem(date: GameDate): void {
     }
   }
 
-  // 死亡角色：从战争参战者中移除 + 解散行营
+  // 死亡角色：解散其行营 + 战争领袖接续 / 参战者移除
   if (deadIds.length > 0) {
     const warStore = useWarStore.getState();
     for (const deadId of deadIds) {
       for (const war of warStore.getActiveWars()) {
-        if (isWarParticipant(deadId, war)) {
-          disbandParticipantCampaigns(deadId, war.id);
-          warStore.removeParticipant(war.id, deadId);
+        if (!isWarParticipant(deadId, war)) continue;
+        disbandParticipantCampaigns(deadId, war.id);
+
+        // 死者是战争领袖：尝试把领袖位移交给主权继承人
+        // （继承人已经接走了死者的领地，war 的 getRealmZhouCount 必须看新领袖才不会被静默白和平）
+        const isLeader = war.attackerId === deadId || war.defenderId === deadId;
+        if (isLeader) {
+          const successor = successorByDead.get(deadId);
+          const successorChar = successor ? charStore.getCharacter(successor) : null;
+          if (successor && successorChar?.alive) {
+            const ok = warStore.replaceLeader(war.id, deadId, successor);
+            if (ok) {
+              // 接续成功：发事件，保留战争状态由 warSystem 后续按新领袖结算
+              const turnMgr = useTurnManager.getState();
+              turnMgr.addEvent({
+                id: crypto.randomUUID(),
+                date: { year: date.year, month: date.month, day: date.day },
+                type: '战争接续',
+                actors: [deadId, successor],
+                territories: [],
+                description: `${charStore.getCharacter(deadId)?.name ?? '?'}薨于战时，${successorChar.name}承其大义，继续与敌交战`,
+                priority: EventPriority.Major,
+              });
+              continue;
+            }
+            // replaceLeader 返回 false（继承人在敌对方等罕见情况）→ 退回常规移除路径
+          }
         }
+        // 非领袖 / 无继承人 / 接续失败：从参战者列表中移除
+        warStore.removeParticipant(war.id, deadId);
       }
     }
   }
@@ -391,7 +428,6 @@ export function runCharacterSystem(date: GameDate): void {
 
   // ===== 4. NPC 留后指定（半年一次：正月/七月） =====
   if (date.month === 1 || date.month === 7) {
-    const territories = terrStore.territories;
     const chars = charStore.characters;
 
     for (const charId of charStore.aliveSet) {
@@ -402,29 +438,24 @@ export function runCharacterSystem(date: GameDate): void {
       const personality = calcPersonality(char);
       const bestHeir = selectDesignatedHeir(char, chars, personality.boldness, personality.honor, date.year);
 
+      // 走 executeDesignateHeir 统一入口：内部按"道为权威源"无条件级联到治所州，
+      // 不再手写 updatePost + capPost.holderId === charId 的旧条件联动
+      // （CLAUDE.md `### 治所州联动` 硬约束）。
+      // executeDesignateHeir 一次调用会处理该 holder 的所有 clan grantsControl 主岗，
+      // 所以只需找一个锚点 post id。
       const posts = terrStore.getPostsByHolder(charId);
+      let anchorPostId: string | null = null;
+      let needsUpdate = false;
       for (const post of posts) {
         const tpl = positionMap.get(post.templateId);
         if (!tpl?.grantsControl || post.successionLaw !== 'clan') continue;
-        if (bestHeir === post.designatedHeirId) continue;
-
+        if (anchorPostId === null) anchorPostId = post.id;
+        if (bestHeir !== post.designatedHeirId) needsUpdate = true;
+      }
+      if (anchorPostId && needsUpdate) {
         const heirName = bestHeir ? chars.get(bestHeir)?.name : '无';
-        const terrName = post.territoryId ? territories.get(post.territoryId)?.name : '?';
-        const tplName = positionMap.get(post.templateId)?.name ?? post.templateId;
-        debugLog('inheritance', `[留后] ${char.name}（${terrName}${tplName}）指定留后：${heirName}`);
-        terrStore.updatePost(post.id, { designatedHeirId: bestHeir });
-
-        // 治所联动
-        if (post.territoryId) {
-          const territory = territories.get(post.territoryId);
-          if (territory?.capitalZhouId) {
-            const capZhou = territories.get(territory.capitalZhouId);
-            const capPost = capZhou?.posts.find(p => positionMap.get(p.templateId)?.grantsControl);
-            if (capPost && capPost.holderId === charId && capPost.designatedHeirId !== bestHeir) {
-              terrStore.updatePost(capPost.id, { designatedHeirId: bestHeir });
-            }
-          }
-        }
+        debugLog('inheritance', `[留后] ${char.name} 指定留后：${heirName}`);
+        executeDesignateHeir(anchorPostId, bestHeir);
       }
     }
   }

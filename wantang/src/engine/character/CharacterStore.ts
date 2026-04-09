@@ -13,7 +13,7 @@ interface CharacterStoreState {
 
   // 初始化
   initCharacters: (chars: Character[]) => void;
-  setPlayerId: (id: string) => void;
+  setPlayerId: (id: string | null) => void;
 
   // 查询
   getCharacter: (id: string) => Character | undefined;
@@ -373,9 +373,27 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
 
   refreshCapital: (charId) => {
     const { territories, controllerIndex, holderIndex } = useTerritoryStore.getState();
-    const newCapital = resolveCapital(charId, territories, controllerIndex, holderIndex);
     const char = get().characters.get(charId);
-    if (!char || char.capital === newCapital) return;
+    if (!char) return;
+    // 手动迁都优先：只要当前 capital 仍在自己控制下且是 zhou 级，就保留玩家选择，
+    // 不被岗位流转后的自动治所规则覆盖。capital 失控或越界 → 清掉 manual 标记 + 重选。
+    if (char.capitalManual && char.capital) {
+      const t = territories.get(char.capital);
+      const stillControlled = !!(t && t.tier === 'zhou' && controllerIndex.get(charId)?.has(char.capital));
+      if (stillControlled) return;
+      // 失控 → 退回自动选择，并清 manual 标记
+      const newCapital = resolveCapital(charId, territories, controllerIndex, holderIndex);
+      set((state) => {
+        const chars = new Map(state.characters);
+        const c = chars.get(charId);
+        if (!c) return state;
+        chars.set(charId, { ...c, capital: newCapital, capitalManual: false });
+        return { characters: chars };
+      });
+      return;
+    }
+    const newCapital = resolveCapital(charId, territories, controllerIndex, holderIndex);
+    if (char.capital === newCapital) return;
     set((state) => {
       const chars = new Map(state.characters);
       const c = chars.get(charId);

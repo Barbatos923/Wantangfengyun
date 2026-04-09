@@ -8,7 +8,7 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
-import { getActualController, getHeldPosts } from '@engine/official/officialUtils';
+import { getActualController, getHeldPosts, canAppointToPost } from '@engine/official/officialUtils';
 import { executeDismiss } from './dismissAction';
 import {
   seatPost,
@@ -117,21 +117,49 @@ function collectPostsInSubtree(
 // refreshPlayerLedger 已迁移至 postTransfer.ts，此处 re-export 保持向后兼容
 export { refreshPlayerLedger } from '@engine/official/postTransfer';
 
-/** 执行任命：统一流程 */
+/**
+ * 执行任命：统一流程。
+ *
+ * 瞬时重校验（CLAUDE.md `### 决议系统：canExecute 是快照、execute 必须二次校验` 同款纪律）：
+ * - appointer / appointee 仍存活
+ * - postId 仍存在 + 仍在 appointer 可任命范围内（getAppointablePosts 包含权限链 + tier 守门）
+ * - candidate 仍满足 `canAppointToPost`（资格、身份、亲属约束等）
+ * - 岗位若被别人占了：参考 AppointFlow UI 行为——只有 appointer 自己持有时才允许"覆盖"，
+ *   其他在任者必须先走罢免/剥夺流程，避免旧弹窗顶掉后来新上的合法持有人
+ *
+ * 任一不过 → 返回 false 不写状态。
+ */
 export function executeAppoint(
   postId: string,
   appointeeId: string,
   appointerId: string,
   vacateOldPost?: boolean,
-): void {
-  // 候选人必须仍然存活
-  const appointeeCheck = useCharacterStore.getState().characters.get(appointeeId);
-  if (!appointeeCheck?.alive) return;
+): boolean {
+  const charStoreEarly = useCharacterStore.getState();
+  const appointee = charStoreEarly.getCharacter(appointeeId);
+  const appointer = charStoreEarly.getCharacter(appointerId);
+  if (!appointee?.alive || !appointer?.alive) return false;
+
+  const ts = useTerritoryStore.getState();
+  const targetPost = ts.findPost(postId);
+  if (!targetPost) return false;
+
+  // 岗位仍在 appointer 可任命范围
+  const appointable = getAppointablePosts(appointer);
+  if (!appointable.some((p) => p.id === postId)) return false;
+
+  // 已被他人占用 → 必须先走罢免流程（与 AppointFlow UI 的 isHeldByPlayer 守门一致）
+  if (targetPost.holderId && targetPost.holderId !== appointerId && targetPost.holderId !== appointeeId) {
+    return false;
+  }
+
+  // candidate 仍满足岗位资格
+  const check = canAppointToPost(appointer, appointee, targetPost);
+  if (!check.ok) return false;
 
   // ── 升调/平调：先清空候选人的当前岗位 ──
   if (vacateOldPost) {
-    const ts = useTerritoryStore.getState();
-    const currentPosts = ts.getPostsByHolder(appointeeId);
+    const currentPosts = useTerritoryStore.getState().getPostsByHolder(appointeeId);
     for (const p of currentPosts) {
       if (p.id !== postId) {
         const pTpl = positionMap.get(p.templateId);
@@ -166,7 +194,6 @@ export function executeAppoint(
 
   // ── 1. 设置岗位 ──
   const post = terrStore.findPost(postId);
-  const appointee = charStore.getCharacter(appointeeId);
   const extra: Partial<Post> = {};
   if (post?.successionLaw === 'bureaucratic') {
     const terr = post.territoryId ? terrStore.territories.get(post.territoryId) : undefined;
@@ -262,4 +289,6 @@ export function executeAppoint(
   const affectedIds = [appointeeId];
   if (previousHolderId && previousHolderId !== appointeeId) affectedIds.push(previousHolderId);
   refreshPostCaches(affectedIds);
+
+  return true;
 }

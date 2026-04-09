@@ -2,11 +2,15 @@
 
 import { registerInteraction } from './registry';
 import { useCharacterStore } from '@engine/character/CharacterStore';
+import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
 import { debugLog } from '@engine/debugLog';
+import { toAbsoluteDay } from '@engine/dateUtils';
+import { evaluateAllCasusBelli } from '@engine/military/warCalc';
+import { isWarParticipant } from '@engine/military/warParticipantUtils';
 
 
 registerInteraction({
@@ -20,7 +24,19 @@ registerInteraction({
   paramType: 'declareWar',
 });
 
-/** 执行宣战：扣除资源 + 创建战争 */
+/**
+ * 执行宣战：扣除资源 + 创建战争。
+ *
+ * 瞬时重校验（CLAUDE.md `### 决议系统：canExecute 是快照、execute 必须二次校验` 同款纪律）：
+ * - 双方仍存活
+ * - 不是同一人
+ * - 双方之间没有现存活跃战争
+ * - 没有停战协议
+ * - 选定的 CB 经 `evaluateAllCasusBelli` 重新评估仍可用（含所有制度/邻接/法理/时代条件）
+ * - 资源仍足够
+ *
+ * 任一不过 → 返回 false 不写状态。
+ */
 export function executeDeclareWar(
   playerId: string,
   targetId: string,
@@ -28,13 +44,40 @@ export function executeDeclareWar(
   targetTerritoryIds: string[],
   date: { year: number; month: number; day: number },
   cost: { prestige: number; legitimacy: number },
-): void {
-  // 资源校验：不足则拒绝
-  const char = useCharacterStore.getState().getCharacter(playerId);
-  if (char) {
-    if (char.resources.prestige + cost.prestige < 0) return;
-    if (char.resources.legitimacy + cost.legitimacy < 0) return;
+): boolean {
+  const charStore = useCharacterStore.getState();
+  const attacker = charStore.getCharacter(playerId);
+  const defender = charStore.getCharacter(targetId);
+  if (!attacker?.alive || !defender?.alive) return false;
+  if (playerId === targetId) return false;
+
+  const warStore = useWarStore.getState();
+  // 双方之间已有现成活跃战争 → 拒绝
+  for (const w of warStore.getActiveWars()) {
+    if ((isWarParticipant(playerId, w) && isWarParticipant(targetId, w))) return false;
   }
+
+  // 停战协议
+  const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+  if (warStore.hasTruce(playerId, targetId, currentDay)) return false;
+
+  // 资源仍足够
+  if (attacker.resources.prestige + cost.prestige < 0) return false;
+  if (attacker.resources.legitimacy + cost.legitimacy < 0) return false;
+
+  // CB 仍可用（用面板同款评估器，不重写一套）
+  const territories = useTerritoryStore.getState().territories;
+  const era = useTurnManager.getState().era;
+  const cbEvals = evaluateAllCasusBelli({
+    attackerId: playerId,
+    defenderId: targetId,
+    era,
+    territories,
+    characters: charStore.characters,
+    hasTruce: false, // 已经在上面单独检查过
+  });
+  const selectedEval = cbEvals.find((e) => e.id === casusBelli);
+  if (!selectedEval || selectedEval.failureReason !== null) return false;
 
   useCharacterStore.getState().addResources(playerId, {
     prestige: cost.prestige,
@@ -63,10 +106,12 @@ export function executeDeclareWar(
 
   // 独立战争：宣战即脱离效忠关系（辟署权在独立成功后才授予）
   if (casusBelli === 'independence') {
-    const attacker = useCharacterStore.getState().getCharacter(playerId);
-    if (attacker?.overlordId === targetId) {
+    const attackerNow = useCharacterStore.getState().getCharacter(playerId);
+    if (attackerNow?.overlordId === targetId) {
       useWarStore.getState().updateWar(war.id, { previousOverlordId: targetId });
       useCharacterStore.getState().updateCharacter(playerId, { overlordId: undefined });
     }
   }
+
+  return true;
 }

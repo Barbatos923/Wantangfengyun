@@ -91,13 +91,9 @@ const DrafterTokenOverlay: React.FC = () => {
     return planTreasuryDraft(treasuryRulerZhous, treasuryHistory);
   }, [treasuryOpen, treasuryDrafter, treasuryRulerZhous, treasuryHistory]);
 
-  // ── treasury: 编辑中的 entries ──
-  const [treasuryEntries, setTreasuryEntries] = useState<TreasuryEntry[]>([]);
-  useEffect(() => {
-    if (treasuryOpen) setTreasuryEntries(treasuryRecommended.entries);
-  }, [treasuryOpen, treasuryRecommended.entries]);
-
   // ── treasury 状态 ──
+  // 注：treasuryEntries 不再放在父组件，避免"useEffect 同步初始化"导致编辑期被推荐方案
+  // 默默覆盖。改为让 TreasuryDraftEditor 自己持有 buffer，关闭/重开 → 自然 remount → 重新初始化。
   const treasuryRuler = treasuryDrafter ? characters.get(treasuryDrafter.rulerId) : null;
   const treasuryPlayerIsRuler = treasuryDrafter ? treasuryDrafter.rulerId === playerId : false;
   const treasurySubmissions = treasuryDrafter ? (treasuryDrafts.get(treasuryDrafter.rulerId) ?? []) : [];
@@ -180,15 +176,13 @@ const DrafterTokenOverlay: React.FC = () => {
             zhous={treasuryRulerZhous}
             recommended={treasuryRecommended.entries}
             urgencyMonths={treasuryRecommended.urgencyMonths}
-            entries={treasuryEntries}
-            setEntries={setTreasuryEntries}
             pendingCount={treasuryPendingCount}
             playerHasPending={treasuryPlayerHasPending}
             onCooldown={treasuryOnCooldown}
             cdRemaining={treasuryCdRemaining}
-            onSubmit={() => {
+            onSubmit={(entries) => {
               if (!playerId) return;
-              const result = submitTreasuryDraftAction(treasuryDrafter.rulerId, playerId, treasuryEntries);
+              const result = submitTreasuryDraftAction(treasuryDrafter.rulerId, playerId, entries);
               if (result.ok) setTreasuryOpen(false);
             }}
           />
@@ -274,19 +268,19 @@ interface TreasuryEditorProps {
   zhous: import('@engine/territory/types').Territory[];
   recommended: TreasuryEntry[];
   urgencyMonths: number;
-  entries: TreasuryEntry[];
-  setEntries: (e: TreasuryEntry[]) => void;
   pendingCount: number;
   playerHasPending: boolean;
   onCooldown: boolean;
   cdRemaining: number;
-  onSubmit: () => void;
+  onSubmit: (entries: TreasuryEntry[]) => void;
 }
 
 const TreasuryDraftEditor: React.FC<TreasuryEditorProps> = ({
-  zhous, recommended, urgencyMonths, entries, setEntries, pendingCount,
+  zhous, recommended, urgencyMonths, pendingCount,
   playerHasPending, onCooldown, cdRemaining, onSubmit,
 }) => {
+  // buffer 自管：mount 时一次性从 recommended 取初值，编辑期不会被外部推荐方案覆盖
+  const [entries, setEntries] = useState<TreasuryEntry[]>(() => recommended);
   const updateEntry = (idx: number, patch: Partial<TreasuryEntry>) => {
     setEntries(entries.map((e, i) => (i === idx ? { ...e, ...patch } : e)));
   };
@@ -399,7 +393,7 @@ const TreasuryDraftEditor: React.FC<TreasuryEditorProps> = ({
         <Button
           variant="primary"
           size="sm"
-          onClick={onSubmit}
+          onClick={() => onSubmit(entries)}
           disabled={
             onCooldown
             || playerHasPending

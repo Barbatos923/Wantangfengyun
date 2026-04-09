@@ -124,6 +124,8 @@ export function calcCallToArmsChance(
 export interface CallToArmsResult {
   success: boolean;
   targetName: string;
+  /** 执行瞬时校验失败（stale）：UI 显示"局势已发生变化"，不要等同于"拒绝参战" */
+  stale?: true;
 }
 
 export function executeCallToArms(
@@ -135,6 +137,12 @@ export function executeCallToArms(
   const charStore = useCharacterStore.getState();
   const target = charStore.getCharacter(targetId);
   const targetName = target?.name ?? '???';
+
+  // 瞬时重校验：复用已经写好的 validateCallToArms（任务路径已经在用）
+  // 弹窗打开后召集人/目标可能已死、关系断裂、战争结束、目标已参战…
+  if (!validateCallToArms(targetId, summonerId, warId)) {
+    return { success: false, targetName, stale: true };
+  }
 
   const { chance } = calcCallToArmsChance(summonerId, targetId);
   const roll = random() * 100;

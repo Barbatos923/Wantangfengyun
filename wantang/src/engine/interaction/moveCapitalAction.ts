@@ -48,6 +48,7 @@ export function executeMoveCapital(charId: string, targetZhouId: string): void {
   useCharacterStore.getState().updateCharacter(charId, {
     capital: targetZhouId,
     capitalCooldown: now,
+    capitalManual: true, // 标记为手动迁都，refreshCapital 不会被岗位流转覆盖
   });
 }
 

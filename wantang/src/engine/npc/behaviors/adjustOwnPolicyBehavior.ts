@@ -5,7 +5,6 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import { getOwnPolicyPosts } from '../policyCalc';
 import { executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
-import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { registerBehavior } from './index';
 import { debugLog } from '@engine/debugLog';
 
@@ -81,8 +80,7 @@ export const adjustOwnPolicyBehavior: NpcBehavior<AdjustOwnPolicyData> = {
     const terrName = ctx.territories.get(data.territoryId)?.name ?? '';
 
     if (data.action === 'toClan') {
-      const territories = useTerritoryStore.getState().territories;
-      executeToggleSuccession(data.postId, data.capitalZhouId, territories);
+      executeToggleSuccession(data.postId);
       debugLog('policy', `[自身政策] ${actor.name}：${terrName} 改为世袭`);
     } else {
       executeToggleAppointRight(data.postId);

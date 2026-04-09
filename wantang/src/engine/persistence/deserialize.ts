@@ -31,9 +31,9 @@ export function deserializeGame(raw: SaveFile): void {
 
   // CharacterStore
   useCharacterStore.getState().initCharacters(save.characters);
-  if (save.playerId) {
-    useCharacterStore.getState().setPlayerId(save.playerId);
-  }
+  // 无条件写回 playerId（含 null）：绝嗣 Game Over 存档的 playerId === null 必须显式覆盖，
+  // 否则旧 store 残留的 playerId 会与新存档的 dynastyExtinct 语义冲突
+  useCharacterStore.getState().setPlayerId(save.playerId);
 
   // TerritoryStore（territories + centralPosts，两次 init 都会重建索引）
   useTerritoryStore.getState().initTerritories(save.territories);

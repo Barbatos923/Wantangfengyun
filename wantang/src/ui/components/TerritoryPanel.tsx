@@ -179,6 +179,8 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
               <div className="grid grid-cols-2 gap-2">
                 {territory.buildings.map((slot, i) => {
                   const underConstruction = territory.constructions.find((c) => c.slotIndex === i);
+                  // 一州同时只能有一个工程：只要有任何施工，其他空槽 / 升级入口都禁用
+                  const hasAnyConstruction = territory.constructions.length > 0;
 
                   if (underConstruction) {
                     const consDef = buildingMap.get(underConstruction.buildingId);
@@ -192,11 +194,18 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
 
                   if (!slot.buildingId) {
                     if (isPlayerTerritory) {
+                      const disabled = hasAnyConstruction;
                       return (
                         <button
                           key={i}
-                          onClick={() => setBuildSlotIndex(i)}
-                          className="border border-dashed border-[var(--color-accent-gold)]/50 rounded px-2 py-1.5 text-xs text-[var(--color-text-muted)] text-center cursor-pointer hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors"
+                          onClick={() => { if (!disabled) setBuildSlotIndex(i); }}
+                          disabled={disabled}
+                          title={disabled ? '本州已有工程在施工' : undefined}
+                          className={`border border-dashed rounded px-2 py-1.5 text-xs text-center transition-colors ${
+                            disabled
+                              ? 'border-[var(--color-border)] text-[var(--color-text-muted)] opacity-40 cursor-not-allowed'
+                              : 'border-[var(--color-accent-gold)]/50 text-[var(--color-text-muted)] cursor-pointer hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)]'
+                          }`}
                         >
                           ＋ 建造
                         </button>
@@ -223,15 +232,22 @@ const TerritoryPanel: React.FC<TerritoryPanelProps> = ({ territory, onClose, onC
                   }
 
                   if (isPlayerTerritory) {
+                    const disabled = hasAnyConstruction;
                     return (
                       <button
                         key={i}
-                        onClick={() => setBuildSlotIndex(i)}
-                        className="border border-[var(--color-border)] rounded px-2 py-1.5 text-xs text-left cursor-pointer hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)] transition-colors w-full"
+                        onClick={() => { if (!disabled) setBuildSlotIndex(i); }}
+                        disabled={disabled}
+                        title={disabled ? '本州已有工程在施工' : undefined}
+                        className={`border border-[var(--color-border)] rounded px-2 py-1.5 text-xs text-left transition-colors w-full ${
+                          disabled
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'cursor-pointer hover:border-[var(--color-accent-gold)] hover:bg-[var(--color-bg)]'
+                        }`}
                       >
                         <span className="text-[var(--color-text)] font-bold">{def?.name ?? slot.buildingId}</span>
                         <span className="text-[var(--color-text-muted)] ml-1">Lv.{slot.level}</span>
-                        <span className="text-[var(--color-accent-gold,#f39c12)] ml-1">可升级</span>
+                        <span className={`ml-1 ${disabled ? 'text-[var(--color-text-muted)]' : 'text-[var(--color-accent-gold,#f39c12)]'}`}>{disabled ? '施工中' : '可升级'}</span>
                       </button>
                     );
                   }

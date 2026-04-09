@@ -128,9 +128,19 @@ export function executeTransferVassal(
   vassalId: string,
   newOverlordId: string,
   transferrerId: string,
-): void {
+): boolean {
   const charStore = useCharacterStore.getState();
   const terrStore = useTerritoryStore.getState();
+
+  // 瞬时重校验：三方存活 + vassal 仍是 transferrer 的臣属 + 仍在 newOverlordId 的可接收候选集中
+  const transferrer = charStore.getCharacter(transferrerId);
+  const vassal = charStore.getCharacter(vassalId);
+  const newOverlord = charStore.getCharacter(newOverlordId);
+  if (!transferrer?.alive || !vassal?.alive || !newOverlord?.alive) return false;
+  if (vassal.overlordId !== transferrerId) return false;
+  if (newOverlordId === transferrerId || newOverlordId === vassalId) return false;
+  const candidates = getTransferCandidates(transferrerId, newOverlordId);
+  if (!candidates.some((c) => c.character.id === vassalId)) return false;
 
   charStore.updateCharacter(vassalId, { overlordId: newOverlordId });
 
@@ -155,4 +165,5 @@ export function executeTransferVassal(
   }
 
   refreshPlayerLedger();
+  return true;
 }

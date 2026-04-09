@@ -43,18 +43,23 @@ export default function DemandRightsFlow({ targetId, onClose }: DemandRightsFlow
 
   // ── 结果界面 ──
   if (result) {
+    const titleText = result.stale ? '操作未生效' : '逼迫授权结果';
+    const headlineText = result.stale
+      ? '局势已变化'
+      : (result.success ? '成功' : '失败') + `（成功率 ${result.chance}%）`;
+    const bodyText = result.stale
+      ? '局势已发生变化，逼迫授权未生效。'
+      : (result.success
+        ? `${target.name}被迫授予了你${active ? RIGHT_LABELS[active.right] : ''}。`
+        : `${target.name}对你的要求嗤之以鼻，关系大幅恶化。`);
     return (
       <Modal size="sm" onOverlayClick={onClose}>
-        <ModalHeader title="逼迫授权结果" onClose={onClose} />
+        <ModalHeader title={titleText} onClose={onClose} />
         <div className="px-5 py-4 flex flex-col gap-3">
-          <p className={`text-sm font-bold ${result.success ? 'text-[var(--color-success,#22c55e)]' : 'text-[var(--color-accent-red)]'}`}>
-            {result.success ? '成功' : '失败'}（成功率 {result.chance}%）
+          <p className={`text-sm font-bold ${result.stale ? 'text-[var(--color-accent-red)]' : (result.success ? 'text-[var(--color-success,#22c55e)]' : 'text-[var(--color-accent-red)]')}`}>
+            {headlineText}
           </p>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            {result.success
-              ? `${target.name}被迫授予了你${active ? RIGHT_LABELS[active.right] : ''}。`
-              : `${target.name}对你的要求嗤之以鼻，关系大幅恶化。`}
-          </p>
+          <p className="text-xs text-[var(--color-text-muted)]">{bodyText}</p>
           <Button variant="default" className="w-full py-2 font-bold" onClick={onClose}>
             关闭
           </Button>

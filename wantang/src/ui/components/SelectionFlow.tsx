@@ -440,7 +440,14 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
       ? (useTerritoryStore.getState().findPost(post.id)?.vacatedHolderId ?? null)
       : null;
 
-    executeAppoint(post.id, candidateId, legalId, vacateOldPost);
+    const ok = executeAppoint(post.id, candidateId, legalId, vacateOldPost);
+    if (!ok) {
+      // 引擎层瞬时校验失败：弹窗资格快照已过期。提示并跳过后续 UI 推进，
+      // 避免把失效任命当成已确认 + 触发法理下级转移弹窗的脱节
+      // eslint-disable-next-line no-alert
+      alert('局势已发生变化，该项任命未生效。');
+      return;
+    }
 
     const newConfirmed = new Set(confirmed).add(post.id);
     setConfirmed(newConfirmed);
@@ -470,6 +477,7 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
   function handleConfirmAll() {
     if (draft) { writeToDraft(); return; }
 
+    const skipped: string[] = [];
     for (const post of currentPosts) {
       if (confirmed.has(post.id)) continue;
       const candidateId = selections.get(post.id) ?? null;
@@ -483,12 +491,22 @@ export default function SelectionFlow({ vacantPosts, onClose, specialDecree, dra
       const entry = candidates.find(c => c.character.id === candidateId);
       const vacateOldPost = entry?.tier === 'promote' || entry?.tier === 'transfer';
 
-      executeAppoint(post.id, candidateId, legalId, vacateOldPost);
+      const ok = executeAppoint(post.id, candidateId, legalId, vacateOldPost);
+      if (!ok) {
+        // 单条失效：跳过这一项，不标记 confirmed、不触发法理下级转移，
+        // 让该 post 在后续重扫中保持空缺态。批量流程其他项继续推进。
+        skipped.push(post.id);
+        continue;
+      }
       // 全部确认模式：自动转移法理下级
       autoTransferChildrenAfterAppoint(post.id, legalId, true);
       confirmed.add(post.id);
     }
     setConfirmed(new Set(confirmed));
+    if (skipped.length > 0) {
+      // eslint-disable-next-line no-alert
+      alert(`有 ${skipped.length} 项任命因局势变化未生效，已跳过。`);
+    }
 
     // 重新扫描连锁空缺
     if (!playerId) { onClose(); return; }

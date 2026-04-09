@@ -15,7 +15,7 @@ import type { TransferPlan, PlayerTask } from '@engine/npc/types';
 import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
 
 /** 存档 schema 版本号。schema 不兼容变动时自增，并在 migrations.ts 添加迁移逻辑。 */
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 4;
 
 /** 存档槽 ID 常量（MVP 期固定单槽） */
 export const CURRENT_SAVE_SLOT = 'current';
@@ -80,6 +80,8 @@ export interface SaveFile {
     events: GameEvent[];
     isPaused: boolean;
     seed: string;
+    playthroughId: string;
+    dynastyExtinct: boolean;
   };
 
   // ── StoryEventBus ──

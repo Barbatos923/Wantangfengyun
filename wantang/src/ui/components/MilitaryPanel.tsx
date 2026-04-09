@@ -973,8 +973,9 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                     {campCommander?.name ?? '无将领'}
                                   </span>
                                   <span className="text-xs text-[var(--color-text-muted)]">
-                                    {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
-                                    {camp.status === 'idle' && '待命'}
+                                    {camp.status === 'idle' && (camp.incomingArmies.length > 0
+                                      ? `集结中（${camp.incomingArmies.length}支在途）`
+                                      : '待命')}
                                     {camp.status === 'marching' && `行军中`}
                                     {camp.status === 'sieging' && '围城中'}
                                     {' · '}
@@ -1099,12 +1100,16 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       const attackerName = characters.get(w.attackerId)?.name ?? '?';
                       const defenderName = characters.get(w.defenderId)?.name ?? '?';
                       const cbName = CASUS_BELLI_NAMES[w.casusBelli];
-                      // 找到玩家的臣属在哪一方
-                      const allIds = [w.attackerId, ...w.attackerParticipants, w.defenderId, ...w.defenderParticipants];
-                      const vassalOnAttacker = allIds.some(id => {
+                      // 分别判断玩家臣属在攻/守两方的存在情况
+                      // —— 直属臣属可能恰好分属两方，UI 必须允许玩家自由选择，不能默认偏向一方
+                      const attackerSideIds = [w.attackerId, ...w.attackerParticipants];
+                      const defenderSideIds = [w.defenderId, ...w.defenderParticipants];
+                      const isPlayerVassal = (id: string) => {
                         const c = characters.get(id);
-                        return c?.alive && c.overlordId === playerId && (id === w.attackerId || w.attackerParticipants.includes(id));
-                      });
+                        return !!(c?.alive && c.overlordId === playerId);
+                      };
+                      const vassalOnAttacker = attackerSideIds.some(isPlayerVassal);
+                      const vassalOnDefender = defenderSideIds.some(isPlayerVassal);
                       return (
                         <div key={w.id} className="rounded border border-[var(--color-border)] px-3 py-2 mb-1 flex items-center justify-between">
                           <div className="text-xs">
@@ -1117,12 +1122,22 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                             </span>
                           </div>
                           <div className="flex gap-1">
-                            <button
-                              className="px-2 py-1 rounded text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
-                              onClick={() => { executeJoinWar(playerId!, w.id, vassalOnAttacker ? 'attacker' : 'defender'); }}
-                            >
-                              加入{vassalOnAttacker ? '攻方' : '守方'}
-                            </button>
+                            {vassalOnAttacker && (
+                              <button
+                                className="px-2 py-1 rounded text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
+                                onClick={() => { executeJoinWar(playerId!, w.id, 'attacker'); }}
+                              >
+                                加入攻方
+                              </button>
+                            )}
+                            {vassalOnDefender && (
+                              <button
+                                className="px-2 py-1 rounded text-xs border border-[var(--color-accent-gold)] text-[var(--color-accent-gold)] hover:bg-[var(--color-accent-gold)]/10"
+                                onClick={() => { executeJoinWar(playerId!, w.id, 'defender'); }}
+                              >
+                                加入守方
+                              </button>
+                            )}
                           </div>
                         </div>
                       );
@@ -1164,8 +1179,9 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                   {campCmd?.name ?? '无将领'}
                                 </span>
                                 <span className="text-xs text-[var(--color-text-muted)]">
-                                  {camp.status === 'mustering' && `集结中（${camp.musteringTurnsLeft}日）`}
-                                  {camp.status === 'idle' && '待命'}
+                                  {camp.status === 'idle' && (camp.incomingArmies.length > 0
+                                    ? `集结中（${camp.incomingArmies.length}支在途）`
+                                    : '待命')}
                                   {camp.status === 'marching' && '行军中'}
                                   {' · '}
                                   {campLoc?.name ?? camp.locationId}

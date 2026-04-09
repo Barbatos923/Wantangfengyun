@@ -147,8 +147,7 @@ export interface Campaign {
   route: string[];
   routeProgress: number;
   marchProgress: number; // 0.0~1.0 日行军累积器
-  status: 'mustering' | 'marching' | 'idle' | 'sieging';
-  musteringTurnsLeft: number; // 单位：天
+  status: 'marching' | 'idle' | 'sieging';
   phaseStrategies: PhaseStrategies; // 玩家预设的阶段策略
 }
 

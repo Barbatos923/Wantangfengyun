@@ -19,6 +19,8 @@ import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { calcPersonality } from '@engine/character/personalityUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { getEffectiveMinRank } from '@engine/official/selectionCalc';
+import { getCentralCandidates } from '@engine/official/reassignCalc';
+import type { ReassignCandidate } from '@engine/official/reassignCalc';
 import { executeDeclareWar } from './declareWarAction';
 import {
   seatPost,
@@ -399,22 +401,51 @@ export function executeReassignSuccess(
   refreshPostCaches([replacementId, territorialId]);
 }
 
+/**
+ * executeReassign 返回值：
+ * - 'success'：调任成功落地
+ * - 'rebel'：有地者抗命，触发独立战争
+ * - 'stale'：弹窗资格快照已过期，未执行任何状态变更（候选人/岗位/资格变化）
+ */
+export type ReassignExecuteResult = 'success' | 'rebel' | 'stale';
+
+/**
+ * @param expectedTerritorialId 调用方在打开弹窗时看到的有地者 ID。如果在确认时
+ * 该岗位的 holder 已经不是这个 ID（被战争/继承/调任换成了别人），返回 'stale'，
+ * 避免把旧弹窗的操作意图作用到后来新上任的人身上。
+ */
 export function executeReassign(
   territorialPostId: string,
   replacementId: string,
   appointerId: string,
-): boolean {
+  expectedTerritorialId: string,
+): ReassignExecuteResult {
   const terrStore = useTerritoryStore.getState();
   const charStore = useCharacterStore.getState();
 
   const targetPost = terrStore.findPost(territorialPostId);
-  if (!targetPost?.holderId) return true;
+  // 岗位失效或已空缺：不再执行（之前误返 true，会让 SelectionFlow / 提案路径误判成功）
+  if (!targetPost?.holderId) return 'stale';
+  // holder 已经被换成别人：旧弹窗的目标已经不存在
+  if (targetPost.holderId !== expectedTerritorialId) return 'stale';
 
   const territorialId = targetPost.holderId;
   const territorial = charStore.getCharacter(territorialId);
   const replacement = charStore.getCharacter(replacementId);
   const appointer = charStore.getCharacter(appointerId);
-  if (!territorial || !replacement || !appointer) return true;
+  if (!territorial?.alive || !replacement?.alive || !appointer?.alive) return 'stale';
+
+  // 瞬时重校验：appointer 仍是皇帝/宰相 + 候选人仍合格
+  const territories = terrStore.territories;
+  const centralPosts = terrStore.centralPosts;
+  const emperorId = findEmperorId(territories, centralPosts);
+  const isEmperor = appointerId === emperorId;
+  const isChancellor = centralPosts.some((p) => p.templateId === 'pos-zaixiang' && p.holderId === appointerId);
+  if (!isEmperor && !isChancellor) return 'stale';
+
+  // 候选人 replacement 必须仍在该 post 的合法京官候选集中
+  const candidates: ReassignCandidate[] = getCentralCandidates(targetPost, charStore.characters, territories, centralPosts);
+  if (!candidates.some((c) => c.character.id === replacementId)) return 'stale';
 
   // ── 0. 骰子判定 ──
   const bExpectedLeg = terrStore.expectedLegitimacy.get(appointerId) ?? null;
@@ -439,11 +470,11 @@ export function executeReassign(
 
   if (!success) {
     executeReassignRebel(territorialId, appointerId);
-    return false;
+    return 'rebel';
   }
 
   executeReassignSuccess(territorialPostId, replacementId, appointerId);
-  return true;
+  return 'success';
 }
 
 // ── 宰相提案（NPC 皇帝评估 + 玩家皇帝 StoryEvent） ──────
@@ -496,9 +527,10 @@ export function submitReassignProposal(
           description: '批准调任提案',
           effects: [],
           effectKey: 'reassignProposal:approve',
-          effectData: { territorialPostId, replacementId, emperorId },
+          // 把提案时看到的有地者 ID 写进 effectData，审批落地时用它做 stale 校验
+          effectData: { territorialPostId, replacementId, emperorId, expectedTerritorialId: territorialId ?? '' },
           onSelect: () => {
-            executeReassign(territorialPostId, replacementId, emperorId);
+            if (territorialId) executeReassign(territorialPostId, replacementId, emperorId, territorialId);
           },
         },
         {
@@ -525,6 +557,9 @@ export function submitReassignProposal(
   if (!approved) {
     return { type: 'emperor-reject' };
   }
-  const success = executeReassign(territorialPostId, replacementId, emperorId);
-  return success ? { type: 'success' } : { type: 'rebel' };
+  const result = executeReassign(territorialPostId, replacementId, emperorId, territorialId);
+  if (result === 'success') return { type: 'success' };
+  if (result === 'rebel') return { type: 'rebel' };
+  // stale：候选人/岗位/资格在 NPC 评估期间变化，按 emperor-reject 兜底（语义最接近）
+  return { type: 'emperor-reject' };
 }

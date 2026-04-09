@@ -19,7 +19,12 @@ export default function TransferVassalFlow({ targetId, onClose }: TransferVassal
   if (candidates.length === 0) return null;
 
   function handleTransfer(vassalId: string) {
-    executeTransferVassal(vassalId, targetId, playerId!);
+    const ok = executeTransferVassal(vassalId, targetId, playerId!);
+    if (!ok) {
+      // eslint-disable-next-line no-alert
+      alert('局势已发生变化，转移未生效。');
+      return;
+    }
     onClose();
   }
 
