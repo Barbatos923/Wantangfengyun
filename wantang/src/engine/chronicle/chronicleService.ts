@@ -480,10 +480,29 @@ export const chronicleService = {
 };
 
 // ── 测试用导出 ──────────────────────────────────────────
+//
+// 这一组 hook 仅供 vitest 使用，不应在生产代码里调用。
+// 提供"注入 provider / 重置 in-flight / 直接驱动 generate"的最小面，
+// 不暴露 inFlight Map 本体，避免测试绑死内部结构。
+
+function __setProviderForTest(provider: LlmProvider | null): void {
+  providerCache = provider;
+}
+
+function __resetForTest(): void {
+  for (const req of inFlight.values()) {
+    req.abort.abort();
+  }
+  inFlight.clear();
+  providerCache = null;
+  _started = false;
+}
 
 export const __test__ = {
   generateMonthDraft,
   generateYearChronicle,
   CHRONICLE_TYPE_WHITELIST,
   shouldIncludeInChronicle,
+  setProviderForTest: __setProviderForTest,
+  resetForTest: __resetForTest,
 };
