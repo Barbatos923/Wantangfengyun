@@ -12,6 +12,7 @@ import { useWarStore } from '@engine/military/WarStore';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
+import { useChronicleStore } from '@engine/chronicle/ChronicleStore';
 import { initRng } from '@engine/random';
 import { GameSpeed, Era } from '@engine/types';
 import { CURRENT_SAVE_SLOT, type SaveFile } from './saveSchema';
@@ -70,6 +71,9 @@ function resetTransientStores(): void {
     storyEventQueue: [],
     _speedBeforePause: null,
   });
+
+  // ChronicleStore（AI 史书：清空所有月稿与年史；LLM 配置不动，那是设备级凭证）
+  useChronicleStore.getState().clearAll();
 }
 
 /** 把当前游戏状态写入 IndexedDB current 槽。失败时弹 toast。 */

@@ -3,6 +3,7 @@ import { loadSampleData } from './data';
 import { useTurnManager } from './engine';
 import { runDailySettlement, runMonthlySettlement } from './engine/settlement';
 import { loadCurrent, saveCurrent } from './engine/persistence/saveManager';
+import { chronicleService } from './engine/chronicle/chronicleService';
 import { useSaveStatusStore } from './ui/stores/saveStatusStore';
 import GameLayout from './ui/layouts/GameLayout';
 
@@ -33,6 +34,9 @@ const App: React.FC = () => {
         saveCurrent().catch(() => { /* saveCurrent 内部已经 setError 弹 toast */ });
       });
 
+      // 启动 AI 史书 service（幂等，StrictMode 下双调用安全）
+      chronicleService.start();
+
       setReady(true);
     })();
 
@@ -48,6 +52,7 @@ const App: React.FC = () => {
       useTurnManager.getState().unregisterDailyCallback('daily-settlement');
       useTurnManager.getState().unregisterMonthlyCallback('monthly-settlement');
       useTurnManager.getState().unregisterMonthlyCallback('auto-save');
+      chronicleService.stop();
     };
   }, []);
 

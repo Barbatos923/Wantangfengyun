@@ -13,7 +13,7 @@ Phase 1  角色 + 领地        ████████████  100%  ✅ 
 Phase 2  官职 + 经济        ████████████  100%  ✅ 完成（含 Post 架构重构）
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
-Phase 5  AI 史书            ░░░░░░░░░░░░    0%  ⬜ 未开始
+Phase 5  AI 史书            ████████████  100%  ✅ 完成（v1：月稿+年史两层增量、Direct/Mock provider、Kimi 默认、独立 IndexedDB 存 apiKey、读档 reconcile、AbortError 不降级 Mock、史成走 EventToast 不暂停游戏）
 Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave（Game Over + 战争接续 + 18+ execute stale 契约）
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始

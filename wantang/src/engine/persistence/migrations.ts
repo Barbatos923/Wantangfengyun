@@ -45,6 +45,16 @@ export function migrate(save: SaveFile, fromVersion: number): SaveFile {
     };
     return migrate(migrated, 4);
   }
+  if (fromVersion === 4) {
+    // v4 → v5：新增 AI 史书 chronicleState（空字段）。LLM 配置走独立 IndexedDB store，不在此。
+    const migrated: SaveFile = {
+      ...save,
+      version: 5,
+      chronicleState: (save as unknown as { chronicleState?: SaveFile['chronicleState'] })
+        .chronicleState ?? { monthDrafts: [], yearChronicles: [] },
+    };
+    return migrate(migrated, 5);
+  }
   if (fromVersion === 2) {
     // v2 → v3：行营废弃 'mustering' 状态 + musteringTurnsLeft 字段。
     // 旧存档若有 mustering 行营，把 status 转回 idle，musteringTurnsLeft 丢弃。

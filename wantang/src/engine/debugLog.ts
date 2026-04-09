@@ -21,7 +21,8 @@ export type DebugCategory =
   | 'interaction'   // 玩家/NPC 交互骰子
   | 'inheritance'   // 继承 / 留后
   | 'emperor'       // 皇帝 AI 决策
-  | 'war';          // 宣战 / 战争结束
+  | 'war'           // 宣战 / 战争结束
+  | 'chronicle';    // AI 史书：月稿 / 年史 / provider / stale 丢弃
 
 const FLAGS: Record<DebugCategory, boolean> = {
   policy: false,
@@ -30,6 +31,7 @@ const FLAGS: Record<DebugCategory, boolean> = {
   inheritance: false,
   emperor: false,
   war: false,
+  chronicle: false,
 };
 
 if (typeof window !== 'undefined') {

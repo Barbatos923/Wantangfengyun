@@ -12,6 +12,7 @@ import { useNpcStore } from '@engine/npc/NpcStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { useStoryEventBus } from '@engine/storyEventBus';
+import { useChronicleStore } from '@engine/chronicle/ChronicleStore';
 import { getCurrentSeed, getRngState } from '@engine/random';
 import { SAVE_VERSION, type SaveFile, type SerializedStoryEvent } from './saveSchema';
 import type { StoryEvent } from '@engine/storyEventBus';
@@ -32,6 +33,7 @@ export function serializeGame(): SaveFile {
   const ledgerStore = useLedgerStore.getState();
   const turn = useTurnManager.getState();
   const storyBus = useStoryEventBus.getState();
+  const chronicle = useChronicleStore.getState();
 
   const player = charStore.playerId ? charStore.characters.get(charStore.playerId) : undefined;
 
@@ -86,5 +88,10 @@ export function serializeGame(): SaveFile {
 
     storyEventQueue: storyBus.storyEventQueue.map(stripStoryEvent),
     storySpeedBeforePause: storyBus._speedBeforePause,
+
+    chronicleState: {
+      monthDrafts: Array.from(chronicle.monthDrafts.entries()),
+      yearChronicles: Array.from(chronicle.yearChronicles.entries()),
+    },
   };
 }

@@ -12,6 +12,7 @@ import DrafterTokenOverlay from '../components/DrafterTokenOverlay';
 import SaveErrorToast from '../components/SaveErrorToast';
 import SystemMenu from '../components/SystemMenu';
 import GameOverScreen from '../components/GameOverScreen';
+import ChronicleButton from '../components/chronicle/ChronicleButton';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
 
 const GameLayout: React.FC = () => {
@@ -67,6 +68,9 @@ const GameLayout: React.FC = () => {
 
       {/* 中心弹出框（最高层级） */}
       <EventModal />
+
+      {/* 右上角史书阁按钮（在系统菜单按钮左侧） */}
+      <ChronicleButton />
 
       {/* 右上角系统菜单按钮 */}
       <button

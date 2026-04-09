@@ -11,6 +11,7 @@ import { useNpcStore } from '@engine/npc/NpcStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
+import { useChronicleStore } from '@engine/chronicle/ChronicleStore';
 import { restoreRng } from '@engine/random';
 import seedrandom from 'seedrandom';
 import type { SaveFile, SerializedStoryEvent } from './saveSchema';
@@ -74,5 +75,11 @@ export function deserializeGame(raw: SaveFile): void {
   useStoryEventBus.setState({
     storyEventQueue: save.storyEventQueue.map(rehydrateStoryEvent),
     _speedBeforePause: save.storySpeedBeforePause,
+  });
+
+  // ChronicleStore（v5 起）
+  useChronicleStore.getState().hydrate({
+    monthDrafts: save.chronicleState?.monthDrafts ?? [],
+    yearChronicles: save.chronicleState?.yearChronicles ?? [],
   });
 }

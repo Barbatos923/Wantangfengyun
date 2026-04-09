@@ -3,7 +3,10 @@ import type { IDBPDatabase } from 'idb';
 import type { GameEvent } from '@engine/types.ts';
 
 const DB_NAME = 'wantang-db';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
+
+/** LLM 配置在 IndexedDB 内的固定 key（设备级，全局唯一）。 */
+const LLM_CONFIG_KEY = 'global';
 
 type WantangDB = IDBPDatabase;
 
@@ -27,6 +30,12 @@ export function initDB(): Promise<WantangDB> {
           eventStore.createIndex('by-pid', 'playthroughId', { unique: false });
           const chronStore = db.createObjectStore('chronicles', { keyPath: 'key' });
           chronStore.createIndex('by-pid', 'playthroughId', { unique: false });
+        }
+        // v4：LLM 配置（apiKey 等），设备级别凭证，绝不进存档文件。
+        if (oldVersion < 4) {
+          if (!db.objectStoreNames.contains('llm-config')) {
+            db.createObjectStore('llm-config', { keyPath: 'key' });
+          }
         }
       },
     });
@@ -130,20 +139,44 @@ export const listSaves = () => currentBackend.listSaves();
 export const deleteSave = (id: string) => currentBackend.deleteSave(id);
 
 /**
- * Save generated chronicle text for a given year (按 playthroughId 命名空间)。
- *
- * 必须传 playthroughId，避免不同周目年份相同时覆盖彼此的史书文本。
+ * @deprecated 旧版 chronicle 文本接口。请改用 ChronicleStore + saveSchema.chronicleState。
+ * 本期保留以避免破坏旧引用，但已不再读写。后续清理 backlog。
  */
 export async function saveChronicle(playthroughId: string, year: number, text: string): Promise<void> {
   const db = await initDB();
   await db.put('chronicles', { key: `${playthroughId}::${year}`, playthroughId, year, text });
 }
 
-/** Load chronicle text for a given year (按 playthroughId 命名空间)。 */
+/**
+ * @deprecated 旧版 chronicle 文本接口。请改用 ChronicleStore + saveSchema.chronicleState。
+ */
 export async function loadChronicle(playthroughId: string, year: number): Promise<string | undefined> {
   const db = await initDB();
   const record = await db.get('chronicles', `${playthroughId}::${year}`);
   return record?.text;
+}
+
+// ===== LLM 配置（设备级，绝不进存档） =====
+
+/**
+ * 写入 LLM 配置（含 apiKey）到独立的 `llm-config` object store。
+ *
+ * 重要：此接口绝不被 serialize.ts 调用，apiKey 永远不会出现在 SaveFile 里，
+ * 这样玩家分享存档不会泄露凭证。
+ */
+export async function saveLlmConfigRaw(cfg: unknown): Promise<void> {
+  const db = await initDB();
+  await db.put('llm-config', { key: LLM_CONFIG_KEY, ...((cfg as object) ?? {}) });
+}
+
+/** 读取 LLM 配置。无记录时返回 undefined，由调用方填默认值。 */
+export async function loadLlmConfigRaw(): Promise<Record<string, unknown> | undefined> {
+  const db = await initDB();
+  const record = await db.get('llm-config', LLM_CONFIG_KEY);
+  if (!record) return undefined;
+  // 去掉 keyPath 字段
+  const { key: _key, ...rest } = record as Record<string, unknown>;
+  return rest;
 }
 
 // ===== Event 归档 =====

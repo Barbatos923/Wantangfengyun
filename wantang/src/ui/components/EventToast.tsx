@@ -20,6 +20,7 @@ const EVENT_ICONS: Record<string, string> = {
   '战争结束': '🏳',
   '退出战争': '🏃',
   '参战': '🛡',
+  'chronicle-ready': '📜',
 };
 
 // ── 边框颜色：按事件性质区分 ──────────────────────────────
@@ -37,6 +38,7 @@ function getEventTone(event: GameEvent): EventTone {
       return 'danger';
     case '战争结束':
     case '继位':
+    case 'chronicle-ready':
       return 'positive';
     default:
       return 'neutral';
@@ -66,7 +68,7 @@ function getDisplayRelevance(
 
   const isSelfInvolved = event.actors.includes(playerId);
 
-  const ALWAYS_SHOW_TYPES = new Set(['野战', '城破', '兵变', '继位', '绝嗣', '王朝覆灭', '岗位空缺']);
+  const ALWAYS_SHOW_TYPES = new Set(['野战', '城破', '兵变', '继位', '绝嗣', '王朝覆灭', '岗位空缺', 'chronicle-ready']);
   if (ALWAYS_SHOW_TYPES.has(event.type)) {
     return isSelfInvolved ? 'major' : 'normal';
   }

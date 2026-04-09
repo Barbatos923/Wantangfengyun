@@ -13,9 +13,10 @@ import type { DeploySubmission } from '@engine/military/deployCalc';
 import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import type { TransferPlan, PlayerTask } from '@engine/npc/types';
 import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
+import type { MonthDraft, YearChronicle } from '@engine/chronicle/types';
 
 /** 存档 schema 版本号。schema 不兼容变动时自增，并在 migrations.ts 添加迁移逻辑。 */
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 
 /** 存档槽 ID 常量（MVP 期固定单槽） */
 export const CURRENT_SAVE_SLOT = 'current';
@@ -87,4 +88,10 @@ export interface SaveFile {
   // ── StoryEventBus ──
   storyEventQueue: SerializedStoryEvent[];
   storySpeedBeforePause: GameSpeed | null;
+
+  // ── AI 史书（不含 LLM apiKey，那个走独立 IndexedDB store） ──
+  chronicleState: {
+    monthDrafts: Array<[string, MonthDraft]>;
+    yearChronicles: Array<[number, YearChronicle]>;
+  };
 }
