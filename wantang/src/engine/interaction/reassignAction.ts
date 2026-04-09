@@ -33,6 +33,7 @@ import {
   refreshLegitimacyForChar,
 } from '@engine/official/postTransfer';
 import { findAppointRightHolder } from '@engine/character/successionUtils';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 import {
   isCentralOfficial,
   getCentralPostsHeld,
@@ -399,6 +400,18 @@ export function executeReassignSuccess(
 
   // 9. 缓存刷新
   refreshPostCaches([replacementId, territorialId]);
+
+  // 10. 史书 emit
+  {
+    const appointer = charStore.getCharacter(appointerId);
+    const territorial = charStore.getCharacter(territorialId);
+    emitChronicleEvent({
+      type: '调任',
+      actors: [appointerId, territorialId, replacementId],
+      territories: [],
+      description: `${appointer?.name ?? '?'}调${territorial?.name ?? '?'}入朝，以${replacement.name}代领其地`,
+    });
+  }
 }
 
 /**

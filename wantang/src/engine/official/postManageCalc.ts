@@ -131,13 +131,21 @@ export function canCreatePost(
   const existingPost = getGrantsControlPost(territory);
   if (existingPost) return { eligible: false, reason: '该领地已有主岗位' };
 
-  // dao 级额外条件：必须控制治所州
+  // dao 级额外条件：必须本人直辖治所州（不是"势力链上有人控制"，而是 actor 就是治所州主岗 holder）
+  // 历史踩坑：原先用 isInActorRealm(capController, actorId)，导致"敌方占领了治所州但主岗 holder 仍是
+  // 旧领主臣属"时，旧领主仍能建镇，并把治所连带整个道一起抢回去（玩家攻占洪州→唐懿宗 NPC 通过建镇
+  // 把江南西道+洪州整体收回的 BUG）。改为严格本人直辖 + 不被他人占领。
   if (territory.tier === 'dao' && territory.capitalZhouId) {
     const capitalZhou = territories.get(territory.capitalZhouId);
     if (capitalZhou) {
+      // 1) 治所州主岗持有人必须就是 actor 本人
       const capController = getGrantsControlHolder(capitalZhou);
-      if (!capController || !isInActorRealm(capController, actorId, characters)) {
-        return { eligible: false, reason: '必须控制治所州' };
+      if (capController !== actorId) {
+        return { eligible: false, reason: '必须本人直辖治所州' };
+      }
+      // 2) 治所州不能正被他人占领（occupiedBy 字段，战时占领标记）
+      if (capitalZhou.occupiedBy && capitalZhou.occupiedBy !== actorId) {
+        return { eligible: false, reason: '治所州正被他人占领' };
       }
     }
   }
@@ -223,13 +231,16 @@ export function canUsurpPost(
     return { eligible: false, reason: '不能篡夺自己的臣属' };
   }
 
-  // dao 级额外条件：必须控制治所州
+  // dao 级额外条件：必须本人直辖治所州（详见 canCreatePost 同名注释）
   if (territory.tier === 'dao' && territory.capitalZhouId) {
     const capitalZhou = territories.get(territory.capitalZhouId);
     if (capitalZhou) {
       const capController = getGrantsControlHolder(capitalZhou);
-      if (!capController || !isInActorRealm(capController, actorId, characters)) {
-        return { eligible: false, reason: '必须控制治所州' };
+      if (capController !== actorId) {
+        return { eligible: false, reason: '必须本人直辖治所州' };
+      }
+      if (capitalZhou.occupiedBy && capitalZhou.occupiedBy !== actorId) {
+        return { eligible: false, reason: '治所州正被他人占领' };
       }
     }
   }

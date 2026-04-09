@@ -23,6 +23,19 @@ export interface YearChronicle {
   failureReason?: string;
   /** 玩家是否已读过该年正文。用于右上角红点。 */
   read: boolean;
+  /**
+   * 方向 3：跨年记忆
+   * 史官按语提取（content 末段，约 200-250 字），下一年史 prompt 注入"前情提要"用。
+   * 旧存档没有此字段时为 undefined，下一年史按"无前情"处理。
+   */
+  afterword?: string;
+  /**
+   * 方向 3：跨年记忆
+   * 本年生成时的 dossier 快照（直接复用 CharacterDossier，JSON-serializable）。
+   * 下一年史 prompt 注入"上年关键人物近况"用，让 LLM 跨年保持称呼一致。
+   * 类型用 unknown[] 避免循环依赖，运行时按 CharacterDossier 处理。
+   */
+  keyCharactersSnapshot?: unknown[];
 }
 
 /** LLM 接入配置（设备级，不进存档）。 */

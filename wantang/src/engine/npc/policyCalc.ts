@@ -70,6 +70,7 @@ export interface PolicyPost {
   territoryId: string;
   tier: TerritoryTier;
   capitalZhouId?: string;
+  /** 当前职类真相源优先取岗位模板，避免与 territory.territoryType 暂时失同步时文案/执行打架 */
   territoryType: TerritoryType;
   successionLaw: 'clan' | 'bureaucratic';
   hasAppointRight: boolean;
@@ -112,7 +113,7 @@ export function getVassalPolicyPosts(vassalId: string, ctx: NpcContext): PolicyP
       territoryId: terr.id,
       tier: terr.tier,
       capitalZhouId: terr.capitalZhouId,
-      territoryType: terr.territoryType,
+      territoryType: tpl.territoryType ?? terr.territoryType,
       successionLaw: post.successionLaw,
       hasAppointRight: post.hasAppointRight,
     });

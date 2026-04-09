@@ -59,6 +59,10 @@ export function runWarSystem(date: GameDate): void {
 
   // ===== 行营推进 =====
   // 赶赴中的军队：倒计时，到达后编入行营
+  // BUG 修复：原来的 if 只在"有人到达"或"长度变了"时才 updateCampaign，
+  // 导致 turnsLeft > 1 的集结永远不会被持久化（每天减 1 算出来后直接丢弃，
+  // 下一天又从 store 读出原值），军队卡死在出发地。现在只要 incomingArmies
+  // 非空就无条件写回，让 turnsLeft 真正持久化递减。
   for (const campaign of warStore.campaigns.values()) {
     if (campaign.incomingArmies.length === 0) continue;
     const arrived: string[] = [];
@@ -68,14 +72,12 @@ export function runWarSystem(date: GameDate): void {
         if (ia.turnsLeft <= 0) { arrived.push(ia.armyId); return false; }
         return true;
       });
-    if (arrived.length > 0 || stillComing.length !== campaign.incomingArmies.length) {
-      warStore.updateCampaign(campaign.id, {
-        armyIds: [...campaign.armyIds, ...arrived],
-        incomingArmies: stillComing,
-      });
-      for (const armyId of arrived) {
-        useMilitaryStore.getState().updateArmy(armyId, { locationId: campaign.locationId });
-      }
+    warStore.updateCampaign(campaign.id, {
+      armyIds: arrived.length > 0 ? [...campaign.armyIds, ...arrived] : campaign.armyIds,
+      incomingArmies: stillComing,
+    });
+    for (const armyId of arrived) {
+      useMilitaryStore.getState().updateArmy(armyId, { locationId: campaign.locationId });
     }
   }
 

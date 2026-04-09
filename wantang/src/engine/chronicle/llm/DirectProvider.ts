@@ -42,13 +42,33 @@ export class DirectProvider implements LlmProvider {
       throw new Error(`LLM HTTP ${res.status}: ${text.slice(0, 300)}`);
     }
 
-    const json = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
+    // 先取 text 再 JSON.parse，方便在解析失败时把原文打出来
+    // （直接 res.json() 失败时只会抛 "Unexpected token X"，看不到服务端到底返回了什么）
+    const rawText = await res.text();
+    let json: {
+      choices?: Array<{
+        finish_reason?: string;
+        message?: {
+          content?: string;
+          reasoning_content?: string; // 思考型模型(Kimi K2 等)把推理放这
+        };
+      }>;
+      usage?: Record<string, unknown>;
     };
-    const content = json.choices?.[0]?.message?.content ?? '';
-    if (!content.trim()) {
+    try {
+      json = JSON.parse(rawText);
+    } catch (parseErr) {
+      const reason = parseErr instanceof Error ? parseErr.message : String(parseErr);
+      // eslint-disable-next-line no-console
+      console.error('[LLM] JSON parse failed, raw response:', rawText.slice(0, 1000));
+      throw new Error(`LLM JSON 解析失败 (${reason}): ${rawText.slice(0, 200)}`);
+    }
+    const message = json.choices?.[0]?.message;
+    // 优先 content；空则 fallback reasoning_content（兼容思考型模型短回答场景）
+    const content = (message?.content ?? '').trim() || (message?.reasoning_content ?? '').trim();
+    if (!content) {
       throw new Error('LLM 返回空内容');
     }
-    return content.trim();
+    return content;
   }
 }

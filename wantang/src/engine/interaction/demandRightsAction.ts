@@ -18,6 +18,8 @@ import { hasAuthorityOverPost, isCapitalZhouOfDao } from '@engine/npc/policyCalc
 import { executeToggleAppointRight, executeToggleSuccession } from './centralizationAction';
 import { positionMap } from '@data/positions';
 import { random } from '@engine/random';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
+import { EventPriority } from '@engine/types';
 
 /** 逼迫授权冷却天数（约一年） */
 export const DEMAND_RIGHTS_COOLDOWN_DAYS = 360;
@@ -347,6 +349,22 @@ export function executeDemandRights(
       value: -20,
       decayable: true,
     });
+    // 史书 emit：大事件 Major
+    {
+      const post = useTerritoryStore.getState().findPost(postId);
+      const tplName = post ? positionMap.get(post.templateId)?.name ?? '某职' : '某职';
+      const terrName = post?.territoryId
+        ? useTerritoryStore.getState().territories.get(post.territoryId)?.name
+        : undefined;
+      const fullPostName = terrName ? `${terrName}${tplName}` : tplName;
+      emitChronicleEvent({
+        type: '逼迫授权',
+        actors: [actorId, overlordId],
+        territories: post?.territoryId ? [post.territoryId] : [],
+        description: `${actor.name}逼${overlord.name}授${fullPostName}之${rightLabel}`,
+        priority: EventPriority.Major,
+      });
+    }
   } else {
     // 失败：大量好感降低
     charStore.addOpinion(overlordId, actorId, {

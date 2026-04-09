@@ -9,7 +9,7 @@ import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
 import { debugLog } from '@engine/debugLog';
 import { toAbsoluteDay } from '@engine/dateUtils';
-import { evaluateAllCasusBelli } from '@engine/military/warCalc';
+import { evaluateAllCasusBelli, getAnnexTargets, getDeJureTargets } from '@engine/military/warCalc';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 
 
@@ -31,8 +31,8 @@ registerInteraction({
  * - 双方仍存活
  * - 不是同一人
  * - 双方之间没有现存活跃战争
- * - 没有停战协议
- * - 选定的 CB 经 `evaluateAllCasusBelli` 重新评估仍可用（含所有制度/邻接/法理/时代条件）
+ * - 选定的 CB 经 `evaluateAllCasusBelli` 重新评估仍可用（含所有制度/邻接/法理/时代/停战条件）
+ * - 具体目标州列表仍与当前局面一致
  * - 资源仍足够
  *
  * 任一不过 → 返回 false 不写状态。
@@ -43,7 +43,7 @@ export function executeDeclareWar(
   casusBelli: CasusBelli,
   targetTerritoryIds: string[],
   date: { year: number; month: number; day: number },
-  cost: { prestige: number; legitimacy: number },
+  _cost: { prestige: number; legitimacy: number },
 ): boolean {
   const charStore = useCharacterStore.getState();
   const attacker = charStore.getCharacter(playerId);
@@ -57,13 +57,9 @@ export function executeDeclareWar(
     if ((isWarParticipant(playerId, w) && isWarParticipant(targetId, w))) return false;
   }
 
-  // 停战协议
+  // 停战期允许强开，但执行时要按当前局面重算真实代价
   const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
-  if (warStore.hasTruce(playerId, targetId, currentDay)) return false;
-
-  // 资源仍足够
-  if (attacker.resources.prestige + cost.prestige < 0) return false;
-  if (attacker.resources.legitimacy + cost.legitimacy < 0) return false;
+  const hasTruce = warStore.hasTruce(playerId, targetId, currentDay);
 
   // CB 仍可用（用面板同款评估器，不重写一套）
   const territories = useTerritoryStore.getState().territories;
@@ -74,10 +70,30 @@ export function executeDeclareWar(
     era,
     territories,
     characters: charStore.characters,
-    hasTruce: false, // 已经在上面单独检查过
+    hasTruce,
   });
   const selectedEval = cbEvals.find((e) => e.id === casusBelli);
   if (!selectedEval || selectedEval.failureReason !== null) return false;
+
+  // 目标快照也要二次校验，防止旧弹窗把战争落到已变化的州上
+  if (casusBelli === 'annexation') {
+    const annexTargets = getAnnexTargets(playerId, targetId, territories);
+    if (targetTerritoryIds.length !== 1 || !annexTargets.includes(targetTerritoryIds[0])) return false;
+  } else if (casusBelli === 'deJureClaim') {
+    const currentTargets = getDeJureTargets(playerId, targetId, territories);
+    if (
+      targetTerritoryIds.length !== currentTargets.length ||
+      targetTerritoryIds.some((id) => !currentTargets.includes(id))
+    ) {
+      return false;
+    }
+  } else if (casusBelli === 'independence' && targetTerritoryIds.length > 0) {
+    return false;
+  }
+
+  const cost = selectedEval.cost;
+  if (attacker.resources.prestige + cost.prestige < 0) return false;
+  if (attacker.resources.legitimacy + cost.legitimacy < 0) return false;
 
   useCharacterStore.getState().addResources(playerId, {
     prestige: cost.prestige,

@@ -19,6 +19,7 @@ import { getActualController } from '@engine/official/postQueries';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { positionMap } from '@data/positions';
 import { random } from '@engine/random';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 
 /** 要求效忠冷却天数（约半年） */
 export const DEMAND_FEALTY_COOLDOWN_DAYS = 180;
@@ -294,6 +295,13 @@ export function executeDemandFealty(
       reason: '要求效忠',
       value: -10,
       decayable: true,
+    });
+    // 史书 emit
+    emitChronicleEvent({
+      type: '要求效忠',
+      actors: [playerId, targetId],
+      territories: [],
+      description: `${player.name}迫${target.name}俯首称臣`,
     });
   } else {
     charStore.addOpinion(targetId, playerId, {

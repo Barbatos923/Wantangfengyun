@@ -10,6 +10,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { getActualController, getHeldPosts, canAppointToPost } from '@engine/official/officialUtils';
 import { executeDismiss } from './dismissAction';
+import { emitChronicleEvent, CHRONICLE_RANK_THRESHOLD } from '@engine/chronicle/emitChronicleEvent';
 import {
   seatPost,
   vacatePost,
@@ -289,6 +290,30 @@ export function executeAppoint(
   const affectedIds = [appointeeId];
   if (previousHolderId && previousHolderId !== appointeeId) affectedIds.push(previousHolderId);
   refreshPostCaches(affectedIds);
+
+  // ── 9. 史书 emit ──
+  // 五品门槛：appointee 散官品级 < 从五品下 → 不入史，避免铨选填补底层流官淹没月稿。
+  // 同时检查岗位模板的 minRank 兜底（防止 holder 还没刷品级就任命的边缘情况）。
+  {
+    const finalPost = terrStore.findPost(postId);
+    const tpl = finalPost ? positionMap.get(finalPost.templateId) : undefined;
+    const appointeeRank = appointee?.official?.rankLevel ?? 0;
+    const postMinRank = tpl?.minRank ?? 0;
+    const effectiveRank = Math.max(appointeeRank, postMinRank);
+    if (effectiveRank >= CHRONICLE_RANK_THRESHOLD) {
+      const tplName = tpl?.name ?? '某职';
+      const terrName = finalPost?.territoryId
+        ? terrStore.territories.get(finalPost.territoryId)?.name
+        : undefined;
+      const fullPostName = terrName ? `${terrName}${tplName}` : tplName;
+      emitChronicleEvent({
+        type: '任命',
+        actors: [appointerId, appointeeId],
+        territories: finalPost?.territoryId ? [finalPost.territoryId] : [],
+        description: `${appointer.name}任命${appointee.name}为${fullPostName}`,
+      });
+    }
+  }
 
   return true;
 }

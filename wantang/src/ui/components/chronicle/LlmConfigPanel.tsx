@@ -52,7 +52,9 @@ const LlmConfigPanel: React.FC = () => {
       const timer = setTimeout(() => ac.abort(), 15000);
       const out = await provider.generate(
         { system: '请回复 ok', user: '测试连接' },
-        { maxTokens: 8, signal: ac.signal },
+        // 64 而非 8：思考型模型(Kimi K2 等)前几十 token 全在 reasoning，
+        // 8 token 经常被截断到 content 为空，触发"LLM 返回空内容"假阳性
+        { maxTokens: 64, signal: ac.signal },
       );
       clearTimeout(timer);
       setTestResult(`连接成功（provider=${provider.id}）：${out.slice(0, 40)}`);

@@ -16,6 +16,8 @@ import { calcPersonality } from '@engine/character/personalityUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { random } from '@engine/random';
 import { resolveLegalAppointer } from '@engine/official/selectionUtils';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
+import { EventPriority } from '@engine/types';
 
 /** 注册剥夺领地交互 */
 registerInteraction({
@@ -196,7 +198,22 @@ export function executeRevoke(
   const success = random() * 100 < chance;
 
   if (success) {
-    executeDismiss(postId, revokerId);
+    executeDismiss(postId, revokerId, { skipChronicleEmit: true });
+    // 史书 emit：剥夺成功（描述比"罢免"更具主权强制色彩）
+    {
+      const tpl = positionMap.get(post.templateId);
+      const tplName = tpl?.name ?? '某职';
+      const terrName = post.territoryId
+        ? terrStore.territories.get(post.territoryId)?.name
+        : undefined;
+      const fullPostName = terrName ? `${terrName}${tplName}` : tplName;
+      emitChronicleEvent({
+        type: '剥夺',
+        actors: [revokerId, targetId],
+        territories: post.territoryId ? [post.territoryId] : [],
+        description: `${revoker.name}剥夺${target.name}${fullPostName}`,
+      });
+    }
     return 'success';
   } else {
     // 失败：好感惩罚 + 独立战争
@@ -215,6 +232,23 @@ export function executeRevoke(
       date,
       { prestige: 0, legitimacy: 0 },
     );
+
+    // 史书 emit：抗命剥夺（Major，让史书把"剥夺触发独立战争"作为大事件标记）
+    {
+      const tpl = positionMap.get(post.templateId);
+      const tplName = tpl?.name ?? '某职';
+      const terrName = post.territoryId
+        ? terrStore.territories.get(post.territoryId)?.name
+        : undefined;
+      const fullPostName = terrName ? `${terrName}${tplName}` : tplName;
+      emitChronicleEvent({
+        type: '抗命',
+        actors: [targetId, revokerId],
+        territories: post.territoryId ? [post.territoryId] : [],
+        description: `${revoker.name}欲夺${target.name}${fullPostName}，${target.name}抗命起兵`,
+        priority: EventPriority.Major,
+      });
+    }
 
     return 'rebel';
   }

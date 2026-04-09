@@ -14,6 +14,7 @@ import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { executeTaxChange } from './centralizationAction';
 import { random } from '@engine/random';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 
 /** 议定进奉冷却��数（约半年） */
 export const NEGOTIATE_TAX_COOLDOWN_DAYS = 180;
@@ -233,6 +234,13 @@ export function executeNegotiateTax(
       reason: '议定进奉',
       value: delta < 0 ? -5 : 5,
       decayable: true,
+    });
+    // 史书 emit
+    emitChronicleEvent({
+      type: '议定进奉',
+      actors: [actorId, overlordId],
+      territories: [],
+      description: `${actor.name}与${overlord.name}议定进奉，${dirLabel}赋税`,
     });
   } else {
     charStore.addOpinion(overlordId, actorId, {

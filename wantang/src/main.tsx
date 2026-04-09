@@ -8,8 +8,13 @@ import { useCharacterStore } from '@engine/character/CharacterStore'
 import { useTerritoryStore } from '@engine/territory/TerritoryStore'
 import { useTurnManager } from '@engine/TurnManager'
 import { useNpcStore } from '@engine/npc/NpcStore'
+import { useWarStore } from '@engine/military/WarStore'
+import { useMilitaryStore } from '@engine/military/MilitaryStore'
 import { runReview } from '@engine/npc/behaviors/reviewBehavior'
-Object.assign(window, { useCharacterStore, useTerritoryStore, useTurnManager, useNpcStore, runReview })
+Object.assign(window, {
+  useCharacterStore, useTerritoryStore, useTurnManager, useNpcStore,
+  useWarStore, useMilitaryStore, runReview,
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

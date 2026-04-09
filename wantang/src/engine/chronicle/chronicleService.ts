@@ -23,7 +23,13 @@ import {
   buildYearPrompt,
   type NameTable,
   type WorldSnapshot,
+  type PriorYearMemory,
 } from './chroniclePromptBuilder';
+import {
+  buildCharacterDossier,
+  selectKeyCharacters,
+  type CharacterDossier,
+} from './chronicleDossier';
 import { createProvider } from './llm/createProvider';
 import { isAbortError, type LlmProvider } from './llm/LlmProvider';
 import { mockProvider } from './llm/MockProvider';
@@ -31,22 +37,48 @@ import { loadLlmConfig } from './llm/llmConfig';
 
 // ── 事件筛选规则（priority 不够，加白名单） ─────────────
 
+// 白名单：除 priority>=Major 自动入史外，额外允许进入史书的 type 字串。
+// 维护原则：与各 emit 处的 type 字串严格对账，新增 emit 时必须同步到这里。
+// 显式不入史：'岗位空缺'(与继位/绝嗣重复) / '参战' / '退出战争'(与宣战/战争结束重复，避免月稿啰嗦)。
 const CHRONICLE_TYPE_WHITELIST = new Set<string>([
+  // —— 军事主线 ——
   '宣战',
   '战争结束',
   '城破',
   '兵变',
   '野战',
+  '战争接续',     // characterSystem.ts:343 死亡时战争领袖接续
+  // —— 王朝/继承 ——
   '继位',
   '绝嗣',
   '王朝覆灭',
-  '篡夺',
+  // —— 头衔 / 主权变动 ——
+  '篡夺头衔',     // usurpPostAction.ts:198（修复：原白名单写的"篡夺"与 emit 字串失配）
   '建镇',
   '称王',
   '称帝',
   '销毁头衔',
+  // —— 政治骨干（Commit 2 新增） ——
+  '任命',
+  '罢免',
+  '剥夺',
+  '抗命',          // 剥夺触发独立战争（Major，但显式列入）
+  '调任',
+  '转移臣属',
+  '归附',          // Major
+  '逼迫授权',      // Major
+  '留后指定',
+  '议定进奉',
+  '要求效忠',
   'chronicle-ready', // 防止递归
 ]);
+
+/** 单月事件截断上限：超过则按 priority 倒序 + 时间正序保留 top N。 */
+const MAX_EVENTS_PER_MONTH = 30;
+
+// 头衔聚合用：年史 worldSnapshot 的 newTitles / destroyedTitles 来源。
+const NEW_TITLE_TYPES = new Set<string>(['称王', '建镇', '称帝', '篡夺头衔']);
+const DESTROYED_TITLE_TYPES = new Set<string>(['销毁头衔', '王朝覆灭']);
 
 function shouldIncludeInChronicle(e: GameEvent): boolean {
   if (e.type === 'chronicle-ready') return false; // 史成通知本身不入史
@@ -139,9 +171,22 @@ function finishRequest(req: InFlightRequest, writer: () => void): void {
 
 function collectMonthEvents(year: number, month: number): GameEvent[] {
   const all = useTurnManager.getState().events;
-  return all.filter(
+  const filtered = all.filter(
     (e) => e.date.year === year && e.date.month === month && shouldIncludeInChronicle(e),
   );
+  if (filtered.length <= MAX_EVENTS_PER_MONTH) return filtered;
+  // 截断：按 priority 倒序，priority 相同按 day 正序，保留 top N
+  // 用 stable sort：先按 day 正序，再按 priority 倒序
+  const sorted = filtered
+    .slice()
+    .sort((a, b) => a.date.day - b.date.day)
+    .sort((a, b) => b.priority - a.priority);
+  debugLog(
+    'chronicle',
+    `[chronicle] month ${year}/${month} events ${filtered.length} → trimmed ${MAX_EVENTS_PER_MONTH}`,
+  );
+  // 截断后按时间顺序重排，保证月稿读起来仍是顺序的
+  return sorted.slice(0, MAX_EVENTS_PER_MONTH).sort((a, b) => a.date.day - b.date.day);
 }
 
 function collectMonthDrafts(year: number): MonthDraft[] {
@@ -175,7 +220,8 @@ function buildNameTable(events: GameEvent[]): NameTable {
 function freezeWorldSnapshot(year: number): WorldSnapshot {
   // 用现成的 controllerIndex（controllerId → Set<terrId>）聚合，
   // 避免再造一套 controller 真相源——CLAUDE.md 明令"查询走索引，禁止全量遍历"。
-  const { controllerIndex } = useTerritoryStore.getState();
+  const territoryState = useTerritoryStore.getState();
+  const { controllerIndex } = territoryState;
   const characters = useCharacterStore.getState().characters;
 
   const top = Array.from(controllerIndex.entries())
@@ -187,11 +233,75 @@ function freezeWorldSnapshot(year: number): WorldSnapshot {
       territoryCount: n,
     }));
 
+  // 聚合本年头衔变动：扫一次 events 把 NEW_TITLE_TYPES / DESTROYED_TITLE_TYPES 摘出来。
+  // description 已经是"X 在 Y 设节度使"这类自然语言，直接复用避免再拼一遍。
+  const allEvents = useTurnManager.getState().events;
+  const newTitles: string[] = [];
+  const destroyedTitles: string[] = [];
+  const yearEvents: typeof allEvents = [];
+  for (const e of allEvents) {
+    if (e.date.year !== year) continue;
+    yearEvents.push(e);
+    if (NEW_TITLE_TYPES.has(e.type)) newTitles.push(e.description);
+    else if (DESTROYED_TITLE_TYPES.has(e.type)) destroyedTitles.push(e.description);
+  }
+
+  // 关键人物档案（方向 2）：基于本年事件出场频次选 top 8 + 玩家
+  const keyCharIds = selectKeyCharacters(yearEvents, characters, 8);
+  const dossiers: CharacterDossier[] = [];
+  for (const id of keyCharIds) {
+    const d = buildCharacterDossier(id, characters, territoryState.territories, year);
+    if (d) dossiers.push(d);
+  }
+
   return {
     year,
     topPowers: top,
-    newTitles: [], // v1 暂不追踪；后续补事件流时填
-    destroyedTitles: [],
+    newTitles,
+    destroyedTitles,
+    dossiers,
+  };
+}
+
+// ── 跨年记忆（方向 3） ──────────────────────────────────
+
+/**
+ * 从年史正文末段提取"史官按语"。
+ * 优先匹配"史官按语"标记，找不到则取末尾约 250 字作为兜底（绝大部分模型都会
+ * 遵守 system prompt 把按语放末尾）。
+ */
+function extractAfterword(content: string): string {
+  if (!content) return '';
+  const trimmed = content.trim();
+  // 找"史官按语"或类似关键词
+  const markers = ['史官按语', '史臣曰', '论曰'];
+  for (const m of markers) {
+    const idx = trimmed.lastIndexOf(m);
+    if (idx >= 0) {
+      const slice = trimmed.slice(idx).trim();
+      // 截到 400 字（按语本身限制 200 字，留余量给标记前缀）
+      return slice.length > 400 ? slice.slice(0, 400) : slice;
+    }
+  }
+  // 兜底：取末尾 250 字
+  return trimmed.length > 250 ? trimmed.slice(-250) : trimmed;
+}
+
+/**
+ * 读取上一年史的"前情提要"。无上一年 / 上一年未生成 / 上一年失败 → 返回 undefined。
+ */
+function loadPriorYearMemory(priorYear: number): PriorYearMemory | undefined {
+  const yc = useChronicleStore.getState().yearChronicles.get(priorYear);
+  if (!yc || yc.status !== 'done') return undefined;
+  if (!yc.afterword) return undefined;
+  // dossier 快照：旧档可能没有，按空数组处理
+  const dossiers = Array.isArray(yc.keyCharactersSnapshot)
+    ? (yc.keyCharactersSnapshot as PriorYearMemory['dossiers'])
+    : [];
+  return {
+    year: priorYear,
+    afterword: yc.afterword,
+    dossiers,
   };
 }
 
@@ -231,7 +341,9 @@ async function generateMonthDraft(year: number, month: number): Promise<void> {
   try {
     const provider = await getProvider();
     summary = await provider.generate(prompt, {
-      maxTokens: 400,
+      // 1500 而非 400：思考型模型(K2 等)前几千 token 全在 reasoning，
+      // 400 上限会让最终 content 被截到只剩几个字
+      maxTokens: 1500,
       kind: 'month',
       signal: req.abort.signal,
     });
@@ -335,13 +447,17 @@ async function generateYearChronicle(year: number): Promise<void> {
   // 等完了再读月稿 + 冻结 worldSnapshot
   const drafts = collectMonthDrafts(year);
   const snapshot = freezeWorldSnapshot(year);
-  const prompt = buildYearPrompt(year, drafts, snapshot);
+  // 方向 3：跨年记忆 — 读取上一年史的按语 + dossier 快照（若存在）
+  const priorMemory = loadPriorYearMemory(year - 1);
+  const prompt = buildYearPrompt(year, drafts, snapshot, priorMemory);
 
   let content: string;
   try {
     const provider = await getProvider();
     content = await provider.generate(prompt, {
-      maxTokens: 2000,
+      // 8000 而非 2000：思考型模型(K2 等)reasoning 经常吃掉 4000+ token，
+      // 留给文言正文不足时会被截到只剩"○咸"几个字
+      maxTokens: 8000,
       kind: 'year',
       signal: req.abort.signal,
     });
@@ -372,12 +488,16 @@ async function generateYearChronicle(year: number): Promise<void> {
   }
 
   finishRequest(req, () => {
+    // 方向 3：提取按语 + freeze dossier 快照供下一年读取
+    const afterword = extractAfterword(content);
     useChronicleStore.getState().upsertYearChronicle({
       year,
       content,
       status: 'done',
       generatedAt: Date.now(),
       read: false,
+      afterword,
+      keyCharactersSnapshot: snapshot.dossiers,
     });
     debugLog('chronicle', '[chronicle] year done', year);
     // 通知：走 addEvent，不走 StoryEventBus（不暂停游戏）
@@ -503,6 +623,7 @@ export const __test__ = {
   generateYearChronicle,
   CHRONICLE_TYPE_WHITELIST,
   shouldIncludeInChronicle,
+  freezeWorldSnapshot,
   setProviderForTest: __setProviderForTest,
   resetForTest: __resetForTest,
 };

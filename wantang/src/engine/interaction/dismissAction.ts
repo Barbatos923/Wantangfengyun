@@ -16,6 +16,7 @@ import {
   capitalZhouSeat,
   refreshPostCaches,
 } from '@engine/official/postTransfer';
+import { emitChronicleEvent, CHRONICLE_RANK_THRESHOLD } from '@engine/chronicle/emitChronicleEvent';
 
 /** 注册罢免交互 */
 registerInteraction({
@@ -60,7 +61,7 @@ export function getDismissablePosts(
 export function executeDismiss(
   postId: string,
   dismisserId: string,
-  opts?: { skipOpinion?: boolean; vacateOnly?: boolean },
+  opts?: { skipOpinion?: boolean; vacateOnly?: boolean; skipChronicleEmit?: boolean },
 ): boolean {
   const terrStore = useTerritoryStore.getState();
   const date = useTurnManager.getState().currentDate;
@@ -140,6 +141,32 @@ export function executeDismiss(
   // ── 缓存刷新 ──
   const affectedIds = [previousHolderId, tpl?.grantsControl ? dismisserId : null].filter(Boolean) as string[];
   refreshPostCaches(affectedIds);
+
+  // ── 史书 emit ──
+  // vacateOnly 是铨选/system 内部清场，不算政治事件，跳过
+  // skipChronicleEmit 用于上层（如 executeRevoke 成功路径）已自行 emit 更精确事件
+  // 五品门槛：被罢免者品级 < 从五品下 → 不入史，避免低品流官罢免淹没月稿
+  if (!opts?.vacateOnly && !opts?.skipChronicleEmit && previousHolderId) {
+    const charStore = useCharacterStore.getState();
+    const holder = charStore.getCharacter(previousHolderId);
+    const holderRank = holder?.official?.rankLevel ?? 0;
+    const postMinRank = tpl?.minRank ?? 0;
+    const effectiveRank = Math.max(holderRank, postMinRank);
+    if (effectiveRank >= CHRONICLE_RANK_THRESHOLD) {
+      const dismisser = charStore.getCharacter(dismisserId);
+      const tplName = tpl?.name ?? '某职';
+      const terrName = post.territoryId
+        ? useTerritoryStore.getState().territories.get(post.territoryId)?.name
+        : undefined;
+      const fullPostName = terrName ? `${terrName}${tplName}` : tplName;
+      emitChronicleEvent({
+        type: '罢免',
+        actors: [dismisserId, previousHolderId],
+        territories: post.territoryId ? [post.territoryId] : [],
+        description: `${dismisser?.name ?? '?'}罢免${holder?.name ?? '?'}${fullPostName}之职`,
+      });
+    }
+  }
 
   return true;
 }

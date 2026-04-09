@@ -186,6 +186,21 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 ### 调试日志
 新增 NPC 行为/交互骰子/军编/继承等"调试时有用、平时是噪音"的日志，**禁止裸 `console.log`**，必须用 `engine/debugLog.ts` 的 `debugLog(cat, ...)`，6 个 category：`policy` / `military` / `interaction` / `inheritance` / `emperor` / `war`，默认全关。BUG 断言用 `console.error`，fallback 边缘路径用 `console.warn`，可直接写。DevTools 开启：`window.__DEBUG__.policy = true`。
 
+### 史书 emit 纪律
+任何会改变政治格局的 interaction / decision / NPC behavior，**execute 真正成功后(stale 校验通过且状态已写入)必须调 `emitChronicleEvent({...})` 推送 GameEvent**(在 `engine/chronicle/emitChronicleEvent.ts`，封装了 id/date/priority 样板)。priority 分级：
+- **主权变动**(归附 / 逼迫授权 / 称王称帝 / 继位 / 王朝覆灭 / 抗命剥夺) → `EventPriority.Major`
+- **人事变动**(任命 / 罢免 / 调任 / 剥夺 / 转移臣属 / 留后指定 / 议定进奉 / 要求效忠) → `EventPriority.Normal` + 必须在 `chronicleService.ts:CHRONICLE_TYPE_WHITELIST` 加 type 字串
+- **高频流水**(铨选 / 考课 / 政策调整 / 建造) → 默认不 emit；如需写入观察日志走 debugLog
+
+新增 interaction / behavior 时必须自检三件事：
+1. emit 在 stale 校验之后、状态写入之后(否则会写出"成功但 store 未变"的虚假事件)
+2. 同一逻辑动作只 emit 一次：上层(如 `executeRevoke` 成功)若已 emit 更精确事件，下层(如 `executeDismiss`)需用 `skipChronicleEmit` opt 避免重复
+3. 字串与白名单严格对账(grep `chronicleService.ts:CHRONICLE_TYPE_WHITELIST`)；NPC 半年/月度扫描类调用必须只在状态真正变化时 emit(避免 noop 噪音，参考 `executeDesignateHeir` 的 previousHeirId 比对)
+
+`worldSnapshot.newTitles / destroyedTitles` 由 `freezeWorldSnapshot` 扫年内事件聚合，依赖 `NEW_TITLE_TYPES / DESTROYED_TITLE_TYPES` 两个 Set——新增头衔类事件时同步更新这两个 Set。
+
+单月事件超过 `MAX_EVENTS_PER_MONTH = 30` 会按 priority 倒序 + 时间正序截断，不必担心 prompt token 爆炸；但仍应避免高频流水类事件污染。
+
 ### 其他规则
 - 批量操作用 `batchMutate`，禁止循环 `setState`
 - ID 用 `crypto.randomUUID()`

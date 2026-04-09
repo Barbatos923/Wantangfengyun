@@ -241,6 +241,212 @@ describe('chronicle 调度层 - stale 删槽回归', () => {
   });
 });
 
+// ── 测试 5：白名单字串对账 ────────────────────────────────
+
+describe('chronicle 白名单 - 与 emit 端字串对账', () => {
+  it('Normal 级"篡夺头衔"事件能通过白名单进入史书（修复原失配 BUG）', () => {
+    const e: GameEvent = {
+      id: 'evt-usurp',
+      date: { year: 870, month: 6, day: 1 },
+      type: '篡夺头衔', // 与 usurpPostAction.ts:198 一致
+      actors: [],
+      territories: [],
+      description: '某人篡夺某节度使',
+      priority: EventPriority.Normal, // 故意 Normal，不走 Major 自动入史
+    };
+    expect(svc.shouldIncludeInChronicle(e)).toBe(true);
+  });
+
+  it('Normal 级"战争接续"事件能通过白名单进入史书', () => {
+    const e: GameEvent = {
+      id: 'evt-war-succ',
+      date: { year: 870, month: 7, day: 1 },
+      type: '战争接续',
+      actors: [],
+      territories: [],
+      description: '某继承人接掌战争',
+      priority: EventPriority.Normal,
+    };
+    expect(svc.shouldIncludeInChronicle(e)).toBe(true);
+  });
+
+  it('"岗位空缺"显式不入史（与继位/绝嗣重复）', () => {
+    const e: GameEvent = {
+      id: 'evt-vacant',
+      date: { year: 870, month: 1, day: 1 },
+      type: '岗位空缺',
+      actors: [],
+      territories: [],
+      description: '某节度使出缺',
+      priority: EventPriority.Normal,
+    };
+    expect(svc.shouldIncludeInChronicle(e)).toBe(false);
+  });
+});
+
+// ── 测试 6：worldSnapshot 头衔聚合 ────────────────────────
+
+describe('chronicle worldSnapshot - 头衔聚合', () => {
+  it('本年的称王/建镇/称帝/篡夺头衔事件聚合到 newTitles', () => {
+    addEvent(870, 3, '称王');
+    addEvent(870, 5, '建镇');
+    addEvent(870, 8, '篡夺头衔');
+    // 跨年事件不应进入
+    addEvent(869, 12, '称帝');
+
+    const snap = svc.freezeWorldSnapshot(870);
+    expect(snap.newTitles).toHaveLength(3);
+    expect(snap.newTitles.some((t) => t.includes('称王'))).toBe(true);
+    expect(snap.newTitles.some((t) => t.includes('建镇'))).toBe(true);
+    expect(snap.newTitles.some((t) => t.includes('篡夺头衔'))).toBe(true);
+  });
+
+  it('本年的销毁头衔/王朝覆灭事件聚合到 destroyedTitles', () => {
+    addEvent(871, 4, '销毁头衔');
+    addEvent(871, 11, '王朝覆灭');
+
+    const snap = svc.freezeWorldSnapshot(871);
+    expect(snap.destroyedTitles).toHaveLength(2);
+  });
+
+  it('两个清单互斥，无事件则均为空数组', () => {
+    const snap = svc.freezeWorldSnapshot(872);
+    expect(snap.newTitles).toEqual([]);
+    expect(snap.destroyedTitles).toEqual([]);
+  });
+});
+
+// ── 测试 7：人物档案（方向 2） ────────────────────────────
+
+import { useCharacterStore } from '@engine/character/CharacterStore';
+import type { Character } from '@engine/character/types';
+
+function makeChar(over: Partial<Character> & { id: string; name: string; birthYear: number }): Character {
+  return {
+    id: over.id,
+    name: over.name,
+    courtesy: over.courtesy ?? '',
+    gender: over.gender ?? '男',
+    birthYear: over.birthYear,
+    deathYear: over.deathYear,
+    clan: over.clan ?? '',
+    family: over.family ?? { childrenIds: [] },
+    abilities: over.abilities ?? { military: 10, administration: 10, strategy: 10, diplomacy: 10, scholarship: 10 },
+    traitIds: over.traitIds ?? [],
+    health: over.health ?? 100,
+    stress: over.stress ?? 0,
+    alive: over.alive ?? true,
+    resources: over.resources ?? { money: 0, grain: 0, prestige: 0, legitimacy: 0 },
+    relationships: over.relationships ?? [],
+    overlordId: over.overlordId,
+    redistributionRate: over.redistributionRate ?? 50,
+    isPlayer: over.isPlayer ?? false,
+    isRuler: over.isRuler ?? false,
+    title: over.title ?? '',
+    official: over.official,
+  };
+}
+
+function injectCharacters(chars: Character[]): void {
+  const map = new Map<string, Character>();
+  for (const c of chars) map.set(c.id, c);
+  useCharacterStore.setState({ characters: map });
+}
+
+describe('chronicle worldSnapshot - 人物档案 (方向 2)', () => {
+  beforeEach(() => {
+    injectCharacters([]);
+  });
+
+  it('dossier 各字段：name/courtesy/clan/age/traits/family 完整', () => {
+    const father = makeChar({
+      id: 'char-father', name: '李某父', birthYear: 800,
+    });
+    const son = makeChar({
+      id: 'char-son', name: '李某子', birthYear: 850,
+    });
+    const main = makeChar({
+      id: 'char-key',
+      name: '李存信',
+      courtesy: '仲谋',
+      clan: '沙陀',
+      birthYear: 840,
+      traitIds: ['brave', 'cruel'], // 假定这两是 innate/personality 类；非则 traitNames 为空，不影响其他字段断言
+      family: { fatherId: 'char-father', childrenIds: ['char-son'] },
+      isPlayer: false,
+    });
+    injectCharacters([father, son, main]);
+
+    // 让 char-key 在 870 年出场 1 次
+    useTurnManager.setState({ events: [] });
+    addEvent(870, 5, '宣战');
+    const events = useTurnManager.getState().events;
+    // 手动塞 actor 到 event（addEvent helper 是空 actors）
+    useTurnManager.setState({
+      events: events.map((e, i) => i === 0 ? { ...e, actors: ['char-key'] } : e),
+    });
+
+    const snap = svc.freezeWorldSnapshot(870);
+    const d = snap.dossiers.find(x => x.id === 'char-key');
+    expect(d).toBeDefined();
+    expect(d!.name).toBe('李存信');
+    expect(d!.courtesy).toBe('仲谋');
+    expect(d!.clan).toBe('沙陀');
+    expect(d!.age).toBe(30); // 870 - 840
+    expect(d!.isAlive).toBe(true);
+    expect(d!.fatherName).toBe('李某父');
+    expect(d!.childrenNames).toEqual(['李某子']);
+  });
+
+  it('跨年记忆 (方向 3)：上一年生成完会落地 afterword + dossier 快照', async () => {
+    svc.setProviderForTest(makeInstantProvider('direct', '癸巳年文言开篇。某月某事。\n史官按语：本年藩镇交攻，王纲解纽。'));
+
+    // 准备两个角色
+    const a = makeChar({ id: 'char-a', name: '李某', birthYear: 840 });
+    injectCharacters([a]);
+
+    // 873 年事件 + 月稿
+    useTurnManager.setState({ events: [] });
+    addEvent(873, 5, '宣战');
+    const evs = useTurnManager.getState().events;
+    useTurnManager.setState({ events: evs.map(e => ({ ...e, actors: ['char-a'] })) });
+
+    // 预填 12 个月稿让 waitForMonthDrafts 立即放行
+    for (let m = 1; m <= 12; m++) {
+      useChronicleStore.getState().upsertMonthDraft({ year: 873, month: m, summary: `873-${m}`, status: 'done' });
+    }
+
+    await svc.generateYearChronicle(873);
+
+    const yc = useChronicleStore.getState().yearChronicles.get(873);
+    expect(yc?.status).toBe('done');
+    expect(yc?.afterword).toContain('史官按语');
+    expect(Array.isArray(yc?.keyCharactersSnapshot)).toBe(true);
+    expect((yc?.keyCharactersSnapshot as Array<{ id: string }>).some(d => d.id === 'char-a')).toBe(true);
+  });
+
+  it('selectKeyCharacters：玩家始终入选（即使本年未出场）', () => {
+    const player = makeChar({ id: 'char-player', name: '玩家', birthYear: 850, isPlayer: true });
+    const npcs: Character[] = [];
+    for (let i = 0; i < 9; i++) {
+      npcs.push(makeChar({ id: `npc-${i}`, name: `NPC${i}`, birthYear: 850 }));
+    }
+    injectCharacters([player, ...npcs]);
+
+    // 9 个 NPC 各出场 1 次，玩家不出场
+    useTurnManager.setState({ events: [] });
+    for (let i = 0; i < 9; i++) addEvent(870, i + 1, '宣战');
+    const events = useTurnManager.getState().events;
+    useTurnManager.setState({
+      events: events.map((e, i) => ({ ...e, actors: [`npc-${i}`] })),
+    });
+
+    const snap = svc.freezeWorldSnapshot(870);
+    expect(snap.dossiers.length).toBe(8);
+    expect(snap.dossiers.some(d => d.id === 'char-player')).toBe(true);
+  });
+});
+
 // ── 测试 4：abort 不降级 ──────────────────────────────────
 
 describe('chronicle 调度层 - abort 不降级', () => {

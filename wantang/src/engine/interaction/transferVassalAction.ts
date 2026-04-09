@@ -10,6 +10,7 @@ import { useWarStore } from '@engine/military/WarStore';
 import { getActualController } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 
 /** 注册转移臣属交互 */
 registerInteraction({
@@ -165,5 +166,14 @@ export function executeTransferVassal(
   }
 
   refreshPlayerLedger();
+
+  // 史书 emit
+  emitChronicleEvent({
+    type: '转移臣属',
+    actors: [transferrerId, vassalId, newOverlordId],
+    territories: [],
+    description: `${transferrer.name}将${vassal.name}转属${newOverlord.name}`,
+  });
+
   return true;
 }

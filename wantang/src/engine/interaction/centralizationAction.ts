@@ -7,6 +7,7 @@ import { useTurnManager } from '@engine/TurnManager';
 import { positionMap } from '@data/positions';
 import { refreshPlayerLedger } from './appointAction';
 import type { CentralizationLevel, Post } from '@engine/territory/types';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 
 // 军/民模板切换映射
 export const MILITARY_TO_CIVIL: Record<string, string> = {
@@ -193,6 +194,9 @@ export function executeDesignateHeir(postId: string, heirId: string | null): voi
   const post = terrStore.findPost(postId);
   if (!post?.holderId) return;
 
+  // 记录原 heir，用于判断是否真的改了（避免 NPC 半年扫描的 noop 调用产生噪音事件）
+  const previousHeirId = post.designatedHeirId ?? null;
+
   const allPosts = terrStore.getPostsByHolder(post.holderId);
   const territories = terrStore.territories;
 
@@ -213,6 +217,21 @@ export function executeDesignateHeir(postId: string, heirId: string | null): voi
           terrStore.updatePost(capPost.id, { designatedHeirId: heirId });
         }
       }
+    }
+  }
+
+  // 史书 emit：仅在 heir 真的变了 + 新 heir 非空时（撤销不入史，避免噪音）
+  if (heirId && heirId !== previousHeirId) {
+    const charStore = useCharacterStore.getState();
+    const holder = charStore.getCharacter(post.holderId);
+    const heir = charStore.getCharacter(heirId);
+    if (holder && heir) {
+      emitChronicleEvent({
+        type: '留后指定',
+        actors: [post.holderId, heirId],
+        territories: [],
+        description: `${holder.name}定${heir.name}为留后`,
+      });
     }
   }
 }

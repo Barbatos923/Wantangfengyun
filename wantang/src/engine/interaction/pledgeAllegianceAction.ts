@@ -17,6 +17,8 @@ import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getActualController, getSovereigntyTier, findEmperorId } from '@engine/official/postQueries';
 import { random } from '@engine/random';
 import { buildZhouAdjacency } from '@engine/military/deployCalc';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
+import { EventPriority } from '@engine/types';
 
 /** 归附冷却天数（约半年） */
 export const PLEDGE_ALLEGIANCE_COOLDOWN_DAYS = 180;
@@ -336,6 +338,14 @@ export function executePledgeAllegiance(
       reason: '归附',
       value: 10,
       decayable: true,
+    });
+    // 史书 emit：主权变动，Major
+    emitChronicleEvent({
+      type: '归附',
+      actors: [playerId, targetId],
+      territories: [],
+      description: `${player.name}率众归附${target.name}`,
+      priority: EventPriority.Major,
     });
   } else {
     charStore.addOpinion(playerId, targetId, {
