@@ -30,6 +30,9 @@ import {
   selectKeyCharacters,
   type CharacterDossier,
 } from './chronicleDossier';
+import { type EventContextSnapshot, buildEventContext } from './chronicleEventContext';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
 import { createProvider } from './llm/createProvider';
 import { isAbortError, type LlmProvider } from './llm/LlmProvider';
 import { mockProvider } from './llm/MockProvider';
@@ -217,6 +220,24 @@ function buildNameTable(events: GameEvent[]): NameTable {
   return { characters: charNames, territories: terrNames };
 }
 
+function freezeEventContextSnapshot(year: number): EventContextSnapshot {
+  const charState = useCharacterStore.getState();
+  const terrState = useTerritoryStore.getState();
+  const milState = useMilitaryStore.getState();
+  const warState = useWarStore.getState();
+  return {
+    characters: charState.characters,
+    territories: terrState.territories,
+    centralPosts: terrState.centralPosts,
+    controllerIndex: terrState.controllerIndex,
+    vassalIndex: charState.vassalIndex,
+    armies: milState.armies,
+    battalions: milState.battalions,
+    wars: warState.wars,
+    currentYear: year,
+  };
+}
+
 function freezeWorldSnapshot(year: number): WorldSnapshot {
   // 用现成的 controllerIndex（controllerId → Set<terrId>）聚合，
   // 避免再造一套 controller 真相源——CLAUDE.md 明令"查询走索引，禁止全量遍历"。
@@ -334,7 +355,8 @@ async function generateMonthDraft(year: number, month: number): Promise<void> {
   }
 
   const names = buildNameTable(events);
-  const prompt = buildMonthPrompt(year, month, events, names);
+  const ctxSnap = freezeEventContextSnapshot(year);
+  const prompt = buildMonthPrompt(year, month, events, names, ctxSnap);
   debugLog('chronicle', '[chronicle] month start', year, month, 'events=', events.length);
 
   // ━━ DEBUG: 月度素材 & prompt 审查 ━━

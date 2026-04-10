@@ -87,13 +87,14 @@ export function runMilitarySystem(date: GameDate): void {
         // 查找所属 army 的 owner
         const army = useMilitaryStore.getState().getArmy(bat.armyId);
         if (army) {
+          const ownerName = useCharacterStore.getState().getCharacter(army.ownerId)?.name ?? '?';
           useTurnManager.getState().addEvent({
             id: `mutiny-${date.year}-${date.month}-${date.day}-${bat.id}`,
             date,
             type: '兵变',
             actors: [army.ownerId],
             territories: [bat.locationId],
-            description: `${bat.name}士气极低，发生兵变！`,
+            description: `${ownerName}麾下${bat.name}（${bat.currentStrength}人）发生兵变`,
             priority: EventPriority.Major,
           });
         }

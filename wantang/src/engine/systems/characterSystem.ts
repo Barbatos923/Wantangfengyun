@@ -19,6 +19,7 @@ import { calcPersonality } from '@engine/character/personalityUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { positionMap } from '@data/positions';
 import { useTurnManager } from '@engine/TurnManager';
+import { findEmperorId } from '@engine/official/postQueries';
 import { useWarStore } from '@engine/military/WarStore';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
 import { disbandParticipantCampaigns } from '@engine/interaction/withdrawWarAction';
@@ -168,17 +169,46 @@ export function runCharacterSystem(date: GameDate): void {
 
       // 发事件：每位死者最多一条继位/绝嗣事件 + 一条空缺汇总事件
       if (hadClanPost) {
-        turnMgr.addEvent({
-          id: crypto.randomUUID(),
-          date: { year: date.year, month: date.month, day: date.day },
-          type: primaryHeir ? '继位' : '绝嗣',
-          actors: primaryHeir ? [deadId, primaryHeir] : [deadId],
-          territories: [],
-          description: primaryHeir
-            ? `${deadChar.name}薨，${charStore.getCharacter(primaryHeir)?.name ?? '?'}继位`
-            : `${deadChar.name}薨，无人继承`,
-          priority: EventPriority.Major,
-        });
+        const deadAge = date.year - deadChar.birthYear;
+        // 死者最高主岗名称（皇帝特判：pos-emperor 非 grantsControl，需单独检查）
+        const isEmperor = findEmperorId(territories, terrStore.centralPosts) === deadId;
+        let mainPostLabel: string;
+        if (isEmperor) {
+          mainPostLabel = '皇帝';
+        } else {
+          const mainPost = sorted.find(p => positionMap.get(p.templateId)?.grantsControl);
+          const mainPostTpl = mainPost ? positionMap.get(mainPost.templateId) : undefined;
+          const mainPostTerrName = mainPost?.territoryId ? territories.get(mainPost.territoryId)?.name : undefined;
+          mainPostLabel = mainPostTpl
+            ? (mainPostTerrName ? `${mainPostTerrName}${mainPostTpl.name}` : mainPostTpl.name)
+            : '';
+        }
+
+        if (primaryHeir) {
+          const heirChar = charStore.getCharacter(primaryHeir);
+          // 推断继承关系
+          const isChild = deadChar.family.childrenIds.includes(primaryHeir);
+          const relation = isChild ? '子' : '族人';
+          turnMgr.addEvent({
+            id: crypto.randomUUID(),
+            date: { year: date.year, month: date.month, day: date.day },
+            type: '继位',
+            actors: [deadId, primaryHeir],
+            territories: mainPost?.territoryId ? [mainPost.territoryId] : [],
+            description: `${mainPostLabel}${deadChar.name}薨，享年${deadAge}岁，其${relation}${heirChar?.name ?? '?'}继位`,
+            priority: EventPriority.Major,
+          });
+        } else {
+          turnMgr.addEvent({
+            id: crypto.randomUUID(),
+            date: { year: date.year, month: date.month, day: date.day },
+            type: '绝嗣',
+            actors: [deadId],
+            territories: mainPost?.territoryId ? [mainPost.territoryId] : [],
+            description: `${mainPostLabel}${deadChar.name}薨，享年${deadAge}岁，无人继承`,
+            priority: EventPriority.Major,
+          });
+        }
       }
 
       if (vacantPostNames.length > 0) {
@@ -304,13 +334,14 @@ export function runCharacterSystem(date: GameDate): void {
           charStore.setPlayerId(null);
           charStore.updateCharacter(deadId, { isPlayer: false });
           useTurnManager.setState({ dynastyExtinct: true, isPaused: true });
+          const deadAge = date.year - deadChar.birthYear;
           turnMgr.addEvent({
             id: crypto.randomUUID(),
             date: { year: date.year, month: date.month, day: date.day },
             type: '王朝覆灭',
             actors: [deadId],
             territories: [],
-            description: `${deadChar.name}薨，后继无人，${deadChar.clan}一脉断绝`,
+            description: `${deadChar.name}薨，享年${deadAge}岁，后继无人`,
             priority: EventPriority.Major,
           });
         }
@@ -336,14 +367,16 @@ export function runCharacterSystem(date: GameDate): void {
             const ok = warStore.replaceLeader(war.id, deadId, successor);
             if (ok) {
               // 接续成功：发事件，保留战争状态由 warSystem 后续按新领袖结算
+              const enemyId = war.attackerId === deadId ? war.defenderId : war.attackerId;
+              const enemyName = charStore.getCharacter(enemyId)?.name ?? '?';
               const turnMgr = useTurnManager.getState();
               turnMgr.addEvent({
                 id: crypto.randomUUID(),
                 date: { year: date.year, month: date.month, day: date.day },
                 type: '战争接续',
-                actors: [deadId, successor],
+                actors: [deadId, successor, enemyId],
                 territories: [],
-                description: `${charStore.getCharacter(deadId)?.name ?? '?'}薨于战时，${successorChar.name}承其大义，继续与敌交战`,
+                description: `${charStore.getCharacter(deadId)?.name ?? '?'}薨于战时，${successorChar.name}承其大义，继续与${enemyName}交战`,
                 priority: EventPriority.Major,
               });
               continue;

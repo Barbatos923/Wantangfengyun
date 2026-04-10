@@ -2,7 +2,7 @@
 
 import type { GameDate } from '@engine/types.ts';
 import type { Campaign } from '@engine/military/types.ts';
-import { getDaysInMonth } from '@engine/dateUtils.ts';
+import { getDaysInMonth, diffDays } from '@engine/dateUtils.ts';
 import { EventPriority } from '@engine/types.ts';
 import { useCharacterStore } from '@engine/character/CharacterStore.ts';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore.ts';
@@ -393,6 +393,10 @@ export function runWarSystem(date: GameDate): void {
       const defenderChar = charState.characters.get(defenderCmd);
       const winnerName = winnerIsAttacker ? attackerChar?.name : defenderChar?.name;
       const terrName = useTerritoryStore.getState().territories.get(attackerCamps[0].locationId)?.name ?? '';
+      const atkName = attackerChar?.name ?? '?';
+      const defName = defenderChar?.name ?? '?';
+      const atkTroops = result.initialAttackerTroops;
+      const defTroops = result.initialDefenderTroops;
 
       useTurnManager.getState().addEvent({
         id: `battle-${date.year}-${date.month}-${date.day}-${attackerCamps[0].locationId}`,
@@ -400,7 +404,7 @@ export function runWarSystem(date: GameDate): void {
         type: '野战',
         actors: [...attackerCamps.map(c => c.ownerId), ...defenderCamps.map(c => c.ownerId)],
         territories: [attackerCamps[0].locationId],
-        description: `${terrName}之战！${winnerName ?? ''}获胜。攻方损失${result.totalAttackerLosses}，守方损失${result.totalDefenderLosses}`,
+        description: `${terrName}之战！攻方主将${atkName}率兵${atkTroops}人，守方主将${defName}率兵${defTroops}人，${winnerName ?? '?'}获胜，攻损${result.totalAttackerLosses}守损${result.totalDefenderLosses}`,
         priority: EventPriority.Major,
         payload: {
           battleResult: result,
@@ -549,14 +553,24 @@ export function runWarSystem(date: GameDate): void {
         useWarStore.getState().updateWar(warForScore.id, { warScore: clampedScore });
       }
 
+      // 围城天数 + 守方领袖姓名
+      const siegeDays = diffDays(siege.startDate, date);
+      const charStoreNow = useCharacterStore.getState();
+      const attackerName = charStoreNow.getCharacter(campaign.ownerId)?.name ?? '?';
+      // 守方：优先取领地原控制者（terr 的 holder/controller），其次取 defenderIds 第一个
+      const defLeaderId = war.attackerId === campaign.ownerId ? war.defenderId : war.attackerId;
+      const defLeaderName = charStoreNow.getCharacter(defLeaderId)?.name ?? '?';
+      const defenderActors = [...defenderIds];
+
       useTurnManager.getState().addEvent({
         id: `siege-fall-${date.year}-${date.month}-${date.day}-${siege.territoryId}`,
         date,
         type: '城破',
-        actors: [campaign.ownerId],
+        actors: [campaign.ownerId, ...defenderActors],
         territories: [siege.territoryId],
-        description: `${terr.name}城破！`,
+        description: `${attackerName}围${terr.name}${siegeDays}日，城破，守方${defLeaderName}失守`,
         priority: EventPriority.Major,
+        payload: { siegeDays, attackerId: campaign.ownerId, defenderLeaderId: defLeaderId },
       });
 
       useWarStore.getState().endSiege(siege.id);

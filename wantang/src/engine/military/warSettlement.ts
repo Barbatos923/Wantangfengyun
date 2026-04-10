@@ -11,7 +11,7 @@ import { TRUCE_DURATION_DAYS } from './types';
 import { debugLog } from '@engine/debugLog';
 import { isWarParticipant } from './warParticipantUtils';
 import { getWarPrestigeReward } from './warCalc';
-import { toAbsoluteDay } from '@engine/dateUtils';
+import { toAbsoluteDay, diffMonths } from '@engine/dateUtils';
 import { findEmperorId } from '@engine/official/postQueries';
 import { addCollapseProgress } from '@engine/systems/eraSystem';
 import {
@@ -86,13 +86,36 @@ function emitWarEndEvent(war: War, result: War['result']): void {
 
   const attackerName = charStore.getCharacter(war.attackerId)?.name ?? '???';
   const defenderName = charStore.getCharacter(war.defenderId)?.name ?? '???';
-
-  const resultText = result === 'attackerWin' ? `${attackerName}获胜`
-    : result === 'defenderWin' ? `${defenderName}获胜`
-    : '双方和谈';
-
+  const durationMonths = Math.max(1, diffMonths(war.startDate, date));
   const CB_LABELS: Record<string, string> = { annexation: '武力兼并', deJureClaim: '法理宣称', independence: '独立' };
-  debugLog('war', `[战争] 结束：${attackerName} vs ${defenderName}（${CB_LABELS[war.casusBelli] ?? war.casusBelli}）→ ${resultText}`);
+  const cbLabel = CB_LABELS[war.casusBelli] ?? war.casusBelli;
+  debugLog('war', `[战争] 结束：${attackerName} vs ${defenderName}（${cbLabel}）→ ${result}`);
+
+  // 目标领地名称（用于兼并/法理描述）
+  const terrStore = useTerritoryStore.getState();
+  const targetNames = war.targetTerritoryIds
+    .map((id) => terrStore.territories.get(id)?.name)
+    .filter(Boolean);
+  const targetStr = targetNames.length <= 3
+    ? targetNames.join('、')
+    : `${targetNames.slice(0, 3).join('、')}等${targetNames.length}州`;
+
+  // 按 CB + 结果差异化描述
+  let desc: string;
+  if (result === 'whitePeace') {
+    desc = `${attackerName}与${defenderName}交战${durationMonths}月，双方和谈`;
+  } else if (result === 'attackerWin') {
+    if (war.casusBelli === 'independence') {
+      desc = `${attackerName}与${defenderName}交战${durationMonths}月，${attackerName}获胜，自立门户`;
+    } else if (war.casusBelli === 'annexation') {
+      desc = `${attackerName}与${defenderName}交战${durationMonths}月，${attackerName}获胜，兼并${targetStr}`;
+    } else {
+      desc = `${attackerName}与${defenderName}交战${durationMonths}月，${attackerName}获胜，收复${targetStr}`;
+    }
+  } else {
+    // defenderWin
+    desc = `${attackerName}与${defenderName}交战${durationMonths}月，${defenderName}获胜，${attackerName}图谋未遂`;
+  }
 
   turnMgr.addEvent({
     id: crypto.randomUUID(),
@@ -100,8 +123,9 @@ function emitWarEndEvent(war: War, result: War['result']): void {
     type: '战争结束',
     actors: [war.attackerId, ...war.attackerParticipants, war.defenderId, ...war.defenderParticipants],
     territories: war.targetTerritoryIds,
-    description: `${attackerName}与${defenderName}的战争结束：${resultText}`,
+    description: desc,
     priority: EventPriority.Normal,
+    payload: { casusBelli: war.casusBelli, cbLabel, durationMonths, result },
   });
 }
 

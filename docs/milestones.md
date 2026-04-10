@@ -13,7 +13,7 @@ Phase 1  角色 + 领地        ████████████  100%  ✅ 
 Phase 2  官职 + 经济        ████████████  100%  ✅ 完成（含 Post 架构重构）
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
-Phase 5  AI 史书            ████████████  100%  ✅ 完成（v1：月稿+年史两层增量、Direct/Mock provider、Kimi 默认、独立 IndexedDB 存 apiKey、读档 reconcile、AbortError 不降级 Mock、史成走 EventToast 不暂停游戏）
+Phase 5  AI 史书            █████████░░░   80%  🔧 v1完成，v2精修中（三方向：原始素材丰富化 + 话题聚焦策略 + 模型与prompt调优）
 Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave（Game Over + 战争接续 + 18+ execute stale 契约）
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
@@ -177,12 +177,34 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 
 ## Phase 5-8：后续阶段展望
 
-### Phase 5：AI 史书管线 — ⬜ 未开始
-- GameEvent 系统（各系统写入关键事件）
-- 年度筛选器 + ChronicleProvider 抽象层
-- AI 文言文生成（Moonshot / Anthropic / Local 后端）
-- 起居注面板 + 仿古史书展示 UI
-- 一生总结（纪传体传记）
+### Phase 5：AI 史书管线 — 🔧 v1完成，v2精修进行中
+
+**v1 已完成：**
+- ✅ 月稿+年史两层增量管线（月度白话摘要→年度文言年史）
+- ✅ Direct/Mock/Proxy 三 provider 架构（OpenAI 兼容，支持 OpenRouter/Kimi/DeepSeek 等）
+- ✅ 独立 IndexedDB 存 apiKey（不进存档）
+- ✅ 读档 reconcile（generating→pending 自动重试）
+- ✅ AbortError 不降级 Mock + 三重 stale 校验（playthroughId/requestId/abort）
+- ✅ 史成走 EventToast 不暂停游戏
+- ✅ 方向 2：关键人物档案（`chronicleDossier.ts`，top 8 + 玩家，禁止套用历史原型）
+- ✅ 方向 3：跨年记忆（史官按语提取 + 上年 dossier 快照传递 + 接续叙事指令）
+
+**v2 精修三方向（当前高优先级）：**
+
+**方向 1：原始素材丰富化** — 评估每个 addEvent/emitChronicleEvent 调用点，确保：
+  - description 包含足够的因果信息（不仅是"X做了Y"，还要有"为什么/结果如何"）
+  - payload 携带结构化数据供 prompt builder 提取（如战斗阶段、兵力对比、成功率）
+  - actors/territories 完整（史官需要知道事件涉及的所有关键人物和地点）
+
+**方向 2：话题聚焦策略** — 月稿/年史的 prompt 如何引导 LLM 聚焦有价值的叙事线：
+  - 月稿：哪些事件该合并叙述、哪些该独立成段
+  - 年史：如何识别年度主线（如"某势力崛起""某战争始末"）并围绕主线组织篇章
+  - 史臣注：何时触发纪传切片、聚焦哪些人物
+
+**方向 3：模型与 prompt 调优** — 针对不同模型的输出特征调整：
+  - system prompt 的文体指令精度（文言纯度、叙事节奏、忌讳项）
+  - 不同 kind（month/year）的 temperature/maxTokens 策略
+  - 思考型模型（K2 等）的 reasoning token 预算分配
 
 ### Phase 6：谋略 + 派系 + 事件 — ⬜ 继续补充
 

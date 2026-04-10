@@ -53,6 +53,10 @@ export interface BattleResult {
   totalAttackerLosses: number;
   totalDefenderLosses: number;
   warScoreChange: number;
+  /** 战前攻方总兵力（供史书叙事用） */
+  initialAttackerTroops: number;
+  /** 战前守方总兵力（供史书叙事用） */
+  initialDefenderTroops: number;
 }
 
 // ── 策略抽取 ──
@@ -487,5 +491,7 @@ export function resolveBattle(
     totalAttackerLosses,
     totalDefenderLosses,
     warScoreChange,
+    initialAttackerTroops,
+    initialDefenderTroops,
   };
 }

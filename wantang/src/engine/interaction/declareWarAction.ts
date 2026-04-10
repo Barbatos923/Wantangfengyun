@@ -104,10 +104,31 @@ export function executeDeclareWar(
   // ── 宣战事件（无条件记录，UI 层筛选显示） ──
   {
     const charStore = useCharacterStore.getState();
+    const terrStore = useTerritoryStore.getState();
     const attackerName = charStore.getCharacter(playerId)?.name ?? '???';
     const defenderName = charStore.getCharacter(targetId)?.name ?? '???';
-    const CB_LABELS: Record<string, string> = { annexation: '武力兼并', claim: '法理宣称', independence: '独立' };
-    debugLog('war', `[战争] 宣战：${attackerName} → ${defenderName}（${CB_LABELS[casusBelli] ?? casusBelli}）`);
+    const CB_LABELS: Record<string, string> = { annexation: '武力兼并', deJureClaim: '法理宣称', independence: '独立' };
+    const cbLabel = CB_LABELS[casusBelli] ?? casusBelli;
+    debugLog('war', `[战争] 宣战：${attackerName} → ${defenderName}（${cbLabel}）`);
+
+    // 拼目标领地名称
+    const targetNames = targetTerritoryIds
+      .map((id) => terrStore.territories.get(id)?.name)
+      .filter(Boolean);
+    // 按 CB 类型生成不同描述
+    let desc: string;
+    if (casusBelli === 'independence') {
+      desc = `${attackerName}举兵叛离${defenderName}，自立门户`;
+    } else if (casusBelli === 'annexation') {
+      const targetStr = targetNames.length > 0 ? targetNames.join('、') : '?';
+      desc = `${attackerName}以武力兼并之名向${defenderName}宣战，兵锋直指${targetStr}`;
+    } else {
+      // deJureClaim
+      const targetStr = targetNames.length > 0
+        ? (targetNames.length <= 3 ? targetNames.join('、') : `${targetNames.slice(0, 3).join('、')}等${targetNames.length}州`)
+        : '?';
+      desc = `${attackerName}以法理宣称向${defenderName}宣战，欲收${targetStr}`;
+    }
 
     useTurnManager.getState().addEvent({
       id: crypto.randomUUID(),
@@ -115,8 +136,9 @@ export function executeDeclareWar(
       type: '宣战',
       actors: [playerId, targetId],
       territories: targetTerritoryIds,
-      description: `${attackerName}向${defenderName}宣战`,
+      description: desc,
       priority: EventPriority.Normal,
+      payload: { casusBelli, cbLabel },
     });
   }
 
