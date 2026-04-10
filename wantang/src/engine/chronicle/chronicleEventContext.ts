@@ -3,7 +3,7 @@
 // 按事件类型为每个 actor 选取不同的字段，避免给 LLM 灌无关信息。
 // 不读任何 store，所有数据由 service 冻结快照后传入。
 
-import type { Character } from '@engine/character/types';
+import type { Character, Abilities } from '@engine/character/types';
 import type { Territory, Post } from '@engine/territory/types';
 import type { Army, Battalion, War } from '@engine/military/types';
 import type { GameEvent } from '@engine/types';
@@ -96,7 +96,7 @@ function renderAbilities(charId: string, snap: EventContextSnapshot): string {
   if (!c) return '';
   const tags: string[] = [];
   for (const [key, label] of Object.entries(ABILITY_LABELS)) {
-    if ((c.abilities as Record<string, number>)[key] >= 7) tags.push(label);
+    if (c.abilities[key as keyof Abilities] >= 7) tags.push(label);
   }
   return tags.join('、');
 }

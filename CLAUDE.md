@@ -201,6 +201,20 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 单月事件超过 `MAX_EVENTS_PER_MONTH = 30` 会按 priority 倒序 + 时间正序截断，不必担心 prompt token 爆炸；但仍应避免高频流水类事件污染。
 
+### 史书事件上下文卡片引擎
+`engine/chronicle/chronicleEventContext.ts` 按事件类型为每个 actor 选取不同的上下文字段（事件驱动，非全景灌注）：
+- 10 种字段：`mainPost`（含皇帝特判）/ `age` / `traits` / `abilities`（≥7 标签化）/ `territory` / `military` / `allegiance` / `vassals` / `wars` / `family`
+- `EVENT_FIELD_MAP`：22 种事件类型各有独立映射（如野战只给主将的性格+能力+效忠，归附给辖境+兵力+臣属）
+- `EventContextSnapshot` 接口从 Store 冻结快照传入，纯函数不读 Store
+- `formatActorRoles()`（在 `chroniclePromptBuilder.ts`）替代原来的扁平 `人物:X、Y`，按事件类型输出带角色标签
+
+新增事件类型时：① `EVENT_FIELD_MAP` 加映射 ② `formatActorRoles` 加 case。新增字段类型时在 `FIELD_RENDERERS` 加渲染器。
+
+### 史书双层架构（起居注→年史）
+- **月稿（起居注）**：起居注官人格，直接按事件+上下文卡片写文言编年体，允许适当发挥细节与延展
+- **年稿（年史）**：史官人格，基于 12 篇起居注做汇总整理（合并叙述/主线提炼/史臣注/按语），不重新翻译
+- 年稿 user prompt 仅含跨年按语 + 逐月起居注，无 topPowers/dossiers（token 全部留给起居注内容）
+
 ### 其他规则
 - 批量操作用 `batchMutate`，禁止循环 `setState`
 - ID 用 `crypto.randomUUID()`

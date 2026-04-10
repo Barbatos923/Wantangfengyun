@@ -186,25 +186,17 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 读档 reconcile（generating→pending 自动重试）
 - ✅ AbortError 不降级 Mock + 三重 stale 校验（playthroughId/requestId/abort）
 - ✅ 史成走 EventToast 不暂停游戏
-- ✅ 方向 2：关键人物档案（`chronicleDossier.ts`，top 8 + 玩家，禁止套用历史原型）
-- ✅ 方向 3：跨年记忆（史官按语提取 + 上年 dossier 快照传递 + 接续叙事指令）
+- ✅ 跨年记忆（史官按语提取 + 接续叙事指令）
 
-**v2 精修三方向（当前高优先级）：**
+**v2 精修（当前高优先级，进行中）：**
 
-**方向 1：原始素材丰富化** — 评估每个 addEvent/emitChronicleEvent 调用点，确保：
-  - description 包含足够的因果信息（不仅是"X做了Y"，还要有"为什么/结果如何"）
-  - payload 携带结构化数据供 prompt builder 提取（如战斗阶段、兵力对比、成功率）
-  - actors/territories 完整（史官需要知道事件涉及的所有关键人物和地点）
-
-**方向 2：话题聚焦策略** — 月稿/年史的 prompt 如何引导 LLM 聚焦有价值的叙事线：
-  - 月稿：哪些事件该合并叙述、哪些该独立成段
-  - 年史：如何识别年度主线（如"某势力崛起""某战争始末"）并围绕主线组织篇章
-  - 史臣注：何时触发纪传切片、聚焦哪些人物
-
-**方向 3：模型与 prompt 调优** — 针对不同模型的输出特征调整：
-  - system prompt 的文体指令精度（文言纯度、叙事节奏、忌讳项）
-  - 不同 kind（month/year）的 temperature/maxTokens 策略
-  - 思考型模型（K2 等）的 reasoning token 预算分配
+- ✅ **事件素材丰富化**：22 类事件逐个审计，军事类（宣战/野战/城破/战争结束/兵变/战争接续）+ 继承类（继位/绝嗣/王朝覆灭）description 大幅丰富（CB+目标领地/主将+兵力/围城天数/持续月数/享年+继承关系），BattleResult 加战前兵力
+- ✅ **角色标签系统**：`formatActorRoles()` 替代扁平 `人物:X、Y`，22 种事件类型按 actor 位置输出带角色标签（宣战方/守方/任命者/被任命等）
+- ✅ **事件驱动上下文卡片引擎**：新建 `chronicleEventContext.ts`，按事件类型为每个 actor 选取不同字段（10 种字段×22 种事件映射），纯函数不读 Store
+- ✅ **月稿改起居注**：MONTH_SYSTEM 改为起居注官，直接写文言编年体，允许适当发挥细节
+- ✅ **年稿改汇总点评**：YEAR_SYSTEM 改为基于起居注汇总整理，聚焦主线提炼+史臣注+按语
+- ✅ **删除冗余素材**：年稿删除 topPowers（Top 5 势力）+ dossiers（关键人物档案），token 全部留给事件上下文
+- ⬜ **待做**：清理年度 DEBUG console.log 残留、实战验证 prompt 效果、根据实际输出继续调优
 
 ### Phase 6：谋略 + 派系 + 事件 — ⬜ 继续补充
 

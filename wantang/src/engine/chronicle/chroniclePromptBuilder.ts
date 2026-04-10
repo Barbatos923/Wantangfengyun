@@ -151,19 +151,13 @@ function formatActorRoles(
 
 // ── 月度 prompt ───────────────────────────────────────────
 
-const MONTH_SYSTEM = `你是一名精通《新旧唐书》、《资治通鉴》体例的"起居注官"。任务：将玩家提供的本月游戏事件，撰写为古朴简练的编年体文言文起居注。
+const MONTH_SYSTEM = `你是一名晚唐史官，仿《新旧唐书》、《资治通鉴》笔法，将本月事件撰写为古朴简练的编年体文言文起居注。
 
-【核心法则】
-1. 词句锤炼：用单字动词、四字短语，精准使用古代政军动词（制罢、徙、潜越、薄城、乞降等）。剔除"然后/接着/因为所以"等现代连词。
-2. 叙事骨相：事实白描，恪守史官中立笔法。战术写阵型开合、军心向背、斩获数量，不写"打得很激烈"。
-3. 去游戏化：数值→符合晚唐逻辑的史书表达（兵力暴增→"附者如云"；特质→具体行事评价如"性矜急""多猜忌"）。
-4. 人物忠实：所有人物信息严格依据事件及其上下文卡片。上下文卡片里没有的事迹绝对不写，不要从历史上"借"同名人物的事迹。
-5. 每条事件后的 [角色] 行是该人物的背景信息，用于辅助你理解人物关系和性格，不需要逐条罗列，自然融入叙事即可。
-6. 允许适当发挥细节与延展：基于事件事实和人物背景，可以补充合理的场景描写、人物心理、朝堂反应等，使叙事更加生动丰满。但不可虚构不存在的事件或人物。
-
-【输出要求】
-- 直接输出文言文起居注正文，不超过 400 字。
-- 不要"以下是""本月"等开场白或结尾废话。`;
+要求：
+1. 忠于事件与上下文卡片，未提供的信息不得虚构，不得借用历史同名人物事迹。
+2. 用词简练、古朴，用史书笔法叙事，避免现代口语、游戏术语和因果套话。
+3. 允许适当发挥细节与延展：基于事件事实和人物背景，可以补充合理的场景描写、人物心理、朝堂反应等，使叙事更加生动丰满。
+4. 直接输出文言文起居注正文，不超过 400 字，不要开场白和结尾废话。`;
 
 export function buildMonthPrompt(
   year: number,
@@ -225,18 +219,15 @@ export function buildMonthPrompt(
  * 这里把那份文档的核心法则内嵌为字符串常量——文档本身仍是真相源（人类可读），
  * 此常量只是在运行时把它喂给 LLM。
  */
-const YEAR_SYSTEM = `你是一名精通《新旧唐书》、《资治通鉴》体例的"史官"。任务：基于起居注官已撰写的本年逐月起居注，汇总、整理、润色为一卷完整的编年体文言文年史。
+const YEAR_SYSTEM = `你是一名晚唐史官，精通《新旧唐书》、《资治通鉴》笔法，根据本年逐月起居注整理成一卷编年体文言年史。
 
-【核心法则】
-1. 基于起居注：起居注已是文言文，你的工作是汇总整理而非重新翻译。合并同一事件的跨月叙述，理清因果脉络，删除重复，统一文风。
-2. 体例规制：开头用"○○年（干支）"开篇。整体编年体，按时序叙事。遇关键人物可在条目末加"史臣注：xx 传"形式的纪传切片。
-3. 主线提炼：从逐月流水中识别年度主线（如某势力崛起、某战争始末、某人物沉浮），围绕主线组织篇章，次要事件简略带过。
-4. 人物忠实：起居注中未提及的事迹绝对不写，不要从历史上"借"同名人物的事迹。
-5. 史官按语：正文末附一段不超过 200 字的"史官按语"，总结本年大势、评点得失。
-
-【输出要求】
-- 直接输出格式化好的文言文年史。
-- 不要在开头或结尾说"以下是""希望您喜欢"等废话。`;
+要求：
+1. 合并同一事件的跨月叙述，理清因果，删除重复，统一文风。
+2. 围绕年度主线组织篇章，次要事件简述。
+3. 忠于所给材料，未提及的信息不得虚构，不得借用历史同名人物事迹。
+4. 以"○○年（干支）"开篇，正文末附不超过200字的"史官按语"。
+5. 对标注"原始事件记录"的月份，直接据事件整理成同样文风。
+6. 直接输出年史正文，不要开场白和结尾废话。`;
 
 /** 方向 3：跨年记忆，由 service 在生成下一年史时从上一年 YearChronicle 提取后传入 */
 export interface PriorYearMemory {
@@ -247,11 +238,18 @@ export interface PriorYearMemory {
   dossiers: CharacterDossier[];
 }
 
+/**
+ * 月度原始事件 fallback：当月稿尚未生成完成时，用结构化事件列表替代。
+ * key = month number, value = 已格式化的事件文本行。
+ */
+export type MonthRawFallback = Map<number, string>;
+
 export function buildYearPrompt(
   year: number,
   drafts: MonthDraft[],
   _snapshot: WorldSnapshot,
   priorMemory?: PriorYearMemory,
+  rawFallback?: MonthRawFallback,
 ): LlmPrompt {
   const lines: string[] = [`【纪年】${year}年`, ''];
 
@@ -264,13 +262,32 @@ export function buildYearPrompt(
     lines.push('');
   }
 
+  // 把 drafts 按 month 索引，方便逐月查找
+  const draftByMonth = new Map<number, MonthDraft>();
+  for (const d of drafts) draftByMonth.set(d.month, d);
+
+  let hasRawFallback = false;
   lines.push('【本年逐月起居注】');
-  for (const d of drafts) {
-    if (!d.summary || !d.summary.trim()) continue;
-    lines.push(`◇ ${d.month}月：${d.summary.trim()}`);
+  for (let m = 1; m <= 12; m++) {
+    const d = draftByMonth.get(m);
+    if (d?.summary?.trim()) {
+      lines.push(`◇ ${m}月：${d.summary.trim()}`);
+    } else {
+      // 月稿缺失：尝试用原始事件 fallback
+      const raw = rawFallback?.get(m);
+      if (raw) {
+        lines.push(`◇ ${m}月（原始事件记录）：`);
+        lines.push(raw);
+        hasRawFallback = true;
+      }
+      // 无月稿也无事件 → 跳过该月
+    }
   }
 
   lines.push('');
+  if (hasRawFallback) {
+    lines.push('注：标注"原始事件记录"的月份未经起居注官整理，请直接据原始事件撰写该月内容。');
+  }
   lines.push('请据上述起居注，汇总整理为本年年史一卷。');
 
   return {

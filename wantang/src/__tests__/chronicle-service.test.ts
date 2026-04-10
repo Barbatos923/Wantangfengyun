@@ -447,6 +447,69 @@ describe('chronicle worldSnapshot - 人物档案 (方向 2)', () => {
   });
 });
 
+// ── 测试 8：月稿缺失时年稿吃 rawFallback ─────────────────
+
+describe('chronicle 年稿 - rawFallback 原始事件兜底', () => {
+  it('缺失月稿的月份用原始事件填充，已有月稿的月份不被覆盖', async () => {
+    // 捕获 prompt 的 provider
+    let capturedPrompt: LlmPrompt | null = null;
+    const capturingProvider: LlmProvider = {
+      id: 'direct',
+      async generate(prompt, gen) {
+        if (gen.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        capturedPrompt = prompt;
+        return '年史正文。\n史官按语：此年无事。';
+      },
+    };
+    svc.setProviderForTest(capturingProvider);
+
+    // 准备事件：1月、3月、5月有事件
+    addEvent(875, 1, '宣战');
+    addEvent(875, 3, '任命');
+    addEvent(875, 5, '称帝');
+
+    // 只有 1 月和 3 月有月稿；5 月"来不及生成"
+    useChronicleStore.getState().upsertMonthDraft({
+      year: 875, month: 1, summary: '正月，某藩镇宣战。', status: 'done',
+    });
+    useChronicleStore.getState().upsertMonthDraft({
+      year: 875, month: 3, summary: '三月，某官任命。', status: 'done',
+    });
+    // 5 月无月稿（模拟快进来不及）
+    // 其余月份无事件也无月稿
+
+    // 预填剩余月份为 done（无 summary），让 waitForMonthDrafts 不卡住
+    for (let m = 1; m <= 12; m++) {
+      if (m === 1 || m === 3) continue;
+      useChronicleStore.getState().upsertMonthDraft({
+        year: 875, month: m, summary: '', status: 'done',
+      });
+    }
+
+    await svc.generateYearChronicle(875);
+
+    expect(capturedPrompt).not.toBeNull();
+    const userPrompt = capturedPrompt!.user;
+
+    // 1 月和 3 月用的是月稿原文，不含"原始事件记录"
+    expect(userPrompt).toContain('◇ 1月：正月，某藩镇宣战。');
+    expect(userPrompt).toContain('◇ 3月：三月，某官任命。');
+    expect(userPrompt).not.toMatch(/1月（原始事件记录）/);
+    expect(userPrompt).not.toMatch(/3月（原始事件记录）/);
+
+    // 5 月有事件但无月稿 → fallback 到原始事件
+    expect(userPrompt).toContain('5月（原始事件记录）');
+    // fallback 内容应包含事件 description
+    expect(userPrompt).toContain('875年5月 称帝');
+
+    // system prompt 应包含对原始事件记录的处理说明
+    expect(capturedPrompt!.system).toContain('原始事件记录');
+
+    // 无事件的月份（如 2 月）既无月稿也无 fallback，不应出现
+    expect(userPrompt).not.toMatch(/◇ 2月/);
+  });
+});
+
 // ── 测试 4：abort 不降级 ──────────────────────────────────
 
 describe('chronicle 调度层 - abort 不降级', () => {

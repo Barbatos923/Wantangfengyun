@@ -24,13 +24,14 @@ import {
   type NameTable,
   type WorldSnapshot,
   type PriorYearMemory,
+  type MonthRawFallback,
 } from './chroniclePromptBuilder';
 import {
   buildCharacterDossier,
   selectKeyCharacters,
   type CharacterDossier,
 } from './chronicleDossier';
-import { type EventContextSnapshot, buildEventContext } from './chronicleEventContext';
+import { type EventContextSnapshot } from './chronicleEventContext';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useWarStore } from '@engine/military/WarStore';
 import { createProvider } from './llm/createProvider';
@@ -360,9 +361,8 @@ async function generateMonthDraft(year: number, month: number): Promise<void> {
   debugLog('chronicle', '[chronicle] month start', year, month, 'events=', events.length);
 
   // ━━ DEBUG: 月度素材 & prompt 审查 ━━
-  console.group(`📜 [史书DEBUG] 月度 ${year}年${month}月`);
-  console.log('原始事件数:', events.length);
-  console.table(events.map(e => ({
+  debugLog('chronicle', `[月度 ${year}年${month}月] 事件数=${events.length}`);
+  debugLog('chronicle', '事件表:', events.map(e => ({
     日期: `${e.date.month}/${e.date.day}`,
     类型: e.type,
     优先级: e.priority,
@@ -370,11 +370,8 @@ async function generateMonthDraft(year: number, month: number): Promise<void> {
     人物: e.actors.map(id => names.characters[id] ?? id).join(','),
     地点: e.territories.map(id => names.territories[id] ?? id).join(','),
   })));
-  console.log('%c[SYSTEM PROMPT]', 'color:orange;font-weight:bold');
-  console.log(prompt.system);
-  console.log('%c[USER PROMPT]', 'color:cyan;font-weight:bold');
-  console.log(prompt.user);
-  console.groupEnd();
+  debugLog('chronicle', '[SYSTEM PROMPT]', prompt.system);
+  debugLog('chronicle', '[USER PROMPT]', prompt.user);
 
   let summary: string;
   try {
@@ -488,44 +485,43 @@ async function generateYearChronicle(year: number): Promise<void> {
   const snapshot = freezeWorldSnapshot(year);
   // 方向 3：跨年记忆 — 读取上一年史的按语 + dossier 快照（若存在）
   const priorMemory = loadPriorYearMemory(year - 1);
-  const prompt = buildYearPrompt(year, drafts, snapshot, priorMemory);
+
+  // 为缺失月稿的月份构建原始事件 fallback
+  const draftByMonth = new Map<number, MonthDraft>();
+  for (const d of drafts) draftByMonth.set(d.month, d);
+  const rawFallback: MonthRawFallback = new Map();
+  const ctxSnap = freezeEventContextSnapshot(year);
+  for (let m = 1; m <= 12; m++) {
+    const d = draftByMonth.get(m);
+    if (d?.summary?.trim()) continue; // 有月稿，不需要 fallback
+    const events = collectMonthEvents(year, m);
+    if (events.length === 0) continue; // 无事件也无需 fallback
+    const names = buildNameTable(events);
+    const monthPrompt = buildMonthPrompt(year, m, events, names, ctxSnap);
+    rawFallback.set(m, monthPrompt.user);
+  }
+
+  const prompt = buildYearPrompt(year, drafts, snapshot, priorMemory, rawFallback);
 
   // ━━ DEBUG: 年度素材 & prompt 审查 ━━
-  console.group(`📜 [史书DEBUG] 年度 ${year}年`);
-  console.log('%c── 月稿汇总 ──', 'color:yellow;font-weight:bold');
+  debugLog('chronicle', `[年度 ${year}年] 月稿汇总:`);
   for (const d of drafts) {
-    console.log(`  ${d.month}月 [${d.status}]: ${(d.summary || '(空)').slice(0, 80)}${(d.summary?.length ?? 0) > 80 ? '…' : ''}`);
+    debugLog('chronicle', `  ${d.month}月 [${d.status}]: ${(d.summary || '(空)').slice(0, 80)}${(d.summary?.length ?? 0) > 80 ? '…' : ''}`);
   }
-  console.log('%c── WorldSnapshot ──', 'color:yellow;font-weight:bold');
-  console.log('Top5势力:', snapshot.topPowers);
-  console.log('新建头衔:', snapshot.newTitles);
-  console.log('覆灭头衔:', snapshot.destroyedTitles);
-  console.log('%c── 关键人物档案 ──', 'color:yellow;font-weight:bold');
-  console.table(snapshot.dossiers.map(d => ({
-    姓名: d.name,
-    字: d.courtesy,
-    年龄: d.age,
-    存活: d.isAlive,
-    玩家: d.isPlayer,
-    主岗: d.mainPostName,
-    品级: d.rankName,
-    特质: d.traitNames.join('/'),
-    父: d.fatherName,
-    子: d.childrenNames.join('/'),
+  debugLog('chronicle', 'WorldSnapshot — Top5势力:', snapshot.topPowers, '新建头衔:', snapshot.newTitles, '覆灭头衔:', snapshot.destroyedTitles);
+  debugLog('chronicle', '关键人物档案:', snapshot.dossiers.map(d => ({
+    姓名: d.name, 字: d.courtesy, 年龄: d.age, 存活: d.isAlive, 玩家: d.isPlayer,
+    主岗: d.mainPostName, 品级: d.rankName, 特质: d.traitNames.join('/'),
+    父: d.fatherName, 子: d.childrenNames.join('/'),
   })));
   if (priorMemory) {
-    console.log('%c── 跨年记忆 ──', 'color:yellow;font-weight:bold');
-    console.log('上年按语:', priorMemory.afterword.slice(0, 120) + '…');
-    console.log('上年人物:', priorMemory.dossiers.map(d => d.name).join(', '));
+    debugLog('chronicle', '跨年记忆 — 上年按语:', priorMemory.afterword.slice(0, 120), '上年人物:', priorMemory.dossiers.map(d => d.name).join(', '));
   } else {
-    console.log('(无跨年记忆)');
+    debugLog('chronicle', '(无跨年记忆)');
   }
-  console.log('%c── 最终 SYSTEM PROMPT ──', 'color:orange;font-weight:bold');
-  console.log(prompt.system);
-  console.log('%c── 最终 USER PROMPT ──', 'color:cyan;font-weight:bold');
-  console.log(prompt.user);
-  console.log(`prompt 总字符数: system=${prompt.system.length}, user=${prompt.user.length}`);
-  console.groupEnd();
+  debugLog('chronicle', '[SYSTEM PROMPT]', prompt.system);
+  debugLog('chronicle', '[USER PROMPT]', prompt.user);
+  debugLog('chronicle', `prompt 总字符数: system=${prompt.system.length}, user=${prompt.user.length}`);
 
   let content: string;
   try {
