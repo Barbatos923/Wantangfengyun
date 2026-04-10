@@ -15,6 +15,8 @@ const ChroniclePanel: React.FC<ChroniclePanelProps> = ({ onClose }) => {
   const markYearRead = useChronicleStore((s) => s.markYearRead);
   const [tab, setTab] = useState<'history' | 'settings'>('history');
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [editContent, setEditContent] = useState('');
 
   const sortedYears = useMemo(
     () => Array.from(yearChronicles.values()).sort((a, b) => b.year - a.year),
@@ -28,11 +30,13 @@ const ChroniclePanel: React.FC<ChroniclePanelProps> = ({ onClose }) => {
     }
   }, [sortedYears, selectedYear]);
 
-  // 切到某年时标记已读
+  // 切到某年时标记已读 + 退出编辑态
   useEffect(() => {
     if (selectedYear !== null) markYearRead(selectedYear);
+    setEditing(false);
   }, [selectedYear, markYearRead]);
 
+  const upsertYearChronicle = useChronicleStore((s) => s.upsertYearChronicle);
   const selected = selectedYear !== null ? yearChronicles.get(selectedYear) : null;
 
   return (
@@ -64,7 +68,7 @@ const ChroniclePanel: React.FC<ChroniclePanelProps> = ({ onClose }) => {
       </div>
 
       {tab === 'history' && (
-        <div className="flex-1 flex min-h-0">
+        <div className="flex h-[70vh] min-h-0">
           {/* 左侧年表 */}
           <div className="w-40 border-r border-[var(--color-border)] overflow-y-auto shrink-0">
             {sortedYears.length === 0 && (
@@ -105,14 +109,45 @@ const ChroniclePanel: React.FC<ChroniclePanelProps> = ({ onClose }) => {
           </div>
 
           {/* 右侧正文 */}
-          <div className="flex-1 overflow-y-auto p-5">
+          <div className="flex-1 flex flex-col min-h-0 p-5 overflow-hidden">
             {!selected && (
               <div className="text-[var(--color-text-muted)] text-sm">请在左侧选择年份。</div>
             )}
             {selected && selected.status === 'done' && (
-              <pre className="whitespace-pre-wrap font-serif text-sm leading-loose text-[var(--color-text)]">
-                {selected.content}
-              </pre>
+              editing ? (
+                <div className="flex flex-col flex-1 min-h-0">
+                  <textarea
+                    className="flex-1 min-h-0 w-full bg-[var(--color-bg)] text-[var(--color-text)] font-serif text-sm leading-loose p-2 border border-[var(--color-border)] rounded resize-none focus:outline-none focus:border-[var(--color-accent-gold)]"
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                  />
+                  <div className="flex gap-2 pt-3 mt-3 border-t border-[var(--color-border)]/50 shrink-0">
+                    <Button variant="primary" size="sm" onClick={() => {
+                      upsertYearChronicle({ ...selected, content: editContent });
+                      setEditing(false);
+                    }}>
+                      保存
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>
+                      取消
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col flex-1 min-h-0">
+                  <pre className="flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap font-serif text-sm leading-loose text-[var(--color-text)]">
+                    {selected.content}
+                  </pre>
+                  <div className="flex gap-2 pt-3 mt-3 border-t border-[var(--color-border)]/50 shrink-0">
+                    <Button variant="ghost" size="sm" onClick={() => {
+                      setEditContent(selected.content);
+                      setEditing(true);
+                    }}>
+                      编辑
+                    </Button>
+                  </div>
+                </div>
+              )
             )}
             {selected && selected.status === 'generating' && (
               <div className="text-[var(--color-text-muted)] text-sm">史官正在撰写中，请稍候…</div>

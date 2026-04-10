@@ -12,6 +12,7 @@ import type { Character } from '@engine/character/types';
 import type { Army, Battalion } from './types';
 import type { Territory } from '@engine/territory/types';
 import { debugLog } from '@engine/debugLog';
+import { executeSetCommander } from '@engine/interaction/militaryAction';
 
 // ── 建军 ────────────────────────────────────────────────────────────────
 
@@ -49,7 +50,6 @@ function aiFillCommanders(
   armies: Army[],
 ): void {
   const charStore = useCharacterStore.getState();
-  const milStore = useMilitaryStore.getState();
 
   // 收集已担任将领的角色 ID
   const assignedIds = new Set<string>();
@@ -88,8 +88,7 @@ function aiFillCommanders(
       // 补缺
       const candidates = buildCandidates();
       const best = candidates[0];
-      if (best) {
-        milStore.updateArmy(army.id, { commanderId: best.id });
+      if (best && executeSetCommander(army.id, best.id)) {
         assignedIds.add(best.id);
         debugLog('military', `[军编] ${char.name}：${army.name} 补将 → ${charStore.getCharacter(best.id)?.name ?? best.id}（military=${best.military}）`);
       }
@@ -98,8 +97,7 @@ function aiFillCommanders(
       const currentMil = getEffectiveAbilities(current!).military;
       const candidates = buildCandidates();
       const better = candidates[0];
-      if (better && better.military - currentMil >= COMMANDER_UPGRADE_THRESHOLD) {
-        milStore.updateArmy(army.id, { commanderId: better.id });
+      if (better && better.military - currentMil >= COMMANDER_UPGRADE_THRESHOLD && executeSetCommander(army.id, better.id)) {
         assignedIds.add(better.id);
         assignedIds.delete(currentId!);
         debugLog('military', `[军编] ${char.name}：${army.name} 换将 → ${charStore.getCharacter(better.id)?.name ?? better.id}（military=${better.military}，原${current!.name}=${currentMil}）`);

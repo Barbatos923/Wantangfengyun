@@ -109,7 +109,8 @@ export const dismissBehavior: NpcBehavior<DismissData> = {
       })();
 
       // 先执行罢免
-      executeDismiss(data.postId, actor.id);
+      const ok = executeDismiss(data.postId, actor.id);
+      if (!ok) return;
 
       // 再通知玩家
       const event: StoryEvent = {

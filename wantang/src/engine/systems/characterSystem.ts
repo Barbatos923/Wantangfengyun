@@ -172,11 +172,11 @@ export function runCharacterSystem(date: GameDate): void {
         const deadAge = date.year - deadChar.birthYear;
         // 死者最高主岗名称（皇帝特判：pos-emperor 非 grantsControl，需单独检查）
         const isEmperor = findEmperorId(territories, terrStore.centralPosts) === deadId;
+        const mainPost = sorted.find(p => positionMap.get(p.templateId)?.grantsControl);
         let mainPostLabel: string;
         if (isEmperor) {
           mainPostLabel = '皇帝';
         } else {
-          const mainPost = sorted.find(p => positionMap.get(p.templateId)?.grantsControl);
           const mainPostTpl = mainPost ? positionMap.get(mainPost.templateId) : undefined;
           const mainPostTerrName = mainPost?.territoryId ? territories.get(mainPost.territoryId)?.name : undefined;
           mainPostLabel = mainPostTpl

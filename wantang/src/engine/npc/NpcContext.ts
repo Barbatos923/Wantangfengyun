@@ -59,7 +59,8 @@ export function buildNpcContext(): NpcContext {
     }
     const bExpectedLeg = expectedLegitimacy.get(bId) ?? null;
     const aPolicyOp = policyOpinionCache.get(aId) ?? null;
-    const value = calculateBaseOpinion(a, b, bExpectedLeg, aPolicyOp);
+    const bPolicyOp = policyOpinionCache.get(bId) ?? null;
+    const value = calculateBaseOpinion(a, b, bExpectedLeg, aPolicyOp, bPolicyOp);
     innerMap.set(bId, value);
     return value;
   }

@@ -46,7 +46,7 @@ src/
 
 各 Store **维护预计算索引**，**查询时必须优先使用索引，禁止全量遍历**。
 
-- **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `refreshIsRuler()`
+- **CharacterStore**：`characters` Map + `vassalIndex` + `aliveSet` + `locationIndex` + `refreshIsRuler()`
 - **TerritoryStore**：`territories` Map + `postIndex` + `holderIndex` + `controllerIndex` + `expectedLegitimacy` + `policyOpinionCache`
 - **MilitaryStore**：`armies`/`battalions` Map + `ownerArmyIndex` + `locationArmyIndex`
 - **WarStore**：`wars`/`campaigns`/`sieges` 三个 Map
@@ -214,6 +214,25 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - **月稿（起居注）**：起居注官人格，直接按事件+上下文卡片写文言编年体，允许适当发挥细节与延展
 - **年稿（年史）**：史官人格，基于 12 篇起居注做汇总整理（合并叙述/主线提炼/史臣注/按语），不重新翻译
 - 年稿 user prompt 仅含跨年按语 + 逐月起居注，无 topPowers/dossiers（token 全部留给起居注内容）
+- **月稿缺失兜底（rawFallback）**：`waitForMonthDrafts` 30 秒超时后，缺失月稿的月份由 `collectMonthEvents` + `buildMonthPrompt` 构建原始事件文本，直接注入年稿 prompt（标注"原始事件记录"），YEAR_SYSTEM 已指示 LLM 以同等文言笔法处理
+
+### 指挥官唯一性
+- **兵马使**（`Army.commanderId`）全局唯一：一人不能同时担任两支军的兵马使。规则集中在 `commandRules.ts`，所有写入点（`executeSetCommander` / `militaryAI.ts`）必须通过 `canAssignArmyCommander` 校验
+- **都统**（`Campaign.commanderId`）全局唯一：一人不能同时担任两个行营的都统。`executeSetCampaignCommander` 返回 boolean，UI 必须接住
+- **允许兼任**：同一角色可同时是某军兵马使 + 某行营都统，两条轨道互不冲突
+- `executeCreateCampaign` 选都统时排除已在其他行营任都统者；无合法候选（含 ownerId fallback）时创建失败，不创建半残行营
+- **禁止绕过**：AI（`militaryAI.ts`）必须走 `executeSetCommander`，不得直接 `updateArmy({ commanderId })`
+
+### 角色地理位置
+- `Character.locationId?: string` — 当前物理位置（州级 territory ID）
+- **位置解析优先级**（`locationUtils.ts: resolveLocation`）：行营指挥官 → 治所 → 领主治所 → undefined
+- **两类触发源**：
+  1. **岗位变动**：全部汇聚到 `refreshPostCaches()`，内部调 `refreshLocation()`，无需逐个 interaction 修改
+  2. **军事移动**：行营行军/创建/解散/换帅/拦截/战败撤退时同步都统的 locationId
+- **行营解散 → 都统瞬移回治所**（v1 不做旅行时间）
+- **军队将领（非行营指挥官）不跟随军队**：`Army.commanderId` 是行政任命，只有 `Campaign.commanderId` 才物理出征
+- `CharacterStore.locationIndex`（territoryId → Set<charId>）提供 O(1) 查"谁在这个州"
+- `updateCharacter` 维护 locationIndex 时用 `'locationId' in patch`（非 `!== undefined`），正确处理显式清除为 undefined 的场景
 
 ### 其他规则
 - 批量操作用 `batchMutate`，禁止循环 `setState`

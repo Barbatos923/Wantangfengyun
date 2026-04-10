@@ -162,6 +162,7 @@ export function calculateBaseOpinion(
   b: Character,
   bExpectedLeg: number | null,
   aPolicyOpinion?: PolicyOpinionEntry | null,
+  bPolicyOpinion?: PolicyOpinionEntry | null,
 ): number {
   let opinion = 0;
 
@@ -242,6 +243,12 @@ export function calculateBaseOpinion(
     opinion += -(CENTRALIZATION_OPINION[taxLevel] ?? 0);
   }
 
+  // 政策好感（反向：B 是臣属、A 是领主时，辟署权/宗法/军镇→A 对 B 不满）
+  // 缓存值是正数（臣属视角的满意度），领主视角取反
+  if (b.overlordId === a.id && bPolicyOpinion) {
+    opinion -= bPolicyOpinion.appointRight + bPolicyOpinion.succession + bPolicyOpinion.type;
+  }
+
   // 事件累积好感度
   const rel = a.relationships.find((r) => r.targetId === b.id);
   if (rel) {
@@ -263,7 +270,7 @@ export interface OpinionBreakdownEntry {
  * 计算角色A对角色B的好感度分项明细（纯函数）。
  * @param bExpectedLeg B 的预期正统性，null 表示无官职
  */
-export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: number | null, aPolicyOpinion?: PolicyOpinionEntry | null): OpinionBreakdownEntry[] {
+export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: number | null, aPolicyOpinion?: PolicyOpinionEntry | null, bPolicyOpinion?: PolicyOpinionEntry | null): OpinionBreakdownEntry[] {
   const entries: OpinionBreakdownEntry[] = [];
 
   const aTraits = a.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as TraitDef[];
@@ -360,6 +367,13 @@ export function getOpinionBreakdown(a: Character, b: Character, bExpectedLeg: nu
     const taxLevel = b.centralization ?? 2;
     const taxVal = -(CENTRALIZATION_OPINION[taxLevel] ?? 0);
     if (taxVal !== 0) entries.push({ label: `臣属进奉（${taxLevel}级）`, value: taxVal });
+  }
+
+  // 政策好感（反向：B 是臣属、A 是领主时，辟署权/宗法/军镇→A 对 B 不满）
+  if (b.overlordId === a.id && bPolicyOpinion) {
+    if (bPolicyOpinion.appointRight !== 0) entries.push({ label: '臣属辟署权', value: -bPolicyOpinion.appointRight });
+    if (bPolicyOpinion.succession !== 0) entries.push({ label: '臣属宗法继承', value: -bPolicyOpinion.succession });
+    if (bPolicyOpinion.type !== 0) entries.push({ label: '臣属军事职类', value: -bPolicyOpinion.type });
   }
 
   // 事件累积

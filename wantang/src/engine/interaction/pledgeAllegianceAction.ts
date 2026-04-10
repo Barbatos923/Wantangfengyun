@@ -291,7 +291,7 @@ export function previewPledgeAllegiance(
 
   const terrState = useTerritoryStore.getState();
   const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null, terrState.policyOpinionCache.get(playerId) ?? null);
   const personality = calcPersonality(target);
   const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex, terrState.centralPosts);
 
@@ -316,7 +316,7 @@ export function executePledgeAllegiance(
 
   const terrState = useTerritoryStore.getState();
   const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null, terrState.policyOpinionCache.get(playerId) ?? null);
   const personality = calcPersonality(target);
   const isDejure = isDejureVassalOf(player.id, target.id, terrState.territories, terrState.controllerIndex, terrState.centralPosts);
 

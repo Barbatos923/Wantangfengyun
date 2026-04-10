@@ -445,6 +445,7 @@ function makeGetOpinion() {
       a, b,
       terrState.expectedLegitimacy.get(bId) ?? null,
       terrState.policyOpinionCache.get(aId) ?? null,
+      terrState.policyOpinionCache.get(bId) ?? null,
     );
   };
 }

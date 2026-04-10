@@ -197,7 +197,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
   executeAsNpc(actor: Character, data: DeclareWarData, ctx: NpcContext) {
     const date = useTurnManager.getState().currentDate;
-    executeDeclareWar(
+    const ok = executeDeclareWar(
       actor.id,
       data.targetId,
       data.casusBelli,
@@ -205,6 +205,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
       date,
       data.cost,
     );
+    if (!ok) return;
 
     // 玩家是被宣战方 → 纯通知
     if (data.targetId === ctx.playerId) {

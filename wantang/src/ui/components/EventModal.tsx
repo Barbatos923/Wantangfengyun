@@ -15,11 +15,12 @@ function ActorCard({ characterId, role }: { characterId: string; role: string })
   const player = useCharacterStore((s) => playerId ? s.characters.get(playerId) : undefined);
   const expectedLeg = useTerritoryStore((s) => s.expectedLegitimacy.get(characterId) ?? null);
   const playerPolicyOp = useTerritoryStore((s) => s.policyOpinionCache.get(playerId ?? '') ?? null);
+  const charPolicyOp = useTerritoryStore((s) => s.policyOpinionCache.get(characterId) ?? null);
 
   if (!character) return null;
 
   const opinion = player && player.id !== characterId
-    ? calculateBaseOpinion(player, character, expectedLeg, playerPolicyOp)
+    ? calculateBaseOpinion(player, character, expectedLeg, playerPolicyOp, charPolicyOp)
     : null;
 
   const traits = character.traitIds

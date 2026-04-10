@@ -186,34 +186,35 @@ describe('calcMilitaryPower', () => {
     expect(calcMilitaryPower(['a1'], armies, battalions, new Map(), 'clash')).toBe(0);
   });
 
-  it('deploy 阶段，重步兵 1000人，满士气，无精锐，将领military=10 → 7600', () => {
+  it('deploy 阶段，重步兵 1000人，满士气，无精锐，将领military=10 → 3800', () => {
     // heavyInfantry: charge=6, breach=8, pursuit=2, siege=4
     // deploy weights: charge=0.2, breach=0.8, pursuit=0, siege=0
     // phaseValue = 6*0.2 + 8*0.8 = 1.2 + 6.4 = 7.6
-    // eliteBonus = 1 + 0/200 = 1.0
+    // eliteBonus = 0.5 + (0/100)*1.5 = 0.5
     // moraleCoeff = 0.5 + 100/100 * 0.5 = 1.0
     // leaderBonus = 1 + (10-10)*0.02 = 1.0
-    // power = 1000 * 7.6 * 1.0 * 1.0 * 1.0 = 7600
+    // power = 1000 * 7.6 * 0.5 * 1.0 * 1.0 = 3800
     const char = makeChar(10);
     const bat = makeBattalion('b1', 'a1', 'heavyInfantry', 1000, 100, 0);
     const army = makeArmy('a1', ['b1'], 'char-test');
     const armies = new Map([['a1', army]]);
     const battalions = new Map([['b1', bat]]);
     const characters = new Map([['char-test', char]]);
-    expect(calcMilitaryPower(['a1'], armies, battalions, characters, 'deploy')).toBeCloseTo(7600);
+    expect(calcMilitaryPower(['a1'], armies, battalions, characters, 'deploy')).toBeCloseTo(3800);
   });
 
-  it('clash 阶段，重步兵 1000人 → 5800', () => {
+  it('clash 阶段，重步兵 1000人 → 2900', () => {
     // clash weights: charge=0.8, breach=0.1, pursuit=0.1, siege=0
     // phaseValue = 6*0.8 + 8*0.1 + 2*0.1 = 4.8 + 0.8 + 0.2 = 5.8
-    // power = 1000 * 5.8 * 1.0 * 1.0 * 1.0 = 5800
+    // eliteBonus = 0.5 + (0/100)*1.5 = 0.5
+    // power = 1000 * 5.8 * 0.5 * 1.0 * 1.0 = 2900
     const char = makeChar(10);
     const bat = makeBattalion('b1', 'a1', 'heavyInfantry', 1000, 100, 0);
     const army = makeArmy('a1', ['b1'], 'char-test');
     const armies = new Map([['a1', army]]);
     const battalions = new Map([['b1', bat]]);
     const characters = new Map([['char-test', char]]);
-    expect(calcMilitaryPower(['a1'], armies, battalions, characters, 'clash')).toBeCloseTo(5800);
+    expect(calcMilitaryPower(['a1'], armies, battalions, characters, 'clash')).toBeCloseTo(2900);
   });
 
   it('将领 military=20 → leaderBonus=1.2 → 战力提升 20%', () => {
@@ -231,7 +232,10 @@ describe('calcMilitaryPower', () => {
     expect(p20 / p10).toBeCloseTo(1.2);
   });
 
-  it('精锐度 100 → eliteBonus=1.5 → 战力提升 50%', () => {
+  it('精锐度 100 → eliteBonus=2.0 vs 0.5 → 战力比 4.0', () => {
+    // elite=0 → eliteBonus = 0.5 + 0 = 0.5
+    // elite=100 → eliteBonus = 0.5 + 1.5 = 2.0
+    // ratio = 2.0 / 0.5 = 4.0
     const char = makeChar(10);
     const batElite0 = makeBattalion('b1', 'a1', 'heavyInfantry', 1000, 100, 0);
     const batElite100 = makeBattalion('b2', 'a2', 'heavyInfantry', 1000, 100, 100);
@@ -242,7 +246,7 @@ describe('calcMilitaryPower', () => {
     const characters = new Map([['char-test', char]]);
     const p0 = calcMilitaryPower(['a1'], armies, battalions, characters, 'clash');
     const p100 = calcMilitaryPower(['a2'], armies, battalions, characters, 'clash');
-    expect(p100 / p0).toBeCloseTo(1.5);
+    expect(p100 / p0).toBeCloseTo(4.0);
   });
 
   it('士气 0 → moraleCoeff=0.5 → 战力减半', () => {

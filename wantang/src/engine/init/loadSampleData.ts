@@ -38,6 +38,14 @@ export function loadSampleData(): void {
     }
   }
 
+  // 初始化所有存活角色的所在地
+  {
+    const charStore = useCharacterStore.getState();
+    for (const charId of charStore.aliveSet) {
+      charStore.refreshLocation(charId);
+    }
+  }
+
   // 初始化军队
   const armies = createAllArmies();
   const battalions = createAllBattalions();

@@ -186,8 +186,8 @@ export function calcMilitaryPower(
         (unitDef.pursuit * (weights.pursuit ?? 0)) +
         (unitDef.siege * (weights.siege ?? 0));
 
-      // 精锐度修正: 1 + elite/200
-      const eliteBonus = 1 + bat.elite / 200;
+      // 精锐度修正: 0→0.5, 50→1.0, 100→2.0
+      const eliteBonus = 0.5 + (bat.elite / 100) * 1.5;
       // 士气修正: 0.5 + morale/100 * 0.5 (即 morale=0→0.5, 100→1.0)
       const moraleCoeff = 0.5 + bat.morale / 100 * 0.5;
 
@@ -244,7 +244,7 @@ function resolvePhase(
     }
   }
   const baseCasualties = Math.min(aTroops, dTroops) * coeff;
-  const weakerRatio = Math.min(aFinal, dFinal) / Math.max(aFinal, dFinal, 1); // 0~1
+  const weakerRatio = Math.max(0.5, Math.min(aFinal, dFinal) / Math.max(aFinal, dFinal, 1)); // 0.5~1
 
   let attackerLosses: number;
   let defenderLosses: number;
@@ -338,7 +338,7 @@ export function resolveBattle(
   const attacker = characters.get(attackerCommanderId);
   const defender = characters.get(defenderCommanderId);
   if (!attacker || !defender) {
-    return { phases: [], overallResult: 'attackerWin', totalAttackerLosses: 0, totalDefenderLosses: 0, warScoreChange: 0 };
+    return { phases: [], overallResult: 'attackerWin', totalAttackerLosses: 0, totalDefenderLosses: 0, warScoreChange: 0, initialAttackerTroops: 0, initialDefenderTroops: 0 };
   }
 
   const phases: PhaseResult[] = [];
@@ -382,11 +382,11 @@ export function resolveBattle(
 
     // 更新势头
     if (result.result === 'attackerWin') {
-      attackerMomentum = Math.min(1.5, attackerMomentum + 0.1);
-      defenderMomentum = Math.max(0.7, defenderMomentum - 0.1);
+      attackerMomentum = Math.min(1.5, attackerMomentum + 0.15);
+      defenderMomentum = Math.max(0.6, defenderMomentum - 0.15);
     } else if (result.result === 'defenderWin') {
-      defenderMomentum = Math.min(1.5, defenderMomentum + 0.1);
-      attackerMomentum = Math.max(0.7, attackerMomentum - 0.1);
+      defenderMomentum = Math.min(1.5, defenderMomentum + 0.15);
+      attackerMomentum = Math.max(0.6, attackerMomentum - 0.15);
     }
 
     phases.push(result);
@@ -397,9 +397,22 @@ export function resolveBattle(
   const overallResult: BattleResult['overallResult'] =
     decisiveResult === 'defenderWin' ? 'defenderWin' : 'attackerWin';
 
-  // 追击阶段
-  const winnerPursuit = PURSUIT_STRATEGIES.find((s) => s.side === 'winner' && s.id === 'pursuit-chase')!;
-  const loserPursuit = PURSUIT_STRATEGIES.find((s) => s.side === 'loser' && s.id === 'pursuit-flee')!;
+  // 追击阶段：根据主将性格选择策略
+  const winnerCmd = overallResult === 'attackerWin' ? attacker : defender;
+  const loserCmd = overallResult === 'attackerWin' ? defender : attacker;
+  const winnerPersonality = calcPersonality(winnerCmd);
+  const loserPersonality = calcPersonality(loserCmd);
+
+  // 胜方：boldness 高 → 纵兵追杀，compassion/rationality 高 → 穷寇勿追
+  const winnerPursuit = (winnerPersonality.boldness > winnerPersonality.compassion
+    && winnerPersonality.boldness > winnerPersonality.rationality)
+    ? PURSUIT_STRATEGIES.find((s) => s.id === 'pursuit-chase')!
+    : PURSUIT_STRATEGIES.find((s) => s.id === 'pursuit-restrain')!;
+
+  // 败方：boldness 高 → 反戈一击，否则 → 拼命逃窜
+  const loserPursuit = loserPersonality.boldness > 0.3
+    ? PURSUIT_STRATEGIES.find((s) => s.id === 'pursuit-counter')!
+    : PURSUIT_STRATEGIES.find((s) => s.id === 'pursuit-flee')!;
 
   // 追击伤亡：以败方剩余兵力为基准，受胜方追击属性影响
   const loserArmyIds = overallResult === 'attackerWin' ? defenderArmyIds : attackerArmyIds;
@@ -408,6 +421,12 @@ export function resolveBattle(
   for (const aid of loserArmyIds) {
     for (const bat of battalions.values()) {
       if (bat.armyId === aid && bat.currentStrength > 0) loserRemainingTroops += bat.currentStrength;
+    }
+  }
+  let winnerRemainingTroops = 0;
+  for (const aid of winnerArmyIds) {
+    for (const bat of battalions.values()) {
+      if (bat.armyId === aid && bat.currentStrength > 0) winnerRemainingTroops += bat.currentStrength;
     }
   }
   // 胜方加权追击属性
@@ -425,19 +444,36 @@ export function resolveBattle(
     }
   }
   const avgPursuit = totalBats > 0 ? totalPursuit / totalBats : 3;
-  const pursuitEfficiency = Math.max(0.2, Math.min(10, avgPursuit / 5 * 3)); // 全轻骑可达5.4，极端场景可全歼
-  let pursuitLosses = Math.floor(loserRemainingTroops * PHASE_CASUALTY_COEFF.pursuit * winnerPursuit.damageMultiplier * pursuitEfficiency);
-  // 追击损失超过90%时直接全歼
-  if (pursuitLosses >= loserRemainingTroops * 0.9) {
-    pursuitLosses = loserRemainingTroops;
+  const pursuitEfficiency = Math.max(0.2, Math.min(10, avgPursuit / 5 * 3));
+
+  // 败方损失 = 败方剩余 × 基础系数 × 胜方策略倍率 × 追击效率
+  let pursuitLoserLosses = Math.floor(loserRemainingTroops * PHASE_CASUALTY_COEFF.pursuit * winnerPursuit.damageMultiplier * pursuitEfficiency);
+  if (pursuitLoserLosses >= loserRemainingTroops * 0.9) {
+    pursuitLoserLosses = loserRemainingTroops;
   }
 
+  // 胜方损失：败方反击 + 胜方策略自损
+  // 反戈一击：以败方剩余兵力为基数 × 败方策略倍率（溃兵回头反击的杀伤力有限）
+  // 自损：胜方纵兵追杀时追击部队的损耗
+  const counterDamage = Math.floor(loserRemainingTroops * PHASE_CASUALTY_COEFF.pursuit * loserPursuit.damageMultiplier);
+  const selfDamage = Math.floor(pursuitLoserLosses * winnerPursuit.selfDamageMultiplier);
+  const pursuitWinnerLosses = counterDamage + selfDamage;
+
+  // 败方额外自损（反戈一击的代价）
+  const loserSelfDamage = Math.floor(pursuitLoserLosses * loserPursuit.selfDamageMultiplier);
+  pursuitLoserLosses += loserSelfDamage;
+  if (pursuitLoserLosses > loserRemainingTroops) pursuitLoserLosses = loserRemainingTroops;
+
   if (overallResult === 'attackerWin') {
-    applyCasualties(defenderArmyIds, pursuitLosses, battalions);
-    totalDefenderLosses += pursuitLosses;
+    applyCasualties(defenderArmyIds, pursuitLoserLosses, battalions);
+    applyCasualties(attackerArmyIds, pursuitWinnerLosses, battalions);
+    totalDefenderLosses += pursuitLoserLosses;
+    totalAttackerLosses += pursuitWinnerLosses;
   } else {
-    applyCasualties(attackerArmyIds, pursuitLosses, battalions);
-    totalAttackerLosses += pursuitLosses;
+    applyCasualties(attackerArmyIds, pursuitLoserLosses, battalions);
+    applyCasualties(defenderArmyIds, pursuitWinnerLosses, battalions);
+    totalAttackerLosses += pursuitLoserLosses;
+    totalDefenderLosses += pursuitWinnerLosses;
   }
 
   phases.push({
@@ -450,8 +486,8 @@ export function resolveBattle(
     defenderMilitaryPower: 0,
     attackerFinalPower: 0,
     defenderFinalPower: 0,
-    attackerLosses: overallResult === 'attackerWin' ? 0 : pursuitLosses,
-    defenderLosses: overallResult === 'attackerWin' ? pursuitLosses : 0,
+    attackerLosses: overallResult === 'attackerWin' ? pursuitWinnerLosses : pursuitLoserLosses,
+    defenderLosses: overallResult === 'attackerWin' ? pursuitLoserLosses : pursuitWinnerLosses,
     result: overallResult === 'attackerWin' ? 'attackerWin' : 'defenderWin',
     attackerNarrative: overallResult === 'attackerWin' ? winnerPursuit.narrative : loserPursuit.narrative,
     defenderNarrative: overallResult === 'attackerWin' ? loserPursuit.narrative : winnerPursuit.narrative,

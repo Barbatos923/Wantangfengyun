@@ -76,7 +76,8 @@ export const usurpBehavior: NpcBehavior<UsurpData> = {
   executeAsNpc(actor: Character, data: UsurpData, ctx: NpcContext) {
     const isPlayerTarget = data.holderId === ctx.playerId;
 
-    executeUsurp(data.postId, actor.id);
+    const ok = executeUsurp(data.postId, actor.id);
+    if (!ok) return;
 
     // 玩家的岗位被篡夺 → 纯通知
     if (isPlayerTarget) {

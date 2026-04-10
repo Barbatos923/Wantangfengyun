@@ -470,7 +470,7 @@ async function generateYearChronicle(year: number): Promise<void> {
   debugLog('chronicle', '[chronicle] year start', year);
 
   try {
-    await waitForMonthDrafts(year, { timeoutMs: 30_000, signal: req.abort.signal });
+    await waitForMonthDrafts(year, { timeoutMs: 0, signal: req.abort.signal });
   } catch (err) {
     if (isAbortError(err)) {
       debugLog('chronicle', '[chronicle] year aborted (waiting drafts)', year);

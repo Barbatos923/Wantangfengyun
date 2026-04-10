@@ -247,7 +247,7 @@ export function previewDemandFealty(
 
   const terrState = useTerritoryStore.getState();
   const playerExpectedLeg = terrState.expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null);
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg, terrState.policyOpinionCache.get(targetId) ?? null, terrState.policyOpinionCache.get(playerId) ?? null);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);
@@ -273,7 +273,7 @@ export function executeDemandFealty(
 
   const terrState2 = useTerritoryStore.getState();
   const playerExpectedLeg2 = terrState2.expectedLegitimacy.get(playerId) ?? null;
-  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg2, terrState2.policyOpinionCache.get(targetId) ?? null);
+  const opinion = calculateBaseOpinion(target, player, playerExpectedLeg2, terrState2.policyOpinionCache.get(targetId) ?? null, terrState2.policyOpinionCache.get(playerId) ?? null);
   const playerMil = getTotalMilitary(playerId);
   const targetMil = getTotalMilitary(targetId);
   const personality = calcPersonality(target);

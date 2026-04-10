@@ -97,6 +97,9 @@ export interface Character {
   capitalCooldown?: number;   // 迁都冷却（绝对天数）
   capitalManual?: boolean;    // true=玩家手动迁都过，refreshCapital 不会覆盖（除非 capital 失控）
 
+  // 所在地（物理位置）
+  locationId?: string;        // 当前所在州 ID（州级）
+
   // 交互冷却（absoluteDay）
   lastDemandFealtyDay?: number;
   lastDemandRightsDay?: number;

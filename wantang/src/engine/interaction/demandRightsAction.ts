@@ -284,7 +284,7 @@ export function previewDemandRights(
 
   const terrState = useTerritoryStore.getState();
   const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null, terrState.policyOpinionCache.get(actorId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);
@@ -319,7 +319,7 @@ export function executeDemandRights(
 
   const terrState = useTerritoryStore.getState();
   const actorExpLeg = terrState.expectedLegitimacy.get(actorId) ?? null;
-  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null);
+  const opinion = calculateBaseOpinion(overlord, actor, actorExpLeg, terrState.policyOpinionCache.get(overlordId) ?? null, terrState.policyOpinionCache.get(actorId) ?? null);
   const actorMil = getTotalMilitary(actorId);
   const overlordMil = getTotalMilitary(overlordId);
   const overlordPersonality = calcPersonality(overlord);

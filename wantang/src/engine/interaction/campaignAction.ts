@@ -5,6 +5,7 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { getMusteringTime } from '@engine/military/marchCalc';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { canAssignCampaignCommander, findCampaignCommandedBy } from '@engine/military/commandRules';
 
 /** 检查军队是否已在任意行营中（含 incomingArmies） */
 function isArmyInAnyCampaign(armyId: string): boolean {
@@ -70,9 +71,13 @@ export function executeRemoveArmyFromCampaign(
   });
 }
 
-/** 解散行营 */
+/** 解散行营：都统回到治所 */
 export function executeDisbandCampaign(campaignId: string): void {
+  const campaign = useWarStore.getState().campaigns.get(campaignId);
   useWarStore.getState().disbandCampaign(campaignId);
+  if (campaign) {
+    useCharacterStore.getState().refreshLocation(campaign.commanderId);
+  }
 }
 
 /** 设定战术策略 */
@@ -88,12 +93,23 @@ export function executeSetStrategy(
   });
 }
 
-/** 设定行营统帅 */
+/** 设定行营都统：全局唯一，不得在其他行营已任都统。旧都统回治所，新都统到行营 */
 export function executeSetCampaignCommander(
   campaignId: string,
   commanderId: string,
-): void {
+): boolean {
+  if (!canAssignCampaignCommander(campaignId, commanderId)) return false;
+  const campaign = useWarStore.getState().campaigns.get(campaignId);
+  if (!campaign) return false;
+  const oldCommanderId = campaign.commanderId;
   useWarStore.getState().updateCampaign(campaignId, { commanderId });
+  // 旧都统回治所
+  if (oldCommanderId && oldCommanderId !== commanderId) {
+    useCharacterStore.getState().refreshLocation(oldCommanderId);
+  }
+  // 新都统到行营位置
+  useCharacterStore.getState().setLocation(commanderId, campaign.locationId);
+  return true;
 }
 
 /** 组建行营（战争行营 or 独立行营） */
@@ -111,12 +127,14 @@ export function executeCreateCampaign(
   const characters = useCharacterStore.getState().characters;
   const territories = useTerritoryStore.getState().territories;
 
-  // 选最佳统帅：各军兵马使中军事能力最高者
+  // 选最佳统帅：各军兵马使中军事能力最高者，排除已在其他行营任都统的人
   let bestCommander = '';
   let bestMil = -1;
   for (const aid of validArmyIds) {
     const army = armies.get(aid);
     if (army?.commanderId) {
+      // 已在其他行营担任都统 → 跳过
+      if (findCampaignCommandedBy(army.commanderId)) continue;
       const cmd = characters.get(army.commanderId);
       if (cmd && cmd.abilities.military > bestMil) {
         bestMil = cmd.abilities.military;
@@ -137,10 +155,19 @@ export function executeCreateCampaign(
     else incoming.push({ armyId: aid, turnsLeft: time });
   }
 
+  // fallback 到 ownerId 亲征，但也要过唯一性检查
+  let finalCommander = bestCommander;
+  if (!finalCommander) {
+    if (!findCampaignCommandedBy(ownerId)) {
+      finalCommander = ownerId;
+    } else {
+      return; // 所有候选（含 owner）都已在其他行营任都统，无法创建
+    }
+  }
   const newCampaign = useWarStore.getState().createCampaign(
     warId,
     ownerId,
-    bestCommander || ownerId,
+    finalCommander,
     arrivedIds,
     locationId,
   );
@@ -150,4 +177,7 @@ export function executeCreateCampaign(
       incomingArmies: incoming,
     });
   }
+
+  // 都统移动到行营位置
+  useCharacterStore.getState().setLocation(finalCommander, locationId);
 }

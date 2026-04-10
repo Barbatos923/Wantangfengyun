@@ -17,6 +17,8 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
 import type { StoryEvent } from '@engine/storyEventBus';
 import { APPOINT_RIGHT_OPINION } from '@engine/interaction/centralizationAction';
+import { calcPolicyAcceptChance } from '@engine/official/policyRebelCalc';
+import { random } from '@engine/random';
 import { positionMap } from '@data/positions';
 import { registerBehavior } from './index';
 
@@ -163,7 +165,31 @@ export const adjustAppointRightBehavior: NpcBehavior<AdjustAppointRightData> = {
       return;
     }
 
-    executeToggleAppointRight(data.postId);
+    // 授予 → 直接执行；收回 → 骰子判定，失败则臣属独立战争
+    if (data.grant) {
+      executeToggleAppointRight(data.postId);
+    } else {
+      const vassalPersonality = ctx.personalityCache.get(data.vassalId);
+      if (!vassalPersonality) { executeToggleAppointRight(data.postId); return; }
+      const opinion = ctx.getOpinion(data.vassalId, actor.id);
+      const { total } = calcPolicyAcceptChance(opinion, vassalPersonality, ctx.getMilitaryStrength(actor.id), ctx.getMilitaryStrength(data.vassalId));
+      const roll = random() * 100;
+      if (roll < total) {
+        executeToggleAppointRight(data.postId);
+      } else {
+        // 臣属拒绝，发动独立战争
+        const date = useTurnManager.getState().currentDate;
+        useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
+          reason: '强削辟署权',
+          value: -30,
+          decayable: true,
+        });
+        executeDeclareWar(
+          data.vassalId, actor.id, 'independence', [],
+          date, { prestige: 0, legitimacy: 0 },
+        );
+      }
+    }
   },
 };
 

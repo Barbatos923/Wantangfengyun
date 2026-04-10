@@ -400,8 +400,9 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                               {playerId && (() => {
                                 const armyDaoId = locationTerritory?.parentId;
                                 // 已被其他军任命为兵马使的角色ID
+                                // 全局唯一：排除在任何军（不限 owner）已任兵马使的角色
                                 const takenCommanderIds = new Set(
-                                  playerArmies
+                                  Array.from(armies.values())
                                     .filter((a) => a.id !== army.id && a.commanderId)
                                     .map((a) => a.commanderId!),
                                 );

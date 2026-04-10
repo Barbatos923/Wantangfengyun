@@ -12,6 +12,7 @@ import { drawStrategies } from '@engine/military/battleEngine';
 import { PURSUIT_STRATEGIES } from '@data/strategies';
 import type { BattlePhase, StrategyDef } from '@data/strategies';
 import { executeAddArmyToCampaign, executeRemoveArmyFromCampaign, executeDisbandCampaign, executeSetStrategy, executeSetCampaignCommander } from '@engine/interaction/campaignAction';
+import { findCampaignCommandedBy } from '@engine/military/commandRules';
 
 interface CampaignPopupProps {
   campaignId: string;
@@ -346,21 +347,27 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
 
         {/* 更换都统 */}
         {mode === 'commander' && (() => {
-          // 候选人：玩家自己 + 行营内各军的兵马使
+          // 候选人：玩家自己 + 行营内各军的兵马使（排除已在其他行营任都统的人）
           const candidates: { id: string; name: string; military: number }[] = [];
           const seen = new Set<string>();
-          // 玩家自己
+          // 玩家自己（同样检查唯一性）
           if (playerId) {
-            const player = characters.get(playerId);
-            if (player) {
-              candidates.push({ id: playerId, name: player.name + '（亲征）', military: getEffectiveAbilities(player).military });
-              seen.add(playerId);
+            const existingPlayerCampaign = findCampaignCommandedBy(playerId);
+            if (!existingPlayerCampaign || existingPlayerCampaign.id === campaign.id) {
+              const player = characters.get(playerId);
+              if (player) {
+                candidates.push({ id: playerId, name: player.name + '（亲征）', military: getEffectiveAbilities(player).military });
+                seen.add(playerId);
+              }
             }
           }
-          // 各军兵马使
+          // 各军兵马使（排除已在其他行营任都统的人）
           for (const armyId of campaign.armyIds) {
             const army = armies.get(armyId);
             if (army?.commanderId && !seen.has(army.commanderId)) {
+              // 已在其他行营任都统 → 排除（当前行营的现任都统不排除）
+              const existingCampaign = findCampaignCommandedBy(army.commanderId);
+              if (existingCampaign && existingCampaign.id !== campaign.id) continue;
               const cmd = characters.get(army.commanderId);
               if (cmd) {
                 candidates.push({ id: cmd.id, name: cmd.name, military: getEffectiveAbilities(cmd).military });
@@ -375,8 +382,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ campaignId, onClose, onSt
                 <button
                   key={c.id}
                   onClick={() => {
-                    executeSetCampaignCommander(campaignId, c.id);
-                    setMode('main');
+                    const ok = executeSetCampaignCommander(campaignId, c.id);
+                    if (ok) setMode('main');
                   }}
                   className={`w-full px-3 py-1.5 rounded border text-xs text-left transition-colors ${
                     campaign.commanderId === c.id

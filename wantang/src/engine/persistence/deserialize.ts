@@ -82,4 +82,12 @@ export function deserializeGame(raw: SaveFile): void {
     monthDrafts: save.chronicleState?.monthDrafts ?? [],
     yearChronicles: save.chronicleState?.yearChronicles ?? [],
   });
+
+  // 全量刷新角色所在地（兼容旧存档 + 确保行营指挥官位置正确）
+  {
+    const charStore = useCharacterStore.getState();
+    for (const charId of charStore.aliveSet) {
+      charStore.refreshLocation(charId);
+    }
+  }
 }

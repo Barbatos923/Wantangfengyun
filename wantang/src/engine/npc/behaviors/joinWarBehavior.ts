@@ -80,7 +80,7 @@ export const joinWarBehavior: NpcBehavior<JoinWarData> = {
         ...(ratio < 0.5 ? [{ label: '实力悬殊', factor: 0 as number }] : []),
         ...(ratio < 0.8 ? [{ label: '兵力劣势', add: -10 }] : []),
         // 对臣属好感太低不干涉
-        ...(opinion < -20 ? [{ label: '不愿帮忙', factor: 0 as number }] : []),
+        ...(opinion < 0 ? [{ label: '不愿帮忙', factor: 0 as number }] : []),
       ];
 
       const weight = calcWeight(modifiers);

@@ -15,6 +15,7 @@ import { MAX_BATTALION_STRENGTH } from '@engine/military/types';
 import type { UnitType } from '@engine/military/types';
 import { debitTreasury, debitCapitalTreasury, getCapitalBalance } from '@engine/territory/treasuryUtils';
 import { getAvailableRecruits } from '@engine/military/militaryCalc';
+import { canAssignArmyCommander } from '@engine/military/commandRules';
 
 /** 每兵征募费用（贯） */
 export const RECRUIT_COST_PER_SOLDIER = 20;
@@ -117,7 +118,7 @@ export function executeCreateArmy(
 }
 
 /**
- * 换将（设置兵马使）：候选必须存活、未被同 owner 的其他军占用；clear（null）总是允许。
+ * 换将（设置兵马使）：候选必须存活、全局唯一（不得在任何其他军已任兵马使）；clear（null）总是允许。
  */
 export function executeSetCommander(
   armyId: string,
@@ -132,12 +133,8 @@ export function executeSetCommander(
     if (!candidate?.alive) return false;
     // 候选必须是 army.ownerId 自己或其臣属（与 MilitaryPanel 候选集对齐：getVassals(ownerId)）
     if (commanderId !== army.ownerId && candidate.overlordId !== army.ownerId) return false;
-    // 不得在同 owner 的另一军已任兵马使
-    for (const other of milStore.armies.values()) {
-      if (other.id === armyId) continue;
-      if (other.ownerId !== army.ownerId) continue;
-      if (other.commanderId === commanderId) return false;
-    }
+    // 全局唯一：不得在任何其他军已任兵马使
+    if (!canAssignArmyCommander(armyId, commanderId)) return false;
   }
 
   milStore.updateArmy(armyId, { commanderId });

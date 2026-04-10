@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-10
+> **最后更新**：2026-04-11
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -13,8 +13,8 @@ Phase 1  角色 + 领地        ████████████  100%  ✅ 
 Phase 2  官职 + 经济        ████████████  100%  ✅ 完成（含 Post 架构重构）
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
-Phase 5  AI 史书            █████████░░░   80%  🔧 v1完成，v2精修中（三方向：原始素材丰富化 + 话题聚焦策略 + 模型与prompt调优）
-Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave（Game Over + 战争接续 + 18+ execute stale 契约）
+Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
+Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -196,7 +196,13 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ **月稿改起居注**：MONTH_SYSTEM 改为起居注官，直接写文言编年体，允许适当发挥细节
 - ✅ **年稿改汇总点评**：YEAR_SYSTEM 改为基于起居注汇总整理，聚焦主线提炼+史臣注+按语
 - ✅ **删除冗余素材**：年稿删除 topPowers（Top 5 势力）+ dossiers（关键人物档案），token 全部留给事件上下文
-- ⬜ **待做**：清理年度 DEBUG console.log 残留、实战验证 prompt 效果、根据实际输出继续调优
+- ✅ **编译修复**：`chronicleEventContext.ts` 类型安全（`as Record` → `keyof Abilities`）+ `chronicleService.ts` 删未用 `buildEventContext` 导入
+- ✅ **debugLog 收敛**：月稿和年稿两块 `console.group/log/table` 全部迁移到 `debugLog('chronicle', ...)`，chronicle 目录零裸 console
+- ✅ **月稿缺失兜底（rawFallback）**：`waitForMonthDrafts` 超时后，缺失月稿的月份用 `collectMonthEvents` + `buildMonthPrompt` 构建原始事件文本注入年稿 prompt，YEAR_SYSTEM 指示 LLM 以同等文言笔法处理。含回归测试 1 条
+- ✅ **Prompt 精简**：MONTH_SYSTEM 和 YEAR_SYSTEM 从冗长指令改为精练要求（~300字→~150字），去掉举例和冗余限定
+- ✅ **年稿不等月稿**：`waitForMonthDrafts` timeoutMs 从 30 秒改为 0，1 月 1 日立即生成年稿，缺失月稿走 rawFallback
+- ✅ **史书可编辑**：ChroniclePanel 新增编辑/保存/取消按钮，history 区域固定高度 `h-[70vh]`，编辑框与阅读区等大
+- ⬜ **待做**：实战验证 prompt 效果、根据实际输出继续调优、探索月稿快模型+年稿强模型分层策略
 
 ### Phase 6：谋略 + 派系 + 事件 — ⬜ 继续补充
 
@@ -386,6 +392,53 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - **NpcEngine 4 处任命链接住 boolean**：executeTransferPlan / handleDraftSubmission(direct+imperial) / handleExpiredPlayerTasks(appoint-approve) 失败 continue 跳过 autoTransferChildrenAfterAppoint
   - **CLAUDE.md 4 条新硬约束**：① 即时交互执行层（升格自决议章节，覆盖 18+ 函数）② StoryEvent effectKey/effectData/resolver 数据化 ③ 玩家生命周期/Game Over 4 件事并发 ④ 测试原则改白名单（4 类高价值集成测试允许写）
   - **影响**：复盘文档 `docs/reference/项目诊断-已确认问题-2026-04-10.md` 列出的 14 条已确认问题 + 次一级风险 #1 全部闭合（剩 #2 populationSystem/socialSystem 死亡引用残存待下一轮）
+- ✅ **跨战争交战 + 联吴抗曹**（2026-04-10）：
+  - 战斗检测分组键从 `warId:locationId` 改为纯 `locationId`，`findEnemyWars` 跨 war 敌对检测
+  - 种子选择：兵力最强者成为被围攻方（守方），其余与之敌对者联合为攻方
+  - 对向行军拦截同步支持跨 war 敌对
+  - 战争分数遍历所有参战 owner 对，给每个相关 war 正确加减分
+  - 盟友围城重复 BUG：围城开始/AI 当前位置/AI 目标选择三处统一改为 `getWarSide(occupiedBy, war) === mySide` 检测己方阵营占领
+- ✅ **反向政策好感 + 干涉战争阈值**（2026-04-10）：
+  - 领主→臣属方向新增政策好感惩罚：辟署权(-20)/宗法(-15)/军镇(-5)，与正向一致
+  - `calculateBaseOpinion` / `getOpinionBreakdown` 新增 `bPolicyOpinion` 参数，全部 UI 和 engine interaction 调用点（13+8处）统一传参
+  - `joinWarBehavior` 硬阻断阈值从 `opinion < -20` 改为 `opinion < 0`
+- ✅ **NPC 行为幽灵通知修复**（2026-04-10）：
+  - declareWarBehavior / dismissBehavior / usurpBehavior 三处 `executeAsNpc` 接住 execute 返回值，失败不推通知
+- ✅ **旧编译错误修复**（2026-04-10）：
+  - battleEngine.ts 早期返回补 `initialAttackerTroops`/`initialDefenderTroops`
+  - characterSystem.ts `mainPost` 作用域提升，皇帝路径不再访问未声明变量
+- ✅ **政策削权反抗机制**（2026-04-11）：
+  - 新增 `policyRebelCalc.ts` 纯函数：base 20% + opinion×0.5 + honor×15 - boldness×10 + 军力对比(±20)，clamp [5,95]
+  - NPC→NPC 路径：收回辟署权/宗法→流官时骰子判定，失败→臣属独立战争 + -30好感
+  - 玩家 UI（CentralizationFlow 重写）：削权操作弹确认+接受率+骰子判定；授权操作弹纯确认弹窗
+  - 全部骰子改用确定性 `random()`（非 Math.random），保证存档一致性
+- ✅ **战斗系统数值调整**（2026-04-11）：
+  - 精锐度公式：`0.5 + (elite/100) × 1.5`（0→×0.5, 50→×1.25, 100→×2.0）
+  - 势头 momentum ±0.15（原±0.1），下限 0.6
+  - 弱方伤害下限 weakerRatio 从 0 提升到 0.5，胜方不再零损失
+  - 追击阶段策略选择：基于主将性格选 纵兵追杀/穷寇勿追（胜方）、反戈一击/拼命逃窜（败方），四策略的 damageMultiplier/selfDamageMultiplier 全部生效
+- ✅ **反攻夺回失地**（2026-04-11）：
+  - 围城开始/AI当前位置/AI目标选择三处增加 `isOccupiedByEnemy` 判定，被敌方军事占领的己方失地可发起围城收复
+- ✅ **初始数据调整**（2026-04-11）：
+  - 神策军：100营→50营（100,000→50,000人），精锐度→0
+  - 魏博/成德/幽州三镇所有军队精锐度→80
+  - 张允伸新增营州军（10营/10,000人），王景崇新增冀州军（5营/5,000人）
+
+- ✅ **指挥官唯一性约束**（2026-04-11）：
+  - 新增 `commandRules.ts` 共享规则模块：`findArmyCommandedBy`/`findCampaignCommandedBy`/`canAssignArmyCommander`/`canAssignCampaignCommander`
+  - 兵马使从"同 owner 唯一"升级为"全局唯一"：`executeSetCommander` + MilitaryPanel 候选列表
+  - 都统全局唯一：`executeSetCampaignCommander` 加校验返回 boolean + CampaignPopup 候选过滤（含玩家自身）
+  - `militaryAI.ts` 补将/换将改走 `executeSetCommander`，不再绕过规则
+  - `executeCreateCampaign` 选都统排除已任都统者，无合法候选（含 ownerId）时创建失败
+  - 允许兼任：同一角色可同时是某军兵马使 + 某行营都统
+- ✅ **角色地理位置系统**（2026-04-11）：
+  - Character 新增 `locationId?: string`（州级物理位置），CharacterStore 新增 `locationIndex`（territoryId → charIds）
+  - `locationUtils.ts` 纯函数 `resolveLocation`：行营指挥官→行营位置 > 治所 > 领主治所 > undefined
+  - **Category A（岗位变动）**：`refreshPostCaches` 统一挂载 `refreshLocation`，覆盖任命/罢免/剥夺/调任/篡夺/继承等全部岗位变动
+  - **Category B（军事移动）**：行营创建/解散/换帅 + 行军到达/步进/拦截/零兵力解散/战败撤退，都统位置全程同步
+  - 停战解散行营时都统回治所，初始化 + 存档读档全量 refreshLocation
+- ✅ **battleEngine 测试修正**（2026-04-11）：
+  - 精锐度公式变更后测试预期值未更新（elite=0: 1.0→0.5, ratio 1.5→4.0），3 个用例修正，371 测试全过
 
 **待做（后续系统）：**
 - 更多个人交互

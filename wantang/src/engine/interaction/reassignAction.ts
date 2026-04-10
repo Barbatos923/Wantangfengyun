@@ -205,6 +205,7 @@ export function previewReassignChance(
   const opinion = calculateBaseOpinion(
     target, actor, bExpectedLeg,
     terrState.policyOpinionCache.get(territorialId) ?? null,
+    terrState.policyOpinionCache.get(actorId) ?? null,
   );
   const personality = calcPersonality(target);
 
@@ -465,6 +466,7 @@ export function executeReassign(
   const opinion = calculateBaseOpinion(
     territorial, appointer, bExpectedLeg,
     terrStore.policyOpinionCache.get(territorialId) ?? null,
+    terrStore.policyOpinionCache.get(appointerId) ?? null,
   );
   const personality = calcPersonality(territorial);
   const chance = calcReassignChance(

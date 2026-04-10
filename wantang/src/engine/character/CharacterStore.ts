@@ -4,12 +4,15 @@ import type { OfficialData } from '../official/types';
 import { isCivilByAbilities } from '../official/officialUtils';
 import { resolveCapital } from '@engine/territory/treasuryUtils';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { resolveLocation } from './locationUtils';
+import { useWarStore } from '@engine/military/WarStore';
 
 interface CharacterStoreState {
   characters: Map<string, Character>;
   playerId: string | null;
   vassalIndex: Map<string, Set<string>>;   // overlordId → Set<vassalId>
   aliveSet: Set<string>;                    // 存活角色ID集合
+  locationIndex: Map<string, Set<string>>; // territoryId → Set<charId> — 谁在哪个州
 
   // 初始化
   initCharacters: (chars: Character[]) => void;
@@ -44,6 +47,11 @@ interface CharacterStoreState {
   // 治所
   setCapital: (charId: string, zhouId: string) => void;
   refreshCapital: (charId: string) => void;
+
+  // 所在地
+  setLocation: (charId: string, locationId: string | undefined) => void;
+  refreshLocation: (charId: string) => void;
+  getCharactersAtLocation: (territoryId: string) => Character[];
 }
 
 export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
@@ -51,11 +59,13 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
   playerId: null,
   vassalIndex: new Map(),
   aliveSet: new Set(),
+  locationIndex: new Map(),
 
   initCharacters: (chars) => {
     const map = new Map<string, Character>();
     const vassalIndex = new Map<string, Set<string>>();
     const aliveSet = new Set<string>();
+    const locationIndex = new Map<string, Set<string>>();
     for (const c of chars) {
       map.set(c.id, c);
       if (c.alive) {
@@ -69,8 +79,16 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         }
         vassalSet.add(c.id);
       }
+      if (c.locationId) {
+        let locSet = locationIndex.get(c.locationId);
+        if (!locSet) {
+          locSet = new Set<string>();
+          locationIndex.set(c.locationId, locSet);
+        }
+        locSet.add(c.id);
+      }
     }
-    set({ characters: map, vassalIndex, aliveSet });
+    set({ characters: map, vassalIndex, aliveSet, locationIndex });
   },
 
   setPlayerId: (id) => set({ playerId: id }),
@@ -166,7 +184,32 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         }
       }
 
-      return { characters: chars, vassalIndex, aliveSet };
+      // 维护 locationIndex（'locationId' in patch 区分"未传"和"显式设 undefined"）
+      let locationIndex = state.locationIndex;
+      if ('locationId' in patch && patch.locationId !== existing.locationId) {
+        locationIndex = new Map(locationIndex);
+        if (existing.locationId) {
+          const oldSet = locationIndex.get(existing.locationId);
+          if (oldSet) {
+            const ns = new Set(oldSet);
+            ns.delete(id);
+            if (ns.size === 0) locationIndex.delete(existing.locationId);
+            else locationIndex.set(existing.locationId, ns);
+          }
+        }
+        if (patch.locationId) {
+          const s = locationIndex.get(patch.locationId);
+          if (s) {
+            const ns = new Set(s);
+            ns.add(id);
+            locationIndex.set(patch.locationId, ns);
+          } else {
+            locationIndex.set(patch.locationId, new Set([id]));
+          }
+        }
+      }
+
+      return { characters: chars, vassalIndex, aliveSet, locationIndex };
     });
   },
 
@@ -265,7 +308,20 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         }
       }
 
-      return { characters: chars, aliveSet, vassalIndex };
+      // 从 locationIndex 中移除
+      let locationIndex = state.locationIndex;
+      if (c.locationId) {
+        const locSet = locationIndex.get(c.locationId);
+        if (locSet) {
+          locationIndex = new Map(locationIndex);
+          const ns = new Set(locSet);
+          ns.delete(id);
+          if (ns.size === 0) locationIndex.delete(c.locationId);
+          else locationIndex.set(c.locationId, ns);
+        }
+      }
+
+      return { characters: chars, aliveSet, vassalIndex, locationIndex };
     });
   },
 
@@ -304,9 +360,10 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
         }
       }
 
-      // 重建 aliveSet 和 vassalIndex（O(n)，但只执行一次）
+      // 重建 aliveSet、vassalIndex、locationIndex（O(n)，但只执行一次）
       const aliveSet = new Set<string>();
       const vassalIndex = new Map<string, Set<string>>();
+      const locationIndex = new Map<string, Set<string>>();
       for (const c of chars.values()) {
         if (c.alive) aliveSet.add(c.id);
         if (c.overlordId !== undefined) {
@@ -317,9 +374,17 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
           }
           s.add(c.id);
         }
+        if (c.locationId) {
+          let ls = locationIndex.get(c.locationId);
+          if (!ls) {
+            ls = new Set<string>();
+            locationIndex.set(c.locationId, ls);
+          }
+          ls.add(c.id);
+        }
       }
 
-      return { characters: chars, aliveSet, vassalIndex };
+      return { characters: chars, aliveSet, vassalIndex, locationIndex };
     });
   },
 
@@ -401,6 +466,34 @@ export const useCharacterStore = create<CharacterStoreState>((set, get) => ({
       chars.set(charId, { ...c, capital: newCapital });
       return { characters: chars };
     });
+  },
+
+  // 所在地
+  setLocation: (charId, locationId) => {
+    const char = get().characters.get(charId);
+    if (!char || char.locationId === locationId) return;
+    get().updateCharacter(charId, { locationId });
+  },
+
+  refreshLocation: (charId) => {
+    const { characters } = get();
+    const campaigns = useWarStore.getState().campaigns;
+    const newLoc = resolveLocation(charId, characters, campaigns);
+    const char = characters.get(charId);
+    if (!char || char.locationId === newLoc) return;
+    get().updateCharacter(charId, { locationId: newLoc });
+  },
+
+  getCharactersAtLocation: (territoryId) => {
+    const { locationIndex, characters } = get();
+    const ids = locationIndex.get(territoryId);
+    if (!ids) return [];
+    const result: Character[] = [];
+    for (const id of ids) {
+      const c = characters.get(id);
+      if (c) result.push(c);
+    }
+    return result;
   },
 
   refreshIsRuler: (rulerIds) => {

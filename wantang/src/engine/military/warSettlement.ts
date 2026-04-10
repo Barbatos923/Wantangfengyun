@@ -259,9 +259,11 @@ function disbandCampaigns(warId: string): void {
     }
   }
 
-  // 解散所有该战争的行营，军队留在当前位置
+  // 解散所有该战争的行营，军队留在当前位置，都统回治所
   for (const campaign of useWarStore.getState().campaigns.values()) {
     if (campaign.warId !== warId) continue;
+    const cmdId = campaign.commanderId;
     useWarStore.getState().disbandCampaign(campaign.id);
+    useCharacterStore.getState().refreshLocation(cmdId);
   }
 }

@@ -52,6 +52,27 @@ function isEnemyTerritoryInWar(
   return false; // 效忠链上无任何参战者 → 非敌方领地
 }
 
+/**
+ * 查找两个角色在所有 active 战争中互为敌对的战争列表。
+ * 返回 [war, sideOfA][] —— A 在该战争中的阵营（方便后续归分）。
+ */
+function findEnemyWars(
+  charA: string,
+  charB: string,
+  wars: Map<string, import('@engine/military/types').War>,
+): Array<{ war: import('@engine/military/types').War; sideA: import('@engine/military/warParticipantUtils').WarSide }> {
+  const result: Array<{ war: import('@engine/military/types').War; sideA: import('@engine/military/warParticipantUtils').WarSide }> = [];
+  for (const war of wars.values()) {
+    if (war.status !== 'active') continue;
+    const sideA = getWarSide(charA, war);
+    const sideB = getWarSide(charB, war);
+    if (sideA && sideB && sideA !== sideB) {
+      result.push({ war, sideA });
+    }
+  }
+  return result;
+}
+
 // ── 主系统 ────────────────────────────────────────────────
 
 export function runWarSystem(date: GameDate): void {
@@ -120,6 +141,8 @@ export function runWarSystem(date: GameDate): void {
         }
         if (!campaign.warId) {
           useWarStore.getState().disbandCampaign(campaign.id);
+          // 独立行营解散，都统回治所
+          useCharacterStore.getState().refreshLocation(campaign.commanderId);
         } else {
           useWarStore.getState().updateCampaign(campaign.id, {
             locationId: destId,
@@ -129,6 +152,8 @@ export function runWarSystem(date: GameDate): void {
             targetId: null,
             route: [],
           });
+          // 都统跟随行营到达目的地
+          useCharacterStore.getState().setLocation(campaign.commanderId, destId);
         }
       } else if (rp !== campaign.routeProgress) {
         const nextLocId = campaign.route[rp];
@@ -140,6 +165,8 @@ export function runWarSystem(date: GameDate): void {
         for (const armyId of campaign.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: nextLocId });
         }
+        // 都统跟随行营行军
+        useCharacterStore.getState().setLocation(campaign.commanderId, nextLocId);
       } else {
         useWarStore.getState().updateCampaign(campaign.id, { marchProgress: mp });
       }
@@ -147,32 +174,29 @@ export function runWarSystem(date: GameDate): void {
   }
 
   // ===== 对向行军拦截（后置交叉检测）=====
+  // 跨战争敌对：只要两个行营 owner 在任意 active war 中为敌，就应拦截
   {
     const interceptedCrossing = new Set<string>();
     for (const [campAId, fromA] of marchStartLocations) {
       if (interceptedCrossing.has(campAId)) continue;
       const campA = useWarStore.getState().campaigns.get(campAId);
       if (!campA || campA.locationId === fromA) continue;
-      const warA = warStore.wars.get(campA.warId);
-      if (!warA || warA.status !== 'active') continue;
 
       for (const [campBId, fromB] of marchStartLocations) {
         if (campBId === campAId || interceptedCrossing.has(campBId)) continue;
         const campB = useWarStore.getState().campaigns.get(campBId);
         if (!campB || campB.locationId === fromB) continue;
-        // 同战争 + 不同阵营
-        if (campB.warId !== campA.warId) continue;
-        const sideA = getWarSide(campA.ownerId, warA);
-        const sideB = getWarSide(campB.ownerId, warA);
-        if (!sideA || !sideB || sideA === sideB) continue;
+        // 跨 war 敌对检测
+        const enemyWars = findEnemyWars(campA.ownerId, campB.ownerId, warStore.wars);
+        if (enemyWars.length === 0) continue;
 
         if (campA.locationId !== fromB || campB.locationId !== fromA) continue;
 
         interceptedCrossing.add(campAId);
         interceptedCrossing.add(campBId);
 
-        // 相遇在防守方的原始位置
-        const meetLoc = isOnDefenderSide(campA.ownerId, warA) ? fromA : fromB;
+        // 相遇在防守方的原始位置（取第一场敌对战争判断）
+        const meetLoc = isOnDefenderSide(campA.ownerId, enemyWars[0].war) ? fromA : fromB;
 
         useWarStore.getState().updateCampaign(campA.id, {
           locationId: meetLoc, status: 'idle',
@@ -188,6 +212,9 @@ export function runWarSystem(date: GameDate): void {
         for (const armyId of campB.armyIds) {
           useMilitaryStore.getState().updateArmy(armyId, { locationId: meetLoc });
         }
+        // 两个都统跟随到拦截点
+        useCharacterStore.getState().setLocation(campA.commanderId, meetLoc);
+        useCharacterStore.getState().setLocation(campB.commanderId, meetLoc);
         break;
       }
     }
@@ -198,7 +225,9 @@ export function runWarSystem(date: GameDate): void {
     const milStore = useMilitaryStore.getState();
     for (const campaign of useWarStore.getState().campaigns.values()) {
       if (campaign.armyIds.length === 0 && campaign.incomingArmies.length === 0) {
+        const cmdId = campaign.commanderId;
         useWarStore.getState().disbandCampaign(campaign.id);
+        useCharacterStore.getState().refreshLocation(cmdId);
         continue;
       }
       // 所有军队总兵力为 0 → 解散
@@ -211,41 +240,81 @@ export function runWarSystem(date: GameDate): void {
         }
       }
       if (totalStrength === 0 && campaign.incomingArmies.length === 0) {
+        const cmdId = campaign.commanderId;
         useWarStore.getState().disbandCampaign(campaign.id);
+        useCharacterStore.getState().refreshLocation(cmdId);
       }
     }
   }
 
   // ===== 战斗检测：合兵方案 =====
-  // 同一州、同一战争的敌对阵营行营合并 armyIds 打一场
+  // 同一州内、在任意 active war 中互为敌对的行营合并 armyIds 打一场
   {
     const processedBattles = new Set<string>();
 
-    // 按(warId, locationId)分组战斗就绪的行营
-    const groupKey = (c: Campaign) => `${c.warId}:${c.locationId}`;
+    // 按 locationId 分组战斗就绪的行营
     const groups = new Map<string, Campaign[]>();
     for (const campaign of useWarStore.getState().campaigns.values()) {
       if (campaign.status !== 'idle' && campaign.status !== 'marching' && campaign.status !== 'sieging') continue;
       if (!campaign.warId) continue;
       const war = useWarStore.getState().wars.get(campaign.warId);
       if (!war || war.status !== 'active') continue;
-      const key = groupKey(campaign);
-      let list = groups.get(key);
-      if (!list) { list = []; groups.set(key, list); }
+      let list = groups.get(campaign.locationId);
+      if (!list) { list = []; groups.set(campaign.locationId, list); }
       list.push(campaign);
     }
 
     for (const campaigns of groups.values()) {
       if (campaigns.length < 2) continue;
-      const war = useWarStore.getState().wars.get(campaigns[0].warId)!;
 
-      // 分成两阵营
+      // "联吴抗曹"：三方互敌时，兵力最强者成为被围攻方，其余与之敌对者联合
+      // 1. 按 owner 聚合兵力，找出最强者作为 seed（被围攻方/守方）
+      const availableCamps = campaigns.filter(c => !processedBattles.has(c.id));
+      if (availableCamps.length < 2) continue;
+
+      const milSnap = useMilitaryStore.getState();
+      const ownerStrength = new Map<string, number>();
+      for (const c of availableCamps) {
+        const prev = ownerStrength.get(c.ownerId) ?? 0;
+        let str = 0;
+        for (const armyId of c.armyIds) {
+          const army = milSnap.armies.get(armyId);
+          if (!army) continue;
+          for (const batId of army.battalionIds) {
+            str += milSnap.battalions.get(batId)?.currentStrength ?? 0;
+          }
+        }
+        ownerStrength.set(c.ownerId, prev + str);
+      }
+
+      // 2. 在有敌对关系的 owner 中选兵力最强者为守方种子
+      let seedDefender: string | null = null;
+      let bestStrength = -1;
+      for (const c of availableCamps) {
+        // 必须和至少一个其他 owner 敌对，否则不能当种子
+        const hasEnemy = availableCamps.some(
+          other => other.ownerId !== c.ownerId
+            && findEnemyWars(c.ownerId, other.ownerId, warStore.wars).length > 0,
+        );
+        if (!hasEnemy) continue;
+        const str = ownerStrength.get(c.ownerId) ?? 0;
+        if (str > bestStrength) {
+          bestStrength = str;
+          seedDefender = c.ownerId;
+        }
+      }
+      if (!seedDefender) continue;
+
+      // 3. 与最强者敌对 → 攻方（联盟），最强者自己 → 守方
       const attackerCamps: Campaign[] = [];
       const defenderCamps: Campaign[] = [];
-      for (const c of campaigns) {
-        if (processedBattles.has(c.id)) continue;
-        if (isOnAttackerSide(c.ownerId, war)) attackerCamps.push(c);
-        else if (isOnDefenderSide(c.ownerId, war)) defenderCamps.push(c);
+      for (const c of availableCamps) {
+        if (c.ownerId === seedDefender) {
+          defenderCamps.push(c);
+        } else if (findEnemyWars(c.ownerId, seedDefender, warStore.wars).length > 0) {
+          attackerCamps.push(c);
+        }
+        // 与最强者无敌对 → 不参战，跳过
       }
       if (attackerCamps.length === 0 || defenderCamps.length === 0) continue;
 
@@ -322,11 +391,27 @@ export function runWarSystem(date: GameDate): void {
         }
       });
 
-      // 战争分数
+      // 战争分数：给所有涉及双方 owner 的 active war 都加分
       const winnerIsAttacker = result.overallResult === 'attackerWin';
-      const delta = winnerIsAttacker ? result.warScoreChange : -result.warScoreChange;
-      const newScore = Math.max(-100, Math.min(100, war.warScore + delta));
-      useWarStore.getState().updateWar(war.id, { warScore: newScore });
+      const scoredWarIds = new Set<string>();
+      for (const aCamp of attackerCamps) {
+        for (const dCamp of defenderCamps) {
+          for (const { war: ew, sideA } of findEnemyWars(aCamp.ownerId, dCamp.ownerId, warStore.wars)) {
+            if (scoredWarIds.has(ew.id)) continue;
+            scoredWarIds.add(ew.id);
+            // sideA 是 aCamp.owner 在该战争中的阵营
+            // winnerIsAttacker 是本场战斗中"攻方阵营"赢了
+            // 如果 aCamp.owner 在该 war 中是 attacker，则 delta 同向；否则反向
+            const battleDelta = winnerIsAttacker ? result.warScoreChange : -result.warScoreChange;
+            const warDelta = sideA === 'attacker' ? battleDelta : -battleDelta;
+            const freshWar = useWarStore.getState().wars.get(ew.id);
+            if (freshWar) {
+              const newScore = Math.max(-100, Math.min(100, freshWar.warScore + warDelta));
+              useWarStore.getState().updateWar(ew.id, { warScore: newScore });
+            }
+          }
+        }
+      }
 
       // 胜方行营保持 idle
       const winnerCamps = winnerIsAttacker ? attackerCamps : defenderCamps;
@@ -347,16 +432,55 @@ export function runWarSystem(date: GameDate): void {
           }
         }
 
+        // 撤退目标：相邻州中自己控制的 > 己方势力范围内的 > 全地图自己控制的
+        const loserChars = useCharacterStore.getState().characters;
+
+        // 找到我的最顶层领主（独立统治者），同一势力树下的人都算友方
+        const findSovereign = (charId: string): string => {
+          let cur = charId;
+          const visited = new Set<string>();
+          while (true) {
+            const ch = loserChars.get(cur);
+            if (!ch?.overlordId || visited.has(cur)) return cur;
+            visited.add(cur);
+            cur = ch.overlordId;
+          }
+        };
+        const loserSovereign = findSovereign(loserOwnerId);
+
+        // 战时敌对排除：同一势力树但在当前战争中属于敌对侧的人不算友方
+        const loserWar = warStore.wars.get(loserCampaign.warId);
+        const loserSide = loserWar ? getWarSide(loserOwnerId, loserWar) : null;
+        const isWarEnemy = (charId: string): boolean => {
+          if (!loserWar || !loserSide) return false;
+          const side = getWarSide(charId, loserWar);
+          return !!side && side !== loserSide;
+        };
+
+        const isFriendlyTerritory = (terrId: string): boolean => {
+          const t = useTerritoryStore.getState().territories.get(terrId);
+          if (!t) return false;
+          const ctrl = siegeUtils.getTerritoryController(t);
+          if (!ctrl) return false;
+          // 同一势力树 + 不是当前战争的敌对方
+          if (findSovereign(ctrl) !== loserSovereign) return false;
+          if (isWarEnemy(ctrl)) return false;
+          // 被占领时：占领者也必须是友方且非战时敌对
+          if (t.occupiedBy) {
+            if (findSovereign(t.occupiedBy) !== loserSovereign) return false;
+            if (isWarEnemy(t.occupiedBy)) return false;
+          }
+          return true;
+        };
+
         let retreatTarget: string | null = null;
+        // 优先：相邻友方州
         for (const edge of mapEdges) {
           const neighborId = edge.from === loserCampaign.locationId ? edge.to
             : edge.to === loserCampaign.locationId ? edge.from
             : null;
           if (!neighborId) continue;
-          const neighborTerr = useTerritoryStore.getState().territories.get(neighborId);
-          if (!neighborTerr) continue;
-          const controller = siegeUtils.getTerritoryController(neighborTerr);
-          if (controller === loserOwnerId) {
+          if (isFriendlyTerritory(neighborId)) {
             retreatTarget = neighborId;
             break;
           }
@@ -372,19 +496,33 @@ export function runWarSystem(date: GameDate): void {
           for (const armyId of loserCampaign.armyIds) {
             useMilitaryStore.getState().updateArmy(armyId, { locationId: retreatTarget });
           }
+          // 败方都统跟随撤退
+          useCharacterStore.getState().setLocation(loserCampaign.commanderId, retreatTarget);
         } else {
+          // 全地图找一个自己或势力范围内的州，撤退而非解散
           let fallbackLocation: string | null = null;
           for (const t of useTerritoryStore.getState().territories.values()) {
             if (t.tier !== 'zhou') continue;
-            const ctrl = siegeUtils.getTerritoryController(t);
-            if (ctrl === loserOwnerId) { fallbackLocation = t.id; break; }
+            if (isFriendlyTerritory(t.id)) { fallbackLocation = t.id; break; }
           }
           if (fallbackLocation) {
+            useWarStore.getState().updateCampaign(loserCampaign.id, {
+              status: 'idle',
+              locationId: fallbackLocation,
+              targetId: null,
+              route: [],
+            });
             for (const armyId of loserCampaign.armyIds) {
               useMilitaryStore.getState().updateArmy(armyId, { locationId: fallbackLocation });
             }
+            // 败方都统跟随撤退
+            useCharacterStore.getState().setLocation(loserCampaign.commanderId, fallbackLocation);
+          } else {
+            // 真的无处可退（灭国级）→ 解散
+            const cmdId = loserCampaign.commanderId;
+            useWarStore.getState().disbandCampaign(loserCampaign.id);
+            useCharacterStore.getState().refreshLocation(cmdId);
           }
-          useWarStore.getState().disbandCampaign(loserCampaign.id);
         }
       }
 
@@ -430,7 +568,13 @@ export function runWarSystem(date: GameDate): void {
     if (!terr) continue;
     const mySide = getWarSide(campaign.ownerId, war);
     const chars = useCharacterStore.getState().characters;
-    if (!mySide || !isEnemyTerritoryInWar(terr, mySide, war, chars) || terr.occupiedBy === campaign.ownerId) continue;
+    // 跳过条件：非参战者 / 该州已被己方阵营占领
+    // 敌方领地判定：岗位持有人是敌方 OR 被敌方军事占领（允许反攻夺回己方失地）
+    if (!mySide) continue;
+    const isEnemyByHolder = isEnemyTerritoryInWar(terr, mySide, war, chars);
+    const isOccupiedByEnemy = !!terr.occupiedBy && getWarSide(terr.occupiedBy, war) !== mySide && getWarSide(terr.occupiedBy, war) !== null;
+    if (!isEnemyByHolder && !isOccupiedByEnemy) continue;
+    if (terr.occupiedBy && getWarSide(terr.occupiedBy, war) === mySide) continue;
 
     const existingSiege = useWarStore.getState().getSiegeAtTerritory(campaign.locationId);
     if (!existingSiege) {
@@ -602,8 +746,10 @@ export function runWarSystem(date: GameDate): void {
       const chars = useCharacterStore.getState().characters;
       if (!mySide) continue;
 
-      // 在敌方领地且未被己方占领 → 通常留下围城，但如果已有别的战争在围城则继续寻路
-      if (isEnemyTerritoryInWar(currTerr, mySide, war, chars) && currTerr.occupiedBy !== campaign.ownerId) {
+      // 在敌方领地（岗位持有人是敌方，或被敌方军事占领的己方失地）→ 通常留下围城
+      const currIsEnemyByHolder = isEnemyTerritoryInWar(currTerr, mySide, war, chars);
+      const currIsOccupiedByEnemy = !!currTerr.occupiedBy && getWarSide(currTerr.occupiedBy, war) !== mySide && getWarSide(currTerr.occupiedBy, war) !== null;
+      if ((currIsEnemyByHolder || currIsOccupiedByEnemy) && !(currTerr.occupiedBy && getWarSide(currTerr.occupiedBy, war) === mySide)) {
         const siegeHere = useWarStore.getState().getSiegeAtTerritory(campaign.locationId);
         if (!siegeHere || siegeHere.warId === war.id) continue; // 无围城或本战争围城 → 留下
         // 有别的战争的围城 → 不等待，继续寻路找下一个目标
@@ -615,7 +761,10 @@ export function runWarSystem(date: GameDate): void {
 
       for (const t of territories.values()) {
         if (t.tier !== 'zhou') continue;
-        if (!isEnemyTerritoryInWar(t, mySide, war, chars) || t.occupiedBy === campaign.ownerId) continue;
+        const tIsEnemyByHolder = isEnemyTerritoryInWar(t, mySide, war, chars);
+        const tIsOccupiedByEnemy = !!t.occupiedBy && getWarSide(t.occupiedBy, war) !== mySide && getWarSide(t.occupiedBy, war) !== null;
+        if (!tIsEnemyByHolder && !tIsOccupiedByEnemy) continue;
+        if (t.occupiedBy && getWarSide(t.occupiedBy, war) === mySide) continue;
         // 跳过已被其他战争围城的领地（去了也围不了）
         const siegeThere = useWarStore.getState().getSiegeAtTerritory(t.id);
         if (siegeThere && siegeThere.warId !== war.id) continue;

@@ -641,11 +641,12 @@ export function refreshPostCaches(
     }
   }
 
-  // 刷新受影响角色的治所（国库系统）
+  // 刷新受影响角色的治所（国库系统）+ 所在地
   if (affectedCharIds) {
     const charStore = useCharacterStore.getState();
     for (const charId of affectedCharIds) {
       charStore.refreshCapital(charId);
+      charStore.refreshLocation(charId);
     }
   }
 

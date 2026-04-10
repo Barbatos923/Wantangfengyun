@@ -12,8 +12,9 @@ interface OpinionPopupProps {
 const OpinionPopup: React.FC<OpinionPopupProps> = ({ from, toward, onClose }) => {
   const expectedLeg = useTerritoryStore(s => s.expectedLegitimacy.get(toward.id) ?? null);
   const aPolicyOp = useTerritoryStore(s => s.policyOpinionCache.get(from.id) ?? null);
-  const entries = getOpinionBreakdown(from, toward, expectedLeg, aPolicyOp);
-  const total = calculateBaseOpinion(from, toward, expectedLeg, aPolicyOp);
+  const bPolicyOp = useTerritoryStore(s => s.policyOpinionCache.get(toward.id) ?? null);
+  const entries = getOpinionBreakdown(from, toward, expectedLeg, aPolicyOp, bPolicyOp);
+  const total = calculateBaseOpinion(from, toward, expectedLeg, aPolicyOp, bPolicyOp);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
