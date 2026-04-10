@@ -79,7 +79,12 @@
       "Bash(gh api:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(pnpm tsc:*)",
-      "Bash(awk NR>=170 && NR<=185:*)"
+      "Bash(awk NR>=170 && NR<=185:*)",
+      "Bash(cat wantang/vite.config.ts)",
+      "Bash(cat vite.config.ts)",
+      "Bash(npx --prefix wantang vite build)",
+      "Bash(ls -la .github/workflows/)",
+      "Bash(cat .github/workflows/*.yml)"
     ]
   }
 }

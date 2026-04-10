@@ -337,6 +337,23 @@ async function generateMonthDraft(year: number, month: number): Promise<void> {
   const prompt = buildMonthPrompt(year, month, events, names);
   debugLog('chronicle', '[chronicle] month start', year, month, 'events=', events.length);
 
+  // ━━ DEBUG: 月度素材 & prompt 审查 ━━
+  console.group(`📜 [史书DEBUG] 月度 ${year}年${month}月`);
+  console.log('原始事件数:', events.length);
+  console.table(events.map(e => ({
+    日期: `${e.date.month}/${e.date.day}`,
+    类型: e.type,
+    优先级: e.priority,
+    描述: e.description.slice(0, 60),
+    人物: e.actors.map(id => names.characters[id] ?? id).join(','),
+    地点: e.territories.map(id => names.territories[id] ?? id).join(','),
+  })));
+  console.log('%c[SYSTEM PROMPT]', 'color:orange;font-weight:bold');
+  console.log(prompt.system);
+  console.log('%c[USER PROMPT]', 'color:cyan;font-weight:bold');
+  console.log(prompt.user);
+  console.groupEnd();
+
   let summary: string;
   try {
     const provider = await getProvider();
@@ -450,6 +467,43 @@ async function generateYearChronicle(year: number): Promise<void> {
   // 方向 3：跨年记忆 — 读取上一年史的按语 + dossier 快照（若存在）
   const priorMemory = loadPriorYearMemory(year - 1);
   const prompt = buildYearPrompt(year, drafts, snapshot, priorMemory);
+
+  // ━━ DEBUG: 年度素材 & prompt 审查 ━━
+  console.group(`📜 [史书DEBUG] 年度 ${year}年`);
+  console.log('%c── 月稿汇总 ──', 'color:yellow;font-weight:bold');
+  for (const d of drafts) {
+    console.log(`  ${d.month}月 [${d.status}]: ${(d.summary || '(空)').slice(0, 80)}${(d.summary?.length ?? 0) > 80 ? '…' : ''}`);
+  }
+  console.log('%c── WorldSnapshot ──', 'color:yellow;font-weight:bold');
+  console.log('Top5势力:', snapshot.topPowers);
+  console.log('新建头衔:', snapshot.newTitles);
+  console.log('覆灭头衔:', snapshot.destroyedTitles);
+  console.log('%c── 关键人物档案 ──', 'color:yellow;font-weight:bold');
+  console.table(snapshot.dossiers.map(d => ({
+    姓名: d.name,
+    字: d.courtesy,
+    年龄: d.age,
+    存活: d.isAlive,
+    玩家: d.isPlayer,
+    主岗: d.mainPostName,
+    品级: d.rankName,
+    特质: d.traitNames.join('/'),
+    父: d.fatherName,
+    子: d.childrenNames.join('/'),
+  })));
+  if (priorMemory) {
+    console.log('%c── 跨年记忆 ──', 'color:yellow;font-weight:bold');
+    console.log('上年按语:', priorMemory.afterword.slice(0, 120) + '…');
+    console.log('上年人物:', priorMemory.dossiers.map(d => d.name).join(', '));
+  } else {
+    console.log('(无跨年记忆)');
+  }
+  console.log('%c── 最终 SYSTEM PROMPT ──', 'color:orange;font-weight:bold');
+  console.log(prompt.system);
+  console.log('%c── 最终 USER PROMPT ──', 'color:cyan;font-weight:bold');
+  console.log(prompt.user);
+  console.log(`prompt 总字符数: system=${prompt.system.length}, user=${prompt.user.length}`);
+  console.groupEnd();
 
   let content: string;
   try {

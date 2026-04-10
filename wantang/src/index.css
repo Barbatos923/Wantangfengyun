@@ -16,12 +16,12 @@
   --color-border: #2a2a4a;
 
   /* 字号阶梯 */
-  --text-xs: 0.7rem;
-  --text-sm: 0.8rem;
-  --text-base: 0.875rem;
-  --text-lg: 1rem;
-  --text-xl: 1.125rem;
-  --text-2xl: 1.375rem;
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
 
   /* 圆角 */
   --radius-sm: 0.25rem;

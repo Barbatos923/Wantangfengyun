@@ -27,12 +27,19 @@ export class DirectProvider implements LlmProvider {
       temperature: opts.temperature ?? 0.7,
     };
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.config.apiKey ?? ''}`,
+    };
+    // OpenRouter 推荐加 Referer + Title 以获得更好的速率限制优先级
+    if (baseUrl.includes('openrouter.ai')) {
+      headers['HTTP-Referer'] = 'https://wantangfengyun.game';
+      headers['X-Title'] = 'Wantang Fengyun';
+    }
+
     const res = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.config.apiKey ?? ''}`,
-      },
+      headers,
       body: JSON.stringify(body),
       signal: opts.signal,
     });
