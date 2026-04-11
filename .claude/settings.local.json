@@ -87,7 +87,11 @@
       "Bash(cat .github/workflows/*.yml)",
       "Bash(ls:*)",
       "Bash(SCHEME_SIM=1 npx vitest run scheme-frequency-sim)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(ls node_modules/.tmp)",
+      "Bash(find . -maxdepth 3 -name \"tsconfig*.json\")",
+      "Bash(gh run:*)"
     ]
   }
 }

@@ -15,7 +15,7 @@ import { executeToggleSuccession, executeDeclareWar } from '@engine/interaction'
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
-import type { StoryEvent } from '@engine/storyEventBus';
+import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
 import { CLAN_SUCCESSION_OPINION } from '@engine/interaction/centralizationAction';
 import { calcPolicyAcceptChance } from '@engine/official/policyRebelCalc';
 import { random } from '@engine/random';
@@ -120,49 +120,51 @@ export const adjustSuccessionBehavior: NpcBehavior<AdjustSuccessionData> = {
     const opinionValue = data.toClan ? (CLAN_SUCCESSION_OPINION[data.tier] ?? 0) : 0;
 
     if (data.vassalId === ctx.playerId) {
+      const acceptOption: StoryEventOption = {
+        label: data.toClan ? '谢恩' : '忍辱接受',
+        description: data.toClan ? '领主加恩，欣然受命。' : '服从上级决定。',
+        effects: [
+          { label: '继承法', value: opinionValue, type: data.toClan ? 'positive' : 'negative' },
+        ],
+        effectKey: 'adjustSuccession:accept',
+        effectData: { postId: data.postId, capitalZhouId: data.capitalZhouId },
+        onSelect: () => {
+          executeToggleSuccession(data.postId);
+        },
+      };
+      const rebelOption: StoryEventOption = {
+        label: '起兵反抗',
+        description: '拒绝变更，发动独立战争。',
+        effects: [
+          { label: '独立战争', value: 0, type: 'negative' },
+        ],
+        effectKey: 'adjustSuccession:rebel',
+        effectData: { vassalId: data.vassalId, actorId: actor.id },
+        onSelect: () => {
+          const date = useTurnManager.getState().currentDate;
+          useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
+            reason: '强改继承法',
+            value: -30,
+            decayable: true,
+          });
+          executeDeclareWar(
+            data.vassalId, actor.id, 'independence', [],
+            date, { prestige: 0, legitimacy: 0 },
+          );
+        },
+      };
+
       const event: StoryEvent = {
         id: crypto.randomUUID(),
         title: '继承法变更',
-        description: `${actor.name}意图将${terrName}${postName}的继承法${actionLabel}制。`,
+        description: data.toClan
+          ? `${actor.name}加恩，将${terrName}${postName}的继承法${actionLabel}制。`
+          : `${actor.name}意图将${terrName}${postName}的继承法${actionLabel}制。`,
         actors: [
           { characterId: actor.id, role: '领主' },
           { characterId: data.vassalId, role: '你' },
         ],
-        options: [
-          {
-            label: '忍辱接受',
-            description: `服从上级决定。`,
-            effects: [
-              { label: '继承法', value: opinionValue, type: data.toClan ? 'positive' : 'negative' },
-            ],
-            effectKey: 'adjustSuccession:accept',
-            effectData: { postId: data.postId, capitalZhouId: data.capitalZhouId },
-            onSelect: () => {
-              executeToggleSuccession(data.postId);
-            },
-          },
-          {
-            label: '起兵反抗',
-            description: '拒绝变更，发动独立战争。',
-            effects: [
-              { label: '独立战争', value: 0, type: 'negative' },
-            ],
-            effectKey: 'adjustSuccession:rebel',
-            effectData: { vassalId: data.vassalId, actorId: actor.id },
-            onSelect: () => {
-              const date = useTurnManager.getState().currentDate;
-              useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
-                reason: '强改继承法',
-                value: -30,
-                decayable: true,
-              });
-              executeDeclareWar(
-                data.vassalId, actor.id, 'independence', [],
-                date, { prestige: 0, legitimacy: 0 },
-              );
-            },
-          },
-        ],
+        options: data.toClan ? [acceptOption] : [acceptOption, rebelOption],
       };
       useStoryEventBus.getState().pushStoryEvent(event);
       return;

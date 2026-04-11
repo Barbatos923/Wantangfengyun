@@ -90,18 +90,21 @@ export const adjustTaxBehavior: NpcBehavior<AdjustTaxData> = {
 
     // 玩家是目标臣属 → 信息型通知
     if (data.vassalId === ctx.playerId) {
+      const isBenefit = data.delta < 0;
       const event: StoryEvent = {
         id: crypto.randomUUID(),
         title: '赋税调整',
-        description: `${actor.name}将你的赋税等级从「${TAX_LABELS[data.currentLevel] ?? ''}」调整为「${TAX_LABELS[newLevel] ?? ''}」。`,
+        description: isBenefit
+          ? `${actor.name}加恩，将你的赋税等级从「${TAX_LABELS[data.currentLevel] ?? ''}」降为「${TAX_LABELS[newLevel] ?? ''}」。`
+          : `${actor.name}将你的赋税等级从「${TAX_LABELS[data.currentLevel] ?? ''}」提高为「${TAX_LABELS[newLevel] ?? ''}」。`,
         actors: [
           { characterId: actor.id, role: '领主' },
           { characterId: data.vassalId, role: '你' },
         ],
         options: [
           {
-            label: '知悉',
-            description: '接受赋税调整。',
+            label: isBenefit ? '谢恩' : '知悉',
+            description: isBenefit ? '领主加恩，欣然受命。' : '接受赋税调整。',
             effects: [
               { label: '赋税等级', value: data.delta, type: data.delta > 0 ? 'negative' : 'positive' },
             ],

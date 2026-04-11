@@ -17,7 +17,7 @@ import { executeDeclareWar } from '@engine/interaction';
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
-import type { StoryEvent } from '@engine/storyEventBus';
+import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
 import { positionMap } from '@data/positions';
 import { registerBehavior } from './index';
 
@@ -105,49 +105,53 @@ export const adjustTypeBehavior: NpcBehavior<AdjustTypeData> = {
     debugLog('policy', `[政策] ${actor.name} → ${vassalName}：${terrName}${postName} 改为${newTypeLabel}制`);
 
     if (data.vassalId === ctx.playerId) {
+      const acceptOption: StoryEventOption = {
+        label: data.toMilitary ? '谢恩' : '忍辱接受',
+        description: data.toMilitary
+          ? '领主加恩，欣然受命。'
+          : `服从上级决定，接受${newTypeLabel}制改革。`,
+        effects: [
+          { label: '职类', value: data.toMilitary ? 5 : 0, type: data.toMilitary ? 'positive' : 'neutral' },
+        ],
+        effectKey: 'adjustType:accept',
+        effectData: { postId: data.postId, territoryId: data.territoryId },
+        onSelect: () => {
+          executeToggleType(data.postId);
+        },
+      };
+      const rebelOption: StoryEventOption = {
+        label: '起兵反抗',
+        description: '拒绝改制，发动独立战争。',
+        effects: [
+          { label: '独立战争', value: 0, type: 'negative' },
+        ],
+        effectKey: 'adjustType:rebel',
+        effectData: { vassalId: data.vassalId, actorId: actor.id },
+        onSelect: () => {
+          const date = useTurnManager.getState().currentDate;
+          useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
+            reason: '强制改制',
+            value: -30,
+            decayable: true,
+          });
+          executeDeclareWar(
+            data.vassalId, actor.id, 'independence', [],
+            date, { prestige: 0, legitimacy: 0 },
+          );
+        },
+      };
+
       const event: StoryEvent = {
         id: crypto.randomUUID(),
         title: '职类调整',
-        description: `${actor.name}意图将${terrName}${postName}改为${newTypeLabel}制。`,
+        description: data.toMilitary
+          ? `${actor.name}加恩，将${terrName}${postName}改为${newTypeLabel}制。`
+          : `${actor.name}意图将${terrName}${postName}改为${newTypeLabel}制。`,
         actors: [
           { characterId: actor.id, role: '领主' },
           { characterId: data.vassalId, role: '你' },
         ],
-        options: [
-          {
-            label: '忍辱接受',
-            description: `服从上级决定，接受${newTypeLabel}制改革。`,
-            effects: [
-              { label: '职类', value: data.toMilitary ? 5 : 0, type: data.toMilitary ? 'positive' : 'neutral' },
-            ],
-            effectKey: 'adjustType:accept',
-            effectData: { postId: data.postId, territoryId: data.territoryId },
-            onSelect: () => {
-              executeToggleType(data.postId);
-            },
-          },
-          {
-            label: '起兵反抗',
-            description: '拒绝改制，发动独立战争。',
-            effects: [
-              { label: '独立战争', value: 0, type: 'negative' },
-            ],
-            effectKey: 'adjustType:rebel',
-            effectData: { vassalId: data.vassalId, actorId: actor.id },
-            onSelect: () => {
-              const date = useTurnManager.getState().currentDate;
-              useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
-                reason: '强制改制',
-                value: -30,
-                decayable: true,
-              });
-              executeDeclareWar(
-                data.vassalId, actor.id, 'independence', [],
-                date, { prestige: 0, legitimacy: 0 },
-              );
-            },
-          },
-        ],
+        options: data.toMilitary ? [acceptOption] : [acceptOption, rebelOption],
       };
       useStoryEventBus.getState().pushStoryEvent(event);
       return;

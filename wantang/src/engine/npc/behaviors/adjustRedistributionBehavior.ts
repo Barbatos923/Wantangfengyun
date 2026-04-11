@@ -70,18 +70,21 @@ export const adjustRedistributionBehavior: NpcBehavior<AdjustRedistributionData>
 
     // 有臣属是玩家 → 信息型通知 + 执行
     if (isPlayerVassal && ctx.playerId) {
+      const isBenefit = data.delta > 0;
       const event: StoryEvent = {
         id: crypto.randomUUID(),
         title: '回拨率调整',
-        description: `${actor.name}将回拨率从 ${data.currentRate}% 调整为 ${newRate}%。`,
+        description: isBenefit
+          ? `${actor.name}加恩，将回拨率从 ${data.currentRate}% 提至 ${newRate}%。`
+          : `${actor.name}将回拨率从 ${data.currentRate}% 降为 ${newRate}%。`,
         actors: [
           { characterId: actor.id, role: '领主' },
           { characterId: ctx.playerId, role: '你' },
         ],
         options: [
           {
-            label: '知悉',
-            description: '接受回拨率调整。',
+            label: isBenefit ? '谢恩' : '知悉',
+            description: isBenefit ? '领主加恩，欣然受命。' : '接受回拨率调整。',
             effects: [
               { label: '回拨率', value: data.delta, type: data.delta > 0 ? 'positive' : 'negative' },
             ],

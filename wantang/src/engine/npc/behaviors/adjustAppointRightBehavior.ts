@@ -15,7 +15,7 @@ import { executeToggleAppointRight, executeDeclareWar } from '@engine/interactio
 import { useTurnManager } from '@engine/TurnManager';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useStoryEventBus } from '@engine/storyEventBus';
-import type { StoryEvent } from '@engine/storyEventBus';
+import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
 import { APPOINT_RIGHT_OPINION } from '@engine/interaction/centralizationAction';
 import { calcPolicyAcceptChance } from '@engine/official/policyRebelCalc';
 import { random } from '@engine/random';
@@ -117,49 +117,51 @@ export const adjustAppointRightBehavior: NpcBehavior<AdjustAppointRightData> = {
     const opinionValue = data.grant ? (APPOINT_RIGHT_OPINION[data.tier] ?? 0) : 0;
 
     if (data.vassalId === ctx.playerId) {
+      const acceptOption: StoryEventOption = {
+        label: data.grant ? '谢恩' : '忍辱接受',
+        description: data.grant ? '领主加恩，欣然受命。' : '服从上级决定。',
+        effects: [
+          { label: '辟署权', value: opinionValue, type: data.grant ? 'positive' : 'negative' },
+        ],
+        effectKey: 'adjustAppointRight:accept',
+        effectData: { postId: data.postId },
+        onSelect: () => {
+          executeToggleAppointRight(data.postId);
+        },
+      };
+      const rebelOption: StoryEventOption = {
+        label: '起兵反抗',
+        description: '拒绝变更，发动独立战争。',
+        effects: [
+          { label: '独立战争', value: 0, type: 'negative' },
+        ],
+        effectKey: 'adjustAppointRight:rebel',
+        effectData: { vassalId: data.vassalId, actorId: actor.id },
+        onSelect: () => {
+          const date = useTurnManager.getState().currentDate;
+          useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
+            reason: '强削辟署权',
+            value: -30,
+            decayable: true,
+          });
+          executeDeclareWar(
+            data.vassalId, actor.id, 'independence', [],
+            date, { prestige: 0, legitimacy: 0 },
+          );
+        },
+      };
+
       const event: StoryEvent = {
         id: crypto.randomUUID(),
         title: actionLabel,
-        description: `${actor.name}意图${data.grant ? '授予' : '收回'}你在${terrName}${postName}的辟署权。`,
+        description: data.grant
+          ? `${actor.name}加恩，授予你在${terrName}${postName}的辟署权。`
+          : `${actor.name}意图收回你在${terrName}${postName}的辟署权。`,
         actors: [
           { characterId: actor.id, role: '领主' },
           { characterId: data.vassalId, role: '你' },
         ],
-        options: [
-          {
-            label: '忍辱接受',
-            description: `服从上级决定。`,
-            effects: [
-              { label: '辟署权', value: opinionValue, type: data.grant ? 'positive' : 'negative' },
-            ],
-            effectKey: 'adjustAppointRight:accept',
-            effectData: { postId: data.postId },
-            onSelect: () => {
-              executeToggleAppointRight(data.postId);
-            },
-          },
-          {
-            label: '起兵反抗',
-            description: '拒绝变更，发动独立战争。',
-            effects: [
-              { label: '独立战争', value: 0, type: 'negative' },
-            ],
-            effectKey: 'adjustAppointRight:rebel',
-            effectData: { vassalId: data.vassalId, actorId: actor.id },
-            onSelect: () => {
-              const date = useTurnManager.getState().currentDate;
-              useCharacterStore.getState().addOpinion(data.vassalId, actor.id, {
-                reason: '强削辟署权',
-                value: -30,
-                decayable: true,
-              });
-              executeDeclareWar(
-                data.vassalId, actor.id, 'independence', [],
-                date, { prestige: 0, legitimacy: 0 },
-              );
-            },
-          },
-        ],
+        options: data.grant ? [acceptOption] : [acceptOption, rebelOption],
       };
       useStoryEventBus.getState().pushStoryEvent(event);
       return;
