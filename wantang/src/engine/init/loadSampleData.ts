@@ -6,10 +6,14 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { calculateMonthlyLedger } from '@engine/official/officialUtils';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
+import { useWarStore } from '@engine/military/WarStore';
+import { useTurnManager } from '@engine/TurnManager';
+import { toAbsoluteDay } from '@engine/dateUtils';
 import { createAllTerritories } from '@data/territories';
 import { createAllCharacters } from '@data/characters';
 import { createCentralPosts } from '@data/centralPosts';
 import { createAllArmies, createAllBattalions } from '@data/initialArmies';
+import { createAllAlliancePairs } from '@data/initialAlliances';
 
 /**
  * 加载完整初始数据到 Stores。
@@ -50,6 +54,17 @@ export function loadSampleData(): void {
   const armies = createAllArmies();
   const battalions = createAllBattalions();
   useMilitaryStore.getState().initMilitary(armies, battalions);
+
+  // 初始同盟（数据在 data/alliances.json）
+  // 河北三镇等"已存续"的同盟通过 startDayOffset（负数）模拟历史契约，跨过试用期
+  {
+    const warStore = useWarStore.getState();
+    const gameDay = toAbsoluteDay(useTurnManager.getState().currentDate);
+    for (const pair of createAllAlliancePairs()) {
+      const startDay = gameDay + (pair.startDayOffset ?? 0);
+      warStore.createAlliance(pair.partyA, pair.partyB, startDay, pair.durationDays);
+    }
+  }
 
   // 初始化玩家 ledger
   const player = useCharacterStore.getState().getPlayer();

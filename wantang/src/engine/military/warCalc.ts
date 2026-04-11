@@ -1,7 +1,7 @@
 // ===== 战争计算（纯函数） =====
 
 import type { CasusBelli, WarContext, CasusBelliEval, PeaceProposalContext, PeaceAcceptanceContext, PeaceResult } from './types';
-import { CASUS_BELLI_NAMES, TRUCE_PENALTY } from './types';
+import { CASUS_BELLI_NAMES, TRUCE_PENALTY, ALLIANCE_BETRAYAL_PENALTY } from './types';
 import type { Territory } from '@engine/territory/types';
 import { Era } from '@engine/types';
 import { positionMap } from '@data/positions';
@@ -9,7 +9,7 @@ import { isVassalOf } from '@engine/character/successionUtils';
 import { ALL_EDGES } from '@data/mapTopology';
 
 /** 检查角色是否持有任何拥有辟署权的岗位 */
-function hasAppointRightPost(charId: string, territories: Map<string, Territory>): boolean {
+export function hasAppointRightPost(charId: string, territories: Map<string, Territory>): boolean {
   for (const t of territories.values()) {
     for (const p of t.posts) {
       if (p.holderId === charId && p.hasAppointRight) return true;
@@ -39,8 +39,16 @@ export function evaluateAllCasusBelli(ctx: WarContext): CasusBelliEval[] {
     if (ctx.hasTruce) {
       eval_.trucePenalty = TRUCE_PENALTY;
       eval_.cost = {
-        prestige: baseCost.prestige + TRUCE_PENALTY.prestige,
-        legitimacy: baseCost.legitimacy + TRUCE_PENALTY.legitimacy,
+        prestige: eval_.cost.prestige + TRUCE_PENALTY.prestige,
+        legitimacy: eval_.cost.legitimacy + TRUCE_PENALTY.legitimacy,
+      };
+    }
+    // 背盟额外惩罚：向同盟方宣战是远比破停战更严重的道义破产
+    if (ctx.hasAlliance) {
+      eval_.allianceBetrayal = ALLIANCE_BETRAYAL_PENALTY;
+      eval_.cost = {
+        prestige: eval_.cost.prestige + ALLIANCE_BETRAYAL_PENALTY.prestige,
+        legitimacy: eval_.cost.legitimacy + ALLIANCE_BETRAYAL_PENALTY.legitimacy,
       };
     }
     results.push(eval_);

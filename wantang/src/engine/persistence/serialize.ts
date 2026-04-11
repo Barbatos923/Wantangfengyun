@@ -59,6 +59,7 @@ export function serializeGame(): SaveFile {
     campaigns: Array.from(warStore.campaigns.values()),
     sieges: Array.from(warStore.sieges.values()),
     truces: Array.from(warStore.truces.values()),
+    alliances: Array.from(warStore.alliances.values()),
 
     npc: {
       draftPlan: npcStore.draftPlan,
@@ -67,6 +68,7 @@ export function serializeGame(): SaveFile {
       treasuryDrafts: Array.from(npcStore.treasuryDrafts.entries()),
       treasuryDrafterCooldowns: Array.from(npcStore.treasuryDrafterCooldowns.entries()),
       playerTasks: npcStore.playerTasks,
+      allianceRejectCooldowns: Array.from(npcStore.allianceRejectCooldowns.entries()),
     },
 
     playerLedger: ledgerStore.playerLedger,

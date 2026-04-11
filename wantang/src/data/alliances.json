@@ -1,0 +1,20 @@
+[
+  {
+    "partyA": "char-hanyunzhong",
+    "partyB": "char-wangjingchong",
+    "startDayOffset": -730,
+    "durationDays": 4380
+  },
+  {
+    "partyA": "char-wangjingchong",
+    "partyB": "char-zhangyunshen",
+    "startDayOffset": -730,
+    "durationDays": 4380
+  },
+  {
+    "partyA": "char-hanyunzhong",
+    "partyB": "char-zhangyunshen",
+    "startDayOffset": -730,
+    "durationDays": 4380
+  }
+]

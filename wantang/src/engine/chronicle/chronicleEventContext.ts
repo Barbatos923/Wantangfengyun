@@ -320,6 +320,43 @@ const EVENT_FIELD_MAP: Record<string, EventFieldMapping> = {
   '销毁头衔': [
     { roleLabel: '主事者', fields: ['territory', 'mainPost'] },
   ],
+
+  // ── 同盟 ──
+  '缔结同盟': [
+    { roleLabel: '盟主一', fields: ['mainPost', 'traits', 'territory', 'military'] },
+    { roleLabel: '盟主二', fields: ['mainPost', 'traits', 'territory', 'military'] },
+  ],
+  '解除同盟': [
+    { roleLabel: '解约方', fields: ['mainPost', 'allegiance'] },
+    { roleLabel: '原盟友', fields: ['mainPost', 'allegiance'] },
+  ],
+  '同盟到期': [
+    { roleLabel: '原盟主一', fields: ['mainPost'] },
+    { roleLabel: '原盟主二', fields: ['mainPost'] },
+  ],
+  '同盟参战': [
+    { roleLabel: '履约方', fields: ['mainPost', 'military', 'allegiance'] },
+    { roleLabel: '召唤方', fields: ['mainPost', 'wars'] },
+    { roleLabel: '敌方', fields: ['mainPost'] },
+  ],
+  '同盟反戈': [
+    { roleLabel: '反戈方', fields: ['mainPost', 'traits', 'military', 'territory'] },
+    { roleLabel: '原领主', fields: ['mainPost', 'military'] },
+    { roleLabel: '召唤方', fields: ['mainPost', 'military'] },
+  ],
+  '两盟相绞': [
+    { roleLabel: '困局方', fields: ['mainPost', 'traits', 'allegiance'] },
+    { roleLabel: '涉方一', fields: ['mainPost'] },
+    { roleLabel: '涉方二', fields: ['mainPost'] },
+  ],
+  '背盟宣战': [
+    { roleLabel: '背盟方', fields: ['mainPost', 'traits', 'military'] },
+    { roleLabel: '受害方', fields: ['mainPost', 'military', 'allegiance'] },
+  ],
+  '背盟拒援': [
+    { roleLabel: '背盟方', fields: ['mainPost', 'traits', 'military'] },
+    { roleLabel: '受害方', fields: ['mainPost', 'allegiance'] },
+  ],
 };
 
 // ── 主入口 ───────────────────────────────────────────────

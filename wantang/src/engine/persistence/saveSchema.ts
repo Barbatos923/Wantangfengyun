@@ -7,7 +7,7 @@
 import type { GameDate, GameEvent, GameSpeed, Era } from '@engine/types';
 import type { Character } from '@engine/character/types';
 import type { Territory, Post } from '@engine/territory/types';
-import type { Army, Battalion, War, Campaign, Siege, Truce } from '@engine/military/types';
+import type { Army, Battalion, War, Campaign, Siege, Truce, Alliance } from '@engine/military/types';
 import type { MonthlyLedger } from '@engine/official/types';
 import type { DeploySubmission } from '@engine/military/deployCalc';
 import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
@@ -55,6 +55,7 @@ export interface SaveFile {
   campaigns: Campaign[];
   sieges: Siege[];
   truces: Truce[];
+  alliances: Alliance[];
 
   // ── NPC 缓冲区 ──
   npc: {
@@ -64,6 +65,7 @@ export interface SaveFile {
     treasuryDrafts: [string, TreasurySubmission[]][];
     treasuryDrafterCooldowns: [string, GameDate][];
     playerTasks: PlayerTask[];
+    allianceRejectCooldowns: [string, number][];
   };
 
   // ── Ledger ──

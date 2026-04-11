@@ -13,7 +13,11 @@ import {
 } from './systems/index.ts';
 import { runDailyNpcEngine } from './npc/NpcEngine.ts';
 import { useWarStore } from './military/WarStore.ts';
+import { useCharacterStore } from './character/CharacterStore.ts';
+import { useStoryEventBus } from './storyEventBus.ts';
 import { toAbsoluteDay } from './dateUtils.ts';
+import { emitChronicleEvent } from './chronicle/emitChronicleEvent.ts';
+import { EventPriority } from './types.ts';
 
 /**
  * 每日执行。由 TurnManager.advanceDay() 的 dailyCallback 触发。
@@ -30,7 +34,51 @@ export function runDailySettlement(date: GameDate): void {
  * 顺序严格：角色 → NPC → 人口 → 社交 → 经济 → 军事 → 时代 → 建筑。
  */
 export function runMonthlySettlement(date: GameDate): void {
-  useWarStore.getState().cleanExpiredTruces(toAbsoluteDay(date)); // 停���过���清理
+  const today = toAbsoluteDay(date);
+  useWarStore.getState().cleanExpiredTruces(today); // 停战过期清理
+  // 同盟过期清理：返回过期列表用于 emit 史书事件 + 玩家通知
+  const expiredAlliances = useWarStore.getState().cleanExpiredAlliances(today);
+  if (expiredAlliances.length > 0) {
+    const charStore = useCharacterStore.getState();
+    const playerId = charStore.playerId;
+    for (const al of expiredAlliances) {
+      const aChar = charStore.characters.get(al.partyA);
+      const bChar = charStore.characters.get(al.partyB);
+      const aName = aChar?.name ?? '?';
+      const bName = bChar?.name ?? '?';
+      emitChronicleEvent({
+        type: '同盟到期',
+        actors: [al.partyA, al.partyB],
+        territories: [],
+        description: `${aName}与${bName}的盟约期满，自动解除`,
+        priority: EventPriority.Normal,
+      });
+      // 玩家是其中一方 → 推送 StoryEvent 通知
+      if (playerId && (al.partyA === playerId || al.partyB === playerId)) {
+        const otherId = al.partyA === playerId ? al.partyB : al.partyA;
+        const otherName = al.partyA === playerId ? bName : aName;
+        useStoryEventBus.getState().pushStoryEvent({
+          id: crypto.randomUUID(),
+          title: '盟约期满',
+          description: `你与${otherName}的盟约已到期，双方关系恢复中立。`,
+          actors: [
+            { characterId: playerId, role: '你' },
+            { characterId: otherId, role: '原盟友' },
+          ],
+          options: [
+            {
+              label: '知悉',
+              description: '盟约自然到期，无任何惩罚。',
+              effects: [],
+              effectKey: 'noop:notification',
+              effectData: {},
+              onSelect: () => {},
+            },
+          ],
+        });
+      }
+    }
+  }
   runCharacterSystem(date);   // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
   runDailyNpcEngine(date);    // 2. NPC 决策（月初在 characterSystem 之后，保证继承先完成）
   runPopulationSystem(date);  // 3. 年度人口变化

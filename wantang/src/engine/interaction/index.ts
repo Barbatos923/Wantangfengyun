@@ -17,6 +17,8 @@ import './reassignAction';
 import './demandRightsAction';
 import './negotiateTaxAction';
 import './pledgeAllegianceAction';
+import './proposeAllianceAction';
+import './breakAllianceAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -75,6 +77,17 @@ export {
   PLEDGE_ALLEGIANCE_COOLDOWN_DAYS,
 } from './pledgeAllegianceAction';
 export type { PledgeAllegianceChanceResult, PledgeAllegianceResult } from './pledgeAllegianceAction';
+export {
+  calcProposeAllianceChance,
+  previewProposeAlliance,
+  executeProposeAlliance,
+} from './proposeAllianceAction';
+export type {
+  ProposeAllianceChanceBreakdown,
+  ProposeAllianceChanceResult,
+  ProposeAllianceResult,
+} from './proposeAllianceAction';
+export { executeBreakAlliance } from './breakAllianceAction';
 export { canTransferTreasury, executeTransferTreasury } from './treasuryTransferAction';
 export { submitTreasuryDraftAction } from './submitTreasuryDraftAction';
 export { submitDeployDraftAction } from './submitDeployDraftAction';

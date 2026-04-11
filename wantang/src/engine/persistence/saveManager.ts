@@ -47,6 +47,7 @@ function resetTransientStores(): void {
     campaigns: new Map(),
     sieges: new Map(),
     truces: new Map(),
+    alliances: new Map(),
   });
 
   // NpcStore
@@ -57,6 +58,7 @@ function resetTransientStores(): void {
     treasuryDrafts: new Map(),
     treasuryDrafterCooldowns: new Map(),
     playerTasks: [],
+    allianceRejectCooldowns: new Map(),
   });
 
   // LedgerStore（playerLedger 由 loadSampleData 重新计算，但 allLedgers/treasuryHistory 需手动清）

@@ -75,8 +75,9 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
         (w.attackerId === target.id && w.defenderId === actor.id)
       )) continue;
 
-      // 停战检查
+      // 停战 / 同盟检查
       const truce = ctx.hasTruce(actor.id, target.id);
+      const alliance = ctx.hasAlliance(actor.id, target.id);
 
       // 评估宣战理由
       const warCtx: WarContext = {
@@ -86,6 +87,7 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
         territories: ctx.territories,
         characters: ctx.characters,
         hasTruce: truce,
+        hasAlliance: alliance,
       };
       const evals = evaluateAllCasusBelli(warCtx);
       const usable = evals.filter(e => e.failureReason === null);
@@ -164,6 +166,9 @@ export const declareWarBehavior: NpcBehavior<DeclareWarData> = {
 
           // 停战期惩罚：NPC 基本不会违反停战
           ...(truce ? [{ label: '停战期', add: -20 }] : []),
+
+          // 同盟硬禁：NPC 永不主动背盟宣战
+          ...(alliance ? [{ label: '同盟契约', add: -1000 }] : []),
 
           // 硬切（factor=0）
           ...(opinion > 20 ? [{ label: '朋友', factor: 0 }] : []),

@@ -55,6 +55,8 @@ import './behaviors/adjustRedistributionBehavior';
 import './behaviors/reassignBehavior';
 import './behaviors/demandRightsBehavior';
 import './behaviors/negotiateTaxBehavior';
+import './behaviors/proposeAllianceBehavior';
+import './behaviors/breakAllianceBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

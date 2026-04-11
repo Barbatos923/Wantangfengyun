@@ -85,9 +85,10 @@ export function buildNpcContext(): NpcContext {
 
   const activeWars = warState.getActiveWars();
 
-  // ── 停战检查（闭包捕获 warState + 当前绝对日） ──
+  // ── 停战 / 同盟检查（闭包捕获 warState + 当前绝对日） ──
   const currentDay = toAbsoluteDay(turnState.currentDate);
   const hasTruce = (a: string, b: string) => warState.hasTruce(a, b, currentDay);
+  const hasAlliance = (a: string, b: string) => warState.hasAlliance(a, b, currentDay);
 
   // ── 国库预聚合 ──
 
@@ -128,6 +129,7 @@ export function buildNpcContext(): NpcContext {
     getOpinion,
     getMilitaryStrength,
     hasTruce,
+    hasAlliance,
     vassalIndex,
     armies,
     battalions,

@@ -122,6 +122,7 @@ export interface NpcContext {
   getOpinion: (aId: string, bId: string) => number;
   getMilitaryStrength: (charId: string) => number;
   hasTruce: (a: string, b: string) => boolean;
+  hasAlliance: (a: string, b: string) => boolean;
 
   // 臣属索引
   vassalIndex: Map<string, Set<string>>;  // overlordId → Set<vassalId>

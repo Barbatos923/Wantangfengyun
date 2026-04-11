@@ -30,8 +30,8 @@ import RevokeFlow from './RevokeFlow';
 import UsurpPostFlow from './UsurpPostFlow';
 import ReassignFlow from './ReassignFlow';
 import DemandRightsFlow from './DemandRightsFlow';
-import { executeDemandFealty, previewDemandFealty, previewPledgeAllegiance, executePledgeAllegiance, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS } from '@engine/interaction';
-import type { DemandFealtyResult, FealtyChanceResult, PledgeAllegianceChanceResult, PledgeAllegianceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult } from '@engine/interaction';
+import { executeDemandFealty, previewDemandFealty, previewPledgeAllegiance, executePledgeAllegiance, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS, previewProposeAlliance, executeProposeAlliance, executeBreakAlliance } from '@engine/interaction';
+import type { DemandFealtyResult, FealtyChanceResult, PledgeAllegianceChanceResult, PledgeAllegianceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult, ProposeAllianceChanceResult, ProposeAllianceResult } from '@engine/interaction';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
 
 // ── Constants ──────────────────────────────────────
@@ -106,6 +106,9 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
   const [taxNegDelta, setTaxNegDelta] = useState<number | null>(null); // 议定进奉选定方向
   const [taxNegPreview, setTaxNegPreview] = useState<NegotiateTaxChanceResult | null>(null);
   const [taxNegResult, setTaxNegResult] = useState<NegotiateTaxResult | null>(null);
+  const [alliancePreview, setAlliancePreview] = useState<ProposeAllianceChanceResult | null>(null);
+  const [allianceResult, setAllianceResult] = useState<ProposeAllianceResult | null>(null);
+  const [breakAllianceConfirm, setBreakAllianceConfirm] = useState(false);
 
   const character = useCharacterStore((s) => s.characters.get(characterId));
   const playerId = useCharacterStore((s) => s.playerId);
@@ -151,6 +154,27 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
     }
     return result;
   }, [truces, currentAbsDay, characterId, characters]);
+
+  // Alliances (responsive subscription)
+  const alliances = useWarStore((s) => s.alliances);
+  const activeAlliances = useMemo(() => {
+    const result: { allyId: string; allyName: string; expiryDate: string }[] = [];
+    for (const a of alliances.values()) {
+      if (a.expiryDay <= currentAbsDay) continue;
+      let allyId: string | null = null;
+      if (a.partyA === characterId) allyId = a.partyB;
+      else if (a.partyB === characterId) allyId = a.partyA;
+      if (!allyId) continue;
+      const ally = characters.get(allyId);
+      const expiry = fromAbsoluteDay(a.expiryDay);
+      result.push({
+        allyId,
+        allyName: ally?.name ?? '???',
+        expiryDate: `${expiry.year}年${expiry.month}月`,
+      });
+    }
+    return result;
+  }, [alliances, currentAbsDay, characterId, characters]);
 
   if (!character) return null;
 
@@ -502,13 +526,29 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
           </div>
         )}
 
-        {/* Diplomacy: truces */}
-        {activeTruces.length > 0 && (
+        {/* Diplomacy: truces + alliances */}
+        {(activeTruces.length > 0 || activeAlliances.length > 0) && (
           <div>
             <h3 className="text-xs font-bold text-[var(--color-text)] mb-1.5">外交</h3>
             <div className="space-y-1">
+              {activeAlliances.map((al) => (
+                <div key={`al-${al.allyId}`} className="flex items-center justify-between px-2 py-1 rounded border border-[var(--color-accent-gold)]/50 text-xs">
+                  <div>
+                    <span className="text-[var(--color-accent-gold)]">同盟</span>
+                    <button
+                      className="text-[var(--color-accent-gold)] ml-1 hover:underline"
+                      onClick={() => pushCharacter(al.allyId)}
+                    >
+                      {al.allyName}
+                    </button>
+                  </div>
+                  <span className="text-[10px] text-[var(--color-text-muted)]">
+                    至 {al.expiryDate}
+                  </span>
+                </div>
+              ))}
               {activeTruces.map((truce) => (
-                <div key={truce.opponentId} className="flex items-center justify-between px-2 py-1 rounded border border-[var(--color-border)] text-xs">
+                <div key={`tr-${truce.opponentId}`} className="flex items-center justify-between px-2 py-1 rounded border border-[var(--color-border)] text-xs">
                   <div>
                     <span className="text-[var(--color-text-muted)]">停战</span>
                     <button
@@ -620,6 +660,14 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
             }
             if (id === 'pledgeAllegiance' && playerId) {
               setPledgePreview(previewPledgeAllegiance(playerId, characterId));
+              return;
+            }
+            if (id === 'proposeAlliance' && playerId) {
+              setAlliancePreview(previewProposeAlliance(playerId, characterId));
+              return;
+            }
+            if (id === 'breakAlliance' && playerId) {
+              setBreakAllianceConfirm(true);
               return;
             }
             setActiveInteraction(id);
@@ -990,6 +1038,81 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
                   : `${character?.name ?? ''}拒绝了你的归附请求`)}
             </p>
             <Button variant="default" className="w-full" onClick={() => { setPledgeResult(null); setPledgePreview(null); }}>确定</Button>
+          </div>
+        </Modal>
+      )}
+
+      {/* 提议结盟：预览 */}
+      {alliancePreview && !allianceResult && (
+        <Modal size="sm" onOverlayClick={() => setAlliancePreview(null)}>
+          <ModalHeader title={`提议结盟 — ${character?.name ?? ''}`} onClose={() => setAlliancePreview(null)} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <div className="text-xs text-[var(--color-text-muted)] space-y-1">
+              <div>对方接受成功率：<span className="text-[var(--color-accent-gold)] font-bold">{alliancePreview.chance}%</span></div>
+              <div className="border-t border-[var(--color-border)] pt-1 mt-1">
+                <div>基础：{alliancePreview.breakdown.base}</div>
+                <div>好感：{alliancePreview.breakdown.opinion >= 0 ? '+' : ''}{alliancePreview.breakdown.opinion}</div>
+                <div>共同敌人：{alliancePreview.breakdown.commonEnemy >= 0 ? '+' : ''}{alliancePreview.breakdown.commonEnemy}</div>
+                <div>地缘：{alliancePreview.breakdown.geo >= 0 ? '+' : ''}{alliancePreview.breakdown.geo}</div>
+                <div>实力对比：{alliancePreview.breakdown.powerGap >= 0 ? '+' : ''}{alliancePreview.breakdown.powerGap}</div>
+                <div>危局：{alliancePreview.breakdown.dire >= 0 ? '+' : ''}{alliancePreview.breakdown.dire}</div>
+                <div>性格：{alliancePreview.breakdown.personality >= 0 ? '+' : ''}{alliancePreview.breakdown.personality}</div>
+              </div>
+              <div className="border-t border-[var(--color-border)] pt-2 mt-2 text-[var(--color-text-muted)]">
+                同盟期限：3 年。期间双方战争将自动拉入盟友。背弃盟约将受巨额名望/正统性惩罚。
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="default" className="flex-1" onClick={() => setAlliancePreview(null)}>取消</Button>
+              <Button variant="primary" className="flex-1" onClick={() => {
+                if (!playerId) return;
+                const result = executeProposeAlliance(playerId, characterId);
+                setAllianceResult(result);
+              }}>提议</Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 提议结盟：结果 */}
+      {allianceResult && (
+        <Modal size="sm" onOverlayClick={() => { setAllianceResult(null); setAlliancePreview(null); }}>
+          <ModalHeader
+            title={allianceResult.kind === 'stale' ? '操作未生效' : (allianceResult.kind === 'accepted' ? '缔结同盟' : '结盟被拒')}
+            onClose={() => { setAllianceResult(null); setAlliancePreview(null); }}
+          />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className={`text-sm ${allianceResult.kind === 'accepted' ? 'text-[var(--color-accent-green)]' : 'text-[var(--color-accent-red)]'}`}>
+              {allianceResult.kind === 'stale'
+                ? '局势已发生变化，结盟提议未生效。'
+                : (allianceResult.kind === 'accepted'
+                  ? `${character?.name ?? ''}接受了你的结盟提议，双方缔结盟约（三年）。`
+                  : `${character?.name ?? ''}拒绝了你的结盟提议。`)}
+            </p>
+            <Button variant="default" className="w-full" onClick={() => { setAllianceResult(null); setAlliancePreview(null); }}>确定</Button>
+          </div>
+        </Modal>
+      )}
+
+      {/* 解除同盟：确认 */}
+      {breakAllianceConfirm && (
+        <Modal size="sm" onOverlayClick={() => setBreakAllianceConfirm(false)}>
+          <ModalHeader title={`解除同盟 — ${character?.name ?? ''}`} onClose={() => setBreakAllianceConfirm(false)} />
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <p className="text-sm text-[var(--color-text-muted)]">
+              确认单方面解除与{character?.name ?? ''}的盟约？
+            </p>
+            <div className="text-xs text-[var(--color-accent-red)] border-t border-[var(--color-border)] pt-2">
+              代价：威望 -40，对方好感 -50，双方关系降至中立。
+            </div>
+            <div className="flex gap-2">
+              <Button variant="default" className="flex-1" onClick={() => setBreakAllianceConfirm(false)}>取消</Button>
+              <Button variant="danger" className="flex-1" onClick={() => {
+                if (!playerId) return;
+                executeBreakAlliance(playerId, characterId);
+                setBreakAllianceConfirm(false);
+              }}>解除</Button>
+            </div>
           </div>
         </Modal>
       )}

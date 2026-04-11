@@ -74,6 +74,15 @@ const CHRONICLE_TYPE_WHITELIST = new Set<string>([
   '留后指定',
   '议定进奉',
   '要求效忠',
+  // —— 同盟系统 ——
+  '缔结同盟',      // Major
+  '解除同盟',      // Normal (主动解约)
+  '同盟到期',      // Normal (自然过期)
+  '同盟参战',      // Major (自动参战)
+  '同盟反戈',      // Major (盟约迫使臣属叛离领主)
+  '两盟相绞',      // Major (三角同盟下冲突裁决)
+  '背盟宣战',      // Major (宣战时背盟)
+  '背盟拒援',      // Major (拒绝履约自动参战)
   'chronicle-ready', // 防止递归
 ]);
 

@@ -34,8 +34,10 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     return null;
   }
 
-  // 停战检查
-  const hasTruce = useWarStore.getState().hasTruce(playerId, targetId, toAbsoluteDay(currentDate));
+  // 停战 / 同盟检查
+  const currentDay = toAbsoluteDay(currentDate);
+  const hasTruce = useWarStore.getState().hasTruce(playerId, targetId, currentDay);
+  const hasAlliance = useWarStore.getState().hasAlliance(playerId, targetId, currentDay);
 
   // 评估所有可见的宣战理由
   const casusBelliEvals: CasusBelliEval[] = evaluateAllCasusBelli({
@@ -45,6 +47,7 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
     territories,
     characters,
     hasTruce,
+    hasAlliance,
   });
 
   // 选中的理由是否可用
@@ -153,6 +156,11 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
                       {evalItem.trucePenalty && !isDisabled && (
                         <span className="text-xs text-[var(--color-accent-red)] mt-0.5">
                           停战期内宣战（额外 名望{evalItem.trucePenalty.prestige} 正统性{evalItem.trucePenalty.legitimacy}）
+                        </span>
+                      )}
+                      {evalItem.allianceBetrayal && !isDisabled && (
+                        <span className="text-xs text-[var(--color-accent-red)] font-bold mt-0.5">
+                          背弃盟约（额外 名望{evalItem.allianceBetrayal.prestige} 正统性{evalItem.allianceBetrayal.legitimacy}）
                         </span>
                       )}
                     </button>

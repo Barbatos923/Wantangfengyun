@@ -7,10 +7,14 @@ import { useWarStore } from '@engine/military/WarStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { EventPriority } from '@engine/types';
 import type { CasusBelli } from '@engine/military/types';
+import { ALLIANCE_BETRAYAL_OPINION } from '@engine/military/types';
 import { debugLog } from '@engine/debugLog';
 import { toAbsoluteDay } from '@engine/dateUtils';
 import { evaluateAllCasusBelli, getAnnexTargets, getDeJureTargets } from '@engine/military/warCalc';
 import { isWarParticipant } from '@engine/military/warParticipantUtils';
+import { autoJoinAlliesOnWarStart } from '@engine/military/allianceAutoJoin';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
+import { useStoryEventBus } from '@engine/storyEventBus';
 
 
 registerInteraction({
@@ -60,6 +64,8 @@ export function executeDeclareWar(
   // 停战期允许强开，但执行时要按当前局面重算真实代价
   const currentDay = toAbsoluteDay(useTurnManager.getState().currentDate);
   const hasTruce = warStore.hasTruce(playerId, targetId, currentDay);
+  // 背盟宣战也允许（需要显式承担后果），execute 时重算 cost 含背盟惩罚
+  const hasAlliance = warStore.hasAlliance(playerId, targetId, currentDay);
 
   // CB 仍可用（用面板同款评估器，不重写一套）
   const territories = useTerritoryStore.getState().territories;
@@ -71,6 +77,7 @@ export function executeDeclareWar(
     territories,
     characters: charStore.characters,
     hasTruce,
+    hasAlliance,
   });
   const selectedEval = cbEvals.find((e) => e.id === casusBelli);
   if (!selectedEval || selectedEval.failureReason !== null) return false;
@@ -150,6 +157,49 @@ export function executeDeclareWar(
       useCharacterStore.getState().updateCharacter(playerId, { overlordId: undefined });
     }
   }
+
+  // 背盟：宣战成功后立即断盟 + 双向好感暴跌 + 史书 emit
+  if (hasAlliance) {
+    useWarStore.getState().breakAllianceBetween(playerId, targetId);
+    const cs = useCharacterStore.getState();
+    const attackerName = cs.getCharacter(playerId)?.name ?? '?';
+    const defenderName = cs.getCharacter(targetId)?.name ?? '?';
+    cs.addOpinion(targetId, playerId, { reason: '背盟宣战', value: ALLIANCE_BETRAYAL_OPINION, decayable: true });
+    cs.addOpinion(playerId, targetId, { reason: '背盟宣战', value: -50, decayable: true });
+    emitChronicleEvent({
+      type: '背盟宣战',
+      actors: [playerId, targetId],
+      territories: targetTerritoryIds,
+      description: `${attackerName}背弃与${defenderName}的盟约，悍然兴兵`,
+      priority: EventPriority.Major,
+    });
+    // 玩家是被背盟的受害方 → 额外 StoryEvent 通知（宣战事件右下角已有，StoryEvent 更醒目）
+    const playerCharId = cs.playerId;
+    if (playerCharId && playerCharId === targetId) {
+      useStoryEventBus.getState().pushStoryEvent({
+        id: crypto.randomUUID(),
+        title: '盟友背弃',
+        description: `${attackerName}不顾盟约，悍然对你兴兵。昔日盟友，今为死敌。`,
+        actors: [
+          { characterId: playerId, role: '背盟者' },
+          { characterId: targetId, role: '你' },
+        ],
+        options: [
+          {
+            label: '知悉',
+            description: '同盟已终止，全力应战。',
+            effects: [],
+            effectKey: 'noop:notification',
+            effectData: {},
+            onSelect: () => {},
+          },
+        ],
+      });
+    }
+  }
+
+  // 同盟自动参战：双方盟友按资格拉入同侧
+  autoJoinAlliesOnWarStart(war, currentDay);
 
   return true;
 }

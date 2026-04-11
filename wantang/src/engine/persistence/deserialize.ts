@@ -49,6 +49,8 @@ export function deserializeGame(raw: SaveFile): void {
     campaigns: new Map(save.campaigns.map((c) => [c.id, c])),
     sieges: new Map(save.sieges.map((s) => [s.id, s])),
     truces: new Map(save.truces.map((t) => [t.id, t])),
+    // 旧档兜底：alliances 字段在 v5 之后引入，旧存档没有该字段
+    alliances: new Map((save.alliances ?? []).map((a) => [a.id, a])),
   });
 
   // NpcStore
@@ -59,6 +61,8 @@ export function deserializeGame(raw: SaveFile): void {
     treasuryDrafts: new Map(save.npc.treasuryDrafts),
     treasuryDrafterCooldowns: new Map(save.npc.treasuryDrafterCooldowns),
     playerTasks: save.npc.playerTasks,
+    // 旧档兜底：allianceRejectCooldowns 是新字段
+    allianceRejectCooldowns: new Map(save.npc.allianceRejectCooldowns ?? []),
   });
 
   // LedgerStore

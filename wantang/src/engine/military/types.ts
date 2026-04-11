@@ -79,6 +79,7 @@ export interface WarContext {
   territories: Map<string, Territory>;
   characters: Map<string, Character>;
   hasTruce?: boolean; // 双方是否处于停战期
+  hasAlliance?: boolean; // 双方是否处于同盟（背盟宣战会额外惩罚）
 }
 
 /** 单条宣战理由的判定结果 */
@@ -87,7 +88,8 @@ export interface CasusBelliEval {
   name: string;
   failureReason: string | null; // null = 可用
   cost: { prestige: number; legitimacy: number };
-  trucePenalty?: { prestige: number; legitimacy: number }; // 停战期额外��罚（仅当 hasTruce 时存在）
+  trucePenalty?: { prestige: number; legitimacy: number }; // 停战期额外惩罚（仅当 hasTruce 时存在）
+  allianceBetrayal?: { prestige: number; legitimacy: number }; // 背盟额外惩罚（仅当 hasAlliance 时存在）
 }
 
 /** 战争 */
@@ -119,6 +121,30 @@ export interface Truce {
 export const TRUCE_DURATION_DAYS = 730;
 /** 违反停战额外惩罚 */
 export const TRUCE_PENALTY = { prestige: -30, legitimacy: -20 };
+
+/** 同盟（双向、有期限的强约束契约） */
+export interface Alliance {
+  id: string;
+  partyA: string;       // 角色 ID
+  partyB: string;       // 角色 ID
+  startDay: number;     // 缔结日（绝对天）
+  expiryDay: number;    // 到期日（绝对天）
+}
+
+/** 同盟期限：3 年 */
+export const ALLIANCE_DURATION_DAYS = 1095;
+/** 每人同盟数量上限 */
+export const MAX_ALLIANCES_PER_RULER = 2;
+/** 背盟惩罚（向盟友宣战 / 拒绝履约自动参战） */
+export const ALLIANCE_BETRAYAL_PENALTY = { prestige: -120, legitimacy: -80 };
+/** 背盟好感惩罚（双向，一次性 decayable 事件） */
+export const ALLIANCE_BETRAYAL_OPINION = -100;
+/** 主动解盟（合法解约）的资源代价 */
+export const ALLIANCE_BREAK_PRESTIGE_COST = -40;
+/** 同盟提议被拒绝后的冷却 */
+export const ALLIANCE_PROPOSAL_REJECT_CD_DAYS = 365;
+/** 同盟最低存续期（缔结后多少天才允许 NPC 主动解盟，给个"试用期"） */
+export const ALLIANCE_MIN_AGE_BEFORE_NPC_BREAK_DAYS = 365;
 
 /** 正在赶赴行营的军队 */
 export interface IncomingArmy {

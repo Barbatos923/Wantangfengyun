@@ -396,6 +396,23 @@ export function runCharacterSystem(date: GameDate): void {
     for (const heirId of heirIds) {
       refreshLegitimacyForChar(heirId);
     }
+
+    // 同盟是角色间的个人契约，角色死亡即刻失效（不随继承人转移）
+    // 这里统一清理：避免死者的同盟长期占用 MAX_ALLIANCES_PER_RULER 名额 + 继续出现在外交面板
+    const warStoreForAllianceCleanup = useWarStore.getState();
+    for (const deadId of deadIds) {
+      const alliances = warStoreForAllianceCleanup.getAlliancesOf(deadId);
+      for (const al of alliances) {
+        const otherId = al.partyA === deadId ? al.partyB : al.partyA;
+        const other = charStore.getCharacter(otherId);
+        warStoreForAllianceCleanup.breakAlliance(al.id);
+        if (other?.alive) {
+          // 对尚在世的另一方 emit 通知（Normal），但**不**打好感——自然死亡不是背叛
+          // 这里不单独走 emitChronicleEvent 以免与后续批量 emit 重复；留给月稿上下文自然提及
+          debugLog('interaction', `[同盟清理] ${deadId} 死亡 → 清理与 ${otherId} 的同盟`);
+        }
+      }
+    }
   }
 
   // ===== 2. 角色压力结算（批量） =====

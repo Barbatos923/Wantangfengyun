@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
-Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 31 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性
+Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 33 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统（河北三镇初始同盟）
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -439,6 +439,17 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - 停战解散行营时都统回治所，初始化 + 存档读档全量 refreshLocation
 - ✅ **battleEngine 测试修正**（2026-04-11）：
   - 精锐度公式变更后测试预期值未更新（elite=0: 1.0→0.5, ratio 1.5→4.0），3 个用例修正，371 测试全过
+- ✅ **同盟系统**（2026-04-11）：
+  - 数据层：`Alliance`（双向、3 年期限）+ WarStore 7 个方法镜像 truce 模式 + 存档三处对称
+  - **缔盟资格**：`canEnterAlliance(char, territories)` = `isRuler && (独立 || 持有辟署权)`；禁止同一效忠链（直接领主↔直接臣属）
+  - **背盟宣战**：`warCalc` 叠加 `ALLIANCE_BETRAYAL_PENALTY = -120/-80`；`executeDeclareWar` 成功后立即断盟 + 双向好感 -100/-50 + emit Major 史书；NPC `declareWarBehavior` weight -1000 硬禁背盟
+  - **自动参战**：`autoJoinAlliesOnWarStart` 在战争创建时扫双方盟友；支持**反戈机制**——盟友直接领主若正是敌方领袖则切断 overlordId 再参战（河北三镇核心场景）；**三角同盟冲突裁决**预扫双侧合法盟友求交集，玩家走三选一 StoryEvent（援 A / 援 B / 两不相助），NPC 按好感站队或保持中立；不触发二次连锁，避免雪球
+  - **玩家交互**：`proposeAllianceAction` + `breakAllianceAction`，外交 Tab 盟友区块、`DeclareWarFlow` 红字背盟行、三档 StoryEvent（结盟提议 / 盟约召唤 / 两盟相绞）全部通过 `storyEffectResolver` effectKey 路径恢复
+  - **NPC 行为（2 个新增，总数 33）**：`proposeAllianceBehavior`（月度槽位，候选集含同一效忠链屏蔽，skip playerMode 改推 StoryEvent） + `breakAllianceBehavior`（仅 honor≤0.5 + opinion≤-50 + 兵力比≥3:1 + 过 1 年试用期 + 无共同参战，严格防频繁解盟）
+  - **死亡清理**：`characterSystem` 死亡处理末尾清理死者所有同盟（个人契约不随继承转移）
+  - **史书事件**：`缔结同盟 / 解除同盟 / 同盟到期 / 同盟参战 / 同盟反戈 / 两盟相绞 / 背盟宣战 / 背盟拒援` 共 8 种，白名单 + EVENT_FIELD_MAP + formatActorRoles 三处对齐
+  - **初始数据**：`loadSampleData` 为魏博（韩允中）、成德（王景崇）、卢龙（张允伸）三镇两两预先缔结同盟，削藩战争中自然触发反戈
+  - **测试**：新建 `src/__tests__/alliance.test.ts` 13 条不变量（CRUD/存档 round-trip/过期清理/冷却/双向查询），384 测试全过
 
 **待做（后续系统）：**
 - 更多个人交互
@@ -446,6 +457,12 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - 活动系统（宴会/狩猎/压力释放）
 - 派系系统（五大派系，廷议/弹劾/推举）
 - 随机事件系统（事件包 + 事件链 + 多步选择）
+- **旅行系统**（活动/侠客系统前置依赖）：
+  - `Character.locationId` 从派生值改为独立真实状态，支持"人在路上"
+  - 当前 `resolveLocation()` 纯函数保留为初始化/读档兜底，不再作为日常刷新
+  - `postTransfer.ts` 岗位变动改为显式 `setLocation`（先瞬移，后续改发起旅行）
+  - 军事移动的 `setLocation` 不变
+  - 后续扩展：路径计算、在途状态、到达触发、途中事件
 
 ### Phase 7：内容填充 — ⬜ 大部分未开始
 - 已有：79 个史实角色、72 个领地（49 州）、43 军队、378 营
@@ -469,7 +486,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 | 存档/读档 UI | ❌ | 缺少 SaveLoadPanel 界面 |
 | 生育系统 | ❌ | 字段存在（childrenIds），无生育逻辑 |
 | 人才自然生成 | ❌ | 无"进士及第"/"举孝廉"机制 |
-| 单元测试 | ✅ | 16 文件 352 测试，覆盖纯函数+数据完整性 |
+| 单元测试 | ✅ | 19 文件 384 测试，覆盖纯函数+数据完整性 |
 
 ---
 

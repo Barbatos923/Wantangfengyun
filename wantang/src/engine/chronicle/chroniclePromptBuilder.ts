@@ -141,6 +141,39 @@ function formatActorRoles(
       // actors: [actorId]
       return [a[0] && `主事者:${n(a[0])}`, loc].filter(Boolean).join('，');
 
+    // ── 同盟 ──
+    case '缔结同盟':
+      // actors: [partyA, partyB]
+      return [a[0] && `盟主一:${n(a[0])}`, a[1] && `盟主二:${n(a[1])}`, loc].filter(Boolean).join('，');
+
+    case '解除同盟':
+      // actors: [actorId, targetId]
+      return [a[0] && `解约方:${n(a[0])}`, a[1] && `原盟友:${n(a[1])}`, loc].filter(Boolean).join('，');
+
+    case '同盟到期':
+      // actors: [partyA, partyB]
+      return [a[0] && `原盟主一:${n(a[0])}`, a[1] && `原盟主二:${n(a[1])}`, loc].filter(Boolean).join('，');
+
+    case '同盟参战':
+      // actors: [allyId, summonerId, enemyLeaderId?]
+      return [a[0] && `履约方:${n(a[0])}`, a[1] && `召唤方:${n(a[1])}`, a[2] && `敌方:${n(a[2])}`, loc].filter(Boolean).join('，');
+
+    case '同盟反戈':
+      // actors: [rebelId, formerOverlordId, summonerId]
+      return [a[0] && `反戈方:${n(a[0])}`, a[1] && `原领主:${n(a[1])}`, a[2] && `召唤方:${n(a[2])}`, loc].filter(Boolean).join('，');
+
+    case '两盟相绞':
+      // actors: [allyId, chosenLeaderId/attackerId, abandonedLeaderId/defenderId]
+      return [a[0] && `困局方:${n(a[0])}`, a[1] && `涉方一:${n(a[1])}`, a[2] && `涉方二:${n(a[2])}`, loc].filter(Boolean).join('，');
+
+    case '背盟宣战':
+      // actors: [attackerId, defenderId]
+      return [a[0] && `背盟方:${n(a[0])}`, a[1] && `受害方:${n(a[1])}`, loc].filter(Boolean).join('，');
+
+    case '背盟拒援':
+      // actors: [betrayerId, summonerId]
+      return [a[0] && `背盟方:${n(a[0])}`, a[1] && `受害方:${n(a[1])}`, loc].filter(Boolean).join('，');
+
     default: {
       // 未知类型：降级为扁平列表
       const actorNames = a.map(n).filter(Boolean).join('、');

@@ -1,18 +1,29 @@
 // ===== 战争 Store =====
 
 import { create } from 'zustand';
-import type { War, Campaign, Siege, CasusBelli, Truce } from './types';
+import type { War, Campaign, Siege, CasusBelli, Truce, Alliance } from './types';
+import { ALLIANCE_DURATION_DAYS } from './types';
 
 interface WarState {
   wars: Map<string, War>;
   campaigns: Map<string, Campaign>;
   sieges: Map<string, Siege>;
   truces: Map<string, Truce>;
+  alliances: Map<string, Alliance>;
 
   // 停战
   addTruce(partyA: string, partyB: string, expiryDay: number): void;
   hasTruce(a: string, b: string, currentDay: number): boolean;
   cleanExpiredTruces(currentDay: number): void;
+
+  // 同盟
+  createAlliance(partyA: string, partyB: string, startDay: number, durationDays?: number): Alliance;
+  hasAlliance(a: string, b: string, currentDay: number): boolean;
+  getAlliancesOf(charId: string): Alliance[];
+  getAllies(charId: string, currentDay: number): string[];
+  breakAlliance(allianceId: string): void;
+  breakAllianceBetween(a: string, b: string): void;
+  cleanExpiredAlliances(currentDay: number): Alliance[];
 
   // 战争
   declareWar(
@@ -69,6 +80,7 @@ export const useWarStore = create<WarState>()((set, get) => ({
   campaigns: new Map(),
   sieges: new Map(),
   truces: new Map(),
+  alliances: new Map(),
 
   // ── 停战 ────────────────────────────────────────────────────────────────
 
@@ -102,6 +114,96 @@ export const useWarStore = create<WarState>()((set, get) => ({
       for (const id of expired) truces.delete(id);
       return { truces };
     });
+  },
+
+  // ── 同盟 ────────────────────────────────────────────────────────────────
+
+  createAlliance(partyA, partyB, startDay, durationDays = ALLIANCE_DURATION_DAYS) {
+    const alliance: Alliance = {
+      id: crypto.randomUUID(),
+      partyA,
+      partyB,
+      startDay,
+      expiryDay: startDay + durationDays,
+    };
+    set((state) => {
+      const alliances = new Map(state.alliances);
+      alliances.set(alliance.id, alliance);
+      return { alliances };
+    });
+    return alliance;
+  },
+
+  hasAlliance(a, b, currentDay) {
+    for (const al of get().alliances.values()) {
+      if (al.expiryDay <= currentDay) continue;
+      if ((al.partyA === a && al.partyB === b) || (al.partyA === b && al.partyB === a)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  getAlliancesOf(charId) {
+    const result: Alliance[] = [];
+    for (const al of get().alliances.values()) {
+      if (al.partyA === charId || al.partyB === charId) result.push(al);
+    }
+    return result;
+  },
+
+  getAllies(charId, currentDay) {
+    const allies: string[] = [];
+    const seen = new Set<string>();
+    for (const al of get().alliances.values()) {
+      if (al.expiryDay <= currentDay) continue;
+      let other: string | null = null;
+      if (al.partyA === charId) other = al.partyB;
+      else if (al.partyB === charId) other = al.partyA;
+      if (other && !seen.has(other)) {
+        seen.add(other);
+        allies.push(other);
+      }
+    }
+    return allies;
+  },
+
+  breakAlliance(allianceId) {
+    set((state) => {
+      if (!state.alliances.has(allianceId)) return {};
+      const alliances = new Map(state.alliances);
+      alliances.delete(allianceId);
+      return { alliances };
+    });
+  },
+
+  breakAllianceBetween(a, b) {
+    const toDelete: string[] = [];
+    for (const al of get().alliances.values()) {
+      if ((al.partyA === a && al.partyB === b) || (al.partyA === b && al.partyB === a)) {
+        toDelete.push(al.id);
+      }
+    }
+    if (toDelete.length === 0) return;
+    set((state) => {
+      const alliances = new Map(state.alliances);
+      for (const id of toDelete) alliances.delete(id);
+      return { alliances };
+    });
+  },
+
+  cleanExpiredAlliances(currentDay) {
+    const expiredList: Alliance[] = [];
+    for (const al of get().alliances.values()) {
+      if (al.expiryDay <= currentDay) expiredList.push(al);
+    }
+    if (expiredList.length === 0) return [];
+    set((state) => {
+      const alliances = new Map(state.alliances);
+      for (const al of expiredList) alliances.delete(al.id);
+      return { alliances };
+    });
+    return expiredList;
   },
 
   // ── 战争 ────────────────────────────────────────────────────────────────

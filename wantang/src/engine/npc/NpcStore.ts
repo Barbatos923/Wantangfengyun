@@ -6,6 +6,7 @@ import type { DeploymentEntry, DeploySubmission } from '@engine/military/deployC
 import type { TreasuryEntry, TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import type { GameDate } from '@engine/types';
 import { isDateReached } from '@engine/dateUtils';
+import { ALLIANCE_PROPOSAL_REJECT_CD_DAYS } from '@engine/military/types';
 
 interface NpcStoreState {
   // ── 引擎内部缓冲区（不暴露给 UI） ──
@@ -41,6 +42,12 @@ interface NpcStoreState {
   removePlayerTask: (taskId: string) => void;
   /** 获取已超时的任务（deadline <= date） */
   getExpiredTasks: (date: GameDate) => PlayerTask[];
+
+  // ── 同盟提议拒绝冷却 ──
+  // key 格式: `${proposerId}|${targetId}`，value = 冷却截止时的绝对天
+  allianceRejectCooldowns: Map<string, number>;
+  setAllianceRejectCooldown: (proposerId: string, targetId: string, currentDay: number) => void;
+  isAllianceProposalCooldown: (proposerId: string, targetId: string, currentDay: number) => boolean;
 }
 
 export const useNpcStore = create<NpcStoreState>((set, get) => ({
@@ -112,5 +119,18 @@ export const useNpcStore = create<NpcStoreState>((set, get) => ({
   })),
   getExpiredTasks: (date) => {
     return get().playerTasks.filter((t) => isDateReached(date, t.deadline));
+  },
+
+  // 同盟提议拒绝冷却
+  allianceRejectCooldowns: new Map(),
+  setAllianceRejectCooldown: (proposerId, targetId, currentDay) => set((s) => {
+    const cds = new Map(s.allianceRejectCooldowns);
+    cds.set(`${proposerId}|${targetId}`, currentDay + ALLIANCE_PROPOSAL_REJECT_CD_DAYS);
+    return { allianceRejectCooldowns: cds };
+  }),
+  isAllianceProposalCooldown: (proposerId, targetId, currentDay) => {
+    const until = get().allianceRejectCooldowns.get(`${proposerId}|${targetId}`);
+    if (until == null) return false;
+    return until > currentDay;
   },
 }));
