@@ -18,14 +18,18 @@ import type {
   SchemeSnapshot,
   SchemeEffectOutcome,
 } from '../types';
+import type { LlmPrompt } from '@engine/chronicle/llm/LlmProvider';
 import { registerSchemeType } from '../registry';
 import { clamp, hasRelationship } from '../schemeCalc';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
+import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { calcPersonality } from '@engine/character/personalityUtils';
-import { getSovereigntyTier } from '@engine/official/postQueries';
+import { getSovereigntyTier, findEmperorId } from '@engine/official/postQueries';
 import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 import { EventPriority } from '@engine/types';
+import { positionMap } from '@data/positions';
+import { traitMap } from '@data/traits';
 
 // ── 数值常量（统一参数：方法不影响） ─────────────────
 
@@ -115,6 +119,17 @@ function honeyTrapBonus(primary: Character): number {
 }
 
 const ALIENATION_METHODS: AlienationMethodDef[] = [
+  // ── v2 AI 方法（玩家自拟，由 LLM 评估）──
+  // 故意排在第 1 位：UI 里作为首张卡片展示。
+  // NPC 通过 getAvailableAlienationMethods() 的 isAI 过滤永远拿不到此方法。
+  {
+    id: 'custom',
+    name: '自拟妙计',
+    description: '自行设计手段，由谋士评议其合理性。',
+    hint: '成功率将取决于手段是否合适',
+    calcBonus: () => 0,  // never called for AI methods
+    isAI: true,
+  },
   {
     id: 'rumor',
     name: '散布谣言',
@@ -136,24 +151,26 @@ const ALIENATION_METHODS: AlienationMethodDef[] = [
     hint: '适合对付：好色 / 贪婪者（贞守者免疫）',
     calcBonus: (p, _s, _i, _c) => honeyTrapBonus(p),
   },
-  // ── v2 预留：AI 方法 ──
-  // {
-  //   id: 'custom',
-  //   name: '自拟妙计',
-  //   description: '由你亲自构思一条策略，交由谋士评议',
-  //   hint: '由 LLM 评估其合理性与威力',
-  //   calcBonus: () => 0,
-  //   isAI: true,
-  // },
 ];
 
 export function getAlienationMethod(id: string): AlienationMethodDef | undefined {
   return ALIENATION_METHODS.find(m => m.id === id);
 }
 
-/** UI 候选集：v1 过滤掉 isAI 方法 */
+/**
+ * NPC 候选集：过滤掉 AI 方法。
+ * NPC 行为（alienateBehavior）必须用此函数获取候选，**禁止**访问 ALIENATION_METHODS 原始数组。
+ */
 export function getAvailableAlienationMethods(): AlienationMethodDef[] {
   return ALIENATION_METHODS.filter(m => !m.isAI);
+}
+
+/**
+ * UI 候选集：保留完整列表（含 AI 方法），用于玩家发起向导。
+ * UI 侧基于 isAiMethodAvailable() 做 mock 兜底禁用，不在此处过滤。
+ */
+export function getAlienationMethodsForUI(): AlienationMethodDef[] {
+  return ALIENATION_METHODS.slice();
 }
 
 /** 列出所有 primary 候选的 secondary（关系约束：必须有可离间关系） */
@@ -229,7 +246,7 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
     return target.alive && initiator.id !== target.id;
   },
 
-  canInitiate(initiator, params, ctx) {
+  canInitiate(initiator, params, ctx, precomputedRateOverride, options) {
     const target = ctx.characters.get(params.primaryTargetId);
     if (!target?.alive) return '目标不存在';
     if (target.id === initiator.id) return '不能对自己使用';
@@ -239,31 +256,52 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
     if (!hasRelationship(target, secondary, ctx)) return '两者之间无可离间的关系';
     const method = getAlienationMethod(params.methodId);
     if (!method) return '手段不存在';
-    if (method.isAI) return 'v1 暂不支持自拟妙计';
+    // AI 方法必须先经 LLM 评估，UI 侧调 evaluateCustomSchemeRate 取得 rate 后透传进来。
+    // 任何未带 override 的 AI 方法调用都视为 stale —— 不抛异常，维持 execute 契约（返回 false）。
+    // 例外：`options.skipAiGuard` 为 true 时（预评估路径），跳过此守卫但仍跑其余通用校验。
+    if (method.isAI && precomputedRateOverride === undefined && !options?.skipAiGuard) {
+      return '自拟妙计需先经谋士评议';
+    }
     if (initiator.resources.money < ALIENATION_COST) {
       return `金钱不足（需 ${ALIENATION_COST}）`;
     }
     return null;
   },
 
-  initInstance(initiator, params, ctx, precomputedBonus) {
+  initInstance(initiator, params, ctx, precomputedRateOverride) {
     const target = ctx.characters.get(params.primaryTargetId)!;
     const secondary = ctx.characters.get(params.secondaryTargetId)!;
     const method = getAlienationMethod(params.methodId)!;
 
-    // 方法加分：优先用调用方提供的（v2 AI 路径），否则同步计算
-    const methodBonus = precomputedBonus !== undefined
-      ? precomputedBonus
-      : method.calcBonus(target, secondary, initiator, ctx);
+    // 分支 initial rate 计算：
+    // - AI 方法（method.isAI）：LLM 返回值作为最终 rate，绕过 stratDiff×3 + base 5 公式。
+    //   上下限放宽到 [-20, 100]（预设方法是 [5, 80]）。
+    // - 预设方法：同步 calcBonus 后走 calcAlienationInitialRate 公式。
+    // 防御性兜底：AI 方法进来时 canInitiate 已保证 override 非空，若因调用者绕过校验而缺失，
+    // 走 console.error + 0 rate 而非抛异常（保持 execute 契约）。
+    let finalRate: number;
+    let methodBonus: number;
 
-    const finalRate = calcAlienationInitialRate(initiator, target, methodBonus);
+    if (method.isAI) {
+      if (precomputedRateOverride === undefined) {
+        // eslint-disable-next-line no-console
+        console.error('[alienation] AI 方法 initInstance 缺 precomputedRateOverride，兜底 rate=0', params);
+        finalRate = 0;
+      } else {
+        finalRate = clamp(precomputedRateOverride, -20, 100);
+      }
+      methodBonus = 0;  // snapshot 字段语义上不适用于 AI 方法，置 0
+    } else {
+      methodBonus = method.calcBonus(target, secondary, initiator, ctx);
+      finalRate = calcAlienationInitialRate(initiator, target, methodBonus);
+    }
 
     const data: AlienationData = {
       kind: 'alienation',
       secondaryTargetId: secondary.id,
       methodId: params.methodId,
       methodBonus,
-      // v1 由 UI 永远不传，v2 AI 流程透传
+      // 预设方法路径永远 undefined；AI 方法路径由 UI 透传玩家自拟原文
       customDescription: params.customDescription,
       aiReasoning: params.aiReasoning,
     };
@@ -282,7 +320,48 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
   },
 
   onPhaseComplete(scheme, _ctx) {
-    return Math.min(ALIENATION_FINAL_CAP, scheme.currentSuccessRate + ALIENATION_GROWTH_PER_PHASE);
+    // AI 方法的阶段成长 cap 放宽到 100（预设方法是 90）。
+    const data = scheme.data as AlienationData;
+    const cap = data.methodId === 'custom' ? 100 : ALIENATION_FINAL_CAP;
+    return Math.min(cap, scheme.currentSuccessRate + ALIENATION_GROWTH_PER_PHASE);
+  },
+
+  /**
+   * v2 AI 方法专属：构造 prompt 供 LLM 评估玩家自拟的离间策略。
+   * 此方法允许读 live Store（非热路径，玩家主动触发，每次施展最多调用一次）。
+   * 见 SchemeTypeDef.buildAiMethodPrompt JSDoc。
+   */
+  buildAiMethodPrompt(initiator, params, customDescription, ctx): LlmPrompt {
+    const primary = ctx.characters.get(params.primaryTargetId);
+    const secondary = ctx.characters.get(params.secondaryTargetId);
+    if (!primary || !secondary) {
+      // 防御：canInitiate 已过，但 ctx 不同步极端边界仍兜底
+      return {
+        system: '你是一位古代谋士。',
+        user: `评估此离间策略的成功率（整数，-20 到 100）：\n${customDescription}`,
+      };
+    }
+
+    const system = `你是一位精通人心与权谋的古代谋士，擅长评估离间计谋对特定人物组合的有效性。你的任务是根据主谋提供的策略描述，结合三方人物的具体情况（性格、能力、身份、彼此关系），给出该计谋的成功率。
+
+评估准则：
+- 策略是否针对直接目标与次要目标之间的真实薄弱点（嫌隙、猜忌、利益冲突）
+- 策略是否契合直接目标的性格弱点（多疑、贪婪、怯懦、轻信等）
+- 策略的执行成本、暴露风险与主谋的能力是否匹配
+- 策略是否符合所处时代（晚唐约 867 年）的实际条件与权力结构
+- 针对具体情境、利用真实弱点、执行路径清晰 → 高分（60-100）
+- 常规套路、合理但无亮点 → 中等（20-60）
+- 天马行空、脱离实际、文采浮夸而无可操作性 → 低分（0-20）
+- 荒谬不经或纯粹空想 → 负分（-20 为地板）
+
+输出要求：只输出一个整数百分比，范围 -20 到 100，不要 % 符号，不要任何解释或标点。例如：45`;
+
+    const user = buildAlienationContextBlock(initiator, primary, secondary, ctx)
+      + '\n\n【主谋策略】（主谋自拟，最多 400 字）\n'
+      + customDescription.trim()
+      + '\n\n请评估此策略的成功率（整数，-20 到 100，只输出数字）：';
+
+    return { system, user };
   },
 
   resolve(scheme, rng, _ctx): SchemeEffectOutcome {
@@ -368,3 +447,207 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
 registerSchemeType(alienationDef);
 
 export { alienationDef };
+
+// ── AI 方法 prompt 构造 helpers ────────────────────────────
+//
+// 以下 helper 为 buildAiMethodPrompt 服务，允许读 live Store（territories/military/central posts），
+// 仅在玩家主动发起"自拟妙计"时被调用一次，非热路径。
+// 纯函数路径（NPC / 日结 / 月结）不得使用这些 helper。
+
+function buildAlienationContextBlock(
+  initiator: Character,
+  primary: Character,
+  secondary: Character,
+  ctx: SchemeContext,
+): string {
+  const initiatorBlock = renderCharacterBlock(initiator, '主谋', ctx);
+  const primaryBlock = renderCharacterBlock(primary, '直接目标', ctx);
+  const secondaryBlock = renderCharacterBlock(secondary, '次要目标', ctx);
+
+  const relations = renderRelations(initiator, primary, secondary, ctx);
+
+  return `${initiatorBlock}\n\n${primaryBlock}\n\n${secondaryBlock}\n\n${relations}`;
+}
+
+function renderCharacterBlock(char: Character, role: string, ctx: SchemeContext): string {
+  const lines: string[] = [];
+  lines.push(`【${role}】${char.name}`);
+  lines.push(`  性格特质：${renderTraits(char) || '（无显著特质）'}`);
+  lines.push(`  能力：${renderAbilities(char)}`);
+  const mainPost = renderMainPost(char.id, ctx);
+  if (mainPost) lines.push(`  岗位：${mainPost}`);
+  const location = renderLocation(char, ctx);
+  if (location) lines.push(`  所在地：${location}`);
+  const power = renderPower(char.id, ctx);
+  if (power) lines.push(`  势力：${power}`);
+  return lines.join('\n');
+}
+
+function renderTraits(char: Character): string {
+  const names: string[] = [];
+  for (const tid of char.traitIds) {
+    const t = traitMap.get(tid);
+    if (!t) continue;
+    if (t.category !== 'innate' && t.category !== 'personality') continue;
+    names.push(t.name);
+  }
+  // 再补充人格维度的 top-3 极端维度（绝对值排序）
+  const p = calcPersonality(char);
+  const dims: Array<{ key: string; val: number; label: string }> = [
+    { key: 'boldness', val: p.boldness, label: p.boldness > 0 ? '果敢' : '怯懦' },
+    { key: 'rationality', val: p.rationality, label: p.rationality > 0 ? '理性' : '易感' },
+    { key: 'vengefulness', val: p.vengefulness, label: p.vengefulness > 0 ? '记仇' : '宽和' },
+    { key: 'greed', val: p.greed, label: p.greed > 0 ? '贪婪' : '清廉' },
+    { key: 'honor', val: p.honor, label: p.honor > 0 ? '守信' : '反复' },
+    { key: 'sociability', val: p.sociability, label: p.sociability > 0 ? '善交' : '孤僻' },
+    { key: 'compassion', val: p.compassion, label: p.compassion > 0 ? '仁厚' : '冷酷' },
+  ];
+  const top = dims
+    .filter(d => Math.abs(d.val) > 0.2)
+    .sort((a, b) => Math.abs(b.val) - Math.abs(a.val))
+    .slice(0, 3)
+    .map(d => d.label);
+  return [...names, ...top].join('、');
+}
+
+function renderAbilities(char: Character): string {
+  const { military, administration, strategy, diplomacy, scholarship } = char.abilities;
+  const parts = [
+    `武${military}`,
+    `政${administration}`,
+    `谋${strategy}`,
+    `交${diplomacy}`,
+    `学${scholarship}`,
+  ];
+  // 标签化卓越项
+  const tags: string[] = [];
+  if (military >= 8) tags.push('善战');
+  if (administration >= 8) tags.push('善治');
+  if (strategy >= 8) tags.push('善谋');
+  if (diplomacy >= 8) tags.push('善交');
+  if (scholarship >= 8) tags.push('博学');
+  return parts.join(' ') + (tags.length > 0 ? `（${tags.join('、')}）` : '');
+}
+
+function renderMainPost(charId: string, _ctx: SchemeContext): string {
+  const ts = useTerritoryStore.getState();
+  // 皇帝特判
+  const emperor = findEmperorId(ts.territories, ts.centralPosts);
+  if (emperor === charId) return '皇帝';
+
+  let bestRank = -1;
+  let bestName = '';
+  for (const terr of ts.territories.values()) {
+    for (const post of terr.posts) {
+      if (post.holderId !== charId) continue;
+      const tpl = positionMap.get(post.templateId);
+      if (!tpl?.grantsControl) continue;
+      if (tpl.minRank > bestRank) {
+        bestRank = tpl.minRank;
+        bestName = `${terr.name}${tpl.name}`;
+      }
+    }
+  }
+  // 中央岗位兜底
+  if (!bestName) {
+    for (const post of ts.centralPosts) {
+      if (post.holderId !== charId) continue;
+      const tpl = positionMap.get(post.templateId);
+      if (!tpl) continue;
+      if (tpl.minRank > bestRank) {
+        bestRank = tpl.minRank;
+        bestName = tpl.name;
+      }
+    }
+  }
+  return bestName;
+}
+
+function renderLocation(char: Character, _ctx: SchemeContext): string {
+  if (!char.locationId) return '';
+  const ts = useTerritoryStore.getState();
+  const terr = ts.territories.get(char.locationId);
+  return terr?.name ?? '';
+}
+
+function renderPower(charId: string, _ctx: SchemeContext): string {
+  const ts = useTerritoryStore.getState();
+  const controllerSet = ts.controllerIndex.get(charId);
+  const terrCount = controllerSet?.size ?? 0;
+
+  const ms = useMilitaryStore.getState();
+  let totalStrength = 0;
+  const armyIds = ms.ownerArmyIndex.get(charId);
+  if (armyIds) {
+    for (const armyId of armyIds) {
+      const batIds = ms.armyBattalionIndex.get(armyId);
+      if (!batIds) continue;
+      for (const batId of batIds) {
+        const bat = ms.battalions.get(batId);
+        if (bat) totalStrength += bat.currentStrength;
+      }
+    }
+  }
+
+  const parts: string[] = [];
+  if (terrCount > 0) parts.push(`直辖 ${terrCount} 州`);
+  if (totalStrength > 0) parts.push(`兵力约 ${totalStrength}`);
+  if (parts.length === 0) return '无直辖领地与军队';
+  return parts.join('，');
+}
+
+function renderRelations(
+  initiator: Character,
+  primary: Character,
+  secondary: Character,
+  ctx: SchemeContext,
+): string {
+  const lines: string[] = ['【关系】'];
+
+  // 主↔次 好感（双向）
+  const opPS = ctx.getOpinion(primary.id, secondary.id);
+  const opSP = ctx.getOpinion(secondary.id, primary.id);
+  lines.push(`  ${primary.name} → ${secondary.name}：好感 ${opPS}（${opinionLabel(opPS)}）`);
+  lines.push(`  ${secondary.name} → ${primary.name}：好感 ${opSP}（${opinionLabel(opSP)}）`);
+
+  // 主↔次 效忠关系
+  const allegiancePS = renderAllegiance(primary, secondary);
+  if (allegiancePS) lines.push(`  ${allegiancePS}`);
+
+  // 主↔次 同盟
+  if (ctx.hasAlliance(primary.id, secondary.id)) {
+    lines.push(`  ${primary.name}与${secondary.name}有同盟关系`);
+  } else {
+    lines.push(`  ${primary.name}与${secondary.name}无同盟`);
+  }
+
+  // 主谋与主目标/次目标的效忠关系
+  const allegianceIP = renderAllegiance(initiator, primary);
+  if (allegianceIP) lines.push(`  ${allegianceIP}`);
+  const allegianceIS = renderAllegiance(initiator, secondary);
+  if (allegianceIS) lines.push(`  ${allegianceIS}`);
+
+  // 主谋对两个目标的好感（辅助 LLM 判断主谋立场）
+  lines.push(
+    `  ${initiator.name} → ${primary.name}：好感 ${ctx.getOpinion(initiator.id, primary.id)}`,
+  );
+  lines.push(
+    `  ${initiator.name} → ${secondary.name}：好感 ${ctx.getOpinion(initiator.id, secondary.id)}`,
+  );
+
+  return lines.join('\n');
+}
+
+function opinionLabel(op: number): string {
+  if (op >= 50) return '亲密';
+  if (op >= 20) return '友善';
+  if (op >= -20) return '平常';
+  if (op >= -50) return '冷淡';
+  return '敌视';
+}
+
+function renderAllegiance(a: Character, b: Character): string {
+  if (a.overlordId === b.id) return `${a.name}是${b.name}的直属臣属`;
+  if (b.overlordId === a.id) return `${b.name}是${a.name}的直属臣属`;
+  return '';
+}

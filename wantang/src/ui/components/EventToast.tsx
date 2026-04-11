@@ -59,12 +59,25 @@ const TONE_BORDER_HOVER: Record<EventTone, string> = {
 
 // ── 与玩家关联度 ──────────────────────────────────────────
 
+/**
+ * 计谋类事件：chronicle 保留（年终 AI 史书是开天眼的），但不在游戏中途的 toast 弹出，
+ * 避免"某 NPC 对某 NPC 施展计谋，玩家就立刻知道"的泄露。
+ * 玩家作为发起人的结算知晓走 schemeSystem.notifySchemeResolved 的 StoryEvent 通路。
+ * 未来发现机制建立后，由 discovery 状态决定是否让对应事件走 toast。
+ */
+const SCHEME_HIDDEN_FROM_TOAST = new Set([
+  '发起拉拢', '拉拢成功', '拉拢失败',
+  '发起离间', '离间成功', '离间失败',
+]);
+
 function getDisplayRelevance(
   event: GameEvent,
   playerId: string | null,
   characters: Map<string, import('@engine/character/types').Character>,
 ): 'major' | 'normal' | 'minor' {
   if (!playerId) return 'minor';
+
+  if (SCHEME_HIDDEN_FROM_TOAST.has(event.type)) return 'minor';
 
   const isSelfInvolved = event.actors.includes(playerId);
 

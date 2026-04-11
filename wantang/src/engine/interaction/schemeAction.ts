@@ -51,13 +51,14 @@ registerInteraction({
  * 任一不过返回 false（视为 stale），不写任何状态。
  *
  * @param rawParams 任意 raw 形态入参（UI 表单或 NPC behavior 提供），由 def.parseParams 强类型化
- * @param precomputedMethodBonus v2 AI 方法路径专用，v1 永远 undefined
+ * @param precomputedRateOverride v2 AI 方法路径专用：LLM 评估得到的最终 initial rate（绕过基础公式）。
+ *   v1 预设方法路径永远 undefined。语义从旧的"bonus 叠加"改为"直接覆盖最终 rate"。
  */
 export function executeInitiateScheme(
   initiatorId: string,
   schemeTypeId: string,
   rawParams: unknown,
-  precomputedMethodBonus?: number,
+  precomputedRateOverride?: number,
 ): boolean {
   const def = getSchemeType(schemeTypeId);
   if (!def) {
@@ -78,8 +79,8 @@ export function executeInitiateScheme(
 
   const ctx = buildSchemeContext();
 
-  // 二次校验：合法性
-  const reason = def.canInitiate(initiator, params, ctx);
+  // 二次校验：合法性（AI 方法的 override 守卫也走这里）
+  const reason = def.canInitiate(initiator, params, ctx, precomputedRateOverride);
   if (reason) {
     debugLog('scheme', `[计谋] canInitiate 失败: ${reason}`);
     return false;
@@ -113,7 +114,7 @@ export function executeInitiateScheme(
   });
 
   // 构建实例
-  const result = def.initInstance(initiator, params, ctx, precomputedMethodBonus);
+  const result = def.initInstance(initiator, params, ctx, precomputedRateOverride);
   const instance: SchemeInstance = {
     id: crypto.randomUUID(),
     schemeTypeId,

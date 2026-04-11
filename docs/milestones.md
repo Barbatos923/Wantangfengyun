@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
-Phase 6  谋略 + 派系 + 事件 ██████████░░   96%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）+ 计谋 v1.1 频率/权重/成功率精修
+Phase 6  谋略 + 派系 + 事件 ██████████░░   97%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）+ 计谋 v1.1 频率/权重/成功率精修 + 计谋 v2 AI 方法（自拟妙计）+ 时代系统中兴路径
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -153,7 +153,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 
 | 交付物 | 状态 |
 |:---|:---:|
-| 王朝兴衰时代（eraSystem.ts） | ✅ |
+| 王朝兴衰时代（eraSystem.ts，含危世→乱世崩溃 + 危世→治世中兴双向路径） | ✅ |
 | 正统性实装（socialSystem.ys）| ✅ |
 
 ---
@@ -503,9 +503,42 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - **离间史书信息补全**：`executeInitiateScheme` emit 时带 `secondaryTargetId` + 方法名；`chroniclePromptBuilder.formatActorRoles` 新增 7 个 scheme 事件 case（主谋/直接目标/次要目标标签）
   - **CLAUDE.md 新约束**：「NPC weight = 概率百分比 / CK3 ai_will_do 风格 / 槽位不双重加成 / 候选池从已知关系展开」四条纪律落入「计谋系统」章节
 
+- ✅ **计谋隐秘性收口**（2026-04-14）：
+  - **EventToast 过滤**：新增 `SCHEME_HIDDEN_FROM_TOAST` 白名单，将 `发起/成功/失败拉拢` + `发起/成功/失败离间` 6 个 chronicle 事件从右下角 toast 屏蔽（此前经由"actor 是玩家直辖臣属→relevance=normal"路径泄露）。chronicle emit 仍保留，供年终 AI 史书开天眼叙述，但游戏中途玩家不可见
+  - **notifySchemeResolved 收窄**：从"玩家是任一参与方"改为"**玩家是 initiator**"——玩家知晓自己行动的结果，作为 target 等未来发现机制接入。`notifySchemeTerminated` 同步收窄
+  - **`计谋终止` dead case 清理**：v1 预留位真正接入前保持"不 emit"状态，索性从 `CHRONICLE_TYPE_WHITELIST` 和 `chroniclePromptBuilder` 删除对应条目 + 从 `SCHEME_HIDDEN_FROM_TOAST` 移除，语义宣示"scheme termination 不进 chronicle"（死者主条目已足够让史官叙述未竟之事）
+
+- ✅ **计谋系统 v2：离间 AI 方法（自拟妙计）**（2026-04-14）：
+  - **架构**：v1 预留的 `precomputedMethodBonus` 第 4 参正式接入 LLM 路径并重命名为 `precomputedRateOverride`。语义从"bonus 叠加在 base 上"改为"**绕过** `calcAlienationInitialRate` 公式直接覆盖最终 initial rate"——prompt 里已给主谋谋略，再叠加 stratDiff×3 会双重计数
+  - **框架位**：`SchemeTypeDef.buildAiMethodPrompt?(initiator, params, customDescription, ctx): LlmPrompt` 只由支持 AI 方法的 scheme type 实现。v2 仅离间实现。允许 prompt builder 读 live Store（非热路径，每次发起一次调用），避免为 AI prompt 膨胀 SchemeContext 字段
+  - **`canInitiate` 扩 options**：第 5 参 `options?: { skipAiGuard?: boolean }`，评估路径（`evaluateCustomSchemeRate`）传 true 跳过"AI 无 override"守卫但保留通用校验；执行路径（`executeInitiateScheme`）不传，AI 守卫正常生效。维持 execute 路径"失败返回 false 不抛"契约
+  - **数值域**：AI 方法 initial clamp `[-20, 100]`（预设方法 `[5, 80]`）、final cap 100（预设方法 90）；天才妙计能突破预设方法硬顶，荒谬策略真的可能倒扣
+  - **新文件 `engine/scheme/llm/schemeAiMethod.ts`**：LLM orchestration 单点。复用 chronicle 的 LlmProvider/createProvider/loadLlmConfig 栈。preflight 镜像 executeInitiateScheme 的 stale 序列（canInitiate + 并发上限 + 365天CD），**在调 LLM 之前**就拦下无效局面，避免白烧调用。严格 `parseRate`：整段 trim + 去百分号后必须完整匹配 `^-?\d+(?:\.\d+)?$`，"先说 3 点理由最终 45" 这种偏题会被拒而非误吃到 3。clamp + NaN 兜底兜住 LLM 胡言
+  - **`alienation.ts` 实现**：
+    - 解注释 `custom` 方法 def，放在 `ALIENATION_METHODS` 数组**首位**
+    - `getAvailableAlienationMethods()`（NPC 用，过滤 `isAI`）+ `getAlienationMethodsForUI()`（玩家 UI 用，含 AI 方法）分离，防止 NPC 接触 AI 方法
+    - `canInitiate` 检查"AI + 无 override → stale 字串"（不抛异常，options.skipAiGuard 允许跳过）
+    - `initInstance` 分支：AI 路径 clamp 后直接作为 finalRate，`console.error` + rate=0 兜底（防御不抛）
+    - `onPhaseComplete` 按 methodId 分支 final cap（100 vs 90）
+    - `buildAiMethodPrompt` + 私有 helpers（`renderTraits / renderAbilities / renderMainPost / renderLocation / renderPower / renderAllegiance / renderAlliance`），构造三方完整上下文块
+  - **UI `SchemeInitFlow.tsx`**：新增 3 个 phase（`writeCustom` / `waitingLlm` / `confirmCustom`）+ 双步确认流程。**cache 严格按 `(primaryId, secondaryId, description)` 三元组 key**——任一字段变动即失效，防止"把旧评估值塞给新局面"。`handleConfirm` 传 override 前再次比对 key。mount effect 探 `isAiMethodAvailable()`，mock 兜底时自拟卡片 disabled + tooltip 指向 LLM 配置。`AbortController` 覆盖 unmount + 取消按钮
+  - **debugLog**：完整 prompt 仅在 `window.__DEBUG__.scheme = true` 时输出，避免持久泄露玩家自拟描述 + 三方上下文到 console / 日志采集环境
+  - **CLAUDE.md 新约束**：「计谋系统」节追加 7 条（AI 方法预留接口、clamp 范围、canInitiate 是 stale 单点、NPC 过滤分流、UI 缓存 key、mock 兜底、prompt builder 允许读 Store）
+
+- ✅ **时代系统：中兴路径（危世→治世）**（2026-04-14）：
+  - **背景**：此前 `stabilityProgress` 字段早已在 saveSchema 和 EraPopup UI 就位，但 `eraSystem.ts` 从未累积过它，EraPopup 面板写"暂无恢复途径"占位。本次补全从危世回到治世的唯一路径
+  - **两条结构性诱因**（纯函数 `calcRestorationState` 返回状态，供月结累积与 UI 预览复用）：
+    - **条件 A**：皇帝所有**有地直属臣属**（`vassalIndex.get(emperorId)` 过滤 `isRuler`）都没有辟署权 → +10/年（月度 +10/12）
+    - **条件 B**：所有有地直属臣属都没有宗法世袭的 grantsControl 主岗 → +5/年（月度 +5/12）
+    - 两条独立，全满足 +15/年
+  - **空集合 guard**：0 有地直属臣属 → 两条都不触发。realm 崩到没人称臣不该奖励中兴
+  - **转换**：WeiShi 下 `stabilityProgress >= 100` → 切回 ZhiShi，镜像 ZhiShi→WeiShi 转换清零两个进度条（防止带着 90 分残余崩溃进度进新治世立刻 decay）
+  - **转换优先级**：同一月结同时达标时崩溃（forward 路径）优先——通常意味着外力冲击（如独立战争胜利 `addCollapseProgress(10)`），应按崩溃处理
+  - **UI**：`EraPopup.tsx` 新增 `getStabilityTriggers(era, emperorId)` 结构化返回，镜像 `getCollapseTriggers` 风格。替换"暂无恢复途径"占位为两条诱因 active/inactive + rate 文案列表（绿色高亮）；3 种 edge 情况兜底文案（皇位空悬 / 无有地直属臣属 / 乱世须一统）。"中兴进度" 条标题加 "→ 治世" 箭头
+
 **待做（后续系统）：**
 - 更多个人交互
-- 谋略系统精修：拉拢/离间频率 calibration、增加更多计谋类型（伪造把柄/绑架/刺杀等）、AI 自拟方法（v2）
+- 更多计谋类型（伪造把柄 / 绑架 / 刺杀等）
 - 活动系统（宴会/狩猎/压力释放）
 - 派系系统（五大派系，廷议/弹劾/推举）
 - 随机事件系统（事件包 + 事件链 + 多步选择）

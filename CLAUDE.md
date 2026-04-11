@@ -250,13 +250,20 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 ### 计谋系统（v1.1：拉拢 + 离间，频率/权重/成功率精修后）
 - 数据在 `engine/scheme/`：`SchemeStore` Map<id, SchemeInstance> + `initiatorIndex/targetIndex` 双反向索引（不存档，由 `initSchemes` 重建）。完整设计见 `wantang/docs/plans/scheme-system-v1.md`
 - **SchemeTypeDef 框架**：每种计谋一个 `engine/scheme/types/<id>.ts` 文件，调 `registerSchemeType()` 自注册；`data/schemes.ts` import 触发。引擎/Store/日结/UI 不感知具体类型
-- **泛型 + 守卫**：`SchemeTypeDef<TParams>` 内部所有方法签名都是强类型；`executeInitiateScheme(initiatorId, schemeTypeId, rawParams: unknown, precomputedMethodBonus?)` 入口由 `def.parseParams(raw): TParams | null` 一次性强类型化。**禁止任何 `as string`**，参数走 parseParams 的运行时校验
+- **泛型 + 守卫**：`SchemeTypeDef<TParams>` 内部所有方法签名都是强类型；`executeInitiateScheme(initiatorId, schemeTypeId, rawParams: unknown, precomputedRateOverride?)` 入口由 `def.parseParams(raw): TParams | null` 一次性强类型化。**禁止任何 `as string`**，参数走 parseParams 的运行时校验。第 4 参 `precomputedRateOverride` 语义是"v2 AI 方法路径绕过基础公式直接覆盖最终 initial rate"（原名 `precomputedMethodBonus`，v2 重命名）
 - **basic vs complex 分级**：basic（拉拢，单阶段倒计时）与 complex（离间，多阶段每段 +growth）走同一 SchemeStore 和 runSchemeSystem，仅靠 `isBasic` + `phaseCount` 区分
 - **快照原则**：`initInstance()` 时把所有数值（spymasterStrategy / targetSpymasterStrategy / methodBonus / initialSuccessRate）冻结进 `snapshot`，之后任何外部变化（更换谋主/特质变动）不影响进行中计谋
 - **runSchemeSystem 双挂载**（必须！）：非月初挂 `runDailySettlement` 内 `if(date.day !== 1)` 分支（warSystem 之后、NpcEngine 之前）；月初挂 `runMonthlySettlement` 内 `runCharacterSystem` **之后**、`runDailyNpcEngine` **之前**——保证看到最新死亡/继承结果
 - **mutation 纪律**（硬约束）：runSchemeSystem 内禁止 `scheme.phase.progress += 1` 这类直接 mutate；所有状态变更走 `store.updateScheme / setStatus / removeScheme`，保证 Zustand 订阅链可见
 - **执行链早退**：runSchemeSystem 顶部立即 `if (active.length === 0) return;`，避免每日构建 schemeCtx
-- **AI 方法接口预留**：`AlienationData.methodId` 用 `string`（不是 union）+ `methodBonus` 统一快照字段 + `executeInitiateScheme` 第 4 参 `precomputedMethodBonus?` + `customDescription? / aiReasoning?` 字段。v2 接入 LLM 时核心引擎零改动，所有改动集中在 `SchemeInitFlow` UI 路径
+- **AI 方法（v2 离间自拟妙计）**：复用 chronicle LLM 栈（`@engine/chronicle/llm/createProvider` + `loadLlmConfig`），orchestration 在 `engine/scheme/llm/schemeAiMethod.ts`。框架层 `SchemeTypeDef.buildAiMethodPrompt?(initiator, params, customDescription, ctx): LlmPrompt` —— 只有支持 AI 方法的 scheme type 实现，当前仅离间。**关键约定**：
+  - LLM 返回**最终 initial rate**（不是 bonus），通过 `precomputedRateOverride` 第 4 参绕过 `calcAlienationInitialRate` 基础公式（prompt 里已给主谋谋略，叠加 stratDiff×3 会双重计数）
+  - AI 方法 clamp 范围 `[-20, 100]`（vs 预设方法 `[5, 80]`），`onPhaseComplete` cap 也分支到 100（vs 90）
+  - **`canInitiate` 是 stale 守卫单点**：扩签名多收 `precomputedRateOverride?`，实现里检查"AI 方法未带 override → 返回 stale 原因字串"；`initInstance` 遇到非法输入走 `console.error` + rate=0 兜底（不抛），维持 execute 路径"失败返回 false 不抛"的契约
+  - **NPC 完全不接触 AI 方法**：`getAvailableAlienationMethods()` 过滤 `isAI` 供 NPC 用；`getAlienationMethodsForUI()` 含 AI 方法仅供玩家 UI 用。新增 AI 方法时这条分流必须保持
+  - **UI 缓存键**：`SchemeInitFlow` 的 customEvaluation 必须按 `(primaryId, secondaryId, description)` 三元组 key，任一变动即失效——防止"把旧快照的数值硬塞给新局面"。`handleConfirm` 传 override 前必须再次比对 key
+  - **mock 兜底**：`isAiMethodAvailable()` 异步检测，UI mount effect 探测，`null` 期间卡片显示"检测配置中"，`false` 时 disabled + tooltip 指向设置
+  - **prompt builder 允许读 live Store**（territories/military/centralPosts），因为它只在玩家主动发起时调用一次，非 NPC/月结/日结 热路径。不得扩 `SchemeContext` 字段为 AI prompt 服务
 - **死亡终止**：runSchemeSystem 每日检查 initiator/primaryTarget/secondaryTarget 任一死亡 → `setStatus('terminated')` + StoryEvent 通知玩家（如玩家是参与方）。**计谋不随继承转移**——同 alliance，是个人契约
 - **通知规则**（D6）：发起时**不**通知（隐秘性本质，即使 v1 没做 secrecy）；结算时玩家是参与方 → StoryEvent + `effectKey: 'noop:notification'`
 - **NPC 行为**：每种 scheme 一个独立 behavior（curryFavorBehavior / alienateBehavior），`playerMode: 'skip'` + `schedule: 'monthly-slot'`

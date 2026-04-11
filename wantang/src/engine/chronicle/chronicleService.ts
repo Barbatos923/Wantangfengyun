@@ -90,7 +90,6 @@ const CHRONICLE_TYPE_WHITELIST = new Set<string>([
   '发起离间',     // 批次 3
   '离间成功',     // 批次 3
   '离间失败',     // 批次 3
-  '计谋终止',     // 死亡终止（v1 不实际 emit，仅 StoryEvent；预留位）
   'chronicle-ready', // 防止递归
 ]);
 

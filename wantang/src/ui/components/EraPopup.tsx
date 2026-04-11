@@ -7,6 +7,7 @@ import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { Era } from '@engine/types';
 import { findEmperorId } from '@engine/official/postQueries';
 import { calcLegitimacyOpinion } from '@engine/official/legitimacyCalc';
+import { calcRestorationState } from '@engine/systems/eraSystem';
 
 interface EraPopupProps {
   onClose: () => void;
@@ -64,6 +65,41 @@ function getNextEra(era: Era): string | null {
   return null;
 }
 
+/**
+ * 中兴诱因列表（仅 WeiShi 下展示）。
+ * 两条条件都要求"所有有地直属臣属"都满足，0 有地臣属时两条都不触发（safety guard）。
+ */
+function getStabilityTriggers(
+  era: Era,
+  emperorId: string | null,
+): { title: string; triggers: Trigger[]; note?: string } | null {
+  if (era !== Era.WeiShi) return null;
+  if (!emperorId) {
+    return {
+      title: '中兴进度',
+      triggers: [
+        { label: '皇位空悬，中兴无从谈起', rate: '—', active: false },
+      ],
+    };
+  }
+  const st = calcRestorationState(emperorId);
+  if (!st.hasVassals) {
+    return {
+      title: '中兴进度',
+      triggers: [
+        { label: '皇帝无有地直属臣属，中兴条件不成立', rate: '—', active: false },
+      ],
+    };
+  }
+  return {
+    title: '中兴进度',
+    triggers: [
+      { label: '所有直属臣属均无辟署权', rate: '+10/年', active: st.allNoAppointRight },
+      { label: '所有直属臣属均无世袭主岗', rate: '+5/年', active: st.allNoHereditary },
+    ],
+  };
+}
+
 const EraPopup: React.FC<EraPopupProps> = ({ onClose }) => {
   const era = useTurnManager(s => s.era);
   const collapseProgress = useTurnManager(s => s.collapseProgress);
@@ -86,6 +122,7 @@ const EraPopup: React.FC<EraPopupProps> = ({ onClose }) => {
 
   const info = ERA_INFO[era];
   const collapse = getCollapseTriggers(era, emperorBelowExpectation);
+  const stability = getStabilityTriggers(era, emperorId);
   const nextEra = getNextEra(era);
   const collapsePercent = Math.min(100, Math.floor(collapseProgress));
   const stabilityPercent = Math.min(100, Math.floor(stabilityProgress));
@@ -168,6 +205,9 @@ const EraPopup: React.FC<EraPopupProps> = ({ onClose }) => {
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold text-[var(--color-text)]">
               {era === Era.LuanShi ? '一统进度' : '中兴进度'}
+              {era === Era.WeiShi && (
+                <span className="text-[var(--color-text-muted)] font-normal ml-1">→ 治世</span>
+              )}
             </span>
             <span className="text-xs text-[var(--color-text-muted)]">{stabilityPercent}%</span>
           </div>
@@ -177,7 +217,46 @@ const EraPopup: React.FC<EraPopupProps> = ({ onClose }) => {
               style={{ width: `${stabilityPercent}%` }}
             />
           </div>
-          <div className="text-xs text-[var(--color-text-muted)] italic">暂无恢复途径</div>
+          {stability ? (
+            <div className="space-y-1">
+              {stability.triggers.map((t, i) => (
+                <div key={i} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{
+                        backgroundColor: t.active
+                          ? 'var(--color-accent-green)'
+                          : 'var(--color-border)',
+                      }}
+                    />
+                    <span
+                      className={
+                        t.active
+                          ? 'text-[var(--color-text)]'
+                          : 'text-[var(--color-text-muted)]'
+                      }
+                    >
+                      {t.label}
+                    </span>
+                  </div>
+                  <span
+                    className={
+                      t.active
+                        ? 'text-[var(--color-accent-green)]'
+                        : 'text-[var(--color-text-muted)]'
+                    }
+                  >
+                    {t.rate}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-xs text-[var(--color-text-muted)] italic">
+              {era === Era.LuanShi ? '须一统天下、重建正朔' : '暂无恢复途径'}
+            </div>
+          )}
         </div>
       </div>
     </div>

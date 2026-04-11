@@ -7,6 +7,7 @@
 import type { GameDate } from '@engine/types';
 import type { Character } from '@engine/character/types';
 import type { Territory } from '@engine/territory/types';
+import type { LlmPrompt } from '@engine/chronicle/llm/LlmProvider';
 
 // ── 运行时状态 ──────────────────────────────────────────
 
@@ -160,18 +161,37 @@ export interface SchemeTypeDef<TParams extends BaseSchemeParams = BaseSchemePara
   /** 极廉价：仅用于交互菜单显示与否 */
   canShow(initiator: Character, target: Character, ctx: SchemeContext): boolean;
 
-  /** 完整校验：返回 null = 可发起，否则原因字串 */
-  canInitiate(initiator: Character, params: TParams, ctx: SchemeContext): string | null;
+  /**
+   * 完整校验：返回 null = 可发起，否则原因字串。
+   * @param precomputedRateOverride v2 AI 方法路径的最终 initial rate（UI 侧先调 LLM 取得）。
+   *   def 实现应据此判定 AI 方法场景下"未提供 override"的非法路径，返回 stale 原因字串；
+   *   不要在此处抛异常——execute 路径契约是"失败返回 false，不抛"。
+   * @param options.skipAiGuard v2 AI 方法预评估专用：`evaluateCustomSchemeRate` 在调 LLM
+   *   **之前**用此旗标跑一次 canInitiate 做 stale 预校验，此时尚无 override 但需要通过
+   *   通用检查（目标存活 / 关系 / 费用 / ...），只有"AI 方法必须带 override"这一条守卫
+   *   需要跳过。LLM 返回后进入 executeInitiateScheme，会再跑一次**不带**此旗标的 canInitiate，
+   *   届时 AI 守卫正常生效。
+   */
+  canInitiate(
+    initiator: Character,
+    params: TParams,
+    ctx: SchemeContext,
+    precomputedRateOverride?: number,
+    options?: { skipAiGuard?: boolean },
+  ): string | null;
 
   /**
    * 启动时构建 data + 计算 initialSuccessRate + snapshot。
-   * @param precomputedMethodBonus v2 AI 方法路径专用，v1 永远是 undefined。
+   * @param precomputedRateOverride v2 AI 方法路径专用：LLM 评估得到的最终 initial rate，
+   *   **绕过**基础公式（stratDiff × k + base）直接作为初始成功率（仍 clamp 到方法上下限）。
+   *   语义从 v1 的"bonus 叠加在 base 上"变为"覆盖最终 rate"，故改名。v1 路径 永远 undefined。
+   *   初始契约由 canInitiate 保证，initInstance 内部遇到非法输入走兜底而非抛错。
    */
   initInstance(
     initiator: Character,
     params: TParams,
     ctx: SchemeContext,
-    precomputedMethodBonus?: number,
+    precomputedRateOverride?: number,
   ): {
     data: SchemeTypeData;
     initialSuccessRate: number;
@@ -186,4 +206,23 @@ export interface SchemeTypeDef<TParams extends BaseSchemeParams = BaseSchemePara
 
   /** 真正写状态（addOpinion / 扣威望 / 史书 emit） */
   applyEffects(scheme: SchemeInstance, outcome: SchemeEffectOutcome, ctx: SchemeContext): void;
+
+  /**
+   * 构造 AI 方法的 LLM prompt（v2+）。
+   * 只有支持 AI 方法的 scheme type 实现此方法；不实现 = 该类型不支持自拟妙计。
+   *
+   * 实现约定：
+   * - system prompt 扮演古代谋士，明确输出格式"只输出一个整数百分比，范围 -20 到 100"。
+   * - user prompt 包含完整人物上下文（三方名/特质/能力/关系/身份/势力/所在地）+ 玩家自拟描述。
+   * - 不做数值 clamp；由 orchestrator 统一 clamp。
+   * - **允许**在此方法内部直接读 live Store（territories/characters/military 等）——此方法
+   *   只在玩家主动发起"自拟妙计"时被调用一次，非热路径，不走 NPC/月结/日结 循环。
+   *   因此 SchemeContext 不必为了 AI prompt 而膨胀字段。
+   */
+  buildAiMethodPrompt?(
+    initiator: Character,
+    params: TParams,
+    customDescription: string,
+    ctx: SchemeContext,
+  ): LlmPrompt;
 }

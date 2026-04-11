@@ -187,9 +187,8 @@ function formatActorRoles(
       // actors: [initiatorId, primaryTargetId, secondaryTargetId]
       return [a[0] && `主谋:${n(a[0])}`, a[1] && `直接目标:${n(a[1])}`, a[2] && `次要目标:${n(a[2])}`, loc].filter(Boolean).join('，');
 
-    case '计谋终止':
-      // actors: [initiatorId, primaryTargetId, secondaryTargetId?]
-      return [a[0] && `主谋:${n(a[0])}`, a[1] && `直接目标:${n(a[1])}`, a[2] && `次要目标:${n(a[2])}`, loc].filter(Boolean).join('，');
+    // 注：计谋终止（死亡导致的被动中止）刻意不进 chronicle —— 代表"某事差点发生但没有"，
+    // 死者本身的 chronicle 条目已足够让年终史官叙述未竟之事，不需要单独事件类型。
 
     default: {
       // 未知类型：降级为扁平列表

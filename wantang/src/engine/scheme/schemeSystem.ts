@@ -157,34 +157,30 @@ export function runSchemeSystem(_date: GameDate): void {
 // ── 玩家通知 ──────────────────────────────────────────
 
 /**
- * 计谋结算时通知玩家（D6 决策）。
- * 玩家是发起人 OR 玩家是任一目标 → 推送 StoryEvent（纯通知，effectKey='noop:notification'）。
+ * 计谋结算时通知玩家。
+ * v1 隐秘纪律：**仅在玩家是发起人时**推 StoryEvent — 玩家需要知晓自己行动的结果。
+ * 玩家作为目标/次要目标时不通知，等未来发现机制建立后按发现状态决定是否告知。
  */
 function notifySchemeResolved(scheme: SchemeInstance, outcome: SchemeEffectOutcome): void {
   const cs = useCharacterStore.getState();
   const playerId = cs.playerId;
   if (!playerId) return;
 
-  const isInitiator = scheme.initiatorId === playerId;
-  const isPrimaryTarget = scheme.primaryTargetId === playerId;
-  const isSecondaryTarget = scheme.data.kind === 'alienation'
-    && scheme.data.secondaryTargetId === playerId;
-  if (!isInitiator && !isPrimaryTarget && !isSecondaryTarget) return;
+  if (scheme.initiatorId !== playerId) return;
 
   const def = getSchemeType(scheme.schemeTypeId);
   const schemeName = def?.name ?? '计谋';
-  const titlePrefix = isInitiator ? '你的' : '针对你的';
   const outcomeText = outcome.kind === 'success' ? '已成功' : '已败露';
-  const title = `${titlePrefix}${schemeName}${outcomeText}`;
+  const title = `你的${schemeName}${outcomeText}`;
 
   const actors: Array<{ characterId: string; role: string }> = [
-    { characterId: scheme.initiatorId, role: isInitiator ? '你（主谋）' : '主谋' },
-    { characterId: scheme.primaryTargetId, role: isPrimaryTarget ? '你（目标）' : '目标' },
+    { characterId: scheme.initiatorId, role: '你（主谋）' },
+    { characterId: scheme.primaryTargetId, role: '目标' },
   ];
   if (scheme.data.kind === 'alienation') {
     actors.push({
       characterId: scheme.data.secondaryTargetId,
-      role: isSecondaryTarget ? '你（被离间方）' : '次要目标',
+      role: '次要目标',
     });
   }
 
@@ -204,17 +200,13 @@ function notifySchemeResolved(scheme: SchemeInstance, outcome: SchemeEffectOutco
   });
 }
 
-/** 死亡终止时通知玩家 */
+/** 死亡终止时通知玩家（v1 仅发起人） */
 function notifySchemeTerminated(scheme: SchemeInstance): void {
   const cs = useCharacterStore.getState();
   const playerId = cs.playerId;
   if (!playerId) return;
 
-  const isInitiator = scheme.initiatorId === playerId;
-  const isPrimaryTarget = scheme.primaryTargetId === playerId;
-  const isSecondaryTarget = scheme.data.kind === 'alienation'
-    && scheme.data.secondaryTargetId === playerId;
-  if (!isInitiator && !isPrimaryTarget && !isSecondaryTarget) return;
+  if (scheme.initiatorId !== playerId) return;
 
   const def = getSchemeType(scheme.schemeTypeId);
   const schemeName = def?.name ?? '计谋';

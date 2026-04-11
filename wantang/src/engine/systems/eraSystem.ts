@@ -11,6 +11,7 @@ import { getHeldPosts } from '@engine/official/postQueries';
 import { positionMap } from '@data/positions';
 import { refreshPostCaches, ensureAppointRight } from '@engine/official/postTransfer';
 import { executeToggleSuccession } from '@engine/interaction/centralizationAction';
+import { hasAppointRightPost } from '@engine/military/warCalc';
 
 // ── 外部可调用：增加崩溃进度（如战争结算） ─────────────────────────────────────
 
@@ -24,7 +25,7 @@ export function addCollapseProgress(amount: number): void {
 export function runEraSystem(_date: GameDate): void {
   const tm = useTurnManager.getState();
   const { era } = tm;
-  let { collapseProgress } = tm;
+  let { collapseProgress, stabilityProgress } = tm;
 
   // 读取皇帝正统性状态
   const terrStore = useTerritoryStore.getState();
@@ -61,7 +62,17 @@ export function runEraSystem(_date: GameDate): void {
     // 独立战争胜利在 warSettlement 中通过 addCollapseProgress(10) 触发
   }
 
+  // ── 危世 → 治世（中兴进度条） ──
+  // 皇帝对直属臣属实现中央集权两个维度：辟署权 / 宗法世袭。
+  // 每年只考察两条结构性条件，不考虑皇帝个人正统性或战争等瞬时事件。
+  if (era === Era.WeiShi && emperorId) {
+    const restoration = calcRestorationGain(emperorId);
+    if (restoration > 0) stabilityProgress += restoration;
+  }
+
   // ── 检查时代切换 ──
+  // 优先级：崩溃（收束到更坏的时代）高于中兴（回暖），若同一月两个条件同时满足，
+  // 衰退路径先走——这通常意味着玩家处于强外力冲击下（如战败加 +10），应按崩溃处理。
   if (collapseProgress >= 100) {
     const nextEra = era === Era.ZhiShi ? Era.WeiShi : Era.LuanShi;
     useTurnManager.getState().setEraState({
@@ -74,9 +85,82 @@ export function runEraSystem(_date: GameDate): void {
     if (nextEra === Era.LuanShi) {
       destroyEmperorPost();
     }
+  } else if (era === Era.WeiShi && stabilityProgress >= 100) {
+    // 危世 → 治世：镜像崩溃转换，两个进度条都清零
+    useTurnManager.getState().setEraState({
+      era: Era.ZhiShi,
+      collapseProgress: 0,
+      stabilityProgress: 0,
+    });
   } else {
-    useTurnManager.getState().setEraState({ collapseProgress });
+    useTurnManager.getState().setEraState({ collapseProgress, stabilityProgress });
   }
+}
+
+// ── 中兴进度计算（纯函数，UI/Popup 可复用作预览） ─────────────────────────────
+
+/**
+ * 返回皇帝的两条中兴条件命中情况。
+ * 仅对"有地直属臣属"（overlordId === emperor && isRuler）做统计；
+ * 若集合为空（realm 已塌、只剩无地京官甚至无臣属），不触发任何中兴 —— 中兴是
+ * 对"名义归附但割据自治"的藩镇实现中央集权，realm 已崩的情况不适用。
+ */
+export function calcRestorationState(emperorId: string): {
+  hasVassals: boolean;
+  allNoAppointRight: boolean;
+  allNoHereditary: boolean;
+} {
+  const charStore = useCharacterStore.getState();
+  const terrStore = useTerritoryStore.getState();
+
+  // 收集有地直属臣属
+  const vassalIds = charStore.vassalIndex.get(emperorId);
+  const territorialVassals = [];
+  if (vassalIds) {
+    for (const vid of vassalIds) {
+      const v = charStore.characters.get(vid);
+      if (v?.alive && v.isRuler) territorialVassals.push(v);
+    }
+  }
+
+  if (territorialVassals.length === 0) {
+    return { hasVassals: false, allNoAppointRight: false, allNoHereditary: false };
+  }
+
+  // 条件 A：所有有地直属臣属都没有辟署权
+  let allNoAppointRight = true;
+  for (const v of territorialVassals) {
+    if (hasAppointRightPost(v.id, terrStore.territories)) {
+      allNoAppointRight = false;
+      break;
+    }
+  }
+
+  // 条件 B：所有有地直属臣属都没有宗法世袭的 grantsControl 主岗
+  let allNoHereditary = true;
+  outer: for (const v of territorialVassals) {
+    const posts = terrStore.getPostsByHolder(v.id);
+    for (const p of posts) {
+      const tpl = positionMap.get(p.templateId);
+      if (!tpl?.grantsControl) continue;
+      if (p.successionLaw === 'clan') {
+        allNoHereditary = false;
+        break outer;
+      }
+    }
+  }
+
+  return { hasVassals: true, allNoAppointRight, allNoHereditary };
+}
+
+/** 返回本月应加的中兴进度（每年 +10 / +5，月度累积 = /12）。 */
+function calcRestorationGain(emperorId: string): number {
+  const st = calcRestorationState(emperorId);
+  if (!st.hasVassals) return 0;
+  let gain = 0;
+  if (st.allNoAppointRight) gain += 10 / 12;
+  if (st.allNoHereditary) gain += 5 / 12;
+  return gain;
 }
 
 // ── 危世→乱世：自动销毁皇帝岗位 ──────────────────────────────────────────────

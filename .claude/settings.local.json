@@ -86,7 +86,8 @@
       "Bash(ls -la .github/workflows/)",
       "Bash(cat .github/workflows/*.yml)",
       "Bash(ls:*)",
-      "Bash(SCHEME_SIM=1 npx vitest run scheme-frequency-sim)"
+      "Bash(SCHEME_SIM=1 npx vitest run scheme-frequency-sim)",
+      "Bash(git checkout:*)"
     ]
   }
 }
