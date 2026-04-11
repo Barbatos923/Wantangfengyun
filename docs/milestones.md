@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-12
+> **最后更新**：2026-04-13
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
-Phase 6  谋略 + 派系 + 事件 ██████████░░   96%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）
+Phase 6  谋略 + 派系 + 事件 ██████████░░   96%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）+ 计谋 v1.1 频率/权重/成功率精修
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -469,7 +469,39 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - **测试**：新建 `src/__tests__/scheme.test.ts` 19 条（CRUD/索引重建/parseParams 守卫/死亡终止/cancelScheme 权限/通用纯函数），20 文件 403 测试全过
   - **GPT 评审 + Bug 修复**：5 处反馈全部修复（runSchemeSystem 月初/非月初挂载、formatActorRoles 真实位置、parseParams 强类型守卫、mutation 纪律、SAVE_VERSION 升版本而非 optional），3 处 NPC fixes（opinion 方向反、SchemePanel 观察属性、generateTask 直读 SchemeStore），1 处性能修复（alienate N×N → 关系展开）
   - **CLAUDE.md 新硬约束 2 条**：「计谋系统」整节 + 「NPC behavior personality 使用纪律」（禁止 personality 硬门槛，性格倾向只能进 weight 公式）
-  - ⬜ **待续**：NPC 拉拢/离间频率精修中（plan v1 节 0 决策表全部固化，仅 weight 数值在 calibration）
+
+- ✅ **计谋系统 v1.1 精修**（2026-04-13）：
+  - **长测 sim**：新建 `src/__tests__/scheme-frequency-sim.test.ts`（默认 `describe.skipIf(!SCHEME_SIM)`，跑 24 个月出 `scheme-frequency-report.txt`），含 weight 分布直方图 + 初始成功率分桶 + TOP 发起人 + 月度分布。命令 `SCHEME_SIM=1 npx vitest run scheme-frequency-sim`
+  - **关键认知修正**：NPC voluntary task 的 weight **直接作为概率百分比**（NpcEngine `chance = min(weight, 100) / 100`）。所有 weight 公式设计必须按 "10% 触发率 = weight 10" 来算，不是相对权重
+  - **NpcEngine 槽位系统已按品级分档**（王公 2/月、节度使 1/月、刺史 0.5/月），behavior 内部**禁止**再写 `speedFactor = base + rank * k` 这种二次加成——curryFavor 初版犯过这个双重放大错误
+  - **CK3 ai_will_do 风格 weight 公式哲学**：用加法基础惩罚（`add: -N`）而非全局乘法缩放（`factor: 0.3`）来压 mean、保留 tail。乘法修正只用来凸显"特别值得出手"的战略条件（CK3 的 `factor = x` 传统）。这样 mean 低 / tail 高的双峰分布是"有结构理由才出手"的表达
+  - **拉拢 calibration**：
+    - 去掉"政治地位 targetRank×0.6"均质化加分（导致每个高品 NPC 对所有高品目标都无差别发起）
+    - 基础分压低到 2 + 基础惩罚 -8
+    - 去 speedFactor 按 rank 二次加成
+    - minWeight 10
+    - 新增 CK3 风格乘法修正：反叛风险 ×3 / 强臣 ×1.5 / 修复上级 ×2.5 / 已亲近 ×0.3 / 社交性格 `1 + soc × 0.5` / 复仇心 `1 - veng × 0.3`
+    - diplomacy 系数 1.5 → 4（dip 18 → ~82% 成功率，dip 4 → ~26%，让玩家外交能力有实感差距）
+    - 结果：月均 5.67 → 1.96，mean 15%，max 28%，TOP 发起人从 6 次收敛到 4 次/24月
+  - **离间 calibration**：
+    - 候选池收窄为三类：直属上级 + 直接臣属 + 相邻同级统治者（`collectAlienationPrimaryCandidates`，用 `buildZhouAdjacency` + overlord 链上溯到 minRank ≥ 17）
+    - `collectRelatedSecondary` 去掉家庭（父母/配偶/子女），加入盟友
+    - 去 `factor: 0.3` 全局调速
+    - CK3 风格乘法：目标敌视（primary→actor op < -15）×1.5 / 切断盟约（secondary 是 primary 盟友）×1.8 / 打击强臣（secondary 是 primary 强力直接臣属）×1.8 / 阴险特质 ×1.5 / 盟友豁免 ×0
+    - 方法选择按能力分岔：`strategy ≥ 12` 稳定挑 best calcBonus；`< 12` 在三种方法中随机。让能力差距在方法命中度上体现实感
+    - **方法不再计入 weight**，只影响成功率（之前 `方法对症 add: bestBonus*0.5` 去掉）
+    - 成功率公式：`base 35 → 5`，`stratDiff × 1.5 → × 3`。Base 压低 30 点是"裸基线只有 5%"，谋略系数 3 让 ±10 差距拉开 ±30 百分点
+    - 成功的互相好感扣分 `-30 → -100`（decayable），高风险高回报
+    - 结果：谋略 10 皇帝 vs 河北三镇 final ~44%，谋略 20 高手 vs 河北三镇 final 53-59%，谋略 20 vs 性格弱点多的目标 final 可达 80-90%
+  - **per-(initiator, primaryTarget, schemeType) CD 系统**：
+    - `SchemeInstance.resolveDate?: GameDate`（success/failure 结算时写入，terminated 不写）
+    - `SchemeStore.hasRecentScheme(initiator, target, typeId, currentAbsDay, cdDays)` + `SCHEME_PER_TARGET_CD_DAYS = 365`
+    - `NpcContext.hasRecentSchemeOnTarget(...)` 快照接口，buildNpcContext 时预聚合 `schemeCdIndex: Map<key, resolveAbsDay|Infinity>`。behavior 不再直接 poke live store
+    - `executeInitiateScheme` 内保留 live 校验兜底（execute 契约）
+    - `SAVE_VERSION 6 → 7` + v6→v7 迁移：历史已结算 scheme 用 `startDate` 作为 `resolveDate` 近似回填
+  - **NpcContext.getAllies(charId): string[]** 快照方法（闭包 `warState.getAllies + currentDay`）
+  - **离间史书信息补全**：`executeInitiateScheme` emit 时带 `secondaryTargetId` + 方法名；`chroniclePromptBuilder.formatActorRoles` 新增 7 个 scheme 事件 case（主谋/直接目标/次要目标标签）
+  - **CLAUDE.md 新约束**：「NPC weight = 概率百分比 / CK3 ai_will_do 风格 / 槽位不双重加成 / 候选池从已知关系展开」四条纪律落入「计谋系统」章节
 
 **待做（后续系统）：**
 - 更多个人交互

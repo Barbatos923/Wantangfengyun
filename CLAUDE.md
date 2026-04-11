@@ -247,7 +247,7 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - **execute 契约**：`executeProposeAlliance` 返回 `'accepted' | 'rejected' | 'stale'`，`executeBreakAlliance` 返回 boolean。stale 校验必须重跑 `canEnterAlliance`，不能只查 `overlordId == null`（会把有辟署权的 vassal 错拦）。
 - **StoryEvent effectKey 清单**（必须通过 `storyEffectResolver` 恢复）：`proposeAlliance:accept/reject` / `allianceAutoJoin:accept/reject` / `allianceDilemma:pickAttacker/pickDefender/neutral`。新增同盟 StoryEvent 时禁止在 onSelect 里直接写状态，必须补 resolver case。
 
-### 计谋系统（v1：拉拢 + 离间）
+### 计谋系统（v1.1：拉拢 + 离间，频率/权重/成功率精修后）
 - 数据在 `engine/scheme/`：`SchemeStore` Map<id, SchemeInstance> + `initiatorIndex/targetIndex` 双反向索引（不存档，由 `initSchemes` 重建）。完整设计见 `wantang/docs/plans/scheme-system-v1.md`
 - **SchemeTypeDef 框架**：每种计谋一个 `engine/scheme/types/<id>.ts` 文件，调 `registerSchemeType()` 自注册；`data/schemes.ts` import 触发。引擎/Store/日结/UI 不感知具体类型
 - **泛型 + 守卫**：`SchemeTypeDef<TParams>` 内部所有方法签名都是强类型；`executeInitiateScheme(initiatorId, schemeTypeId, rawParams: unknown, precomputedMethodBonus?)` 入口由 `def.parseParams(raw): TParams | null` 一次性强类型化。**禁止任何 `as string`**，参数走 parseParams 的运行时校验
@@ -259,10 +259,49 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - **AI 方法接口预留**：`AlienationData.methodId` 用 `string`（不是 union）+ `methodBonus` 统一快照字段 + `executeInitiateScheme` 第 4 参 `precomputedMethodBonus?` + `customDescription? / aiReasoning?` 字段。v2 接入 LLM 时核心引擎零改动，所有改动集中在 `SchemeInitFlow` UI 路径
 - **死亡终止**：runSchemeSystem 每日检查 initiator/primaryTarget/secondaryTarget 任一死亡 → `setStatus('terminated')` + StoryEvent 通知玩家（如玩家是参与方）。**计谋不随继承转移**——同 alliance，是个人契约
 - **通知规则**（D6）：发起时**不**通知（隐秘性本质，即使 v1 没做 secrecy）；结算时玩家是参与方 → StoryEvent + `effectKey: 'noop:notification'`
-- **NPC 行为**：每种 scheme 一个独立 behavior（curryFavorBehavior / alienateBehavior），`playerMode: 'skip'` + `schedule: 'monthly-slot'`；候选池**从 actor 关系直接展开**，**禁止 N×N 全表扫描**（之前 alienate 的 N×N 是 ~8M 步/天瓶颈，现已修复）
+- **NPC 行为**：每种 scheme 一个独立 behavior（curryFavorBehavior / alienateBehavior），`playerMode: 'skip'` + `schedule: 'monthly-slot'`
 - **NPC 岗位门槛**：拉拢 `getActorMaxMinRank ≥ 12`（刺史），离间 `≥ 17`（节度使）。用 `holderIndex + postIndex + positionMap.get(templateId).minRank`，皇帝（pos-emperor minRank=29）走同一路径自动通过，无需特判
-- **NPC 速度因子按 actor rankLevel 缩放**：`speedFactor = 0.10 + actorRank * 0.014`（rank 0 → 0.10, rank 29 → 0.51），高品级更积极
-- **存档**：SAVE_VERSION 5 → 6，必填字段，`migrations.ts` 加 v5→v6 注入空数组兜底；新场景**不要**走 optional + 兜底反模式
+- **候选池从 actor 已知关系直接展开**（硬约束，性能纪律）：**禁止 `for (c of ctx.characters.values())` 全表扫描**——之前 alienate N×N 是 ~8M 步/天瓶颈。拉拢候选池 = `[overlord, vassals, 家庭, 中央同朝为官, 邻居州 locationIndex]`；离间 primary 候选池 = `[overlord, vassals, 相邻同级 ruler]`（后者用 `buildZhouAdjacency` + overlord 链上溯到 `minRank ≥ 17`）；离间 secondary 候选池 = primary 的 `[overlord, vassals, allies]`（**不**含家庭/同僚）
+- **per-(initiator, primaryTarget, schemeType) CD 365 天**：`SchemeInstance.resolveDate` 在 success/failure 结算时写入（terminated 不写）。`SchemeStore.hasRecentScheme(...)` 做 live 校验（`executeInitiateScheme` 契约兜底）；NPC 行为走 **`NpcContext.hasRecentSchemeOnTarget(initiator, target, typeId)` 快照接口**（`buildNpcContext` 时预聚合 `schemeCdIndex: Map<key, resolveAbsDay>`，active scheme 用 `Infinity` 标记）。**禁止**在 generateTask 里直接 `useSchemeStore.getState().hasRecentScheme(...)`
+- **NpcContext.getAllies(charId): string[]** 快照接口：闭包 `warState.getAllies + currentDay`，behavior 读盟友列表不直接 poke WarStore
+- **NpcContext.getPeerNeighbors(charId): ReadonlySet<string>** lazy 快照接口：返回该角色相邻的节度使级以上 rulers。内部基于 **realm 边界**（自身直辖 + 直属 vassal 直辖 zhou）做一跳邻接 + overlord 链上溯到 minRank ≥ 17 祖先。首次 ~500-1500 ops，之后 O(1)。**多 NPC 行为共享同一视图**（离间、未来的宣战 AI 邻居预筛、外交事件 cross-realm 判定），同 tick 内不会 drift。新增涉及"相邻敌对势力 rulers"逻辑的 behavior 时**必须**走这个接口而不是在 behavior 本地自己扫邻接 —— 否则重复计算 + 快照不一致风险
+- **存档**：`SAVE_VERSION = 7`。v5→v6（注入 schemes 空数组），v6→v7（已结算 scheme 用 `startDate` 作为 `resolveDate` 近似回填）。新字段必填 + 显式 migration，**不要**走 optional + 兜底反模式
+
+### NPC 自愿行为 weight = 概率百分比（硬约束）
+NpcEngine 的 voluntary task 循环：`const chance = Math.min(task.weight, 100) / 100; if (random() < chance) executeTask(...)`。**weight 直接就是百分比触发率**，不是 CK3 那种"相对权重排序"。
+
+**设计 weight 公式时必须按此直觉算**：
+- `weight = 10` 意味着该槽位触发时有 **10% 概率**真的执行
+- `weight = 50` 意味着 50% 概率
+- `weight >= 100` 意味着必定执行
+
+**CK3 ai_will_do 风格公式哲学**（curryFavor v1.1 / alienate v1.1 都按这个改造过）：
+- **加法基础惩罚** `{ label: '基础惩罚', add: -N }`（拉拢 -8，离间 -6）——**不要**用 `factor: 0.3` 这种全局乘法缩放。加法负偏置压低 mean 同时保留 tail；乘法缩放会把真值得出手的目标和凑数目标一起压扁
+- **乘法修正只用来凸显"特别值得出手"的结构条件**（拉拢用反叛风险/修复上级/强臣/已亲近；离间用目标敌视/切断盟约/打击强臣/盟友豁免 ×0）
+- **minWeight 是硬门槛**，通常设 5-10，等同"不到 5-10% 的纯噪音动作不做"。**不要**用 `factor: 0.3` 逼近 minWeight，而是用加法惩罚把无结构价值的候选自然推到 0 附近
+- **能力差距靠 add 或 stratDiff 系数反映**（curryFavor 的 `dipDiff × 4`、alienation 的 `stratDiff × 3`），典型 ±10 差距给出 ±30-40 百分点影响，让玩家能力实感化
+
+### NpcEngine 槽位系统已按品级分档，behavior 内**禁止**按 rank 二次加成（硬约束）
+NpcEngine 的 `isActiveMonth / getSlotDays` 已经按品级给行为触发槽位：
+- **王公（rank 25+）**：2 次/月（base + base+14）
+- **节度使（rank 17-24）**：1 次/月（base）
+- **刺史（rank 12-16）**：0.5 次/月（每 2 月 1 次，按哈希决定奇偶月）
+- **县令（rank 0-11）**：0.33 次/月（每 3 月 1 次）
+
+**禁止**在 behavior 内部再写 `speedFactor = base + actorRank * k` 这种按品级二次缩放——会造成双重放大。需要 actor-level 调速时：**改阈值/门槛（minWeight、minRank、资源余量等客观状态）**，不要按品级等比缩放 weight。
+
+历史踩坑：2026-04-13 curryFavor v1 写 `speedFactor = 0.10 + actorRank * 0.014`，拉拢月均 5.67 次偏高，emperor 被触发放大到 0.51 倍；去掉 rank 项后降到 1.96，分布合理。
+
+### 长测 sim：`SCHEME_SIM=1 npx vitest run scheme-frequency-sim`
+`src/__tests__/scheme-frequency-sim.test.ts` 是计谋频率观测长测（默认 `describe.skipIf(!process.env.SCHEME_SIM)`，单次 ~60-90s 不进 CI）。跑 24 个月完整日结/月结管线，产出 `scheme-frequency-report.txt`（仓库根目录），内含：
+- 每种 scheme 的月均频率、按状态分布、月度分布、TOP 10 发起人
+- 初始成功率分布 + 桶位直方图
+- generateTask 的 **weight 分布直方图**（monkey-patch `behavior.generateTask` 采样非 null 返回值的 weight）+ 统计 mean/p50/p90/p99/max
+
+调 NPC weight/成功率/候选池后用此 sim 看效果，不要盲调。目标区间参考：
+- 拉拢 ~1.5-2.5 次/月，weight mean 10-20，max 25-40
+- 离间 ~0.3-1 次/月，weight mean 15-30，max 40-80
+- 拉拢/离间比率 2-4:1（叙事上拉拢日常、离间稀缺）
 
 ### NPC 行为 personality 使用纪律（硬约束）
 **禁止** 在 NPC behavior 的 generateTask 里写 `if (personality.x < N) return null;` 或 `if (personality.x > N) return null;` 之类的硬门槛。

@@ -18,6 +18,7 @@ import { clamp } from '../schemeCalc';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 import { EventPriority } from '@engine/types';
+import { debugLog } from '@engine/debugLog';
 
 // ── 数值常量 ────────────────────────────────────────
 
@@ -94,9 +95,7 @@ const curryFavorDef: SchemeTypeDef<CurryFavorParams> = {
   initInstance(initiator, params, ctx, _precomputedBonus) {
     const target = ctx.characters.get(params.primaryTargetId)!;
     const rate = calcCurryFavorRate(initiator, target, ctx);
-    // [TEMP] 调试拉拢频率/成功率，看完删
-    // eslint-disable-next-line no-console
-    console.log(`[拉拢发起] ${initiator.name} → ${target.name} | 初始成功率 ${Math.round(rate)}%`);
+    debugLog('scheme', `[拉拢发起] ${initiator.name} → ${target.name} | 初始成功率 ${Math.round(rate)}%`);
     const data: CurryFavorData = { kind: 'curryFavor' };
     const snapshot: SchemeSnapshot = {
       spymasterId: initiator.id,
@@ -132,13 +131,11 @@ const curryFavorDef: SchemeTypeDef<CurryFavorParams> = {
 
   applyEffects(scheme, outcome, _ctx) {
     const cs = useCharacterStore.getState();
-    // [TEMP] 调试拉拢频率/成功率，看完删
     {
       const initiator = cs.characters.get(scheme.initiatorId);
       const target = cs.characters.get(scheme.primaryTargetId);
       const mark = outcome.kind === 'success' ? '✓ 成功' : '✗ 失败';
-      // eslint-disable-next-line no-console
-      console.log(`[拉拢结算] ${initiator?.name ?? '?'} → ${target?.name ?? '?'} | 成功率 ${Math.round(scheme.currentSuccessRate)}% → ${mark}`);
+      debugLog('scheme', `[拉拢结算] ${initiator?.name ?? '?'} → ${target?.name ?? '?'} | 成功率 ${Math.round(scheme.currentSuccessRate)}% → ${mark}`);
     }
     if (outcome.kind === 'success') {
       // 双向加好感（拉拢是建立关系，是双向的）

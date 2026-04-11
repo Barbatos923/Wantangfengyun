@@ -157,6 +157,30 @@ export interface NpcContext {
    */
   hasRecentSchemeOnTarget: (initiatorId: string, primaryTargetId: string, schemeTypeId: string) => boolean;
 
+  /**
+   * 返回某角色当前未过期的所有同盟对手 ID。闭包捕获 warState + currentDay。
+   * O(1) 委托给 WarStore.getAllies，但保持快照语义 —— NPC behavior 不直接 poke live store。
+   */
+  getAllies: (charId: string) => string[];
+
+  /**
+   * 返回某角色相邻的"同级或更高级 rulers"（minRank ≥ 17 = 节度使级以上）。
+   *
+   * 语义：基于 realm 边界展开 —— 自己直辖 zhou + **直属 vassal 直辖 zhou** 的集合做
+   * 一跳邻接扫描，邻接州的直接控制人沿 overlordId 链上溯到第一个 minRank ≥ 17 的祖先。
+   * 返回集合排除 actor 自己。
+   *
+   * 为什么必须含直属 vassal 直辖：高阶 ruler（节度使/皇帝）道内边境州通常由 cishi vassal
+   * 而非自己直辖，只扫 `controllerIndex.get(charId)` 会让跨势力 sabotage 信号完全压扁。
+   *
+   * 实现：lazy 缓存 per charId，首次 ~500-1500 ops，后续 O(1)。
+   * 依赖 controllerIndex / vassalIndex / territories / adj / characters，全部是 NpcContext
+   * 构建时 frozen 的快照，生命周期内无 staleness 风险。
+   *
+   * 使用场景：离间候选池、宣战 AI 邻居优先级、外交事件 cross-realm 判定等多个系统共享视图。
+   */
+  getPeerNeighbors: (charId: string) => ReadonlySet<string>;
+
   // 上月月结账本快照（economySystem 写入 LedgerStore.allLedgers）
   ledgers: Map<string, import('@engine/official/types').MonthlyLedger>;
 

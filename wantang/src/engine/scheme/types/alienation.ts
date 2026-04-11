@@ -29,7 +29,7 @@ import { EventPriority } from '@engine/types';
 
 // ── 数值常量（统一参数：方法不影响） ─────────────────
 
-export const ALIENATION_BASE_RATE = 35;
+export const ALIENATION_BASE_RATE = 5;
 export const ALIENATION_PHASE_DAYS = 30;
 export const ALIENATION_PHASES = 3;
 export const ALIENATION_COST = 500;
@@ -38,9 +38,9 @@ export const ALIENATION_INITIAL_CAP = 80;
 export const ALIENATION_FINAL_CAP = 90;
 
 // 失败副作用（统一，方法不影响）
-const ALIENATION_FAIL_OPINION = -40;     // 双方对发起人
-const ALIENATION_FAIL_PRESTIGE = -20;    // 发起人威望损失
-const ALIENATION_SUCCESS_OPINION = -30;  // 双方互相好感
+const ALIENATION_FAIL_OPINION = -40;      // 双方对发起人
+const ALIENATION_FAIL_PRESTIGE = -20;     // 发起人威望损失
+const ALIENATION_SUCCESS_OPINION = -100;  // 双方互相好感（高风险高回报：一次成功即深仇）
 
 // ── 方法定义 ─────────────────────────────────────────
 
@@ -180,8 +180,11 @@ export function calcAlienationInitialRate(
   primary: Character,
   methodBonus: number,
 ): number {
+  // base 5 + 谋略差 × 3 + 方法加成
+  // 基础概率刻意压低：无优势的裸离间只有 5%，叙事上离间本来就是"找到对的条件才出手"
+  // 谋略差系数 3：典型 ±10 stratDiff 拉开 ±30 百分点，让外交/战略能力实感化
   const stratDiff = initiator.abilities.strategy - primary.abilities.strategy;
-  const baseRate = ALIENATION_BASE_RATE + stratDiff * 1.5;
+  const baseRate = ALIENATION_BASE_RATE + stratDiff * 3;
   return clamp(baseRate + methodBonus, 5, ALIENATION_INITIAL_CAP);
 }
 

@@ -12,6 +12,12 @@ import { getArmyStrength } from '@engine/military/militaryCalc';
 import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useSchemeStore, SCHEME_PER_TARGET_CD_DAYS } from '@engine/scheme/SchemeStore';
 import { toAbsoluteDay } from '@engine/dateUtils';
+import { buildZhouAdjacency } from '@engine/military/deployCalc';
+import { getActualController } from '@engine/official/postQueries';
+import { positionMap } from '@data/positions';
+
+/** 节度使级阈值（realm 主权层级的下限），getPeerNeighbors 返回值的硬过滤 */
+const PEER_NEIGHBOR_MIN_RANK = 17;
 
 /**
  * 一次性从所有 Store 读取快照，构建 NpcContext。
@@ -90,6 +96,7 @@ export function buildNpcContext(): NpcContext {
   const currentDay = toAbsoluteDay(turnState.currentDate);
   const hasTruce = (a: string, b: string) => warState.hasTruce(a, b, currentDay);
   const hasAlliance = (a: string, b: string) => warState.hasAlliance(a, b, currentDay);
+  const getAllies = (charId: string) => warState.getAllies(charId, currentDay);
 
   // ── 国库预聚合 ──
 
@@ -150,6 +157,81 @@ export function buildNpcContext(): NpcContext {
     return currentDay - resolveAbs < SCHEME_PER_TARGET_CD_DAYS;
   }
 
+  // ── lazy 缓存：相邻同级 ruler ──
+  // 多个 NPC 行为（离间 / 未来的宣战 AI / 外交事件）会共用"某角色相邻的节度使级 rulers"查询。
+  // 首次 ~500-1500 ops（realm 边界展开 + 一跳邻接 + overlord 链上溯），之后 O(1) 命中缓存。
+  const peerNeighborsCache = new Map<string, ReadonlySet<string>>();
+  const zhouAdjacency = buildZhouAdjacency();  // 模块级缓存，buildNpcContext 内引用一次
+
+  /** 计算某角色的 realm zhou set：自己直辖 + 直属 vassal 直辖（都过滤 tier === 'zhou'） */
+  function buildRealmZhouSet(charId: string): Set<string> {
+    const realmZhouSet = new Set<string>();
+    function addZhou(id: string): void {
+      const terrIds = controllerIndex.get(id);
+      if (!terrIds) return;
+      for (const tid of terrIds) {
+        const t = territories.get(tid);
+        if (t?.tier === 'zhou') realmZhouSet.add(tid);
+      }
+    }
+    addZhou(charId);
+    const vassals = vassalIndex.get(charId);
+    if (vassals) {
+      for (const vId of vassals) addZhou(vId);
+    }
+    return realmZhouSet;
+  }
+
+  /** 沿 overlord 链上溯到第一个 minRank ≥ PEER_NEIGHBOR_MIN_RANK 的祖先 */
+  function findPeerLeader(startId: string): string | null {
+    let current: string | undefined = startId;
+    const visited = new Set<string>();
+    while (current && !visited.has(current)) {
+      const c = characters.get(current);
+      if (!c) return null;
+      // 计算 maxMinRank
+      const postIds = holderIndex.get(c.id) ?? [];
+      let maxRank = 0;
+      for (const pid of postIds) {
+        const post = postIndex.get(pid);
+        if (!post) continue;
+        const tmpl = positionMap.get(post.templateId);
+        if (tmpl && tmpl.minRank > maxRank) maxRank = tmpl.minRank;
+      }
+      if (maxRank >= PEER_NEIGHBOR_MIN_RANK) return c.id;
+      visited.add(current);
+      current = c.overlordId;
+    }
+    return null;
+  }
+
+  function getPeerNeighbors(charId: string): ReadonlySet<string> {
+    const cached = peerNeighborsCache.get(charId);
+    if (cached) return cached;
+
+    const result = new Set<string>();
+    const realmZhouSet = buildRealmZhouSet(charId);
+
+    if (realmZhouSet.size > 0) {
+      for (const z of realmZhouSet) {
+        const neighbors = zhouAdjacency.get(z);
+        if (!neighbors) continue;
+        for (const n of neighbors) {
+          if (realmZhouSet.has(n)) continue;  // realm 内部跳过
+          const nTerr = territories.get(n);
+          if (!nTerr) continue;
+          const ctrl = getActualController(nTerr);
+          if (!ctrl) continue;
+          const peer = findPeerLeader(ctrl);
+          if (peer && peer !== charId) result.add(peer);
+        }
+      }
+    }
+
+    peerNeighborsCache.set(charId, result);
+    return result;
+  }
+
   return {
     date: { ...turnState.currentDate },
     era: turnState.era,
@@ -164,6 +246,7 @@ export function buildNpcContext(): NpcContext {
     getMilitaryStrength,
     hasTruce,
     hasAlliance,
+    getAllies,
     vassalIndex,
     locationIndex,
     armies,
@@ -176,6 +259,7 @@ export function buildNpcContext(): NpcContext {
     totalTreasury,
     schemeCounts,
     hasRecentSchemeOnTarget,
+    getPeerNeighbors,
     ledgers: useLedgerStore.getState().allLedgers,
     treasuryHistory: useLedgerStore.getState().treasuryHistory,
     appointedThisRound: new Set(),
