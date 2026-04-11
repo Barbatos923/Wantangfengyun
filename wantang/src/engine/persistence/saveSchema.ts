@@ -14,9 +14,10 @@ import type { TreasurySubmission } from '@engine/official/treasuryDraftCalc';
 import type { TransferPlan, PlayerTask } from '@engine/npc/types';
 import type { StoryEvent, StoryEventOption } from '@engine/storyEventBus';
 import type { MonthDraft, YearChronicle } from '@engine/chronicle/types';
+import type { SchemeInstance } from '@engine/scheme/types';
 
 /** 存档 schema 版本号。schema 不兼容变动时自增，并在 migrations.ts 添加迁移逻辑。 */
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 7;
 
 /** 存档槽 ID 常量（MVP 期固定单槽） */
 export const CURRENT_SAVE_SLOT = 'current';
@@ -96,4 +97,7 @@ export interface SaveFile {
     monthDrafts: Array<[string, MonthDraft]>;
     yearChronicles: Array<[number, YearChronicle]>;
   };
+
+  // ── 计谋系统（v6 新增） ──
+  schemes: SchemeInstance[];
 }

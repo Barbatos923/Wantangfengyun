@@ -10,6 +10,7 @@ import { calcPersonality } from '@engine/character/personalityUtils';
 import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { getArmyStrength } from '@engine/military/militaryCalc';
 import { useLedgerStore } from '@engine/official/LedgerStore';
+import { useSchemeStore, SCHEME_PER_TARGET_CD_DAYS } from '@engine/scheme/SchemeStore';
 import { toAbsoluteDay } from '@engine/dateUtils';
 
 /**
@@ -23,7 +24,7 @@ export function buildNpcContext(): NpcContext {
   const milState = useMilitaryStore.getState();
   const warState = useWarStore.getState();
 
-  const { characters, vassalIndex } = charState;
+  const { characters, vassalIndex, locationIndex } = charState;
   const { territories, centralPosts, expectedLegitimacy, controllerIndex, postIndex, holderIndex, policyOpinionCache } = terrState;
   const { armies, battalions } = milState;
 
@@ -116,6 +117,39 @@ export function buildNpcContext(): NpcContext {
     }
   }
 
+  // ── 计谋预聚合（活跃数量 + per-target CD 索引） ──
+  // 一次性快照，generateTask 阶段保持一致视图；executeInitiateScheme 内部仍做实时 stale 校验。
+  const schemeCounts = new Map<string, number>();
+  // schemeCdIndex：key = `initiatorId|primaryTargetId|schemeTypeId`，value = CD 解锁绝对日
+  // active scheme 用 Number.POSITIVE_INFINITY 标记"永远阻塞"
+  const schemeCdIndex = new Map<string, number>();
+  for (const scheme of useSchemeStore.getState().schemes.values()) {
+    if (scheme.status === 'active') {
+      schemeCounts.set(scheme.initiatorId, (schemeCounts.get(scheme.initiatorId) ?? 0) + 1);
+      const key = `${scheme.initiatorId}|${scheme.primaryTargetId}|${scheme.schemeTypeId}`;
+      schemeCdIndex.set(key, Number.POSITIVE_INFINITY);
+      continue;
+    }
+    if (scheme.status === 'terminated') continue;
+    // success / failure / exposed：按 resolveDate 计 CD
+    if (!scheme.resolveDate) continue;
+    const resolveAbs = toAbsoluteDay(scheme.resolveDate);
+    const key = `${scheme.initiatorId}|${scheme.primaryTargetId}|${scheme.schemeTypeId}`;
+    const existing = schemeCdIndex.get(key);
+    // 同 key 多次命中时保留最新（包括已经被 active 标为 Infinity 的情况）
+    if (existing === undefined || (existing !== Number.POSITIVE_INFINITY && resolveAbs > existing)) {
+      schemeCdIndex.set(key, resolveAbs);
+    }
+  }
+
+  function hasRecentSchemeOnTarget(initiatorId: string, primaryTargetId: string, schemeTypeId: string): boolean {
+    const key = `${initiatorId}|${primaryTargetId}|${schemeTypeId}`;
+    const resolveAbs = schemeCdIndex.get(key);
+    if (resolveAbs === undefined) return false;
+    if (resolveAbs === Number.POSITIVE_INFINITY) return true;  // active scheme
+    return currentDay - resolveAbs < SCHEME_PER_TARGET_CD_DAYS;
+  }
+
   return {
     date: { ...turnState.currentDate },
     era: turnState.era,
@@ -131,6 +165,7 @@ export function buildNpcContext(): NpcContext {
     hasTruce,
     hasAlliance,
     vassalIndex,
+    locationIndex,
     armies,
     battalions,
     controllerIndex,
@@ -139,6 +174,8 @@ export function buildNpcContext(): NpcContext {
     activeWars,
     capitalTreasury,
     totalTreasury,
+    schemeCounts,
+    hasRecentSchemeOnTarget,
     ledgers: useLedgerStore.getState().allLedgers,
     treasuryHistory: useLedgerStore.getState().treasuryHistory,
     appointedThisRound: new Set(),

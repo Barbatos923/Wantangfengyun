@@ -8,6 +8,7 @@
  *   window.__DEBUG__.inheritance = true
  *   window.__DEBUG__.emperor = true
  *   window.__DEBUG__.war = true
+ *   window.__DEBUG__.scheme = true
  *
  * 用法：debugLog('policy', `[政策] xxx`)
  *
@@ -22,7 +23,8 @@ export type DebugCategory =
   | 'inheritance'   // 继承 / 留后
   | 'emperor'       // 皇帝 AI 决策
   | 'war'           // 宣战 / 战争结束
-  | 'chronicle';    // AI 史书：月稿 / 年史 / provider / stale 丢弃
+  | 'chronicle'     // AI 史书：月稿 / 年史 / provider / stale 丢弃
+  | 'scheme';       // 计谋系统：发起 / 阶段推进 / 结算 / 终止
 
 const FLAGS: Record<DebugCategory, boolean> = {
   policy: false,
@@ -32,6 +34,7 @@ const FLAGS: Record<DebugCategory, boolean> = {
   emperor: false,
   war: false,
   chronicle: false,
+  scheme: false,
 };
 
 if (typeof window !== 'undefined') {

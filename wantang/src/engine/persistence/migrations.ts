@@ -5,6 +5,7 @@
 
 import type { SaveFile } from './saveSchema';
 import { SAVE_VERSION } from './saveSchema';
+import type { SchemeInstance } from '@engine/scheme/types';
 
 function newPlaythroughId(): string {
   return typeof crypto !== 'undefined' && crypto.randomUUID
@@ -54,6 +55,36 @@ export function migrate(save: SaveFile, fromVersion: number): SaveFile {
         .chronicleState ?? { monthDrafts: [], yearChronicles: [] },
     };
     return migrate(migrated, 5);
+  }
+  if (fromVersion === 5) {
+    // v5 → v6：新增计谋系统 schemes 字段。旧档无活跃计谋，注入空数组即可。
+    const migrated: SaveFile = {
+      ...save,
+      version: 6,
+      schemes: (save as unknown as { schemes?: SchemeInstance[] }).schemes ?? [],
+    };
+    return migrate(migrated, 6);
+  }
+  if (fromVersion === 6) {
+    // v6 → v7：计谋加入 per-target 365 天 CD。已结算 scheme 原先没 resolveDate 字段，
+    // 需要回填，否则 hasRecentScheme() 会直接跳过历史记录，365 天 CD 对老档失效。
+    //
+    // 回填策略：用 startDate 作为 resolveDate 的近似值。
+    // 真实 resolveDate 会比 startDate 晚 scheme 全长（basic 90 天 / alienation 3×30）。
+    // 用 startDate 意味着旧档的 CD 会比精确值早到期最多 90 天，这是可接受的误差
+    // —— 老档通常只有少量历史 scheme，且 90 天偏差远小于 365 天 CD 窗口。
+    // terminated 的 scheme 不回填（死亡终止本身不进 CD 语义）。
+    const migratedSchemes = save.schemes.map((s) => {
+      if (s.resolveDate) return s;
+      if (s.status !== 'success' && s.status !== 'failure' && s.status !== 'exposed') return s;
+      return { ...s, resolveDate: { ...s.startDate } };
+    });
+    const migrated: SaveFile = {
+      ...save,
+      version: 7,
+      schemes: migratedSchemes,
+    };
+    return migrate(migrated, 7);
   }
   if (fromVersion === 2) {
     // v2 → v3：行营废弃 'mustering' 状态 + musteringTurnsLeft 字段。

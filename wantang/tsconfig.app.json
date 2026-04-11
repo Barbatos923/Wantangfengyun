@@ -34,5 +34,6 @@
     "noUncheckedSideEffectImports": true,
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/__tests__/scheme-frequency-sim.test.ts"]
 }

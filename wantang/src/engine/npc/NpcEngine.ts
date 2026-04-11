@@ -57,6 +57,8 @@ import './behaviors/demandRightsBehavior';
 import './behaviors/negotiateTaxBehavior';
 import './behaviors/proposeAllianceBehavior';
 import './behaviors/breakAllianceBehavior';
+import './behaviors/curryFavorBehavior';
+import './behaviors/alienateBehavior';
 
 // ── 公共工具（UI 使用） ────────────────────────────────────
 

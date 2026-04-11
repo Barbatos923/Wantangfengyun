@@ -12,6 +12,7 @@ import { useLedgerStore } from '@engine/official/LedgerStore';
 import { useTurnManager } from '@engine/TurnManager';
 import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 import { useChronicleStore } from '@engine/chronicle/ChronicleStore';
+import { useSchemeStore } from '@engine/scheme/SchemeStore';
 import { restoreRng } from '@engine/random';
 import seedrandom from 'seedrandom';
 import type { SaveFile, SerializedStoryEvent } from './saveSchema';
@@ -86,6 +87,9 @@ export function deserializeGame(raw: SaveFile): void {
     monthDrafts: save.chronicleState?.monthDrafts ?? [],
     yearChronicles: save.chronicleState?.yearChronicles ?? [],
   });
+
+  // SchemeStore（v6 起，migration 已保证 schemes 字段存在）
+  useSchemeStore.getState().initSchemes(save.schemes);
 
   // 全量刷新角色所在地（兼容旧存档 + 确保行营指挥官位置正确）
   {

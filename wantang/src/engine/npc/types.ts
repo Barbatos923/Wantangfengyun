@@ -127,6 +127,9 @@ export interface NpcContext {
   // 臣属索引
   vassalIndex: Map<string, Set<string>>;  // overlordId → Set<vassalId>
 
+  // 地理位置索引（来自 CharacterStore.locationIndex）
+  locationIndex: Map<string, Set<string>>;  // territoryId → Set<charId> — 谁在哪个州
+
   // 军事快照
   armies: Map<string, Army>;
   battalions: Map<string, Battalion>;
@@ -140,6 +143,19 @@ export interface NpcContext {
   // 国库预聚合
   capitalTreasury: Map<string, { money: number; grain: number }>;  // charId → capital 州国库
   totalTreasury: Map<string, { money: number; grain: number }>;    // charId → 所有州国库之和
+
+  // 计谋活跃数量预聚合（charId → 该角色发起的 active scheme 数量）。
+  // 快照语义：generateTask 阶段保持一致视图；executeAsNpc 阶段的实时校验由 executeInitiateScheme 内部兜底。
+  schemeCounts: Map<string, number>;
+
+  /**
+   * per-(initiator, primaryTarget, schemeType) CD 判定（快照）。
+   * 返回 true 表示该发起人对该目标的同类计谋 365 天 CD 尚未过。
+   * 实现：NpcContext 构建时把 SchemeStore 中所有非 terminated 实例按 key 预聚合，
+   * generateTask 阶段只查快照，避免 behavior 直接 poke live store 绕过 snapshot 纪律。
+   * executeInitiateScheme 内部仍做实时 stale 校验兜底。
+   */
+  hasRecentSchemeOnTarget: (initiatorId: string, primaryTargetId: string, schemeTypeId: string) => boolean;
 
   // 上月月结账本快照（economySystem 写入 LedgerStore.allLedgers）
   ledgers: Map<string, import('@engine/official/types').MonthlyLedger>;

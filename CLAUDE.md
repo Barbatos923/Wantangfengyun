@@ -13,7 +13,7 @@
 |---|---|
 | 技术栈 | Vite 8 + React 19 + TypeScript 5.9 (strict) + Zustand 5 + TailwindCSS 4 |
 | 存储 | IndexedDB（`idb` 库），`wantang-db`，三张表 |
-| 构建 | `pnpm build` / 开发 `pnpm dev` / 测试 `npx vitest run`（19 文件 384 测试） |
+| 构建 | `pnpm build` / 开发 `pnpm dev` / 测试 `npx vitest run`（20 文件 403 测试） |
 | 路径别名 | `@` → `src/`，`@engine` → `src/engine/`，`@data` → `src/data/`，`@ui` → `src/ui/` |
 | 随机数 | `seedrandom` 确定性 RNG，入口 `engine/random.ts` |
 | 地图 | `d3-delaunay` Voronoi + SVG clipPath |
@@ -32,7 +32,7 @@ src/
 │   ├── military/    # MilitaryStore/WarStore + 战斗/行军/围城/结算
 │   ├── interaction/ # 玩家交互 Action（任命/罢免/宣战/调任/剥夺/篡夺等）
 │   ├── decision/    # 决议系统（称王/称帝/建镇/销毁头衔）
-│   ├── npc/         # NPC Engine 框架 + 33 个行为模块
+│   ├── npc/         # NPC Engine 框架 + 35 个行为模块
 │   └── systems/     # 月结管线各 System（9 个）
 ├── data/            # 纯静态数据（JSON + 定义表，禁止放逻辑）
 ├── ui/              # React UI 层（只读 Store + 调用 interaction）
@@ -247,6 +247,32 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 - **execute 契约**：`executeProposeAlliance` 返回 `'accepted' | 'rejected' | 'stale'`，`executeBreakAlliance` 返回 boolean。stale 校验必须重跑 `canEnterAlliance`，不能只查 `overlordId == null`（会把有辟署权的 vassal 错拦）。
 - **StoryEvent effectKey 清单**（必须通过 `storyEffectResolver` 恢复）：`proposeAlliance:accept/reject` / `allianceAutoJoin:accept/reject` / `allianceDilemma:pickAttacker/pickDefender/neutral`。新增同盟 StoryEvent 时禁止在 onSelect 里直接写状态，必须补 resolver case。
 
+### 计谋系统（v1：拉拢 + 离间）
+- 数据在 `engine/scheme/`：`SchemeStore` Map<id, SchemeInstance> + `initiatorIndex/targetIndex` 双反向索引（不存档，由 `initSchemes` 重建）。完整设计见 `wantang/docs/plans/scheme-system-v1.md`
+- **SchemeTypeDef 框架**：每种计谋一个 `engine/scheme/types/<id>.ts` 文件，调 `registerSchemeType()` 自注册；`data/schemes.ts` import 触发。引擎/Store/日结/UI 不感知具体类型
+- **泛型 + 守卫**：`SchemeTypeDef<TParams>` 内部所有方法签名都是强类型；`executeInitiateScheme(initiatorId, schemeTypeId, rawParams: unknown, precomputedMethodBonus?)` 入口由 `def.parseParams(raw): TParams | null` 一次性强类型化。**禁止任何 `as string`**，参数走 parseParams 的运行时校验
+- **basic vs complex 分级**：basic（拉拢，单阶段倒计时）与 complex（离间，多阶段每段 +growth）走同一 SchemeStore 和 runSchemeSystem，仅靠 `isBasic` + `phaseCount` 区分
+- **快照原则**：`initInstance()` 时把所有数值（spymasterStrategy / targetSpymasterStrategy / methodBonus / initialSuccessRate）冻结进 `snapshot`，之后任何外部变化（更换谋主/特质变动）不影响进行中计谋
+- **runSchemeSystem 双挂载**（必须！）：非月初挂 `runDailySettlement` 内 `if(date.day !== 1)` 分支（warSystem 之后、NpcEngine 之前）；月初挂 `runMonthlySettlement` 内 `runCharacterSystem` **之后**、`runDailyNpcEngine` **之前**——保证看到最新死亡/继承结果
+- **mutation 纪律**（硬约束）：runSchemeSystem 内禁止 `scheme.phase.progress += 1` 这类直接 mutate；所有状态变更走 `store.updateScheme / setStatus / removeScheme`，保证 Zustand 订阅链可见
+- **执行链早退**：runSchemeSystem 顶部立即 `if (active.length === 0) return;`，避免每日构建 schemeCtx
+- **AI 方法接口预留**：`AlienationData.methodId` 用 `string`（不是 union）+ `methodBonus` 统一快照字段 + `executeInitiateScheme` 第 4 参 `precomputedMethodBonus?` + `customDescription? / aiReasoning?` 字段。v2 接入 LLM 时核心引擎零改动，所有改动集中在 `SchemeInitFlow` UI 路径
+- **死亡终止**：runSchemeSystem 每日检查 initiator/primaryTarget/secondaryTarget 任一死亡 → `setStatus('terminated')` + StoryEvent 通知玩家（如玩家是参与方）。**计谋不随继承转移**——同 alliance，是个人契约
+- **通知规则**（D6）：发起时**不**通知（隐秘性本质，即使 v1 没做 secrecy）；结算时玩家是参与方 → StoryEvent + `effectKey: 'noop:notification'`
+- **NPC 行为**：每种 scheme 一个独立 behavior（curryFavorBehavior / alienateBehavior），`playerMode: 'skip'` + `schedule: 'monthly-slot'`；候选池**从 actor 关系直接展开**，**禁止 N×N 全表扫描**（之前 alienate 的 N×N 是 ~8M 步/天瓶颈，现已修复）
+- **NPC 岗位门槛**：拉拢 `getActorMaxMinRank ≥ 12`（刺史），离间 `≥ 17`（节度使）。用 `holderIndex + postIndex + positionMap.get(templateId).minRank`，皇帝（pos-emperor minRank=29）走同一路径自动通过，无需特判
+- **NPC 速度因子按 actor rankLevel 缩放**：`speedFactor = 0.10 + actorRank * 0.014`（rank 0 → 0.10, rank 29 → 0.51），高品级更积极
+- **存档**：SAVE_VERSION 5 → 6，必填字段，`migrations.ts` 加 v5→v6 注入空数组兜底；新场景**不要**走 optional + 兜底反模式
+
+### NPC 行为 personality 使用纪律（硬约束）
+**禁止** 在 NPC behavior 的 generateTask 里写 `if (personality.x < N) return null;` 或 `if (personality.x > N) return null;` 之类的硬门槛。
+**Why**: `calcPersonality()` 把每维 clamp 到 `[-1.0, +1.0]`，**默认值 0**（不是 0.5）。单个特质典型贡献 ±0.10-0.20。大多数没有相关特质的 NPC 各维都接近 0，硬阈值 0.4-0.5 会**砍掉 95% 的 NPC**。
+**How to apply**:
+- 性格倾向只能通过 weight 公式里的 `personality.x * N` 加分项体现，不做截断（参考 adjustSuccessionBehavior / breakAllianceBehavior / buildBehavior 现有写法）
+- 需要硬截断"砍一部分 NPC"时，用客观状态：岗位 minRank、资源、并发数、isRuler、tier 等
+- 如果 weight 整体偏低导致大多数 actor 凑不够 minWeight，调整 base/系数，**不要加 personality 门槛**
+历史踩坑：2026-04-12 计谋系统 v1 写 `if (sociability < 0.4)` / `if (vengefulness < 0.5)` / `if (honor > 0.6)`，结果一年只触发 1 次拉拢——95% NPC 在性格门槛被砍光。
+
 ### 其他规则
 - 批量操作用 `batchMutate`，禁止循环 `setState`
 - ID 用 `crypto.randomUUID()`
@@ -261,9 +287,9 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ---
 
-## 六、NPC Engine（33 个行为，已日结化）
+## 六、NPC Engine（35 个行为，已日结化）
 
-行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/归附/逼迫授权/议定进奉 | 外交：提议结盟/解除同盟 | 政策：调税/调职类/调辟署权/调继承法/调回拨率/自身政策调整 | 决议：称王建镇/称帝/篡夺 | 其他：建设/和谈
+行政：铨选/考课/罢免/皇帝调任/宰相调任 | 军事：宣战/动员/补员/征兵/赏赐/调兵草拟/调兵批准/召集参战/干涉战争/退出战争 | 领地：授予/剥夺/转移臣属/要求效忠/归附/逼迫授权/议定进奉 | 外交：提议结盟/解除同盟 | 政策：调税/调职类/调辟署权/调继承法/调回拨率/自身政策调整 | 决议：称王建镇/称帝/篡夺 | 计谋：拉拢/离间 | 其他：建设/和谈
 
 - `playerMode`：`push-task` / `skip` / `auto-execute` / `standing`
 - `schedule`：`daily`（默认 push-task）/ `monthly-slot`（哈希槽位+品级分档）
@@ -282,10 +308,10 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 八、当前开发阶段
 
-Phase 6（谋略+派系+事件）95%。详细进度见 `docs/milestones.md`。
+Phase 6（谋略+派系+事件）96%。详细进度见 `docs/milestones.md`。
 
 ### 尚未完成（后续系统）
-- 更多个人交互 | 谋略系统 | 活动系统 | 派系系统 | 更多随机事件
+- 更多个人交互 | 谋略系统精修（拉拢/离间频率 calibration + 更多计谋类型 + AI 自拟方法 v2）| 活动系统 | 派系系统 | 更多随机事件
 - 旅行系统（`locationId` 从派生值改独立状态 + 旅行时间，活动/侠客系统前置依赖）
 - 存档/读档 UI | AI 史书 | 生育系统 | 人才自然生成 | 非宗法皇位更替
 - 权知机制 | 地图增强 | 行营AI优化 | 强力CB

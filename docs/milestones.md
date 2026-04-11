@@ -1,6 +1,6 @@
 # 《晚唐风云》开发里程碑与进度
 
-> **最后更新**：2026-04-11
+> **最后更新**：2026-04-12
 > **原始规划**：见 `archive/开发里程碑与阶段方案-原版.md`
 
 ---
@@ -14,7 +14,7 @@ Phase 2  官职 + 经济        ████████████  100%  ✅ 
 Phase 3  军事系统           ████████████  100%  ✅ 完成
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
-Phase 6  谋略 + 派系 + 事件 ██████████░░   95%  ⬜ NPC Engine 33 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统（河北三镇初始同盟）
+Phase 6  谋略 + 派系 + 事件 ██████████░░   96%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）
 Phase 7  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 8  整合测试 + 打磨    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -208,7 +208,7 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 
 **已完成（按系统归类）：**
 
-**NPC Engine（31 个行为）**：
+**NPC Engine（35 个行为）**：
 - ✅ 框架：日结化调度、哈希槽位+品级分档、push-task/skip/auto-execute/standing 四种 playerMode
 - ✅ 行政行为：铨选 / 考课 / 罢免 / 皇帝调任 / 宰相调任
 - ✅ 军事行为：宣战 / 动员 / 补员 / 征兵 / 赏赐 / **调兵草拟+审批（draft-approve范式）** / 召集参战 / 干涉战争 / 退出战争
@@ -451,9 +451,29 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
   - **初始数据**：`loadSampleData` 为魏博（韩允中）、成德（王景崇）、卢龙（张允伸）三镇两两预先缔结同盟，削藩战争中自然触发反戈
   - **测试**：新建 `src/__tests__/alliance.test.ts` 13 条不变量（CRUD/存档 round-trip/过期清理/冷却/双向查询），384 测试全过
 
+- ✅ **计谋系统 v1**（2026-04-12）：
+  - **架构**：`SchemeTypeDef<TParams>` 策略对象 + 自注册 registry，引擎/Store/日结/UI 不感知具体类型；新增 scheme 类型只加一个 `engine/scheme/types/<id>.ts` 文件 + import 一行
+  - **强类型守卫**：`executeInitiateScheme(initiatorId, schemeTypeId, rawParams: unknown)` 入口由 `def.parseParams()` 一次性强类型化，下游 def 内部 0 个 `as`
+  - **basic vs complex 分级**：basic 单阶段倒计时，complex 多阶段每段 +growth；共用同一 SchemeStore + runSchemeSystem
+  - **快照原则**：`snapshot.spymasterStrategy / methodBonus / initialSuccessRate` 启动时冻结，外部变化不影响进行中计谋
+  - **runSchemeSystem 双挂载**：非月初挂 daily（warSystem 之后），月初挂 monthly（characterSystem 之后），保证看到死亡/继承结果；mutation 全部走 store 接口
+  - **拉拢（curryFavor，basic）**：单阶段 90 天 / 200 金 / diplomacy 主属性，成功双向加好感(+25/+15)
+  - **离间（alienation，complex）**：3×30 天 / 500 金 / strategy 主属性，三种方法（散布谣言/伪造书信/美人计）**只在 calcBonus 条件加成上差异化**（统一参数：成本/时长/副作用），失败双方对发起人 -40 + -20 威望
+  - **secondaryTarget 关系约束**：必须与 primary 存在关系（领主-臣属/亲属/同势力/同盟），用 `hasRelationship` 在 schemeCalc.ts
+  - **AI 方法接口预留**：methodId 用 string + methodBonus 统一字段 + executeInitiateScheme 第 4 参 `precomputedMethodBonus?` + AlienationData 预留 customDescription/aiReasoning。v2 接 LLM 时核心引擎零改动
+  - **NPC 行为（2 个新增，总数 35）**：`curryFavorBehavior` + `alienateBehavior`，monthly-slot + skip；候选池**从 actor 关系直接展开**（领主/臣属/家庭/同朝为官/邻居），禁止 N×N 全表扫描（之前 alienate 写 N×N 是 ~8M 步/天瓶颈，已修复 ~250×）
+  - **岗位门槛**：拉拢 minRank ≥ 12（刺史），离间 ≥ 17（节度使）。用 holderIndex + postIndex + positionMap.minRank，皇帝 (pos-emperor minRank=29) 自动通过无需特判
+  - **NPC speedFactor 按 actor rankLevel 缩放**：`0.10 + actorRank * 0.014`，rank 0 → 0.10, rank 29 → 0.51
+  - **UI**：`SchemeInitFlow` 多阶段向导（pickType/pickSecondary/pickMethod/confirm）+ `SchemePanel` 总览 + `SchemeDetailPanel` 二级 modal；模糊成功率用 `s.snapshot.spymasterStrategy` 与 init 时口径一致
+  - **存档**：SAVE_VERSION 5 → 6 + migrations.ts 加 v5→v6 注入空数组兜底（不走 optional 反模式）
+  - **测试**：新建 `src/__tests__/scheme.test.ts` 19 条（CRUD/索引重建/parseParams 守卫/死亡终止/cancelScheme 权限/通用纯函数），20 文件 403 测试全过
+  - **GPT 评审 + Bug 修复**：5 处反馈全部修复（runSchemeSystem 月初/非月初挂载、formatActorRoles 真实位置、parseParams 强类型守卫、mutation 纪律、SAVE_VERSION 升版本而非 optional），3 处 NPC fixes（opinion 方向反、SchemePanel 观察属性、generateTask 直读 SchemeStore），1 处性能修复（alienate N×N → 关系展开）
+  - **CLAUDE.md 新硬约束 2 条**：「计谋系统」整节 + 「NPC behavior personality 使用纪律」（禁止 personality 硬门槛，性格倾向只能进 weight 公式）
+  - ⬜ **待续**：NPC 拉拢/离间频率精修中（plan v1 节 0 决策表全部固化，仅 weight 数值在 calibration）
+
 **待做（后续系统）：**
 - 更多个人交互
-- 谋略系统（个人计谋 + 政治计谋，成功率积累）
+- 谋略系统精修：拉拢/离间频率 calibration、增加更多计谋类型（伪造把柄/绑架/刺杀等）、AI 自拟方法（v2）
 - 活动系统（宴会/狩猎/压力释放）
 - 派系系统（五大派系，廷议/弹劾/推举）
 - 随机事件系统（事件包 + 事件链 + 多步选择）

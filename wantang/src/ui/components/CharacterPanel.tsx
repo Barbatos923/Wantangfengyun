@@ -30,6 +30,7 @@ import RevokeFlow from './RevokeFlow';
 import UsurpPostFlow from './UsurpPostFlow';
 import ReassignFlow from './ReassignFlow';
 import DemandRightsFlow from './DemandRightsFlow';
+import SchemeInitFlow from './SchemeInitFlow';
 import { executeDemandFealty, previewDemandFealty, previewPledgeAllegiance, executePledgeAllegiance, getJoinableWars, executeJoinWar, getCallableWars, calcCallToArmsChance, executeCallToArms, previewNegotiateTax, executeNegotiateTax, TAX_LABELS, previewProposeAlliance, executeProposeAlliance, executeBreakAlliance } from '@engine/interaction';
 import type { DemandFealtyResult, FealtyChanceResult, PledgeAllegianceChanceResult, PledgeAllegianceResult, JoinableWar, CallableWar, CallToArmsChanceResult, CallToArmsResult, NegotiateTaxChanceResult, NegotiateTaxResult, ProposeAllianceChanceResult, ProposeAllianceResult } from '@engine/interaction';
 import { CASUS_BELLI_NAMES } from '@engine/military/types';
@@ -733,6 +734,13 @@ const CharacterPanel: React.FC<CharacterPanelProps> = ({ characterId }) => {
 
       {activeInteraction === 'demandRights' && (
         <DemandRightsFlow
+          targetId={characterId}
+          onClose={() => setActiveInteraction(null)}
+        />
+      )}
+
+      {activeInteraction === 'scheme' && (
+        <SchemeInitFlow
           targetId={characterId}
           onClose={() => setActiveInteraction(null)}
         />

@@ -12,6 +12,7 @@ import {
   runBuildingSystem,
 } from './systems/index.ts';
 import { runDailyNpcEngine } from './npc/NpcEngine.ts';
+import { runSchemeSystem } from './scheme/schemeSystem.ts';
 import { useWarStore } from './military/WarStore.ts';
 import { useCharacterStore } from './character/CharacterStore.ts';
 import { useStoryEventBus } from './storyEventBus.ts';
@@ -25,6 +26,7 @@ import { EventPriority } from './types.ts';
 export function runDailySettlement(date: GameDate): void {
   runWarSystem(date);
   if (date.day !== 1) {
+    runSchemeSystem(date);    // 非月初：scheme 在 NPC 决策之前推进
     runDailyNpcEngine(date);  // 非月初：日结中运行 NPC 决策
   }
 }
@@ -80,6 +82,7 @@ export function runMonthlySettlement(date: GameDate): void {
     }
   }
   runCharacterSystem(date);   // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
+  runSchemeSystem(date);      // 1.5 scheme 推进：在 characterSystem 之后看到最新死亡/继承结果
   runDailyNpcEngine(date);    // 2. NPC 决策（月初在 characterSystem 之后，保证继承先完成）
   runPopulationSystem(date);  // 3. 年度人口变化
   runSocialSystem(date);      // 4. 好感度衰减/领地漂移/贤能/晋升

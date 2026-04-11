@@ -174,6 +174,23 @@ function formatActorRoles(
       // actors: [betrayerId, summonerId]
       return [a[0] && `背盟方:${n(a[0])}`, a[1] && `受害方:${n(a[1])}`, loc].filter(Boolean).join('，');
 
+    // ── 计谋 ──
+    case '发起拉拢':
+    case '拉拢成功':
+    case '拉拢失败':
+      // actors: [initiatorId, primaryTargetId]
+      return [a[0] && `主谋:${n(a[0])}`, a[1] && `目标:${n(a[1])}`, loc].filter(Boolean).join('，');
+
+    case '发起离间':
+    case '离间成功':
+    case '离间失败':
+      // actors: [initiatorId, primaryTargetId, secondaryTargetId]
+      return [a[0] && `主谋:${n(a[0])}`, a[1] && `直接目标:${n(a[1])}`, a[2] && `次要目标:${n(a[2])}`, loc].filter(Boolean).join('，');
+
+    case '计谋终止':
+      // actors: [initiatorId, primaryTargetId, secondaryTargetId?]
+      return [a[0] && `主谋:${n(a[0])}`, a[1] && `直接目标:${n(a[1])}`, a[2] && `次要目标:${n(a[2])}`, loc].filter(Boolean).join('，');
+
     default: {
       // 未知类型：降级为扁平列表
       const actorNames = a.map(n).filter(Boolean).join('、');

@@ -19,6 +19,7 @@ import './negotiateTaxAction';
 import './pledgeAllegianceAction';
 import './proposeAllianceAction';
 import './breakAllianceAction';
+import './schemeAction';
 
 // 导出执行函数
 export { getAppointablePosts, getAppointableVacantPosts, executeAppoint, refreshPlayerLedger } from './appointAction';
@@ -91,3 +92,4 @@ export { executeBreakAlliance } from './breakAllianceAction';
 export { canTransferTreasury, executeTransferTreasury } from './treasuryTransferAction';
 export { submitTreasuryDraftAction } from './submitTreasuryDraftAction';
 export { submitDeployDraftAction } from './submitDeployDraftAction';
+export { executeInitiateScheme, cancelScheme } from './schemeAction';
