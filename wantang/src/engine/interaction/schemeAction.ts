@@ -119,6 +119,8 @@ export function executeInitiateScheme(
 
   // 构建实例
   const result = def.initInstance(initiator, params, ctx, precomputedRateOverride);
+  const target = cs.characters.get(params.primaryTargetId);
+  const targetName = target?.name ?? '?';
   const instance: SchemeInstance = {
     id: crypto.randomUUID(),
     schemeTypeId,
@@ -141,8 +143,6 @@ export function executeInitiateScheme(
   // 史书 emit
   // 离间事件必须带上 secondaryTarget 和方法名；拉拢不入史书（chronicleTypes 省略）
   if (def.chronicleTypes) {
-    const target = cs.characters.get(params.primaryTargetId);
-    const targetName = target?.name ?? '?';
     const chronicleActors = [initiatorId, params.primaryTargetId];
     let description = `${initiator.name}对${targetName}发动${def.name}`;
 

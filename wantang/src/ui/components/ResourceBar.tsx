@@ -6,24 +6,27 @@ import { getActualController, getDirectControlLimit } from '@engine/official/off
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { getTotalTreasury } from '@engine/territory/treasuryUtils';
 import { formatAmount, formatAmountSigned } from '@ui/utils/formatAmount';
+import { IconCoins, IconGrain, IconSeal, IconBalance, IconSword, IconCastle } from './icons/ResourceIcons';
 
-function formatValue(value: number): string {
-  return formatAmount(value);
-}
-
-function formatChange(change: number): string {
-  if (change === 0) return '';
-  return formatAmountSigned(change);
-}
+type ResourceGroup = 'treasury' | 'private' | 'status' | 'power';
 
 interface ResourceItem {
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   value: number;
   change: number;
   title?: string;
-  valueStr?: string; // 自定义显示文本（如 "3/4"）
+  valueStr?: string;
+  unit?: string;
+  group: ResourceGroup;
 }
+
+const GROUP_META: { key: ResourceGroup; label: string }[] = [
+  { key: 'treasury', label: '国库' },
+  { key: 'private', label: '私产' },
+  { key: 'status', label: '声望' },
+  { key: 'power', label: '军事' },
+];
 
 const ResourceBar: React.FC = () => {
   const player = useCharacterStore((s) => {
@@ -38,14 +41,14 @@ const ResourceBar: React.FC = () => {
   const resources: ResourceItem[] = useMemo(() => {
     if (!player) {
       return [
-        { label: '国库钱', icon: '💰', value: 0, change: 0 },
-        { label: '国库粮', icon: '🌾', value: 0, change: 0 },
-        { label: '私产钱', icon: '💰', value: 0, change: 0 },
-        { label: '私产粮', icon: '🌾', value: 0, change: 0 },
-        { label: '名望', icon: '⭐', value: 0, change: 0 },
-        { label: '兵力', icon: '⚔', value: 0, change: 0 },
-        { label: '领地', icon: '🏯', value: 0, change: 0 },
-        { label: '势力', icon: '🏴', value: 0, change: 0 },
+        { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, unit: '贯', group: 'treasury' },
+        { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, unit: '斛', group: 'treasury' },
+        { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, unit: '贯', group: 'private' },
+        { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, unit: '斛', group: 'private' },
+        { label: '名望', icon: <IconSeal size={26} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, group: 'status' },
+        { label: '正统', icon: <IconBalance size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, group: 'status' },
+        { label: '兵力', icon: <IconSword size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, group: 'power' },
+        { label: '领地', icon: <IconCastle size={22} className="text-[var(--color-accent-gold)]" />, value: 0, change: 0, group: 'power' },
       ];
     }
 
@@ -66,8 +69,6 @@ const ResourceBar: React.FC = () => {
       }
     }
 
-    // 国库月变动 = net - 私产变动（近似：国库变动 = 总变动 - 俸禄收入 + 私产扣费）
-    // 私产月变动 = privateChange
     let treasuryMoneyChange = 0;
     let treasuryGrainChange = 0;
     let privateMoneyChange = 0;
@@ -97,37 +98,105 @@ const ResourceBar: React.FC = () => {
       : undefined;
 
     return [
-      { label: '国库钱', icon: '💰', value: treasury.money, change: treasuryMoneyChange, title: treasuryMoneyTitle },
-      { label: '国库粮', icon: '🌾', value: treasury.grain, change: treasuryGrainChange, title: treasuryGrainTitle },
-      { label: '私产钱', icon: '💰', value: player.resources.money, change: privateMoneyChange, title: privateMoneyTitle },
-      { label: '私产粮', icon: '🌾', value: player.resources.grain, change: privateGrainChange, title: privateGrainTitle },
-      { label: '名望', icon: '⭐', value: player.resources.prestige, change: 0 },
-      { label: '正统性', icon: '🏛', value: player.resources.legitimacy, change: 0 },
-      { label: '兵力', icon: '⚔', value: totalTroops, change: 0 },
-      { label: '领地', icon: '🏯', value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}` },
+      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.money, change: treasuryMoneyChange, title: treasuryMoneyTitle, unit: '贯', group: 'treasury' },
+      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.grain, change: treasuryGrainChange, title: treasuryGrainTitle, unit: '斛', group: 'treasury' },
+      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.money, change: privateMoneyChange, title: privateMoneyTitle, unit: '贯', group: 'private' },
+      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.grain, change: privateGrainChange, title: privateGrainTitle, unit: '斛', group: 'private' },
+      { label: '名望', icon: <IconSeal size={26} className="text-[var(--color-accent-gold)]" />, value: player.resources.prestige, change: 0, group: 'status' },
+      { label: '正统', icon: <IconBalance size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.legitimacy, change: 0, group: 'status' },
+      { label: '兵力', icon: <IconSword size={22} className="text-[var(--color-accent-gold)]" />, value: totalTroops, change: 0, group: 'power' },
+      { label: '领地', icon: <IconCastle size={22} className="text-[var(--color-accent-gold)]" />, value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}`, group: 'power' },
     ];
   }, [player, characters, territories, playerLedger, milArmies, milBattalions]);
 
+  // 按组聚合
+  const grouped = GROUP_META.map((g) => ({
+    ...g,
+    items: resources.filter((r) => r.group === g.key),
+  }));
+
   return (
-    <div className="flex items-center justify-evenly bg-[var(--color-bg-panel)] border-b border-[var(--color-border)] px-4 py-2 shrink-0">
-      {resources.map((res) => (
-        <div key={res.label} className="flex items-center gap-1.5 text-sm" title={res.title}>
-          <span className="text-base">{res.icon}</span>
-          <span className="text-[var(--color-accent-gold)] font-medium">{res.label}</span>
-          <span className="text-[var(--color-text)] font-bold">{res.valueStr ?? formatValue(res.value)}</span>
-          {res.change !== 0 && (
-            <span
-              className={`text-xs ${
-                res.change > 0
-                  ? 'text-[var(--color-accent-green)]'
-                  : 'text-[var(--color-accent-red)]'
-              }`}
-            >
-              {formatChange(res.change)}
-            </span>
-          )}
-        </div>
-      ))}
+    <div
+      className="relative"
+      style={{
+        background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
+        borderBottom: '1px solid var(--color-border)',
+        borderLeft: '1px solid var(--color-border)',
+        borderBottomLeftRadius: '6px',
+      }}
+    >
+      {/* 顶部金线 */}
+      <div className="absolute top-0 left-0 right-0 h-px" style={{
+        background: 'linear-gradient(90deg, transparent, rgba(184,154,83,0.4) 30%, rgba(184,154,83,0.3) 100%)',
+      }} />
+      {/* 左侧装饰边 — 书简卷边 */}
+      <div className="absolute top-0 left-0 bottom-0 w-px" style={{
+        background: 'linear-gradient(180deg, rgba(184,154,83,0.3) 0%, rgba(184,154,83,0.15) 100%)',
+      }} />
+      {/* 底部左角装饰纹 */}
+      <div className="absolute bottom-0 left-0" style={{
+        width: '20px',
+        height: '1px',
+        background: 'linear-gradient(90deg, rgba(184,154,83,0.35), transparent)',
+      }} />
+
+      <div className="flex items-stretch py-1.5 pl-4 pr-2">
+        {grouped.map((group, gi) => (
+          <React.Fragment key={group.key}>
+            {gi > 0 && (
+              <div className="mx-3 my-1 shrink-0" style={{
+                width: '1px',
+                background: 'linear-gradient(180deg, transparent 0%, var(--color-border) 20%, var(--color-border) 80%, transparent 100%)',
+              }} />
+            )}
+            <div className="flex items-center gap-1">
+              {/* 组标题 */}
+              <span
+                className="text-[var(--color-text)] text-xs font-bold tracking-[0.2em] select-none shrink-0 mr-1"
+              >
+                {group.label}
+              </span>
+              {/* 组内资源项 */}
+              {group.items.map((res, ri) => (
+                <div
+                  key={ri}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded cursor-default transition-colors hover:bg-[var(--color-bg-surface)]"
+                  title={res.title}
+                >
+                  <div className="w-6 flex items-center justify-center shrink-0">
+                    {res.icon}
+                  </div>
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="flex items-baseline">
+                      <span
+                        className="text-[var(--color-text)] text-sm font-bold"
+                        style={{ fontFeatureSettings: '"tnum"' }}
+                      >
+                        {res.valueStr ?? formatAmount(res.value)}
+                      </span>
+                      {res.unit && (
+                        <span className="text-[var(--color-text)] text-sm font-bold">{res.unit}</span>
+                      )}
+                    </span>
+                    {res.change !== 0 && (
+                      <span
+                        className={`text-xs ${
+                          res.change > 0
+                            ? 'text-[var(--color-text)] opacity-60'
+                            : 'text-[var(--color-accent-red)]'
+                        }`}
+                        style={{ fontFeatureSettings: '"tnum"', marginTop: '1px' }}
+                      >
+                        {formatAmountSigned(res.change)}{res.unit ?? ''}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };

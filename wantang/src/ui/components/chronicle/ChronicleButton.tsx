@@ -18,7 +18,7 @@ const ChronicleButton: React.FC = () => {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-2 right-12 z-30 w-9 h-9 rounded bg-[var(--color-bg-panel)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)] transition-colors flex items-center justify-center text-base font-bold"
+        className="w-10 h-10 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-base font-bold relative"
         title="史书阁"
       >
         史

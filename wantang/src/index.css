@@ -3,17 +3,22 @@
 /* ========== 晚唐风云 全局样式 ========== */
 
 :root {
-  /* 中国古风配色 */
-  --color-bg: #1a1a2e;
-  --color-bg-panel: #16213e;
-  --color-bg-surface: #0f3460;
-  --color-text: #e0d5c1;
-  --color-text-muted: #8b7e6a;
-  --color-accent-gold: #c9a959;
-  --color-accent-red: #c0392b;
-  --color-accent-green: #27ae60;
-  --color-accent-blue: #2980b9;
-  --color-border: #2a2a4a;
+  /* 晚唐·墨韵配色 */
+  --color-bg: #12100e;
+  --color-bg-panel: #1c1713;
+  --color-bg-surface: #2a2520;
+  --color-text: #ddd2bf;
+  --color-text-muted: #9d917d;
+  --color-accent-gold: #b89a53;
+  --color-accent-red: #a84535;
+  --color-accent-green: #7a9e6d;
+  --color-accent-blue: #58718a;
+  --color-border: #4a3e31;
+
+  /* 地图专用（当前同通用值，为后续独立调整预留） */
+  --color-map-bg: #12100e;
+  --color-map-border: #4a3e31;
+  --color-map-label: #ddd2bf;
 
   /* 字号阶梯 */
   --text-xs: 0.8rem;
@@ -57,6 +62,13 @@
 
 @utility section-divider {
   border-bottom: 1px solid var(--color-border);
+}
+
+@utility resource-separator {
+  width: 1px;
+  height: 1.5rem;
+  background: linear-gradient(to bottom, transparent, #5a4a38, transparent);
+  flex-shrink: 0;
 }
 
 * {

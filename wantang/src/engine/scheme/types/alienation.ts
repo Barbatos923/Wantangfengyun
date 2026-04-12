@@ -404,7 +404,7 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
     };
   },
 
-  applyEffects(scheme, outcome, ctx) {
+  applyEffects(scheme, outcome, _ctx) {
     const cs = useCharacterStore.getState();
     const data = scheme.data as AlienationData;
 

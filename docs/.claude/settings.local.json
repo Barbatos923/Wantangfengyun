@@ -11,7 +11,12 @@
       "Bash(npx --prefix ../wantang vitest run --project ../wantang)",
       "Bash(npx --prefix ../wantang vitest run)",
       "Bash(grep:*)",
-      "Bash(wc -l \"D:/桌面/Github上传/Wantangfengyun/wantang/src/engine/scheme/\"*.ts)"
+      "Bash(wc -l \"D:/桌面/Github上传/Wantangfengyun/wantang/src/engine/scheme/\"*.ts)",
+      "Bash(xargs ls:*)",
+      "Bash(ls:*)",
+      "Bash(npx vite:*)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

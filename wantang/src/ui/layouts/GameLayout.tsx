@@ -32,16 +32,33 @@ const GameLayout: React.FC = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
-      {/* Top: Resource Bar */}
-      <ResourceBar />
-
       {/* Middle: Left Panel + Map + Side Menu */}
-      <div className="flex-1 flex flex-row min-h-0">
+      <div className="flex-1 flex flex-row min-h-0 relative">
         {/* Left panel (character / territory info) */}
         {panelOpen && <LeftPanel />}
 
         {/* Map area with overlays */}
         <div className="flex-1 relative flex">
+          {/* 资源栏书简（右上浮层） */}
+          <div className="absolute top-0 right-0 z-20 flex items-stretch">
+            <ResourceBar />
+            <div className="flex items-center gap-1 px-2 shrink-0"
+              style={{
+                background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
+                borderBottom: '1px solid var(--color-border)',
+                borderLeft: '1px solid var(--color-border)',
+              }}
+            >
+              <ChronicleButton />
+              <button
+                onClick={() => setShowSystemMenu(true)}
+                className="w-9 h-9 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-lg"
+                title="系统菜单 (ESC)"
+              >
+                ⚙
+              </button>
+            </div>
+          </div>
           {/* Alert bar overlaid top-left（行政任务通知） */}
           <div className="absolute top-0 left-0 z-10">
             <AlertBar />
@@ -69,17 +86,7 @@ const GameLayout: React.FC = () => {
       {/* 中心弹出框（最高层级） */}
       <EventModal />
 
-      {/* 右上角史书阁按钮（在系统菜单按钮左侧） */}
-      <ChronicleButton />
-
-      {/* 右上角系统菜单按钮 */}
-      <button
-        onClick={() => setShowSystemMenu(true)}
-        className="fixed top-2 right-2 z-30 w-9 h-9 rounded bg-[var(--color-bg-panel)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-text)] transition-colors flex items-center justify-center text-lg"
-        title="系统菜单 (ESC)"
-      >
-        ⚙
-      </button>
+      {/* 史书和系统菜单按钮已移入顶栏右端 */}
 
       {/* 系统菜单 */}
       {showSystemMenu && <SystemMenu onClose={() => setShowSystemMenu(false)} />}
