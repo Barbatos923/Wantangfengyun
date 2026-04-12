@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@ui/components/base/Modal';
 import { ModalHeader } from '@ui/components/base/ModalHeader';
 import { Button } from '@ui/components/base/Button';
+import { Select } from '@ui/components/base/Select';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { canTransferTreasury, executeTransferTreasury } from '@engine/interaction';
 import { formatAmount } from '@ui/utils/formatAmount';
@@ -32,6 +33,14 @@ const TreasuryTransferModal: React.FC<Props> = ({ charId, onClose, lockedFromId,
   const [toId, setToId] = useState<string>(initialTo);
   const [moneyInput, setMoney] = useState<number>(0);
   const [grainInput, setGrain] = useState<number>(0);
+
+  // Fix toId when fromId changes
+  useEffect(() => {
+    if (toId === fromId || !zhouList.some((t) => t.id === toId && t.id !== fromId)) {
+      const next = zhouList.find((t) => t.id !== fromId);
+      if (next) setToId(next.id);
+    }
+  }, [fromId, zhouList, toId]);
   const money = lockedResource === 'grain' ? 0 : moneyInput;
   const grain = lockedResource === 'money' ? 0 : grainInput;
 
@@ -61,35 +70,31 @@ const TreasuryTransferModal: React.FC<Props> = ({ charId, onClose, lockedFromId,
                   {fromT?.name}（钱{formatAmount(fromT?.treasury?.money ?? 0)} 粮{formatAmount(fromT?.treasury?.grain ?? 0)}）
                 </div>
               ) : (
-                <select
-                  className="w-full px-2 py-1.5 bg-[var(--color-bg)] border border-[var(--color-border)] rounded text-sm text-[var(--color-text)]"
+                <Select
+                  className="w-full"
                   value={fromId}
-                  onChange={(e) => setFromId(e.target.value)}
-                >
-                  {zhouList.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}（钱{formatAmount(t.treasury!.money)} 粮{formatAmount(t.treasury!.grain)}）
-                    </option>
-                  ))}
-                </select>
+                  onChange={setFromId}
+                  options={zhouList.map((t) => ({
+                    value: t.id,
+                    label: `${t.name}（钱${formatAmount(t.treasury!.money)} 粮${formatAmount(t.treasury!.grain)}）`,
+                  }))}
+                />
               )}
             </div>
 
             <div className="space-y-1">
               <label className="text-xs text-[var(--color-text-muted)]">目标州</label>
-              <select
-                className="w-full px-2 py-1.5 bg-[var(--color-bg)] border border-[var(--color-border)] rounded text-sm text-[var(--color-text)]"
+              <Select
+                className="w-full"
                 value={toId}
-                onChange={(e) => setToId(e.target.value)}
-              >
-                {zhouList
+                onChange={setToId}
+                options={zhouList
                   .filter((t) => t.id !== fromId)
-                  .map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}（钱{formatAmount(t.treasury!.money)} 粮{formatAmount(t.treasury!.grain)}）
-                    </option>
-                  ))}
-              </select>
+                  .map((t) => ({
+                    value: t.id,
+                    label: `${t.name}（钱${formatAmount(t.treasury!.money)} 粮${formatAmount(t.treasury!.grain)}）`,
+                  }))}
+              />
             </div>
 
             <div className={lockedResource ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'}>

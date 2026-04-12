@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '../base/Button';
+import { Select } from '../base/Select';
 import { loadLlmConfig, saveLlmConfig } from '@engine/chronicle/llm/llmConfig';
 import { invalidateProvider } from '@engine/chronicle/chronicleService';
 import { createProvider } from '@engine/chronicle/llm/createProvider';
@@ -77,19 +78,17 @@ const LlmConfigPanel: React.FC = () => {
 
       <label className="flex flex-col gap-1">
         <span className="text-[var(--color-text-muted)] text-xs">Provider</span>
-        <select
+        <Select
           value={config.provider}
-          onChange={(e) =>
-            setConfig({ ...config, provider: e.target.value as LlmConfig['provider'] })
+          onChange={(v) =>
+            setConfig({ ...config, provider: v as LlmConfig['provider'] })
           }
-          className="bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-[var(--color-text)]"
-        >
-          <option value="direct">Direct（BYOK 直连）</option>
-          <option value="mock">Mock（离线兜底，仅拼接事件）</option>
-          <option value="proxy" disabled>
-            Proxy（暂未实现）
-          </option>
-        </select>
+          options={[
+            { value: 'direct', label: 'Direct（BYOK 直连）' },
+            { value: 'mock', label: 'Mock（离线兜底，仅拼接事件）' },
+            { value: 'proxy', label: 'Proxy（暂未实现）' },
+          ]}
+        />
       </label>
 
       <label className="flex flex-col gap-1">

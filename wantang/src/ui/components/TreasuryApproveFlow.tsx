@@ -3,7 +3,7 @@
 // 支持逐条编辑（来源/目标/资源/金额）、删除、全部批准/驳回。
 
 import { useState } from 'react';
-import { Modal, ModalHeader, Button } from './base';
+import { Modal, ModalHeader, Button, Select } from './base';
 import { useNpcStore } from '@engine/npc/NpcStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useTurnManager } from '@engine/TurnManager';
@@ -124,37 +124,27 @@ function TreasuryApproveBody({ task, visible, onClose }: TreasuryApproveBodyProp
                     : 'border-[var(--color-border)] bg-[var(--color-bg)]'
                 }`}
               >
-                <select
+                <Select
                   value={e.fromZhouId}
-                  onChange={(ev) => updateEntry(i, { fromZhouId: ev.target.value })}
-                  className="flex-1 bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-                >
-                  {rulerZhous.map((z) => (
-                    <option key={z.id} value={z.id}>
-                      {z.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(v) => updateEntry(i, { fromZhouId: v })}
+                  className="flex-1"
+                  options={rulerZhous.map((z) => ({ value: z.id, label: z.name }))}
+                />
                 <span className="text-[var(--color-text-muted)]">→</span>
-                <select
+                <Select
                   value={e.toZhouId}
-                  onChange={(ev) => updateEntry(i, { toZhouId: ev.target.value })}
-                  className="flex-1 bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-                >
-                  {rulerZhous.map((z) => (
-                    <option key={z.id} value={z.id}>
-                      {z.name}
-                    </option>
-                  ))}
-                </select>
-                <select
+                  onChange={(v) => updateEntry(i, { toZhouId: v })}
+                  className="flex-1"
+                  options={rulerZhous.map((z) => ({ value: z.id, label: z.name }))}
+                />
+                <Select
                   value={e.resource}
-                  onChange={(ev) => updateEntry(i, { resource: ev.target.value as 'money' | 'grain' })}
-                  className="bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-                >
-                  <option value="money">钱</option>
-                  <option value="grain">粮</option>
-                </select>
+                  onChange={(v) => updateEntry(i, { resource: v as 'money' | 'grain' })}
+                  options={[
+                    { value: 'money', label: '钱' },
+                    { value: 'grain', label: '粮' },
+                  ]}
+                />
                 <div className="flex flex-col items-end">
                   <input
                     type="number"

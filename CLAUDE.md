@@ -271,9 +271,12 @@ Phase 7（UI 美术 + 地图升级）进行中 40%。详细进度见 `docs/miles
 - ✅ 第一批完成：全局色 token + ResourceBar 书简造型 + Tooltip 组件 + SideMenu SVG 图标
 - ✅ 第二批完成：CK3 式底部浮动（PlayerIdentityCard + TimeControl）+ 角色切换移入系统菜单
 - ✅ 第三批完成：CharacterPanel CK3 式重构（拆分4文件 + 公共组件 + 全局滚动条）
+- ✅ 第三批续：TerritoryPanel CK3 式重构（拆分4文件 + ProgressBar + 道级子州可跳转）
+- ✅ 全局表单风格化：Select 自定义下拉（Portal渲染）+ number input 隐藏原生 spinner + 全局 title→Tooltip
+- ✅ RealmPanel 细调：领地Tab精简（去收入列）+ 经济Tab字号/颜色统一 + 属下赋税仅显示有地臣属
 - ⬜ 后续：其他核心面板跟进 → 流程面板 → 地图数据扩展(100州) → 地图分层重构 → 角色头像
 
-**UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip / PanelSection / InfoRow / AvatarBadge）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。
+**UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip / PanelSection / InfoRow / AvatarBadge / ProgressBar / Select）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。
 
 ### 尚未完成（后续系统，优先级降低）
 - 更多个人交互 | 谋略精修（更多计谋类型 + AI 自拟方法 v3）

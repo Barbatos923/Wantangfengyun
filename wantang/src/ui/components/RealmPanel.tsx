@@ -3,8 +3,6 @@ import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { useLedgerStore } from '@engine/official/LedgerStore';
-import { calculateMonthlyIncome } from '@engine/territory/territoryUtils';
-import { getEffectiveAbilities } from '@engine/character/characterUtils';
 import { calculateMonthlyLedger, getVassals, getDynamicTitle, getActualController, getHeldPosts } from '@engine/official/officialUtils';
 import { positionMap } from '@data/positions';
 import { executeRedistributionChange, executeToggleSuccession, executeToggleAppointRight } from '@engine/interaction';
@@ -40,8 +38,6 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
 
-  const abilities = player ? getEffectiveAbilities(player) : null;
-
   // 经济Tab数据
   const cachedLedger = useLedgerStore((s) => s.playerLedger);
   const playerLedger = cachedLedger ?? (player ? calculateMonthlyLedger(player, territories, characters) : null);
@@ -51,7 +47,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
   );
 
   // 国库预计算
-  const controllerIndex = useTerritoryStore.getState().controllerIndex;
+  const controllerIndex = useTerritoryStore((s) => s.controllerIndex);
 
   const redistributionRate = player?.redistributionRate ?? 60; // player 可能为 undefined
 
@@ -104,9 +100,6 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                     <p className="text-center text-[var(--color-text-muted)] py-2 text-sm">暂无直辖州</p>
                   ) : (
                     playerZhouTerritories.map((t) => {
-                      const income = abilities
-                        ? calculateMonthlyIncome(t, abilities)
-                        : { money: 0, grain: 0, troops: 0 };
                       const treasury = t.treasury ?? { money: 0, grain: 0 };
                       // 该州净值 = 从 ledger.treasuryChanges 读取
                       const tcDelta = playerLedger?.treasuryChanges.get(t.id);
@@ -127,18 +120,15 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                               <span className="text-xs text-[var(--color-text-muted)]">{t.territoryType === 'civil' ? '民政' : '军事'}</span>
                               {player?.capital === t.id && <span className="text-xs text-purple-400 font-bold">治所</span>}
                             </div>
-                            <div className="flex gap-2 text-xs text-[var(--color-text-muted)] shrink-0">
-                              <span>控{Math.floor(t.control)}</span>
-                              <span>发{Math.floor(t.development)}</span>
-                              <span>民{Math.floor(t.populace)}</span>
+                            <div className="flex gap-2 text-xs text-[var(--color-text)] shrink-0">
+                              <span>控制度{Math.floor(t.control)}</span>
+                              <span>发展度{Math.floor(t.development)}</span>
+                              <span>民心{Math.floor(t.populace)}</span>
                             </div>
                           </div>
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-[var(--color-text-muted)]">
+                            <span className="text-[var(--color-text)]">
                               国库 钱{formatAmount(treasury.money)} 粮{formatAmount(treasury.grain)}
-                            </span>
-                            <span className="text-[var(--color-text-muted)]">
-                              收入 钱+{formatAmount(income.money)} 粮+{formatAmount(income.grain)}
                             </span>
                             <span>
                               <span className={netMoney >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
@@ -165,15 +155,15 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
               {/* ══════ 国库部分 ══════ */}
               <div className="rounded border border-[var(--color-border)] overflow-hidden">
                 <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                  <span className="text-xs font-bold text-[var(--color-accent-gold)]">国库</span>
+                  <span className="text-sm font-bold text-[var(--color-accent-gold)]">国库概览</span>
                 </div>
                 <div className="divide-y divide-[var(--color-border)]">
                   {/* 治所 */}
                   {player && (() => {
                     const capitalT = player.capital ? territories.get(player.capital) : undefined;
                     return (
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">治所</span>
+                      <div className="flex justify-between px-3 py-2 text-xs">
+                        <span className="text-[var(--color-text)]">治所</span>
                         <span className="text-[var(--color-text)] font-bold">{capitalT ? capitalT.name : '无'}</span>
                       </div>
                     );
@@ -189,7 +179,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                       }
                     }
                     return (
-                      <div className="flex justify-between px-3 py-2 text-sm font-bold">
+                      <div className="flex justify-between px-3 py-2 text-xs font-bold">
                         <span className="text-[var(--color-accent-gold)]">国库总计</span>
                         <span className="text-[var(--color-accent-gold)]">钱{formatAmount(totalMoney)} 粮{formatAmount(totalGrain)}</span>
                       </div>
@@ -197,8 +187,8 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                   })()}
                   {/* 各州国库 */}
                   {playerZhouTerritories.map((t) => (
-                    <div key={t.id} className="flex justify-between px-3 py-1.5 text-xs">
-                      <span className="text-[var(--color-text-muted)]">
+                    <div key={t.id} className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">
                         {t.name}{player?.capital === t.id ? ' (治所)' : ''}
                       </span>
                       <span className="text-[var(--color-text)]">
@@ -220,19 +210,19 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
               {playerLedger && (
                 <div className="rounded border border-[var(--color-border)] overflow-hidden">
                   <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                    <span className="text-xs font-bold text-[var(--color-accent-green,#27ae60)]">国库收入</span>
+                    <span className="text-sm font-bold text-[var(--color-accent-gold)]">国库收入</span>
                   </div>
                   <div className="divide-y divide-[var(--color-border)]">
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">领地产出</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">领地产出</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.territoryIncome.money)} 粮{formatAmount(playerLedger.territoryIncome.grain)}</span>
                     </div>
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">属下上缴</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">属下上缴</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.vassalTribute.money)} 粮{formatAmount(playerLedger.vassalTribute.grain)}</span>
                     </div>
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">回拨收入</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">回拨收入</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.redistributionReceived.money)} 粮{formatAmount(playerLedger.redistributionReceived.grain)}</span>
                     </div>
                   </div>
@@ -243,23 +233,23 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
               {playerLedger && (
                 <div className="rounded border border-[var(--color-border)] overflow-hidden">
                   <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                    <span className="text-xs font-bold text-[var(--color-accent-red,#e74c3c)]">国库支出</span>
+                    <span className="text-sm font-bold text-[var(--color-accent-gold)]">国库支出</span>
                   </div>
                   <div className="divide-y divide-[var(--color-border)]">
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">属下俸禄</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">属下俸禄</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.subordinateSalaries.money)} 粮{formatAmount(playerLedger.subordinateSalaries.grain)}</span>
                     </div>
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">军事维持</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">军事维持</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.militaryMaintenance.money)} 粮{formatAmount(playerLedger.militaryMaintenance.grain)}</span>
                     </div>
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">回拨支出</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">回拨支出</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.redistributionPaid.money)} 粮{formatAmount(playerLedger.redistributionPaid.grain)}</span>
                     </div>
-                    <div className="flex justify-between px-3 py-2 text-sm">
-                      <span className="text-[var(--color-text-muted)]">上缴领主</span>
+                    <div className="flex justify-between px-3 py-2 text-xs">
+                      <span className="text-[var(--color-text)]">上缴领主</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.overlordTribute.money)} 粮{formatAmount(playerLedger.overlordTribute.grain)}</span>
                     </div>
                   </div>
@@ -273,7 +263,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                   grain: playerLedger.net.grain - playerLedger.privateChange.grain,
                 };
                 return (
-                  <div className="flex justify-between px-3 py-2 rounded border border-[var(--color-border)] text-sm font-bold">
+                  <div className="flex justify-between px-3 py-2 rounded border border-[var(--color-border)] text-xs font-bold">
                     <span className="text-[var(--color-text)]">国库月净值</span>
                     <span>
                       <span className={tNet.money >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
@@ -291,22 +281,22 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
               {/* ══════ 私产部分 ══════ */}
               <div className="rounded border border-[var(--color-border)] overflow-hidden">
                 <div className="px-3 py-1.5 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-                  <span className="text-xs font-bold text-[var(--color-text)]">私产</span>
+                  <span className="text-sm font-bold text-[var(--color-accent-gold)]">私产</span>
                 </div>
                 <div className="divide-y divide-[var(--color-border)]">
                   {player && (
-                    <div className="flex justify-between px-3 py-2 text-sm font-bold">
+                    <div className="flex justify-between px-3 py-2 text-xs font-bold">
                       <span className="text-[var(--color-text)]">私产总额</span>
                       <span className="text-[var(--color-text)]">钱{formatAmount(player.resources.money)} 粮{formatAmount(player.resources.grain)}</span>
                     </div>
                   )}
                   {playerLedger && (
                     <>
-                      <div className="flex justify-between px-3 py-2 text-sm">
-                        <span className="text-[var(--color-text-muted)]">职位俸禄（收入）</span>
-                        <span className="text-[var(--color-accent-green,#27ae60)]">钱+{formatAmount(playerLedger.positionSalary.money)} 粮+{formatAmount(playerLedger.positionSalary.grain)}</span>
+                      <div className="flex justify-between px-3 py-2 text-xs">
+                        <span className="text-[var(--color-text)]">职位俸禄（收入）</span>
+                        <span className="text-[var(--color-text)]">钱{formatAmount(playerLedger.positionSalary.money)} 粮{formatAmount(playerLedger.positionSalary.grain)}</span>
                       </div>
-                      <div className="flex justify-between px-3 py-2 text-sm font-bold">
+                      <div className="flex justify-between px-3 py-2 text-xs font-bold">
                         <span className="text-[var(--color-text)]">私产月净值</span>
                         <span>
                           <span className={playerLedger.privateChange.money >= 0 ? 'text-[var(--color-accent-green,#27ae60)]' : 'text-[var(--color-accent-red,#e74c3c)]'}>
@@ -333,7 +323,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                 <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">回拨率</h3>
                 <div className="px-3 py-2 rounded border border-[var(--color-border)]">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[var(--color-text-muted)]">当前回拨率</span>
+                    <span className="text-sm text-[var(--color-text)]">当前回拨率</span>
                     <div className="flex items-center gap-2">
                       <button
                         className="w-6 h-6 rounded border border-[var(--color-border)] text-sm font-bold text-[var(--color-text)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
@@ -377,14 +367,12 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
                           ? isCapitalZhouOfDao(post.territoryId, territories)
                           : false;
                         const editable = canEdit && !isCapZhou;
-                        const capZhouTooltip = '由所在道的主岗统一控制，请在对应道级岗位调整政策';
                         return (
                           <div
                             key={post.id}
                             className={`flex items-center justify-between px-3 py-2 rounded border border-[var(--color-border)] ${
                               isCapZhou ? 'opacity-60' : ''
                             }`}
-                            title={isCapZhou ? capZhouTooltip : undefined}
                           >
                             <div className="min-w-0">
                               <span className="text-sm text-[var(--color-text)]">
@@ -444,7 +432,7 @@ const RealmPanel: React.FC<RealmPanelProps> = ({ onClose }) => {
 
               {/* 对下属的赋税等级 */}
               {player && (() => {
-                const vassals = getVassals(player.id, characters);
+                const vassals = getVassals(player.id, characters).filter((v) => v.isRuler);
                 if (vassals.length === 0) return null;
                 return (
                   <div>

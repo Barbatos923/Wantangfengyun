@@ -10,7 +10,7 @@ import { executeDeclareWar } from '@engine/interaction';
 import { canAffordWarCost } from '@engine/official/legitimacyCalc';
 import { useWarStore } from '@engine/military/WarStore';
 import { toAbsoluteDay } from '@engine/dateUtils';
-import { Modal, ModalHeader, Button } from './base';
+import { Modal, ModalHeader, Button, Select } from './base';
 
 interface DeclareWarFlowProps {
   targetId: string;
@@ -202,21 +202,18 @@ const DeclareWarFlow: React.FC<DeclareWarFlowProps> = ({ targetId, onClose }) =>
             {annexTargets.length === 0 ? (
               <div className="text-xs text-[var(--color-accent-red)]">无相邻可兼并州</div>
             ) : (
-              <select
-                className="w-full px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg-surface)] text-sm text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent-gold)]"
+              <Select
+                className="w-full"
                 value={selectedAnnexTarget}
-                onChange={(e) => setSelectedAnnexTarget(e.target.value)}
-              >
-                <option value="">-- 请选择 --</option>
-                {annexTargets.map((id) => {
-                  const t = territories.get(id);
-                  return (
-                    <option key={id} value={id}>
-                      {t?.name ?? id}
-                    </option>
-                  );
-                })}
-              </select>
+                onChange={setSelectedAnnexTarget}
+                options={[
+                  { value: '', label: '-- 请选择 --' },
+                  ...annexTargets.map((id) => {
+                    const t = territories.get(id);
+                    return { value: id, label: t?.name ?? id };
+                  }),
+                ]}
+              />
             )}
           </div>
         )}

@@ -31,6 +31,7 @@ import {
 } from '@engine/military/militaryCalc';
 import { getVassals } from '@engine/official/postQueries';
 import type { Territory, Post } from '@engine/territory/types';
+import { Select } from './base';
 
 interface MilitaryPanelProps {
   onClose: () => void;
@@ -291,28 +292,26 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                       value={newArmyName}
                       onChange={(e) => setNewArmyName(e.target.value)}
                     />
-                    <select
-                      className="flex-1 px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-surface)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
+                    <Select
+                      className="flex-1"
                       value={newArmyLocationId}
-                      onChange={(e) => setNewArmyLocationId(e.target.value)}
-                    >
-                      <option value="">-- 驻地 --</option>
-                      {playerControlledZhou.map((t) => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
-                      ))}
-                    </select>
+                      onChange={setNewArmyLocationId}
+                      options={[
+                        { value: '', label: '-- 驻地 --' },
+                        ...playerControlledZhou.map((t) => ({ value: t.id, label: t.name })),
+                      ]}
+                    />
                   </div>
                   <div>
-                    <select
-                      className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-surface)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
+                    <Select
+                      className="w-full"
                       value={newArmyPostId}
-                      onChange={(e) => setNewArmyPostId(e.target.value)}
-                    >
-                      <option value="">-- 无岗位绑定（私兵）--</option>
-                      {playerControlPosts.map((p) => (
-                        <option key={p.id} value={p.id}>{p.postName}（{p.territoryName}）</option>
-                      ))}
-                    </select>
+                      onChange={setNewArmyPostId}
+                      options={[
+                        { value: '', label: '-- 无岗位绑定（私兵）--' },
+                        ...playerControlPosts.map((p) => ({ value: p.id, label: `${p.postName}（${p.territoryName}）` })),
+                      ]}
+                    />
                   </div>
                   <div className="flex gap-2 justify-end">
                     <button
@@ -388,42 +387,35 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           {/* 兵马使任命 */}
                           <div className="flex items-center justify-between px-4 py-2 bg-[var(--color-bg)]">
                             <span className="text-xs font-bold text-[var(--color-text-muted)]">兵马使</span>
-                            <select
-                              className="px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg-surface)] text-[var(--color-text)] text-xs focus:outline-none focus:border-[var(--color-accent-gold)]"
+                            <Select
+                              className=""
                               value={army.commanderId ?? ''}
-                              onChange={(e) => {
-                                const val = e.target.value || null;
-                                executeSetCommander(army.id, val);
+                              onChange={(v) => {
+                                executeSetCommander(army.id, v || null);
                               }}
-                            >
-                              <option value="">无将领</option>
-                              {playerId && (() => {
-                                const armyDaoId = locationTerritory?.parentId;
-                                // 已被其他军任命为兵马使的角色ID
-                                // 全局唯一：排除在任何军（不限 owner）已任兵马使的角色
-                                const takenCommanderIds = new Set(
-                                  Array.from(armies.values())
-                                    .filter((a) => a.id !== army.id && a.commanderId)
-                                    .map((a) => a.commanderId!),
-                                );
-                                return getVassals(playerId, characters)
-                                  .filter((c) => {
-                                    // 排除已在其他军任职的
-                                    if (takenCommanderIds.has(c.id)) return false;
-                                    // 该臣属控制的州
-                                    const controlledZhou = Array.from(territories.values()).filter(
-                                      (t) => t.tier === 'zhou' && t.posts.some((p) => p.holderId === c.id),
-                                    );
-                                    if (controlledZhou.length === 0) return true; // 纯廷臣，随侍可用
-                                    return controlledZhou.some((t) => t.parentId === armyDaoId);
-                                  })
-                                  .map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                      {c.name}（军事{c.abilities.military}）
-                                    </option>
-                                  ));
-                              })()}
-                            </select>
+                              options={[
+                                { value: '', label: '无将领' },
+                                ...(() => {
+                                  if (!playerId) return [];
+                                  const armyDaoId = locationTerritory?.parentId;
+                                  const takenCommanderIds = new Set(
+                                    Array.from(armies.values())
+                                      .filter((a) => a.id !== army.id && a.commanderId)
+                                      .map((a) => a.commanderId!),
+                                  );
+                                  return getVassals(playerId, characters)
+                                    .filter((c) => {
+                                      if (takenCommanderIds.has(c.id)) return false;
+                                      const controlledZhou = Array.from(territories.values()).filter(
+                                        (t) => t.tier === 'zhou' && t.posts.some((p) => p.holderId === c.id),
+                                      );
+                                      if (controlledZhou.length === 0) return true;
+                                      return controlledZhou.some((t) => t.parentId === armyDaoId);
+                                    })
+                                    .map((c) => ({ value: c.id, label: `${c.name}（军事${c.abilities.military}）` }));
+                                })(),
+                              ]}
+                            />
                           </div>
 
                           {/* 营列表 */}
@@ -451,25 +443,22 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                                   </div>
                                   <div className="flex gap-2 shrink-0 items-center">
                                     {transferringBatId === bat.id ? (
-                                      <select
-                                        className="px-1.5 py-0.5 rounded border border-[var(--color-accent-gold)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs focus:outline-none"
-                                        autoFocus
+                                      <Select
+                                        className=""
                                         value=""
-                                        onChange={(e) => {
-                                          if (e.target.value) {
-                                            executeTransferBattalion(bat.id, e.target.value);
+                                        onChange={(v) => {
+                                          if (v) {
+                                            executeTransferBattalion(bat.id, v);
                                             setTransferringBatId(null);
                                           }
                                         }}
-                                        onBlur={() => setTransferringBatId(null)}
-                                      >
-                                        <option value="">调往...</option>
-                                        {playerArmies
-                                          .filter((a) => a.id !== army.id)
-                                          .map((a) => (
-                                            <option key={a.id} value={a.id}>{a.name}</option>
-                                          ))}
-                                      </select>
+                                        options={[
+                                          { value: '', label: '调往...' },
+                                          ...playerArmies
+                                            .filter((a) => a.id !== army.id)
+                                            .map((a) => ({ value: a.id, label: a.name })),
+                                        ]}
+                                      />
                                     ) : (
                                       <button
                                         className="text-xs text-[var(--color-accent-gold)] hover:opacity-75 transition-opacity"
@@ -506,36 +495,32 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
               {/* 选择军 */}
               <div>
                 <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1.5">选择军队</label>
-                <select
-                  className="w-full px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm focus:outline-none focus:border-[var(--color-accent-gold)]"
+                <Select
+                  className="w-full"
                   value={recruitArmyId}
-                  onChange={(e) => handleRecruitArmyChange(e.target.value)}
-                >
-                  <option value="">-- 请选择军队 --</option>
-                  {playerArmies.map((army) => (
-                    <option key={army.id} value={army.id}>{army.name}</option>
-                  ))}
-                </select>
+                  onChange={handleRecruitArmyChange}
+                  options={[
+                    { value: '', label: '-- 请选择军队 --' },
+                    ...playerArmies.map((army) => ({ value: army.id, label: army.name })),
+                  ]}
+                />
               </div>
 
               {/* 选择州 */}
               <div>
                 <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1.5">征兵之州</label>
-                <select
-                  className="w-full px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm focus:outline-none focus:border-[var(--color-accent-gold)]"
+                <Select
+                  className="w-full"
                   value={recruitTerritoryId}
-                  onChange={(e) => setRecruitTerritoryId(e.target.value)}
-                >
-                  <option value="">-- 请选择州 --</option>
-                  {playerControlledZhou.map((t) => {
-                    const available = getAvailableRecruits(t);
-                    return (
-                      <option key={t.id} value={t.id}>
-                        {t.name}（可征{available}人）
-                      </option>
-                    );
-                  })}
-                </select>
+                  onChange={setRecruitTerritoryId}
+                  options={[
+                    { value: '', label: '-- 请选择州 --' },
+                    ...playerControlledZhou.map((t) => ({
+                      value: t.id,
+                      label: `${t.name}（可征${getAvailableRecruits(t)}人）`,
+                    })),
+                  ]}
+                />
                 {recruitTerritoryId && (() => {
                   const recT = territories.get(recruitTerritoryId);
                   const recTreasury = recT?.treasury?.money ?? 0;
@@ -671,21 +656,18 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
               {/* 选择军 */}
               <div>
                 <label className="block text-xs font-bold text-[var(--color-text-muted)] mb-1.5">选择军队</label>
-                <select
-                  className="w-full px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm focus:outline-none focus:border-[var(--color-accent-gold)]"
+                <Select
+                  className="w-full"
                   value={rewardArmyId}
-                  onChange={(e) => setRewardArmyId(e.target.value)}
-                >
-                  <option value="">-- 请选择军队 --</option>
-                  {playerArmies.map((army) => {
-                    const morale = getArmyMorale(army, battalions);
-                    return (
-                      <option key={army.id} value={army.id}>
-                        {army.name}（士气{Math.round(morale)}）
-                      </option>
-                    );
-                  })}
-                </select>
+                  onChange={setRewardArmyId}
+                  options={[
+                    { value: '', label: '-- 请选择军队 --' },
+                    ...playerArmies.map((army) => ({
+                      value: army.id,
+                      label: `${army.name}（士气${Math.round(getArmyMorale(army, battalions))}）`,
+                    })),
+                  ]}
+                />
               </div>
 
               {/* 当前军士气信息 */}
@@ -1284,31 +1266,30 @@ const MilitaryPanel: React.FC<MilitaryPanelProps> = ({ onClose }) => {
                           return available.length === 0 ? (
                             <p className="text-xs text-[var(--color-text-muted)]">无可用军队</p>
                           ) : (
-                            <select
-                              className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
+                            <Select
+                              className="w-full"
                               value={quickDeployArmyId}
-                              onChange={(e) => setQuickDeployArmyId(e.target.value)}
-                            >
-                              <option value="">-- 选择军队 --</option>
-                              {available.map((army) => (
-                                <option key={army.id} value={army.id}>
-                                  {army.name}（{getArmyStrength(army, battalions).toLocaleString()}兵 · {territories.get(army.locationId)?.name}）
-                                </option>
-                              ))}
-                            </select>
+                              onChange={setQuickDeployArmyId}
+                              options={[
+                                { value: '', label: '-- 选择军队 --' },
+                                ...available.map((army) => ({
+                                  value: army.id,
+                                  label: `${army.name}（${getArmyStrength(army, battalions).toLocaleString()}兵 · ${territories.get(army.locationId)?.name}）`,
+                                })),
+                              ]}
+                            />
                           );
                         })()}
                         <p className="text-xs font-bold text-[var(--color-text-muted)] pt-1">目标州</p>
-                        <select
-                          className="w-full px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
+                        <Select
+                          className="w-full"
                           value={quickDeployTargetId}
-                          onChange={(e) => setQuickDeployTargetId(e.target.value)}
-                        >
-                          <option value="">-- 选择目标州 --</option>
-                          {playerRealmZhou.map((t) => (
-                            <option key={t.id} value={t.id}>{t.name}</option>
-                          ))}
-                        </select>
+                          onChange={setQuickDeployTargetId}
+                          options={[
+                            { value: '', label: '-- 选择目标州 --' },
+                            ...playerRealmZhou.map((t) => ({ value: t.id, label: t.name })),
+                          ]}
+                        />
                         <div className="flex gap-2 justify-end pt-1">
                           <button onClick={() => { setShowQuickDeploy(false); setQuickDeployArmyId(''); setQuickDeployTargetId(''); }}
                             className="px-3 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">取消</button>

@@ -117,7 +117,7 @@
 - ✅ TimeControl（右下浮动）：时代标签 + 双行日期 + 色块速度控制，整合为一个令牌模块
 - ✅ 空格暂停/恢复记忆上次速度（CK3 行为）
 
-### ~~第三批：核心面板~~ ✅ CharacterPanel 完成
+### ~~第三批：核心面板~~ ✅ CharacterPanel + TerritoryPanel 完成
 
 - ✅ CharacterPanel 拆分为 Shell + CharacterHeader + CharacterInfoSections + CharacterTabs
 - ✅ CK3 式头部：大头像(168×168) 左侧 + 配偶(100×100) + 领主/继承人(52×52) 右侧纵向分布
@@ -129,11 +129,17 @@
 - ✅ 亲族 Tab：CK3 式头像网格（父母·配偶 / 子女 / 兄弟姐妹）
 - ✅ 臣属/廷臣 Tab：头像+姓名岗位+五维能力+兵力，支持按列排序
 - ✅ 关系 Tab 清空（预留义兄弟/好友/义子等未来系统）
-- ✅ 公共组件：PanelSection / InfoRow / AvatarBadge(xl/lg/md/sm/empty) / 好感Tooltip
+- ✅ 公共组件：PanelSection / InfoRow / AvatarBadge(xl/lg/md/sm/empty) / ProgressBar / Select(Portal) / 好感Tooltip
 - ✅ LeftPanel 全高度 + 暖黑渐变
 - ✅ 全局滚动条样式（6px 窄轨 + 暗铜褐 + hover 金色）
 - ✅ 角色切换移入系统菜单（CharacterSwitcher）
-- ⬜ 其他面板（TerritoryPanel / GovernmentPanel / MilitaryPanel / RealmPanel / OfficialPanel）待跟进
+- ✅ TerritoryPanel 拆分为 Shell + TerritoryHeader + TerritoryInfoSections + TerritoryChildList
+- ✅ 头部：领地名+tier标签+控制者AvatarBadge+金色分割线
+- ✅ 州级：PanelSection 分段（国库/州政/建筑/驻军/关隘/占领/围城）
+- ✅ 道级：下辖州列表，点击可跳转州面板，控制者名可跳转人物
+- ✅ 全局表单风格化：Select 自定义下拉组件（22处替换）+ number input 隐藏原生 spinner + title→Tooltip
+- ✅ RealmPanel 细调：领地Tab去收入列、经济Tab字号颜色统一、属下赋税仅有地臣属、运输拆两行+快捷按钮
+- ⬜ 其他面板（GovernmentPanel / MilitaryPanel / RealmPanel / OfficialPanel）待跟进
 
 ### 第四批：流程面板模板化
 
@@ -207,6 +213,12 @@
 | `src/ui/components/base/PanelSection.tsx` | 面板分段容器（金条标题） |
 | `src/ui/components/base/InfoRow.tsx` | 标签+值水平行 |
 | `src/ui/components/base/AvatarBadge.tsx` | 方印头像（xl/lg/md/sm + 好感角标 + Tooltip） |
+| `src/ui/components/base/ProgressBar.tsx` | 进度条（属性/围城共用） |
+| `src/ui/components/base/Select.tsx` | 自定义下拉（Portal渲染，替代原生select） |
+| `src/ui/components/TerritoryPanel.tsx` | 领地面板 Shell（modal调度） |
+| `src/ui/components/TerritoryHeader.tsx` | 领地面板头部（名称+tier+控制者） |
+| `src/ui/components/TerritoryInfoSections.tsx` | 领地面板州级内容（国库/州政/建筑/驻军/占领/围城） |
+| `src/ui/components/TerritoryChildList.tsx` | 领地面板道级内容（下辖州列表） |
 | `src/ui/components/LeftPanel.tsx` | 左侧面板容器（全高度暖黑渐变） |
 | `src/ui/layouts/GameLayout.tsx` | 主布局 |
 | `docs/reference/ui-inventory.md` | UI 完整清单（50 个组件） |

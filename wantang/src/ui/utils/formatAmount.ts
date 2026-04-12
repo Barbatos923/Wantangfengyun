@@ -1,15 +1,15 @@
 /**
- * 钱粮数字格式化：≥10000 显示为"X.XX万"，否则 toLocaleString。
- * 自动处理负数。小数四舍五入到 2 位，整万去掉小数。
+ * 钱粮数字格式化：≥10000 显示为"X.X万"，否则 toLocaleString。
+ * 自动处理负数。万级保留 1 位小数，整万去掉小数。
  */
 export function formatAmount(n: number): string {
   const v = Math.floor(n);
   const abs = Math.abs(v);
   if (abs < 10000) return v.toLocaleString();
   const wan = v / 10000;
-  // 整万显示无小数；否则保留 1-2 位
-  if (Math.abs(wan - Math.round(wan)) < 0.005) return `${Math.round(wan)}万`;
-  return `${wan.toFixed(2)}万`;
+  // 整万显示无小数；否则保留 1 位
+  if (Math.abs(wan - Math.round(wan)) < 0.05) return `${Math.round(wan)}万`;
+  return `${wan.toFixed(1)}万`;
 }
 
 /** 带符号格式化（正数前缀 +，负数自然带 -）。0 显示 "0"。 */

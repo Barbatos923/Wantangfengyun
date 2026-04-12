@@ -32,7 +32,7 @@ import { submitTreasuryDraftAction, submitDeployDraftAction } from '@engine/inte
 import { useTurnManager } from '@engine/TurnManager';
 import { usePanelStore } from '@ui/stores/panelStore';
 import { diffDays } from '@engine/dateUtils';
-import { Modal, ModalHeader, Button } from './base';
+import { Modal, ModalHeader, Button, Select } from './base';
 import type { Personality } from '@data/traits';
 
 // ── 主组件 ────────────────────────────────────────────
@@ -335,33 +335,27 @@ const TreasuryDraftEditor: React.FC<TreasuryEditorProps> = ({
         <div className="space-y-2">
           {entries.map((e, i) => (
             <div key={i} className="flex items-center gap-2 text-sm bg-[var(--color-bg-surface)] border border-[var(--color-border)] rounded p-2">
-              <select
+              <Select
                 value={e.fromZhouId}
-                onChange={(ev) => updateEntry(i, { fromZhouId: ev.target.value })}
-                className="flex-1 bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-              >
-                {zhous.map((z) => (
-                  <option key={z.id} value={z.id}>{z.name}</option>
-                ))}
-              </select>
+                onChange={(v) => updateEntry(i, { fromZhouId: v })}
+                className="flex-1"
+                options={zhous.map((z) => ({ value: z.id, label: z.name }))}
+              />
               <span className="text-[var(--color-text-muted)]">→</span>
-              <select
+              <Select
                 value={e.toZhouId}
-                onChange={(ev) => updateEntry(i, { toZhouId: ev.target.value })}
-                className="flex-1 bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-              >
-                {zhous.map((z) => (
-                  <option key={z.id} value={z.id}>{z.name}</option>
-                ))}
-              </select>
-              <select
+                onChange={(v) => updateEntry(i, { toZhouId: v })}
+                className="flex-1"
+                options={zhous.map((z) => ({ value: z.id, label: z.name }))}
+              />
+              <Select
                 value={e.resource}
-                onChange={(ev) => updateEntry(i, { resource: ev.target.value as 'money' | 'grain' })}
-                className="bg-[var(--color-bg)] border border-[var(--color-border)] rounded px-2 py-1 text-xs"
-              >
-                <option value="money">钱</option>
-                <option value="grain">粮</option>
-              </select>
+                onChange={(v) => updateEntry(i, { resource: v as 'money' | 'grain' })}
+                options={[
+                  { value: 'money', label: '钱' },
+                  { value: 'grain', label: '粮' },
+                ]}
+              />
               <input
                 type="number"
                 value={e.amount}
@@ -653,21 +647,18 @@ const DeployDraftModal: React.FC<DeployDraftModalProps> = ({
           {/* 添加新条目 */}
           {availableArmies.length > 0 && (
             <div className="flex items-center gap-2 mt-1">
-              <select
-                className="flex-1 px-2 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs"
+              <Select
+                className="flex-1"
                 value={addingArmyId}
-                onChange={(e) => setAddingArmyId(e.target.value)}
-              >
-                <option value="">-- 选择军队 --</option>
-                {availableArmies.map(a => {
-                  const loc = territories.get(a.locationId);
-                  return (
-                    <option key={a.id} value={a.id}>
-                      {a.name}（{loc?.name ?? '?'}）
-                    </option>
-                  );
-                })}
-              </select>
+                onChange={setAddingArmyId}
+                options={[
+                  { value: '', label: '-- 选择军队 --' },
+                  ...availableArmies.map(a => {
+                    const loc = territories.get(a.locationId);
+                    return { value: a.id, label: `${a.name}（${loc?.name ?? '?'}）` };
+                  }),
+                ]}
+              />
               <Button
                 variant="default"
                 size="sm"
