@@ -55,14 +55,14 @@ function formatMonthDay(date: GameDate): string {
   return `${month}${day}`;
 }
 
-function getEraBg(era: Era): string {
+function getEraColor(era: Era): string {
   switch (era) {
     case Era.ZhiShi:
-      return 'bg-[var(--color-accent-green)]';
+      return 'var(--color-accent-green)';
     case Era.WeiShi:
-      return 'bg-[var(--color-accent-gold)]';
+      return 'var(--color-accent-gold)';
     case Era.LuanShi:
-      return 'bg-[var(--color-accent-red)]';
+      return 'var(--color-accent-red)';
   }
 }
 
@@ -70,18 +70,21 @@ function getEraBg(era: Era): string {
 /** 速度档位对应的自动推进间隔（毫秒），0 表示暂停 */
 const SPEED_INTERVALS: Record<number, number> = {
   [GameSpeed.Paused]: 0,
-  [GameSpeed.Normal]: 1000,   // 1天/秒（≈CK3 2速）
-  [GameSpeed.Fast]: 500,      // 2天/秒（≈CK3 3速）
-  [GameSpeed.VeryFast]: 100,  // 10天/秒（拍视频用）
+  [GameSpeed.Normal]: 1000,
+  [GameSpeed.Fast]: 500,
+  [GameSpeed.VeryFast]: 100,
 };
 
 /** 三个速度档位（不含 Paused） */
 const SPEED_TIERS = [GameSpeed.Normal, GameSpeed.Fast, GameSpeed.VeryFast] as const;
 
+
 const TimeControl: React.FC = () => {
   const { currentDate, era, speed, setSpeed, isPaused } = useTurnManager();
   const [showEra, setShowEra] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** 暂停前的速度，恢复时用 */
+  const lastSpeedRef = useRef<GameSpeed>(GameSpeed.Normal);
 
   // 自动推进
   useEffect(() => {
@@ -91,6 +94,8 @@ const TimeControl: React.FC = () => {
     }
     const ms = SPEED_INTERVALS[speed];
     if (ms > 0) {
+      // 记住最近一次非暂停的速度
+      lastSpeedRef.current = speed;
       intervalRef.current = setInterval(() => {
         useTurnManager.getState().advanceDay();
       }, ms);
@@ -100,12 +105,10 @@ const TimeControl: React.FC = () => {
     };
   }, [speed]);
 
-  // 空格键：播放/暂停
   const togglePause = useCallback(() => {
     const tm = useTurnManager.getState();
     if (tm.isPaused) {
-      // 恢复到上次的速度（默认 Normal）
-      setSpeed(tm.speed === GameSpeed.Paused ? GameSpeed.Normal : tm.speed);
+      setSpeed(lastSpeedRef.current);
     } else {
       setSpeed(GameSpeed.Paused);
     }
@@ -114,21 +117,17 @@ const TimeControl: React.FC = () => {
   // 键盘快捷键
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      // 忽略在输入框中的按键
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      // StoryEvent 弹窗期间屏蔽时间控制快捷键
       if (useStoryEventBus.getState().storyEventQueue.length > 0) return;
 
       if (e.code === 'Space') {
         e.preventDefault();
         togglePause();
       } else if (e.key === '+' || e.key === '=') {
-        // 加速
         const tm = useTurnManager.getState();
         if (tm.speed === GameSpeed.Normal) setSpeed(GameSpeed.Fast);
         else if (tm.speed === GameSpeed.Fast) setSpeed(GameSpeed.VeryFast);
       } else if (e.key === '-') {
-        // 减速
         const tm = useTurnManager.getState();
         if (tm.speed === GameSpeed.VeryFast) setSpeed(GameSpeed.Fast);
         else if (tm.speed === GameSpeed.Fast) setSpeed(GameSpeed.Normal);
@@ -138,70 +137,85 @@ const TimeControl: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [setSpeed, togglePause]);
 
+  const eraColor = getEraColor(era);
+
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-0 px-3 py-1.5 rounded"
+      style={{
+        background: 'rgba(21,17,16,0.92)',
+        border: '1px solid rgba(74,62,49,0.5)',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+      }}
+    >
       {/* ── 时代标签 ── */}
       <button
         onClick={() => setShowEra(true)}
-        className={`text-xs px-2 py-0.5 rounded-full ${getEraBg(era)} text-[var(--color-bg)] font-bold hover:brightness-110 transition-all cursor-pointer`}
+        className="text-xs px-2 py-0.5 rounded-full font-bold transition-all cursor-pointer hover:brightness-110 shrink-0"
+        style={{
+          backgroundColor: eraColor,
+          color: 'var(--color-bg)',
+          boxShadow: '0 0 0 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
+        }}
       >
         {era}
       </button>
       {showEra && <EraPopup onClose={() => setShowEra(false)} />}
 
-      {/* ── 日期 ── */}
-      <div className="text-[var(--color-text)] text-sm font-bold tracking-wide whitespace-nowrap">
-        大唐 {formatEraYear(currentDate)} {formatMonthDay(currentDate)}
+      {/* 分隔 */}
+      <div className="w-px h-5 mx-2.5 shrink-0" style={{ background: 'rgba(74,62,49,0.5)' }} />
+
+      {/* ── 日期（双行：年号 + 月日） ── */}
+      <div className="flex flex-col items-start leading-none select-none mr-3">
+        <span className="text-[var(--color-text)] text-sm font-bold tracking-wide whitespace-nowrap">
+          {formatEraYear(currentDate)}
+        </span>
+        <span className="text-[var(--color-text-muted)] text-xs whitespace-nowrap" style={{ marginTop: '2px' }}>
+          {formatMonthDay(currentDate)}
+        </span>
       </div>
 
-      {/* ── 播放三角 + 三档速率色块（CK3 风格紧凑排列） ── */}
-      <svg width="0" height="0" className="absolute">
-        <defs>
-          <filter id="rough-edge">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
-      <div className="flex items-center gap-[3px]">
-        {/* 播放/暂停小三角 */}
-        <button
-          onClick={togglePause}
-          className="cursor-pointer flex items-center justify-center transition-colors overflow-hidden"
-          style={{
-            width: 20,
-            height: 16,
-            color: isPaused ? '#8b4539' : '#6b8f5e',
-            fontSize: 16,
-            lineHeight: '16px',
-            position: 'relative',
-            top: -2,
-          }}
-          title="播放/暂停（空格）"
-        >
-          {isPaused ? '▶' : '⏸'}
-        </button>
+      {/* 分隔 */}
+      <div className="w-px h-5 mr-2 shrink-0" style={{ background: 'rgba(74,62,49,0.5)' }} />
 
-        {/* 三档色块 */}
+      {/* ── 播放/暂停 ── */}
+      <button
+        onClick={togglePause}
+        className="w-7 h-7 flex items-center justify-center rounded transition-colors cursor-pointer hover:bg-[rgba(42,37,32,0.6)]"
+        title="播放/暂停（空格）"
+      >
+        {isPaused ? (
+          <svg width="14" height="14" viewBox="0 0 24 24">
+            <rect x="4" y="3" width="5" height="18" rx="1" fill="var(--color-accent-red)" />
+            <rect x="15" y="3" width="5" height="18" rx="1" fill="var(--color-accent-red)" />
+          </svg>
+        ) : (
+          <svg width="14" height="14" viewBox="0 0 24 24">
+            <polygon points="6,3 20,12 6,21" fill="var(--color-accent-green)" />
+          </svg>
+        )}
+      </button>
+
+      {/* ── 三档速度（色块） ── */}
+      <div className="flex items-center gap-[3px]">
         {SPEED_TIERS.map((tier, i) => {
           const isActive = !isPaused && speed >= tier;
           return (
             <button
               key={tier}
               onClick={() => setSpeed(tier)}
-              className="cursor-pointer transition-colors"
+              className="cursor-pointer transition-colors hover:brightness-125"
               style={{
                 width: 18,
-                height: 16,
-                backgroundColor: isActive ? '#6b8f5e' : '#8b4539',
-                filter: 'url(#rough-edge)',
+                height: 14,
+                borderRadius: '2px',
+                backgroundColor: isActive ? 'var(--color-accent-green)' : 'rgba(139,69,57,0.7)',
               }}
               title={['正常 (1天/秒)', '快速 (2天/秒)', '极速 (5天/秒)'][i]}
             />
           );
         })}
       </div>
-
     </div>
   );
 };

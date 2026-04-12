@@ -263,13 +263,16 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 八、当前开发阶段
 
-Phase 6（谋略+派系+事件）97%。详细进度见 `docs/milestones.md`。
+Phase 7（UI 美术 + 地图升级）进行中 15%。详细进度见 `docs/milestones.md`，升级方案见 `docs/reference/ui-upgrade-plan.md`。
 
-### 下一优先级：Phase 7 — UI 美术 + 地图升级
-视频反馈后决策：UI/地图视觉升级优先于活动/派系系统，对聚拢人气至关重要。
-- UI 整体升级（仿古风格/动画/音效/视觉打磨）
-- 地图增强（美术风格升级、交互优化）
-- 存档/读档 UI | 新手引导
+### 当前：Phase 7 — UI 美术 + 地图升级
+**目标风格**：晚唐舆图 + 官府文书 + 漆木金石，暖黑墨色基调取代冷蓝。
+**实施方式**：垂直切片 B（token + 组件同步交付，用实际效果验证方向）。
+- ✅ 第一批完成：全局色 token + ResourceBar 书简造型 + Tooltip 组件 + SideMenu SVG 图标
+- ⬜ 第二批：BottomBar + TimeControl
+- ⬜ 后续：核心面板 → 流程面板 → 地图数据扩展(100州) → 地图分层重构 → 角色头像
+
+**UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。
 
 ### 尚未完成（后续系统，优先级降低）
 - 更多个人交互 | 谋略精修（更多计谋类型 + AI 自拟方法 v3）

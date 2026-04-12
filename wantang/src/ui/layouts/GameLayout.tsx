@@ -5,7 +5,8 @@ import AlertBar from '../components/AlertBar';
 import EventToast from '../components/EventToast';
 import EventModal from '../components/EventModal';
 import MapPlaceholder from '../components/MapPlaceholder';
-import BottomBar from '../components/BottomBar';
+import PlayerIdentityCard from '../components/PlayerIdentityCard';
+import TimeControl from '../components/TimeControl';
 import LeftPanel from '../components/LeftPanel';
 import WarOverlay from '../components/WarOverlay';
 import DrafterTokenOverlay from '../components/DrafterTokenOverlay';
@@ -75,12 +76,23 @@ const GameLayout: React.FC = () => {
           <div className="absolute right-2 z-10" style={{ bottom: '15%' }}>
             <EventToast />
           </div>
-          {/* 战争悬浮图标（右下角） */}
-          <div className="absolute right-16 bottom-4 z-10">
+          {/* 战争悬浮图标（右下角，TimeControl 上方） */}
+          <div className="absolute right-16 bottom-16 z-10">
             <WarOverlay />
           </div>
-          {/* 草拟人令牌（左下角，仅当玩家持有草拟岗位时显示） */}
+          {/* 草拟人令牌（左下角上方，仅当玩家持有草拟岗位时显示） */}
           <DrafterTokenOverlay />
+
+          {/* ═══ 左下：玩家身份牌（浮在地图上） ═══ */}
+          <div className="absolute bottom-3 left-2 z-10">
+            <PlayerIdentityCard onClick={() => usePanelStore.getState().goToPlayer()} />
+          </div>
+
+          {/* ═══ 右下：时间管理器（浮在地图上） ═══ */}
+          <div className="absolute bottom-3 right-2 z-10">
+            <TimeControl />
+          </div>
+
           <MapPlaceholder />
         </div>
 
@@ -88,13 +100,8 @@ const GameLayout: React.FC = () => {
         <SideMenu />
       </div>
 
-      {/* Bottom: Info Bar */}
-      <BottomBar onClickPlayer={() => usePanelStore.getState().goToPlayer()} />
-
       {/* 中心弹出框（最高层级） */}
       <EventModal />
-
-      {/* 史书和系统菜单按钮已移入顶栏右端 */}
 
       {/* 系统菜单 */}
       {showSystemMenu && <SystemMenu onClose={() => setShowSystemMenu(false)} />}
