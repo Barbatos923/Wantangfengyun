@@ -7,6 +7,8 @@ import { useMilitaryStore } from '@engine/military/MilitaryStore';
 import { getTotalTreasury } from '@engine/territory/treasuryUtils';
 import { formatAmount, formatAmountSigned } from '@ui/utils/formatAmount';
 import { IconCoins, IconGrain, IconSeal, IconBalance, IconSword, IconCastle } from './icons/ResourceIcons';
+import { Tooltip } from './base/Tooltip';
+import { ResourceTooltip, type TooltipEntry } from './ResourceTooltip';
 
 type ResourceGroup = 'treasury' | 'private' | 'status' | 'power';
 
@@ -15,10 +17,12 @@ interface ResourceItem {
   icon: React.ReactNode;
   value: number;
   change: number;
-  title?: string;
   valueStr?: string;
   unit?: string;
   group: ResourceGroup;
+  tooltipTitle?: string;
+  tooltipEntries?: TooltipEntry[];
+  tooltipShowTotal?: boolean;
 }
 
 const GROUP_META: { key: ResourceGroup; label: string }[] = [
@@ -84,28 +88,64 @@ const ResourceBar: React.FC = () => {
     const controllerIndex = useTerritoryStore.getState().controllerIndex;
     const treasury = getTotalTreasury(player.id, territories, controllerIndex);
 
-    const treasuryMoneyTitle = playerLedger
-      ? `领地产出: ${formatAmount(playerLedger.territoryIncome.money)}\n属下上缴: ${formatAmount(playerLedger.vassalTribute.money)}\n回拨收入: ${formatAmount(playerLedger.redistributionReceived.money)}\n属下俸禄: -${formatAmount(playerLedger.subordinateSalaries.money)}\n回拨支出: -${formatAmount(playerLedger.redistributionPaid.money)}\n上缴领主: -${formatAmount(playerLedger.overlordTribute.money)}`
-      : undefined;
-    const treasuryGrainTitle = playerLedger
-      ? `领地产出: ${formatAmount(playerLedger.territoryIncome.grain)}\n属下上缴: ${formatAmount(playerLedger.vassalTribute.grain)}\n回拨收入: ${formatAmount(playerLedger.redistributionReceived.grain)}\n军事维持: -${formatAmount(playerLedger.militaryMaintenance.grain)}\n回拨支出: -${formatAmount(playerLedger.redistributionPaid.grain)}\n上缴领主: -${formatAmount(playerLedger.overlordTribute.grain)}`
-      : undefined;
-    const privateMoneyTitle = playerLedger
-      ? `职位俸禄: ${formatAmount(playerLedger.positionSalary.money)}`
-      : undefined;
-    const privateGrainTitle = playerLedger
-      ? `职位俸禄: ${formatAmount(playerLedger.positionSalary.grain)}`
-      : undefined;
+    // 结构化 tooltip 数据
+    const treasuryMoneyTooltip: TooltipEntry[] | undefined = playerLedger ? [
+      { label: '领地产出', value: playerLedger.territoryIncome.money },
+      { label: '属下上缴', value: playerLedger.vassalTribute.money },
+      { label: '回拨收入', value: playerLedger.redistributionReceived.money },
+      { label: '属下俸禄', value: -playerLedger.subordinateSalaries.money },
+      { label: '回拨支出', value: -playerLedger.redistributionPaid.money },
+      { label: '上缴领主', value: -playerLedger.overlordTribute.money },
+    ] : undefined;
+
+    const treasuryGrainTooltip: TooltipEntry[] | undefined = playerLedger ? [
+      { label: '领地产出', value: playerLedger.territoryIncome.grain },
+      { label: '属下上缴', value: playerLedger.vassalTribute.grain },
+      { label: '回拨收入', value: playerLedger.redistributionReceived.grain },
+      { label: '军事维持', value: -playerLedger.militaryMaintenance.grain },
+      { label: '回拨支出', value: -playerLedger.redistributionPaid.grain },
+      { label: '上缴领主', value: -playerLedger.overlordTribute.grain },
+    ] : undefined;
+
+    const privateMoneyTooltip: TooltipEntry[] | undefined = playerLedger ? [
+      { label: '职位俸禄', value: playerLedger.positionSalary.money },
+    ] : undefined;
+
+    const privateGrainTooltip: TooltipEntry[] | undefined = playerLedger ? [
+      { label: '职位俸禄', value: playerLedger.positionSalary.grain },
+    ] : undefined;
+
+    // 正统性 tooltip：当前值 vs 期望值
+    const expectedLeg = useTerritoryStore.getState().expectedLegitimacy.get(player.id) ?? null;
+    const legitimacyTooltip: TooltipEntry[] = [
+      { label: '当前正统性', value: player.resources.legitimacy, neutral: true },
+    ];
+    if (expectedLeg !== null) {
+      legitimacyTooltip.push({ label: '期望正统性', value: expectedLeg, neutral: true });
+    }
+
+    // 兵力 tooltip：各军队兵力
+    const armyTooltip: TooltipEntry[] = [];
+    for (const army of milArmies.values()) {
+      if (army.ownerId === player.id) {
+        let armyStrength = 0;
+        for (const batId of army.battalionIds) {
+          const bat = milBattalions.get(batId);
+          if (bat) armyStrength += bat.currentStrength;
+        }
+        armyTooltip.push({ label: army.name, value: armyStrength });
+      }
+    }
 
     return [
-      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.money, change: treasuryMoneyChange, title: treasuryMoneyTitle, unit: '贯', group: 'treasury' },
-      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.grain, change: treasuryGrainChange, title: treasuryGrainTitle, unit: '斛', group: 'treasury' },
-      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.money, change: privateMoneyChange, title: privateMoneyTitle, unit: '贯', group: 'private' },
-      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.grain, change: privateGrainChange, title: privateGrainTitle, unit: '斛', group: 'private' },
-      { label: '名望', icon: <IconSeal size={26} className="text-[var(--color-accent-gold)]" />, value: player.resources.prestige, change: 0, group: 'status' },
-      { label: '正统', icon: <IconBalance size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.legitimacy, change: 0, group: 'status' },
-      { label: '兵力', icon: <IconSword size={22} className="text-[var(--color-accent-gold)]" />, value: totalTroops, change: 0, group: 'power' },
-      { label: '领地', icon: <IconCastle size={22} className="text-[var(--color-accent-gold)]" />, value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}`, group: 'power' },
+      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.money, change: treasuryMoneyChange, unit: '贯', group: 'treasury', tooltipTitle: '国库·钱 月结明细', tooltipEntries: treasuryMoneyTooltip },
+      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: treasury.grain, change: treasuryGrainChange, unit: '斛', group: 'treasury', tooltipTitle: '国库·粮 月结明细', tooltipEntries: treasuryGrainTooltip },
+      { label: '钱', icon: <IconCoins size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.money, change: privateMoneyChange, unit: '贯', group: 'private', tooltipTitle: '私产·钱 月结明细', tooltipEntries: privateMoneyTooltip },
+      { label: '粮', icon: <IconGrain size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.grain, change: privateGrainChange, unit: '斛', group: 'private', tooltipTitle: '私产·粮 月结明细', tooltipEntries: privateGrainTooltip },
+      { label: '名望', icon: <IconSeal size={26} className="text-[var(--color-accent-gold)]" />, value: player.resources.prestige, change: 0, group: 'status', tooltipTitle: '名望', tooltipEntries: [{ label: '当前名望', value: player.resources.prestige, neutral: true }], tooltipShowTotal: false },
+      { label: '正统', icon: <IconBalance size={22} className="text-[var(--color-accent-gold)]" />, value: player.resources.legitimacy, change: 0, group: 'status', tooltipTitle: '正统性', tooltipEntries: legitimacyTooltip, tooltipShowTotal: false },
+      { label: '兵力', icon: <IconSword size={22} className="text-[var(--color-accent-gold)]" />, value: totalTroops, change: 0, group: 'power', tooltipTitle: '兵力分布', tooltipEntries: armyTooltip.length > 0 ? armyTooltip : [{ label: '无军队', value: 0 }], tooltipShowTotal: false },
+      { label: '领地', icon: <IconCastle size={22} className="text-[var(--color-accent-gold)]" />, value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}`, group: 'power', tooltipTitle: '领地', tooltipEntries: [{ label: '直辖州数', value: territoryCount, neutral: true }, { label: '直辖上限', value: getDirectControlLimit(player), neutral: true }], tooltipShowTotal: false },
     ];
   }, [player, characters, territories, playerLedger, milArmies, milBattalions]);
 
@@ -157,42 +197,59 @@ const ResourceBar: React.FC = () => {
                 {group.label}
               </span>
               {/* 组内资源项 */}
-              {group.items.map((res, ri) => (
-                <div
-                  key={ri}
-                  className="flex items-center gap-1.5 px-2 py-1 rounded cursor-default transition-colors hover:bg-[var(--color-bg-surface)]"
-                  title={res.title}
-                >
-                  <div className="w-6 flex items-center justify-center shrink-0">
-                    {res.icon}
-                  </div>
-                  <div className="flex flex-col items-start leading-none">
-                    <span className="flex items-baseline">
-                      <span
-                        className="text-[var(--color-text)] text-sm font-bold"
-                        style={{ fontFeatureSettings: '"tnum"' }}
-                      >
-                        {res.valueStr ?? formatAmount(res.value)}
+              {group.items.map((res, ri) => {
+                const tooltipContent = res.tooltipEntries ? (
+                  <ResourceTooltip
+                    title={res.tooltipTitle!}
+                    entries={res.tooltipEntries}
+                    unit={res.unit}
+                    showTotal={res.tooltipShowTotal}
+                  />
+                ) : null;
+
+                const item = (
+                  <div
+                    className="flex items-center gap-1.5 px-2 py-1 rounded cursor-default transition-colors hover:bg-[var(--color-bg-surface)]"
+                  >
+                    <div className="w-6 flex items-center justify-center shrink-0">
+                      {res.icon}
+                    </div>
+                    <div className="flex flex-col items-start leading-none">
+                      <span className="flex items-baseline">
+                        <span
+                          className="text-[var(--color-text)] text-sm font-bold"
+                          style={{ fontFeatureSettings: '"tnum"' }}
+                        >
+                          {res.valueStr ?? formatAmount(res.value)}
+                        </span>
+                        {res.unit && (
+                          <span className="text-[var(--color-text)] text-sm font-bold">{res.unit}</span>
+                        )}
                       </span>
-                      {res.unit && (
-                        <span className="text-[var(--color-text)] text-sm font-bold">{res.unit}</span>
+                      {res.change !== 0 && (
+                        <span
+                          className={`text-xs ${
+                            res.change > 0
+                              ? 'text-[var(--color-text)] opacity-60'
+                              : 'text-[var(--color-accent-red)]'
+                          }`}
+                          style={{ fontFeatureSettings: '"tnum"', marginTop: '1px' }}
+                        >
+                          {formatAmountSigned(res.change)}{res.unit ?? ''}
+                        </span>
                       )}
-                    </span>
-                    {res.change !== 0 && (
-                      <span
-                        className={`text-xs ${
-                          res.change > 0
-                            ? 'text-[var(--color-text)] opacity-60'
-                            : 'text-[var(--color-accent-red)]'
-                        }`}
-                        style={{ fontFeatureSettings: '"tnum"', marginTop: '1px' }}
-                      >
-                        {formatAmountSigned(res.change)}{res.unit ?? ''}
-                      </span>
-                    )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+
+                return tooltipContent ? (
+                  <Tooltip key={ri} content={tooltipContent}>
+                    {item}
+                  </Tooltip>
+                ) : (
+                  <React.Fragment key={ri}>{item}</React.Fragment>
+                );
+              })}
             </div>
           </React.Fragment>
         ))}
