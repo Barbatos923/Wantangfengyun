@@ -41,8 +41,20 @@ const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
         </div>
       </button>
 
-      {/* ═══ 第二行：家族图标 + 姓名头衔 + 生活图标 ═══ */}
-      <div className="flex items-center mt-1" style={{ width: '160px' }}>
+      {/* ═══ 下方信息区（半透明暗底） ═══ */}
+      <div
+        className="flex flex-col items-center mt-0 rounded-b px-1 pt-1 pb-1.5"
+        style={{
+          width: '168px',
+          background: 'rgba(18,16,14,0.85)',
+          borderLeft: '1px solid rgba(74,62,49,0.3)',
+          borderRight: '1px solid rgba(74,62,49,0.3)',
+          borderBottom: '1px solid rgba(74,62,49,0.3)',
+        }}
+      >
+
+      {/* 家族图标 + 姓名头衔 + 生活图标 */}
+      <div className="flex items-center w-full">
         {/* 左：家族入口预留 */}
         <div
           className="w-7 h-7 flex items-center justify-center rounded cursor-pointer transition-colors hover:bg-[rgba(42,37,32,0.6)] shrink-0"
@@ -86,8 +98,8 @@ const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
         </div>
       </div>
 
-      {/* ═══ 第三行：健康条 + 压力条 ═══ */}
-      <div className="flex flex-col gap-0.5 mt-1" style={{ width: '160px' }}>
+      {/* 健康条 + 压力条 */}
+      <div className="flex flex-col gap-0.5 mt-1 w-full px-1">
         <div
           className="h-1 rounded-full overflow-hidden"
           style={{ background: 'rgba(74,62,49,0.4)' }}
@@ -115,6 +127,8 @@ const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
           />
         </div>
       </div>
+
+      </div>{/* 暗底容器结束 */}
     </div>
   );
 };

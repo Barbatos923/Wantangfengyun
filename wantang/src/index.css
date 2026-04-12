@@ -90,6 +90,24 @@ body {
   flex-direction: column;
 }
 
+/* ── 滚动条样式 ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(74, 62, 49, 0.4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 154, 83, 0.5);
+}
+
 /* ── 通知卡片入场动画 ── */
 @keyframes slide-in-right {
   from {

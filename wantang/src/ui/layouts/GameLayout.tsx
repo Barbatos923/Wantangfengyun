@@ -32,72 +32,75 @@ const GameLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden">
-      {/* Top: 资源栏横梁（右对齐，左侧透出地图） */}
-      <div className="flex items-stretch justify-end shrink-0 relative z-20"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, #151110 30%)',
-          pointerEvents: 'none',
-        }}
-      >
-        <div style={{ pointerEvents: 'auto' }} className="flex items-stretch">
-          <ResourceBar />
-          <div className="flex items-center gap-1 px-2 shrink-0"
-            style={{
-              background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
-              borderBottom: '1px solid var(--color-border)',
-              borderLeft: '1px solid var(--color-border)',
-            }}
-          >
-            <ChronicleButton />
-            <button
-              onClick={() => setShowSystemMenu(true)}
-              className="w-9 h-9 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-lg"
-              title="系统菜单 (ESC)"
+    <div className="w-screen h-screen flex flex-row overflow-hidden">
+      {/* Left panel — 全高度，独立于资源栏 */}
+      {panelOpen && <LeftPanel />}
+
+      {/* 右侧：资源栏 + 地图 + 侧栏 */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top: 资源栏横梁（右对齐，左侧透出地图） */}
+        <div className="flex items-stretch justify-end shrink-0 relative z-20"
+          style={{
+            background: 'linear-gradient(90deg, transparent 0%, #151110 30%)',
+            pointerEvents: 'none',
+          }}
+        >
+          <div style={{ pointerEvents: 'auto' }} className="flex items-stretch">
+            <ResourceBar />
+            <div className="flex items-center gap-1 px-2 shrink-0"
+              style={{
+                background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
+                borderBottom: '1px solid var(--color-border)',
+                borderLeft: '1px solid var(--color-border)',
+              }}
             >
-              ⚙
-            </button>
+              <ChronicleButton />
+              <button
+                onClick={() => setShowSystemMenu(true)}
+                className="w-9 h-9 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-lg"
+                title="系统菜单 (ESC)"
+              >
+                ⚙
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Middle: Left Panel + Map + Side Menu */}
-      <div className="flex-1 flex flex-row min-h-0 relative">
-        {/* Left panel (character / territory info) */}
-        {panelOpen && <LeftPanel />}
+        {/* Middle: Map + Side Menu */}
+        <div className="flex-1 flex flex-row min-h-0 relative">
+          {/* Map area with overlays */}
+          <div className="flex-1 relative flex">
+            {/* Alert bar overlaid top-left（行政任务通知） */}
+            <div className="absolute top-0 left-0 z-10">
+              <AlertBar />
+            </div>
+            {/* Event toast overlaid right-center-low */}
+            <div className="absolute right-2 z-10" style={{ bottom: '15%' }}>
+              <EventToast />
+            </div>
+            {/* 战争悬浮图标（右下角，TimeControl 上方） */}
+            <div className="absolute right-16 bottom-16 z-10">
+              <WarOverlay />
+            </div>
+            {/* 草拟人令牌 */}
+            <DrafterTokenOverlay />
 
-        {/* Map area with overlays */}
-        <div className="flex-1 relative flex">
-          {/* Alert bar overlaid top-left（行政任务通知） */}
-          <div className="absolute top-0 left-0 z-10">
-            <AlertBar />
-          </div>
-          {/* Event toast overlaid right-center-low（事件卡片通知，右侧中心偏下） */}
-          <div className="absolute right-2 z-10" style={{ bottom: '15%' }}>
-            <EventToast />
-          </div>
-          {/* 战争悬浮图标（右下角，TimeControl 上方） */}
-          <div className="absolute right-16 bottom-16 z-10">
-            <WarOverlay />
-          </div>
-          {/* 草拟人令牌（左下角上方，仅当玩家持有草拟岗位时显示） */}
-          <DrafterTokenOverlay />
+            {/* 左下：玩家身份牌 */}
+            <div className="absolute bottom-3 left-2 z-10">
+              <PlayerIdentityCard onClick={() => usePanelStore.getState().goToPlayer()} />
+            </div>
 
-          {/* ═══ 左下：玩家身份牌（浮在地图上） ═══ */}
-          <div className="absolute bottom-3 left-2 z-10">
-            <PlayerIdentityCard onClick={() => usePanelStore.getState().goToPlayer()} />
+            {/* 右下：时间管理器 */}
+            <div className="absolute bottom-3 right-2 z-10">
+              <TimeControl />
+            </div>
+
+            <MapPlaceholder />
           </div>
 
-          {/* ═══ 右下：时间管理器（浮在地图上） ═══ */}
-          <div className="absolute bottom-3 right-2 z-10">
-            <TimeControl />
-          </div>
-
-          <MapPlaceholder />
+          {/* Right side menu */}
+          <SideMenu />
         </div>
-
-        {/* Right side menu */}
-        <SideMenu />
       </div>
 
       {/* 中心弹出框（最高层级） */}
@@ -109,7 +112,7 @@ const GameLayout: React.FC = () => {
       {/* 存档失败提示 */}
       <SaveErrorToast />
 
-      {/* 王朝覆灭终局屏（仅 dynastyExtinct 时显示） */}
+      {/* 王朝覆灭终局屏 */}
       <GameOverScreen />
     </div>
   );

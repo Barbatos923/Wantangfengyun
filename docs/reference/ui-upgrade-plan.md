@@ -117,10 +117,23 @@
 - ✅ TimeControl（右下浮动）：时代标签 + 双行日期 + 色块速度控制，整合为一个令牌模块
 - ✅ 空格暂停/恢复记忆上次速度（CK3 行为）
 
-### 第三批：核心面板
+### ~~第三批：核心面板~~ ✅ CharacterPanel 完成
 
-- CharacterPanel 做样板 → TerritoryPanel / GovernmentPanel / MilitaryPanel / RealmPanel / OfficialPanel 跟进
-- 信息层级强化，模块分段，身份感/权力感/制度感
+- ✅ CharacterPanel 拆分为 Shell + CharacterHeader + CharacterInfoSections + CharacterTabs
+- ✅ CK3 式头部：大头像(168×168) 左侧 + 配偶(100×100) + 领主/继承人(52×52) 右侧纵向分布
+- ✅ 好感度角标（右下角悬浮，hover Tooltip 显示好感明细）
+- ✅ 特质方块（44×44，hover Tooltip，预留未来图片替换）
+- ✅ 家族入口预留（右侧方框）
+- ✅ 属性行：五维能力紧凑一行（不可滚动）
+- ✅ 中段：资源（竖排标题+图标数字+Tooltip）、官职（竖排+标签密集排列）、领地（竖排+标签+Tooltip）、战争/外交（竖排+标签）
+- ✅ 亲族 Tab：CK3 式头像网格（父母·配偶 / 子女 / 兄弟姐妹）
+- ✅ 臣属/廷臣 Tab：头像+姓名岗位+五维能力+兵力，支持按列排序
+- ✅ 关系 Tab 清空（预留义兄弟/好友/义子等未来系统）
+- ✅ 公共组件：PanelSection / InfoRow / AvatarBadge(xl/lg/md/sm/empty) / 好感Tooltip
+- ✅ LeftPanel 全高度 + 暖黑渐变
+- ✅ 全局滚动条样式（6px 窄轨 + 暗铜褐 + hover 金色）
+- ✅ 角色切换移入系统菜单（CharacterSwitcher）
+- ⬜ 其他面板（TerritoryPanel / GovernmentPanel / MilitaryPanel / RealmPanel / OfficialPanel）待跟进
 
 ### 第四批：流程面板模板化
 
@@ -186,5 +199,14 @@
 | `src/ui/components/SideMenu.tsx` | 侧边栏 |
 | `src/ui/components/PlayerIdentityCard.tsx` | 左下玩家身份牌（CK3 式） |
 | `src/ui/components/TimeControl.tsx` | 右下时间管理器（浮动模块） |
+| `src/ui/components/CharacterPanel.tsx` | 人物面板 Shell（交互弹窗调度） |
+| `src/ui/components/CharacterHeader.tsx` | 人物面板头部（CK3 式横排布局） |
+| `src/ui/components/CharacterInfoSections.tsx` | 人物面板中段（属性+资源+官职+领地+战争+外交） |
+| `src/ui/components/CharacterTabs.tsx` | 人物面板底部 Tab（亲族/关系/臣属/廷臣） |
+| `src/ui/components/CharacterSwitcher.tsx` | 角色切换弹窗（系统菜单） |
+| `src/ui/components/base/PanelSection.tsx` | 面板分段容器（金条标题） |
+| `src/ui/components/base/InfoRow.tsx` | 标签+值水平行 |
+| `src/ui/components/base/AvatarBadge.tsx` | 方印头像（xl/lg/md/sm + 好感角标 + Tooltip） |
+| `src/ui/components/LeftPanel.tsx` | 左侧面板容器（全高度暖黑渐变） |
 | `src/ui/layouts/GameLayout.tsx` | 主布局 |
 | `docs/reference/ui-inventory.md` | UI 完整清单（50 个组件） |

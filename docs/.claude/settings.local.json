@@ -17,7 +17,8 @@
       "Bash(npx vite:*)",
       "WebSearch",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm build:*)"
     ]
   }
 }

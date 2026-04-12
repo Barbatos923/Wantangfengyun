@@ -9,7 +9,14 @@ const LeftPanel: React.FC = () => {
   if (!characterId) return null;
 
   return (
-    <div className="w-[360px] shrink-0 h-full bg-[var(--color-bg-panel)] border-r border-[var(--color-border)] flex flex-col overflow-hidden">
+    <div
+      className="w-[504px] shrink-0 h-full flex flex-col overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #1a1610 0%, #141110 100%)',
+        borderRight: '1px solid var(--color-border)',
+        boxShadow: '2px 0 8px rgba(0,0,0,0.3)',
+      }}
+    >
       <CharacterPanel key={characterId} characterId={characterId} />
     </div>
   );

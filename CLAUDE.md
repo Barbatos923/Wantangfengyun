@@ -263,16 +263,17 @@ grantsControl 岗位必须用 `executeDismiss(postId, id, { vacateOnly: true })`
 
 ## 八、当前开发阶段
 
-Phase 7（UI 美术 + 地图升级）进行中 15%。详细进度见 `docs/milestones.md`，升级方案见 `docs/reference/ui-upgrade-plan.md`。
+Phase 7（UI 美术 + 地图升级）进行中 40%。详细进度见 `docs/milestones.md`，升级方案见 `docs/reference/ui-upgrade-plan.md`。
 
 ### 当前：Phase 7 — UI 美术 + 地图升级
 **目标风格**：晚唐舆图 + 官府文书 + 漆木金石，暖黑墨色基调取代冷蓝。
 **实施方式**：垂直切片 B（token + 组件同步交付，用实际效果验证方向）。
 - ✅ 第一批完成：全局色 token + ResourceBar 书简造型 + Tooltip 组件 + SideMenu SVG 图标
-- ⬜ 第二批：BottomBar + TimeControl
-- ⬜ 后续：核心面板 → 流程面板 → 地图数据扩展(100州) → 地图分层重构 → 角色头像
+- ✅ 第二批完成：CK3 式底部浮动（PlayerIdentityCard + TimeControl）+ 角色切换移入系统菜单
+- ✅ 第三批完成：CharacterPanel CK3 式重构（拆分4文件 + 公共组件 + 全局滚动条）
+- ⬜ 后续：其他核心面板跟进 → 流程面板 → 地图数据扩展(100州) → 地图分层重构 → 角色头像
 
-**UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。
+**UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip / PanelSection / InfoRow / AvatarBadge）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。
 
 ### 尚未完成（后续系统，优先级降低）
 - 更多个人交互 | 谋略精修（更多计谋类型 + AI 自拟方法 v3）
