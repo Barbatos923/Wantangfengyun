@@ -88,8 +88,8 @@ export function deserializeGame(raw: SaveFile): void {
     yearChronicles: save.chronicleState?.yearChronicles ?? [],
   });
 
-  // SchemeStore（v6 起，migration 已保证 schemes 字段存在）
-  useSchemeStore.getState().initSchemes(save.schemes);
+  // SchemeStore（v6 起 schemes，v8 起 spymasters）
+  useSchemeStore.getState().initSchemes(save.schemes, save.spymasters ?? []);
 
   // 全量刷新角色所在地（兼容旧存档 + 确保行营指挥官位置正确）
   {

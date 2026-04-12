@@ -123,6 +123,7 @@ export interface SchemeContext {
   getOpinion: (a: string, b: string) => number;
   hasAlliance: (a: string, b: string) => boolean;
   vassalIndex: Map<string, Set<string>>;
+  spymasters: Map<string, string>;
 }
 
 /** 终局 outcome 描述（不直接写状态，由 applyEffects 落地） */
@@ -147,8 +148,24 @@ export interface SchemeTypeDef<TParams extends BaseSchemeParams = BaseSchemePara
   costMoney: number;
 
   description: string;
-  /** 史书 type 字串（必须在 CHRONICLE_TYPE_WHITELIST 中） */
-  chronicleTypes: { initiate: string; success: string; failure: string };
+  /** 史书 type 字串（必须在 CHRONICLE_TYPE_WHITELIST 中）。简单计谋可省略（不入史书） */
+  chronicleTypes?: { initiate: string; success: string; failure: string; exposed?: string };
+
+  /**
+   * 暴露/发现配置。undefined = 该计谋类型不检测暴露（如拉拢）。
+   * 暴露在每个阶段完成时检测一次（basic 1次，complex 3次）。
+   * 暴露后果等同计谋失败（复用 applyEffects failure 路径），status 设为 'exposed'。
+   */
+  exposureConfig?: {
+    /** 基础发现率（百分比，双方谋主 stratDiff=0 时） */
+    baseDetectionRate: number;
+    /** 暴露后好感惩罚（负值，目标对发起人） */
+    opinionPenalty: number;
+    /** 暴露后威望扣除（正值表示扣除量） */
+    prestigePenalty: number;
+    /** 方法级暴露修正（可选，返回百分点加减值） */
+    getMethodExposureModifier?: (scheme: SchemeInstance) => number;
+  };
 
   /**
    * 入口守卫：raw → 强类型 TParams。失败 = null（执行层视为 stale）。

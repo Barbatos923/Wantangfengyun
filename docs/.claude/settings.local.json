@@ -5,7 +5,13 @@
       "Bash(npx tsc:*)",
       "Bash(pushd \"/d/桌面/Github上传/Wantangfengyun/wantang\")",
       "Bash(npx --prefix \"../wantang\" tsc --noEmit --project \"../wantang/tsconfig.json\")",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(pushd ../wantang)",
+      "Bash(npx --prefix ../wantang tsc --noEmit --project ../wantang/tsconfig.json)",
+      "Bash(npx --prefix ../wantang vitest run --project ../wantang)",
+      "Bash(npx --prefix ../wantang vitest run)",
+      "Bash(grep:*)",
+      "Bash(wc -l \"D:/桌面/Github上传/Wantangfengyun/wantang/src/engine/scheme/\"*.ts)"
     ]
   }
 }

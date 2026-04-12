@@ -9,6 +9,7 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import { executeInitiateScheme } from '@engine/interaction/schemeAction';
 import { calcSchemeLimit } from '@engine/scheme';
+import { resolveSpymaster } from '@engine/scheme/spymasterCalc';
 import { CURRY_FAVOR_COST } from '@engine/scheme/types/curryFavor';
 import { positionMap } from '@data/positions';
 import { registerBehavior } from './index';
@@ -110,9 +111,9 @@ const curryFavorBehavior: NpcBehavior<CurryFavorData> = {
     // 资源门槛：留出 3× 余量，避免拉拢把 NPC 国库拖垮
     if (actor.resources.money < CURRY_FAVOR_COST * 3) return null;
 
-    // 并发上限：高谋略角色（如顶级谋士 strategy ≥ 16）可同时跑多个计谋
-    // calcSchemeLimit(10)=1, (16)=2, (24)=3, (32)=4
-    const limit = calcSchemeLimit(actor.abilities.strategy);
+    // 并发上限：使用谋主 strategy（NPC 月结自动选最优臣属）
+    const sm = resolveSpymaster(actor.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+    const limit = calcSchemeLimit(sm.abilities.strategy);
     if ((ctx.schemeCounts.get(actor.id) ?? 0) >= limit) return null;
 
     const personality = ctx.personalityCache.get(actor.id);

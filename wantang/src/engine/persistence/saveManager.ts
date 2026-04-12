@@ -78,11 +78,12 @@ function resetTransientStores(): void {
   // ChronicleStore（AI 史书：清空所有月稿与年史；LLM 配置不动，那是设备级凭证）
   useChronicleStore.getState().clearAll();
 
-  // SchemeStore：清空活跃计谋 + 反向索引
+  // SchemeStore：清空活跃计谋 + 反向索引 + 谋主映射
   useSchemeStore.setState({
     schemes: new Map(),
     initiatorIndex: new Map(),
     targetIndex: new Map(),
+    spymasters: new Map(),
   });
 }
 

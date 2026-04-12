@@ -259,6 +259,7 @@ export function buildNpcContext(): NpcContext {
     totalTreasury,
     schemeCounts,
     hasRecentSchemeOnTarget,
+    spymasters: useSchemeStore.getState().spymasters,
     getPeerNeighbors,
     ledgers: useLedgerStore.getState().allLedgers,
     treasuryHistory: useLedgerStore.getState().treasuryHistory,

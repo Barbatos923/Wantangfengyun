@@ -174,16 +174,11 @@ function formatActorRoles(
       // actors: [betrayerId, summonerId]
       return [a[0] && `背盟方:${n(a[0])}`, a[1] && `受害方:${n(a[1])}`, loc].filter(Boolean).join('，');
 
-    // ── 计谋 ──
-    case '发起拉拢':
-    case '拉拢成功':
-    case '拉拢失败':
-      // actors: [initiatorId, primaryTargetId]
-      return [a[0] && `主谋:${n(a[0])}`, a[1] && `目标:${n(a[1])}`, loc].filter(Boolean).join('，');
-
+    // ── 计谋 ──（拉拢频次过高，不入史书）
     case '发起离间':
     case '离间成功':
     case '离间失败':
+    case '离间暴露':
       // actors: [initiatorId, primaryTargetId, secondaryTargetId]
       return [a[0] && `主谋:${n(a[0])}`, a[1] && `直接目标:${n(a[1])}`, a[2] && `次要目标:${n(a[2])}`, loc].filter(Boolean).join('，');
 

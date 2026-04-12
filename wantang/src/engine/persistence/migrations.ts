@@ -86,6 +86,15 @@ export function migrate(save: SaveFile, fromVersion: number): SaveFile {
     };
     return migrate(migrated, 7);
   }
+  if (fromVersion === 7) {
+    // v7 → v8：谋主系统。新增 spymasters 字段（旧档无谋主数据，NPC 下次月结自动选）。
+    const migrated: SaveFile = {
+      ...save,
+      version: 8,
+      spymasters: (save as unknown as { spymasters?: [string, string][] }).spymasters ?? [],
+    };
+    return migrate(migrated, 8);
+  }
   if (fromVersion === 2) {
     // v2 → v3：行营废弃 'mustering' 状态 + musteringTurnsLeft 字段。
     // 旧存档若有 mustering 行营，把 status 转回 idle，musteringTurnsLeft 丢弃。

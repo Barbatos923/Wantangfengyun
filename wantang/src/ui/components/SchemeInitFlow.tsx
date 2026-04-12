@@ -20,6 +20,7 @@ import {
   useSchemeStore,
 } from '@engine/scheme';
 import { CURRY_FAVOR_COST, calcCurryFavorRate } from '@engine/scheme/types/curryFavor';
+import { resolveSpymaster } from '@engine/scheme/spymasterCalc';
 import {
   ALIENATION_COST,
   ALIENATION_PHASE_DAYS,
@@ -120,8 +121,9 @@ export default function SchemeInitFlow({ targetId, onClose }: SchemeInitFlowProp
   const curryFavorPreview = useMemo(() => {
     if (!player || !target) return null;
     const ctx = buildSchemeContext();
+    const attackSm = resolveSpymaster(player.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
     return {
-      rate: Math.round(calcCurryFavorRate(player, target, ctx)),
+      rate: Math.round(calcCurryFavorRate(attackSm.abilities.strategy, target, player.id, ctx)),
       cost: CURRY_FAVOR_COST,
     };
   }, [player, target]);
@@ -145,14 +147,20 @@ export default function SchemeInitFlow({ targetId, onClose }: SchemeInitFlowProp
         return { method: m, bonus: 0, rate: null as number | null };
       }
       const bonus = m.calcBonus(target, secondary, player, ctx);
-      const rate = Math.round(calcAlienationInitialRate(player, target, bonus));
+      const attackSm = resolveSpymaster(player.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+      const defendSm = resolveSpymaster(target.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+      const rate = Math.round(calcAlienationInitialRate(attackSm.abilities.strategy, defendSm.abilities.strategy, bonus));
       return { method: m, bonus, rate: rate as number | null };
     });
   }, [player, target, selectedSecondaryId]);
 
   if (!playerId || !player || !target) return null;
 
-  const limit = calcSchemeLimit(player.abilities.strategy);
+  const spymasterForLimit = resolveSpymaster(
+    playerId, useSchemeStore.getState().spymasters,
+    useCharacterStore.getState().characters, useCharacterStore.getState().vassalIndex,
+  );
+  const limit = calcSchemeLimit(spymasterForLimit.abilities.strategy);
   const activeCount = useSchemeStore.getState().getActiveSchemeCount(playerId);
   const limitFull = activeCount >= limit;
 

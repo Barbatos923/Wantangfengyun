@@ -13,3 +13,4 @@ export {
   clamp,
 } from './schemeCalc';
 export type { FuzzySuccess } from './schemeCalc';
+export { resolveSpymaster, autoSelectSpymaster, refreshNpcSpymasters } from './spymasterCalc';

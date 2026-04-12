@@ -20,6 +20,7 @@ import { calcWeight } from '../types';
 import type { Character } from '@engine/character/types';
 import { executeInitiateScheme } from '@engine/interaction/schemeAction';
 import { calcSchemeLimit } from '@engine/scheme';
+import { resolveSpymaster } from '@engine/scheme/spymasterCalc';
 import {
   ALIENATION_COST,
   getAvailableAlienationMethods,
@@ -149,9 +150,9 @@ const alienateBehavior: NpcBehavior<AlienateData> = {
     // 资源门槛：留出 1.5× 余量
     if (actor.resources.money < ALIENATION_COST * 1.5) return null;
 
-    // 并发上限：高谋略角色（如顶级谋士 strategy ≥ 16）可同时跑多个计谋
-    // calcSchemeLimit(10)=1, (16)=2, (24)=3, (32)=4
-    const limit = calcSchemeLimit(actor.abilities.strategy);
+    // 并发上限：使用谋主 strategy（NPC 月结自动选最优臣属）
+    const sm = resolveSpymaster(actor.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+    const limit = calcSchemeLimit(sm.abilities.strategy);
     if ((ctx.schemeCounts.get(actor.id) ?? 0) >= limit) return null;
 
     const personality = ctx.personalityCache.get(actor.id);
@@ -173,6 +174,7 @@ const alienateBehavior: NpcBehavior<AlienateData> = {
       getOpinion: ctx.getOpinion,
       hasAlliance: ctx.hasAlliance,
       vassalIndex: ctx.vassalIndex,
+      spymasters: ctx.spymasters,
     };
 
     let bestWeight = 0;
@@ -267,6 +269,12 @@ const alienateBehavior: NpcBehavior<AlienateData> = {
         // 盟友豁免 ×0（硬禁：不对直接盟友发动离间，哪怕深仇也忍住）
         if (primaryIsMyAlly) {
           modifiers.push({ label: '盟友豁免', factor: 0 });
+        }
+
+        // 暴露风险：目标谋主 strategy 显著高于己方 → ×0.5（暴露概率太高）
+        const targetSm = resolveSpymaster(primary.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+        if (targetSm.abilities.strategy - sm.abilities.strategy > 5) {
+          modifiers.push({ label: '暴露风险', factor: 0.5 });
         }
 
         const weight = calcWeight(modifiers);

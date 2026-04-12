@@ -148,6 +148,9 @@ export interface NpcContext {
   // 快照语义：generateTask 阶段保持一致视图；executeAsNpc 阶段的实时校验由 executeInitiateScheme 内部兜底。
   schemeCounts: Map<string, number>;
 
+  /** 谋主映射快照（charId → spymasterId）。NPC behavior 查谋主 strategy 用此快照。 */
+  spymasters: Map<string, string>;
+
   /**
    * per-(initiator, primaryTarget, schemeType) CD 判定（快照）。
    * 返回 true 表示该发起人对该目标的同类计谋 365 天 CD 尚未过。

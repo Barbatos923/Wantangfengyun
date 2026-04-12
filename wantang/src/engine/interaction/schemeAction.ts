@@ -11,7 +11,7 @@ import {
   buildSchemeContext,
   type SchemeInstance,
 } from '@engine/scheme';
-import { calcSchemeLimit, getAllSchemeTypes, getSchemeType } from '@engine/scheme';
+import { calcSchemeLimit, getAllSchemeTypes, getSchemeType, resolveSpymaster } from '@engine/scheme';
 import { getAlienationMethod } from '@engine/scheme/types/alienation';
 import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 import { EventPriority } from '@engine/types';
@@ -32,8 +32,11 @@ registerInteraction({
     return getAllSchemeTypes().some((def) => def.canShow(player, target, ctx));
   },
   canExecuteCheck: (player) => {
-    const limit = calcSchemeLimit(player.abilities.strategy);
-    const active = useSchemeStore.getState().getActiveSchemeCount(player.id);
+    const ss = useSchemeStore.getState();
+    const cs = useCharacterStore.getState();
+    const spymaster = resolveSpymaster(player.id, ss.spymasters, cs.characters, cs.vassalIndex);
+    const limit = calcSchemeLimit(spymaster.abilities.strategy);
+    const active = ss.getActiveSchemeCount(player.id);
     if (active >= limit) return `谋力有限（${active}/${limit}）`;
     return null;
   },
@@ -86,8 +89,9 @@ export function executeInitiateScheme(
     return false;
   }
 
-  // 二次校验：并发上限
-  const limit = calcSchemeLimit(initiator.abilities.strategy);
+  // 二次校验：并发上限（使用谋主 strategy）
+  const spymaster = resolveSpymaster(initiatorId, useSchemeStore.getState().spymasters, cs.characters, cs.vassalIndex);
+  const limit = calcSchemeLimit(spymaster.abilities.strategy);
   if (useSchemeStore.getState().getActiveSchemeCount(initiatorId) >= limit) {
     debugLog('scheme', `[计谋] 并发上限达到`);
     return false;
@@ -135,28 +139,33 @@ export function executeInitiateScheme(
   useSchemeStore.getState().addScheme(instance);
 
   // 史书 emit
-  // 离间事件必须带上 secondaryTarget 和方法名；拉拢只有 initiator/primaryTarget
-  const target = cs.characters.get(params.primaryTargetId);
-  const targetName = target?.name ?? '?';
-  const chronicleActors = [initiatorId, params.primaryTargetId];
-  let description = `${initiator.name}对${targetName}发动${def.name}`;
+  // 离间事件必须带上 secondaryTarget 和方法名；拉拢不入史书（chronicleTypes 省略）
+  if (def.chronicleTypes) {
+    const target = cs.characters.get(params.primaryTargetId);
+    const targetName = target?.name ?? '?';
+    const chronicleActors = [initiatorId, params.primaryTargetId];
+    let description = `${initiator.name}对${targetName}发动${def.name}`;
 
-  if (instance.data.kind === 'alienation') {
-    const secondary = cs.characters.get(instance.data.secondaryTargetId);
-    const secondaryName = secondary?.name ?? '?';
-    const method = getAlienationMethod(instance.data.methodId);
-    const methodName = method?.name ?? instance.data.methodId;
-    chronicleActors.push(instance.data.secondaryTargetId);
-    description = `${initiator.name}以${methodName}离间${targetName}与${secondaryName}`;
+    if (instance.data.kind === 'alienation') {
+      const secondary = cs.characters.get(instance.data.secondaryTargetId);
+      const secondaryName = secondary?.name ?? '?';
+      const method = getAlienationMethod(instance.data.methodId);
+      const methodName = method?.name ?? instance.data.methodId;
+      chronicleActors.push(instance.data.secondaryTargetId);
+      description = `${initiator.name}以${methodName}离间${targetName}与${secondaryName}`;
+      if (instance.data.customDescription) {
+        description += `\n策略：${instance.data.customDescription}`;
+      }
+    }
+
+    emitChronicleEvent({
+      type: def.chronicleTypes.initiate,
+      actors: chronicleActors,
+      territories: [],
+      description,
+      priority: EventPriority.Normal,
+    });
   }
-
-  emitChronicleEvent({
-    type: def.chronicleTypes.initiate,
-    actors: chronicleActors,
-    territories: [],
-    description,
-    priority: EventPriority.Normal,
-  });
 
   debugLog('scheme', `[${def.name}] ${initiator.name} → ${targetName} 初始成功率 ${Math.round(result.initialSuccessRate)}%`);
   return true;

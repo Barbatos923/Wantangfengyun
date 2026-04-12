@@ -9,7 +9,9 @@
 // 严禁 `scheme.phase.progress += 1` 这种直接 mutate。
 
 import type { GameDate } from '@engine/types';
-import type { SchemeInstance, SchemeContext, SchemeEffectOutcome } from './types';
+import { EventPriority } from '@engine/types';
+import type { SchemeInstance, SchemeContext, SchemeEffectOutcome, SchemeTypeDef } from './types';
+import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
 import { useSchemeStore } from './SchemeStore';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
@@ -20,6 +22,7 @@ import { calculateBaseOpinion } from '@engine/character/characterUtils';
 import { toAbsoluteDay } from '@engine/dateUtils';
 import { random } from '@engine/random';
 import { getSchemeType } from './registry';
+import { clamp } from './schemeCalc';
 import { debugLog } from '@engine/debugLog';
 
 // ── 上下文构建 ────────────────────────────────────────
@@ -34,6 +37,8 @@ export function buildSchemeContext(): SchemeContext {
   const ws = useWarStore.getState();
   const turn = useTurnManager.getState();
   const currentDay = toAbsoluteDay(turn.currentDate);
+
+  const schemeStore = useSchemeStore.getState();
 
   return {
     characters: cs.characters,
@@ -54,6 +59,7 @@ export function buildSchemeContext(): SchemeContext {
     },
     hasAlliance: (a, b) => ws.hasAlliance(a, b, currentDay),
     vassalIndex: cs.vassalIndex,
+    spymasters: schemeStore.spymasters,
   };
 }
 
@@ -75,6 +81,128 @@ function isSchemeStillValid(
     if (!secondary?.alive) return false;
   }
   return true;
+}
+
+// ── 暴露检测 ──────────────────────────────────────────
+
+/**
+ * 阶段完成时检测暴露。
+ * 发现率 = baseDetectionRate + (防御方谋主strat - 攻击方谋主strat) × 3 + 方法修正
+ * clamp 到 [2, 85]。
+ */
+function checkExposure(
+  scheme: SchemeInstance,
+  def: SchemeTypeDef,
+  rng: () => number,
+): boolean {
+  const config = def.exposureConfig;
+  if (!config) return false;
+
+  const attackerStrat = scheme.snapshot.spymasterStrategy;
+  const defenderStrat = scheme.snapshot.targetSpymasterStrategy;
+  const stratDiff = defenderStrat - attackerStrat;
+  const methodMod = config.getMethodExposureModifier?.(scheme) ?? 0;
+
+  const rate = clamp(config.baseDetectionRate + stratDiff * 3 + methodMod, 2, 85);
+  debugLog('scheme', `[暴露检测] ${scheme.schemeTypeId} ${scheme.id} | 发现率 ${Math.round(rate)}% (base=${config.baseDetectionRate}, stratDiff=${stratDiff}, methodMod=${methodMod})`);
+  return rng() * 100 < rate;
+}
+
+/**
+ * 暴露后果：独立处理好感/威望/chronicle，不调 def.applyEffects（避免双写史书）。
+ */
+function applyExposure(
+  scheme: SchemeInstance,
+  def: SchemeTypeDef,
+  _ctx: SchemeContext,
+): void {
+  const config = def.exposureConfig!;
+  const cs = useCharacterStore.getState();
+  const initiator = cs.characters.get(scheme.initiatorId);
+  const target = cs.characters.get(scheme.primaryTargetId);
+  const initiatorName = initiator?.name ?? '?';
+  const targetName = target?.name ?? '?';
+
+  // 好感惩罚：目标对发起人
+  cs.addOpinion(scheme.primaryTargetId, scheme.initiatorId, {
+    reason: `${def.name}败露`,
+    value: config.opinionPenalty,
+    decayable: true,
+  });
+  // 离间：次要目标也产生好感惩罚
+  if (scheme.data.kind === 'alienation') {
+    cs.addOpinion(scheme.data.secondaryTargetId, scheme.initiatorId, {
+      reason: `${def.name}败露`,
+      value: config.opinionPenalty,
+      decayable: true,
+    });
+  }
+
+  // 威望惩罚
+  if (initiator && config.prestigePenalty > 0) {
+    cs.updateCharacter(scheme.initiatorId, {
+      resources: {
+        ...initiator.resources,
+        prestige: Math.max(0, initiator.resources.prestige - config.prestigePenalty),
+      },
+    });
+  }
+
+  // chronicle emit（仅 exposed 类型，不重复 emit 失败）
+  if (def.chronicleTypes?.exposed) {
+    const actors = [scheme.initiatorId, scheme.primaryTargetId];
+    if (scheme.data.kind === 'alienation') actors.push(scheme.data.secondaryTargetId);
+    const description = `${initiatorName}对${targetName}的${def.name}被察觉`;
+    emitChronicleEvent({
+      type: def.chronicleTypes.exposed,
+      actors,
+      territories: [],
+      description,
+      priority: EventPriority.Normal,
+    });
+  }
+}
+
+/**
+ * 暴露时通知玩家。区分发起人和目标两种视角。
+ */
+function notifySchemeExposed(scheme: SchemeInstance, def: SchemeTypeDef): void {
+  const cs = useCharacterStore.getState();
+  const playerId = cs.playerId;
+  if (!playerId) return;
+
+  const schemeName = def.name;
+  const initiator = cs.characters.get(scheme.initiatorId);
+  const target = cs.characters.get(scheme.primaryTargetId);
+
+  const actors: Array<{ characterId: string; role: string }> = [
+    { characterId: scheme.initiatorId, role: scheme.initiatorId === playerId ? '你（主谋）' : '主谋' },
+    { characterId: scheme.primaryTargetId, role: scheme.primaryTargetId === playerId ? '你（目标）' : '目标' },
+  ];
+  if (scheme.data.kind === 'alienation') {
+    actors.push({ characterId: scheme.data.secondaryTargetId, role: '次要目标' });
+  }
+
+  if (scheme.initiatorId === playerId) {
+    // 玩家是发起人 —— 坏消息
+    useStoryEventBus.getState().pushStoryEvent({
+      id: crypto.randomUUID(),
+      title: `你的${schemeName}被识破`,
+      description: `你对${target?.name ?? '?'}的${schemeName}在进行中被对方察觉，计谋被迫终止。`,
+      actors,
+      options: [{ label: '知悉', description: '', effects: [], effectKey: 'noop:notification', effectData: {}, onSelect: () => {} }],
+    });
+  } else if (scheme.primaryTargetId === playerId ||
+    (scheme.data.kind === 'alienation' && scheme.data.secondaryTargetId === playerId)) {
+    // 玩家是目标/次要目标 —— 好消息
+    useStoryEventBus.getState().pushStoryEvent({
+      id: crypto.randomUUID(),
+      title: `${initiator?.name ?? '?'}的${schemeName}被识破`,
+      description: `你的谋主察觉了${initiator?.name ?? '?'}对你策划的${schemeName}阴谋，及时将其挫败。`,
+      actors,
+      options: [{ label: '知悉', description: '', effects: [], effectKey: 'noop:notification', effectData: {}, onSelect: () => {} }],
+    });
+  }
 }
 
 // ── 主入口 ────────────────────────────────────────────
@@ -130,6 +258,19 @@ export function runSchemeSystem(_date: GameDate): void {
         phase: { ...scheme.phase, progress: newProgress },
       };
       const newRate = def.onPhaseComplete?.(tickedScheme, ctx) ?? scheme.currentSuccessRate;
+
+      // ★ 暴露检测（阶段完成时）
+      if (checkExposure(scheme, def, random)) {
+        applyExposure(scheme, def, ctx);
+        store.updateScheme(scheme.id, {
+          status: 'exposed',
+          resolveDate: { ...useTurnManager.getState().currentDate },
+        });
+        notifySchemeExposed(scheme, def);
+        debugLog('scheme', `[计谋] ${scheme.schemeTypeId} ${scheme.id} EXPOSED at phase ${scheme.phase.current}/${scheme.phase.total}`);
+        continue;
+      }
+
       store.updateScheme(scheme.id, {
         phase: {
           ...scheme.phase,
@@ -140,7 +281,19 @@ export function runSchemeSystem(_date: GameDate): void {
       });
       debugLog('scheme', `[计谋] ${scheme.schemeTypeId} ${scheme.id} → phase ${scheme.phase.current + 1}/${scheme.phase.total}, rate=${Math.round(newRate)}%`);
     } else {
-      // 最终阶段完成 → 结算
+      // 最终阶段完成 → 结算前最后一次暴露检测
+      if (checkExposure(scheme, def, random)) {
+        applyExposure(scheme, def, ctx);
+        store.updateScheme(scheme.id, {
+          status: 'exposed',
+          resolveDate: { ...useTurnManager.getState().currentDate },
+        });
+        notifySchemeExposed(scheme, def);
+        debugLog('scheme', `[计谋] ${scheme.schemeTypeId} ${scheme.id} EXPOSED at final phase`);
+        continue;
+      }
+
+      // 正常结算
       const outcome = def.resolve(scheme, random, ctx);
       def.applyEffects(scheme, outcome, ctx);
       // 同时写入 status 和 resolveDate（供 per-target CD 判定）
@@ -157,9 +310,9 @@ export function runSchemeSystem(_date: GameDate): void {
 // ── 玩家通知 ──────────────────────────────────────────
 
 /**
- * 计谋结算时通知玩家。
- * v1 隐秘纪律：**仅在玩家是发起人时**推 StoryEvent — 玩家需要知晓自己行动的结果。
- * 玩家作为目标/次要目标时不通知，等未来发现机制建立后按发现状态决定是否告知。
+ * 计谋结算时通知玩家（成功/失败）。
+ * 仅在玩家是发起人时推 StoryEvent。
+ * 暴露通知走 notifySchemeExposed（玩家作为发起人或目标都通知）。
  */
 function notifySchemeResolved(scheme: SchemeInstance, outcome: SchemeEffectOutcome): void {
   const cs = useCharacterStore.getState();

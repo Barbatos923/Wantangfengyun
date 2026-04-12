@@ -14,6 +14,7 @@ interface SchemeStoreState {
   schemes: Map<string, SchemeInstance>;
   initiatorIndex: Map<string, Set<string>>;  // initiatorId → schemeIds
   targetIndex: Map<string, Set<string>>;     // primaryTargetId → schemeIds
+  spymasters: Map<string, string>;           // charId → spymasterId（缺省=自身）
 
   // ── 写操作 ──
   addScheme: (scheme: SchemeInstance) => void;
@@ -24,6 +25,8 @@ interface SchemeStoreState {
    */
   updateScheme: (id: string, patch: Partial<Omit<SchemeInstance, 'id' | 'schemeTypeId' | 'initiatorId' | 'primaryTargetId'>>) => void;
   setStatus: (id: string, status: SchemeStatus) => void;
+  setSpymaster: (charId: string, spymasterId: string) => void;
+  removeSpymaster: (charId: string) => void;
 
   // ── 查询 ──
   getActiveSchemesByInitiator: (charId: string) => SchemeInstance[];
@@ -48,7 +51,7 @@ interface SchemeStoreState {
   ) => boolean;
 
   // ── 反序列化入口 ──
-  initSchemes: (schemes: SchemeInstance[]) => void;
+  initSchemes: (schemes: SchemeInstance[], spymasters?: [string, string][]) => void;
 }
 
 function addToIndex(index: Map<string, Set<string>>, key: string, value: string): void {
@@ -71,6 +74,7 @@ export const useSchemeStore = create<SchemeStoreState>((set, get) => ({
   schemes: new Map(),
   initiatorIndex: new Map(),
   targetIndex: new Map(),
+  spymasters: new Map(),
 
   addScheme: (scheme) => set((s) => {
     const schemes = new Map(s.schemes);
@@ -108,6 +112,18 @@ export const useSchemeStore = create<SchemeStoreState>((set, get) => ({
     const schemes = new Map(s.schemes);
     schemes.set(id, { ...existing, status });
     return { schemes };
+  }),
+
+  setSpymaster: (charId, spymasterId) => set((s) => {
+    const spymasters = new Map(s.spymasters);
+    spymasters.set(charId, spymasterId);
+    return { spymasters };
+  }),
+
+  removeSpymaster: (charId) => set((s) => {
+    const spymasters = new Map(s.spymasters);
+    spymasters.delete(charId);
+    return { spymasters };
   }),
 
   getActiveSchemesByInitiator: (charId) => {
@@ -165,7 +181,7 @@ export const useSchemeStore = create<SchemeStoreState>((set, get) => ({
     return false;
   },
 
-  initSchemes: (list) => {
+  initSchemes: (list, spymasterEntries) => {
     const schemes = new Map<string, SchemeInstance>();
     const initiatorIndex = new Map<string, Set<string>>();
     const targetIndex = new Map<string, Set<string>>();
@@ -174,6 +190,12 @@ export const useSchemeStore = create<SchemeStoreState>((set, get) => ({
       addToIndex(initiatorIndex, scheme.initiatorId, scheme.id);
       addToIndex(targetIndex, scheme.primaryTargetId, scheme.id);
     }
-    set({ schemes, initiatorIndex, targetIndex });
+    const spymasters = new Map<string, string>();
+    if (spymasterEntries) {
+      for (const [k, v] of spymasterEntries) {
+        spymasters.set(k, v);
+      }
+    }
+    set({ schemes, initiatorIndex, targetIndex, spymasters });
   },
 }));

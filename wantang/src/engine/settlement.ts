@@ -13,6 +13,7 @@ import {
 } from './systems/index.ts';
 import { runDailyNpcEngine } from './npc/NpcEngine.ts';
 import { runSchemeSystem } from './scheme/schemeSystem.ts';
+import { refreshNpcSpymasters } from './scheme/spymasterCalc.ts';
 import { useWarStore } from './military/WarStore.ts';
 import { useCharacterStore } from './character/CharacterStore.ts';
 import { useStoryEventBus } from './storyEventBus.ts';
@@ -82,6 +83,7 @@ export function runMonthlySettlement(date: GameDate): void {
     }
   }
   runCharacterSystem(date);   // 1. 健康/死亡/压力/成长（必须最先：死亡影响后续所有系统）
+  refreshNpcSpymasters();     // 1.3 NPC 谋主月度刷新（在 scheme 推进之前更新谋主映射）
   runSchemeSystem(date);      // 1.5 scheme 推进：在 characterSystem 之后看到最新死亡/继承结果
   runDailyNpcEngine(date);    // 2. NPC 决策（月初在 characterSystem 之后，保证继承先完成）
   runPopulationSystem(date);  // 3. 年度人口变化

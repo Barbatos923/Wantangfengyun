@@ -21,6 +21,7 @@ import type {
 import type { LlmPrompt } from '@engine/chronicle/llm/LlmProvider';
 import { registerSchemeType } from '../registry';
 import { clamp, hasRelationship } from '../schemeCalc';
+import { resolveSpymaster } from '../spymasterCalc';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
 import { useMilitaryStore } from '@engine/military/MilitaryStore';
@@ -193,14 +194,14 @@ export function getValidSecondaryAlienationTargets(
 // ── 初始成功率公式（纯函数，UI 预览/NPC 共用） ────────
 
 export function calcAlienationInitialRate(
-  initiator: Character,
-  primary: Character,
+  attackSpymasterStrategy: number,
+  defendSpymasterStrategy: number,
   methodBonus: number,
 ): number {
-  // base 5 + 谋略差 × 3 + 方法加成
+  // base 5 + 谋主谋略差 × 3 + 方法加成
   // 基础概率刻意压低：无优势的裸离间只有 5%，叙事上离间本来就是"找到对的条件才出手"
   // 谋略差系数 3：典型 ±10 stratDiff 拉开 ±30 百分点，让外交/战略能力实感化
-  const stratDiff = initiator.abilities.strategy - primary.abilities.strategy;
+  const stratDiff = attackSpymasterStrategy - defendSpymasterStrategy;
   const baseRate = ALIENATION_BASE_RATE + stratDiff * 3;
   return clamp(baseRate + methodBonus, 5, ALIENATION_INITIAL_CAP);
 }
@@ -217,7 +218,23 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
   phaseCount: ALIENATION_PHASES,
   costMoney: ALIENATION_COST,
   description: '挑拨两位有关系的人物，使其关系破裂，互相敌视。',
-  chronicleTypes: { initiate: '发起离间', success: '离间成功', failure: '离间失败' },
+  chronicleTypes: { initiate: '发起离间', success: '离间成功', failure: '离间失败', exposed: '离间暴露' },
+
+  exposureConfig: {
+    baseDetectionRate: 15,
+    opinionPenalty: ALIENATION_FAIL_OPINION,     // -40，等同正常失败
+    prestigePenalty: -ALIENATION_FAIL_PRESTIGE,   // 20，等同正常失败（FAIL_PRESTIGE 是 -20）
+    getMethodExposureModifier: (scheme) => {
+      const data = scheme.data as AlienationData;
+      const modifiers: Record<string, number> = {
+        rumor: 5,        // 谣言流传广，容易被追溯
+        forgedLetter: -5, // 书信一对一，隐蔽性好
+        honeyTrap: 10,    // 需要实体接触，暴露风险最高
+        custom: 0,        // AI 方法走中性基线
+      };
+      return modifiers[data.methodId] ?? 0;
+    },
+  },
 
   parseParams(raw): AlienationParams | null {
     if (!raw || typeof raw !== 'object') return null;
@@ -272,11 +289,13 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
     const target = ctx.characters.get(params.primaryTargetId)!;
     const secondary = ctx.characters.get(params.secondaryTargetId)!;
     const method = getAlienationMethod(params.methodId)!;
+    const attackSm = resolveSpymaster(initiator.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+    const defendSm = resolveSpymaster(target.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
 
     // 分支 initial rate 计算：
     // - AI 方法（method.isAI）：LLM 返回值作为最终 rate，绕过 stratDiff×3 + base 5 公式。
     //   上下限放宽到 [-20, 100]（预设方法是 [5, 80]）。
-    // - 预设方法：同步 calcBonus 后走 calcAlienationInitialRate 公式。
+    // - 预设方法：同步 calcBonus 后走 calcAlienationInitialRate 公式（使用谋主 strategy）。
     // 防御性兜底：AI 方法进来时 canInitiate 已保证 override 非空，若因调用者绕过校验而缺失，
     // 走 console.error + 0 rate 而非抛异常（保持 execute 契约）。
     let finalRate: number;
@@ -293,7 +312,7 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
       methodBonus = 0;  // snapshot 字段语义上不适用于 AI 方法，置 0
     } else {
       methodBonus = method.calcBonus(target, secondary, initiator, ctx);
-      finalRate = calcAlienationInitialRate(initiator, target, methodBonus);
+      finalRate = calcAlienationInitialRate(attackSm.abilities.strategy, defendSm.abilities.strategy, methodBonus);
     }
 
     const data: AlienationData = {
@@ -306,10 +325,10 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
       aiReasoning: params.aiReasoning,
     };
     const snapshot: SchemeSnapshot = {
-      spymasterId: initiator.id,
-      spymasterStrategy: initiator.abilities.strategy,
-      targetSpymasterId: target.id,
-      targetSpymasterStrategy: target.abilities.strategy,
+      spymasterId: attackSm.id,
+      spymasterStrategy: attackSm.abilities.strategy,
+      targetSpymasterId: defendSm.id,
+      targetSpymasterStrategy: defendSm.abilities.strategy,
       initialSuccessRate: finalRate,
     };
     return {
@@ -385,13 +404,13 @@ const alienationDef: SchemeTypeDef<AlienationParams> = {
     };
   },
 
-  applyEffects(scheme, outcome, _ctx) {
+  applyEffects(scheme, outcome, ctx) {
     const cs = useCharacterStore.getState();
     const data = scheme.data as AlienationData;
 
-    // v2 AI 方法：reasoning 存在时附加到史书 description（v1 永远 undefined）
+    // 自拟妙计：把玩家自拟内容附加到史书 description
     let description = outcome.description;
-    if (data.aiReasoning) description += `（谋士评议：${data.aiReasoning}）`;
+    if (data.customDescription) description += `\n策略：${data.customDescription}`;
 
     if (outcome.kind === 'success') {
       // 双向 -30 好感（A↔B）
@@ -448,11 +467,10 @@ registerSchemeType(alienationDef);
 
 export { alienationDef };
 
-// ── AI 方法 prompt 构造 helpers ────────────────────────────
+// ── 角色渲染 helpers ────────────────────────────────────
 //
-// 以下 helper 为 buildAiMethodPrompt 服务，允许读 live Store（territories/military/central posts），
-// 仅在玩家主动发起"自拟妙计"时被调用一次，非热路径。
-// 纯函数路径（NPC / 日结 / 月结）不得使用这些 helper。
+// 供 AI 方法 prompt + chronicle 史书 description 共用。
+// 允许读 live Store（territories/military/central posts），非热路径（每次 emit 一条）。
 
 function buildAlienationContextBlock(
   initiator: Character,
@@ -651,3 +669,4 @@ function renderAllegiance(a: Character, b: Character): string {
   if (b.overlordId === a.id) return `${b.name}是${a.name}的直属臣属`;
   return '';
 }
+

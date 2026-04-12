@@ -66,8 +66,8 @@ const TONE_BORDER_HOVER: Record<EventTone, string> = {
  * 未来发现机制建立后，由 discovery 状态决定是否让对应事件走 toast。
  */
 const SCHEME_HIDDEN_FROM_TOAST = new Set([
-  '发起拉拢', '拉拢成功', '拉拢失败',
-  '发起离间', '离间成功', '离间失败',
+  // 拉拢不再 emit chronicle 事件，无需过滤
+  '发起离间', '离间成功', '离间失败', '离间暴露',
 ]);
 
 function getDisplayRelevance(

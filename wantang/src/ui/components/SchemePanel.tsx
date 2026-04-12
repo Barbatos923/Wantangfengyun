@@ -16,6 +16,7 @@ import {
   type SchemeInstance,
 } from '@engine/scheme';
 import { cancelScheme } from '@engine/interaction/schemeAction';
+import { resolveSpymaster } from '@engine/scheme/spymasterCalc';
 import { toAbsoluteDay } from '@engine/dateUtils';
 import SchemeDetailPanel from './SchemeDetailPanel';
 
@@ -37,9 +38,12 @@ export default function SchemePanel({ onClose }: SchemePanelProps) {
   const playerId = useCharacterStore((s) => s.playerId);
   const player = useCharacterStore((s) => playerId ? s.characters.get(playerId) : undefined);
   const characters = useCharacterStore((s) => s.characters);
+  const vassalIndex = useCharacterStore((s) => s.vassalIndex);
   const schemes = useSchemeStore((s) => s.schemes);
+  const spymasters = useSchemeStore((s) => s.spymasters);
   const currentDate = useTurnManager((s) => s.currentDate);
   const [detailSchemeId, setDetailSchemeId] = useState<string | null>(null);
+  const [showSpymasterPicker, setShowSpymasterPicker] = useState(false);
 
   if (!playerId || !player) return null;
 
@@ -54,7 +58,8 @@ export default function SchemePanel({ onClose }: SchemePanelProps) {
     }
   }
 
-  const limit = calcSchemeLimit(player.abilities.strategy);
+  const spymaster = resolveSpymaster(playerId, spymasters, characters, vassalIndex);
+  const limit = calcSchemeLimit(spymaster.abilities.strategy);
   const currentDay = toAbsoluteDay(currentDate);
 
   function getName(charId: string): string {
@@ -75,20 +80,60 @@ export default function SchemePanel({ onClose }: SchemePanelProps) {
         {/* 顶部状态栏 */}
         <div className="rounded p-3 bg-[var(--color-bg-surface)] border border-[var(--color-border)]">
           <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm font-bold text-[var(--color-text)]">{player.name}</div>
-              <div className="text-xs text-[var(--color-text-muted)]">
-                谋略 {player.abilities.strategy} · 外交 {player.abilities.diplomacy}
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-[var(--color-text)]">
+                谋主：{spymaster.id === playerId ? '亲自担任' : spymaster.name}
+                {spymaster.id !== playerId && !spymaster.alive && '（已故）'}
+                （谋略 {spymaster.abilities.strategy}）
+              </span>
+              <button
+                className="text-sm font-bold text-[var(--color-accent-gold)] hover:underline"
+                onClick={() => setShowSpymasterPicker(!showSpymasterPicker)}
+              >
+                {showSpymasterPicker ? '收起' : '更换'}
+              </button>
             </div>
             <div className="text-right">
-              <div className="text-xs text-[var(--color-text-muted)]">谋力</div>
+              <div className="text-xs text-[var(--color-text-muted)]">计谋数量上限</div>
               <div className="text-lg font-bold text-[var(--color-accent-gold)]">
                 {myActive.length} / {limit}
               </div>
             </div>
           </div>
         </div>
+
+        {/* 谋主选择 */}
+        {showSpymasterPicker && (() => {
+          const vassals = vassalIndex.get(playerId);
+          const candidates = vassals
+            ? [...vassals]
+                .map((id) => characters.get(id))
+                .filter((c): c is NonNullable<typeof c> => !!c?.alive)
+                .sort((a, b) => b.abilities.strategy - a.abilities.strategy)
+            : [];
+          return (
+            <div className="rounded p-3 bg-[var(--color-bg-surface)] border border-[var(--color-border)] flex flex-col gap-1">
+              <button
+                className={`text-left text-xs px-2 py-1 rounded hover:bg-[var(--color-bg-hover)] ${spymaster.id === playerId ? 'font-bold text-[var(--color-accent)]' : 'text-[var(--color-text)]'}`}
+                onClick={() => { useSchemeStore.getState().removeSpymaster(playerId); setShowSpymasterPicker(false); }}
+              >
+                亲自担任 (谋略 {player.abilities.strategy})
+              </button>
+              {candidates.map((c) => (
+                <button
+                  key={c.id}
+                  className={`text-left text-xs px-2 py-1 rounded hover:bg-[var(--color-bg-hover)] ${spymaster.id === c.id ? 'font-bold text-[var(--color-accent)]' : 'text-[var(--color-text)]'}`}
+                  onClick={() => { useSchemeStore.getState().setSpymaster(playerId, c.id); setShowSpymasterPicker(false); }}
+                >
+                  {c.name} (谋略 {c.abilities.strategy})
+                </button>
+              ))}
+              {candidates.length === 0 && (
+                <div className="text-xs text-[var(--color-text-muted)] px-2 py-1">无直属臣属可选</div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* 活跃计谋列表 */}
         {myActive.length === 0 ? (

@@ -15,9 +15,8 @@ import type {
 } from '../types';
 import { registerSchemeType } from '../registry';
 import { clamp } from '../schemeCalc';
+import { resolveSpymaster } from '../spymasterCalc';
 import { useCharacterStore } from '@engine/character/CharacterStore';
-import { emitChronicleEvent } from '@engine/chronicle/emitChronicleEvent';
-import { EventPriority } from '@engine/types';
 import { debugLog } from '@engine/debugLog';
 
 // ── 数值常量 ────────────────────────────────────────
@@ -33,20 +32,20 @@ const FAILURE_OPINION_PENALTY = -5;
 // ── 成功率公式（纯函数） ─────────────────────────────
 
 /**
- * 拉拢初始成功率：base 50 + diplomacy 差 × 4 + 现有好感 × 0.2
- * - dipDiff = initiator.diplomacy - 10（10 为基线）
- * - 系数 4 让外交能力拉开显著差距：dip 18 ~ 82%, dip 14 ~ 66%, dip 6 ~ 34%, dip 4 ~ 26%
- *   （实际 dip 范围 4-20，mean ≈ 12.8，p99 = 18），顶级外交能带来近 ±30 百分点的实感差异
+ * 拉拢初始成功率：base 50 + 谋主strategy差 × 4 + 现有好感 × 0.2
+ * - stratDiff = 攻击方谋主.strategy - 10（10 为基线）
+ * - 系数 4 让谋略能力拉开显著差距
  * - opinion 加成 = target → initiator 现有好感 × 0.2（次要修正）
  */
 export function calcCurryFavorRate(
-  initiator: Character,
+  spymasterStrategy: number,
   target: Character,
+  initiatorId: string,
   ctx: SchemeContext,
 ): number {
-  const dipDiff = initiator.abilities.diplomacy - 10;
-  const opinionBonus = ctx.getOpinion(target.id, initiator.id) * 0.2;
-  return clamp(CURRY_FAVOR_BASE_RATE + dipDiff * 4 + opinionBonus, 5, 95);
+  const stratDiff = spymasterStrategy - 10;
+  const opinionBonus = ctx.getOpinion(target.id, initiatorId) * 0.2;
+  return clamp(CURRY_FAVOR_BASE_RATE + stratDiff * 4 + opinionBonus, 5, 95);
 }
 
 // ── SchemeTypeDef 实现 ───────────────────────────────
@@ -61,7 +60,7 @@ const curryFavorDef: SchemeTypeDef<CurryFavorParams> = {
   phaseCount: 1,
   costMoney: CURRY_FAVOR_COST,
   description: '通过宴饮、馈赠和私下结交，增进对方对自己的好感。',
-  chronicleTypes: { initiate: '发起拉拢', success: '拉拢成功', failure: '拉拢失败' },
+  // 拉拢频次过高，不入史书（chronicleTypes 省略）
 
   parseParams(raw): CurryFavorParams | null {
     if (!raw || typeof raw !== 'object') return null;
@@ -94,14 +93,16 @@ const curryFavorDef: SchemeTypeDef<CurryFavorParams> = {
 
   initInstance(initiator, params, ctx, _precomputedBonus) {
     const target = ctx.characters.get(params.primaryTargetId)!;
-    const rate = calcCurryFavorRate(initiator, target, ctx);
-    debugLog('scheme', `[拉拢发起] ${initiator.name} → ${target.name} | 初始成功率 ${Math.round(rate)}%`);
+    const attackSm = resolveSpymaster(initiator.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+    const defendSm = resolveSpymaster(target.id, ctx.spymasters, ctx.characters, ctx.vassalIndex);
+    const rate = calcCurryFavorRate(attackSm.abilities.strategy, target, initiator.id, ctx);
+    debugLog('scheme', `[拉拢发起] ${initiator.name} → ${target.name} | 谋主=${attackSm.name}(${attackSm.abilities.strategy}) | 初始成功率 ${Math.round(rate)}%`);
     const data: CurryFavorData = { kind: 'curryFavor' };
     const snapshot: SchemeSnapshot = {
-      spymasterId: initiator.id,
-      spymasterStrategy: initiator.abilities.diplomacy,  // basic 用 diplomacy
-      targetSpymasterId: target.id,
-      targetSpymasterStrategy: target.abilities.diplomacy,
+      spymasterId: attackSm.id,
+      spymasterStrategy: attackSm.abilities.strategy,
+      targetSpymasterId: defendSm.id,
+      targetSpymasterStrategy: defendSm.abilities.strategy,
       initialSuccessRate: rate,
     };
     return {
@@ -149,26 +150,12 @@ const curryFavorDef: SchemeTypeDef<CurryFavorParams> = {
         value: SUCCESS_OPINION_INITIATOR_TO_TARGET,
         decayable: true,
       });
-      emitChronicleEvent({
-        type: '拉拢成功',
-        actors: [scheme.initiatorId, scheme.primaryTargetId],
-        territories: [],
-        description: outcome.description,
-        priority: EventPriority.Normal,
-      });
     } else {
       // 失败：仅 -5 好感（拉拢失败不结仇）
       cs.addOpinion(scheme.primaryTargetId, scheme.initiatorId, {
         reason: '拒其示好',
         value: FAILURE_OPINION_PENALTY,
         decayable: true,
-      });
-      emitChronicleEvent({
-        type: '拉拢失败',
-        actors: [scheme.initiatorId, scheme.primaryTargetId],
-        territories: [],
-        description: outcome.description,
-        priority: EventPriority.Normal,
       });
     }
   },

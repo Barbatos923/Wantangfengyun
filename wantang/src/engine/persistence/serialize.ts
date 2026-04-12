@@ -99,5 +99,6 @@ export function serializeGame(): SaveFile {
     },
 
     schemes: Array.from(schemeStore.schemes.values()),
+    spymasters: Array.from(schemeStore.spymasters.entries()),
   };
 }

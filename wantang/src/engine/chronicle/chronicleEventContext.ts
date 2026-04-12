@@ -357,6 +357,28 @@ const EVENT_FIELD_MAP: Record<string, EventFieldMapping> = {
     { roleLabel: '背盟方', fields: ['mainPost', 'traits', 'military'] },
     { roleLabel: '受害方', fields: ['mainPost', 'allegiance'] },
   ],
+
+  // ── 计谋 ──
+  '发起离间': [
+    { roleLabel: '主谋', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '直接目标', fields: ['mainPost', 'traits', 'allegiance'] },
+    { roleLabel: '次要目标', fields: ['mainPost', 'traits', 'allegiance'] },
+  ],
+  '离间成功': [
+    { roleLabel: '主谋', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '直接目标', fields: ['mainPost', 'traits', 'allegiance'] },
+    { roleLabel: '次要目标', fields: ['mainPost', 'traits', 'allegiance'] },
+  ],
+  '离间失败': [
+    { roleLabel: '主谋', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '直接目标', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '次要目标', fields: ['mainPost', 'allegiance'] },
+  ],
+  '离间暴露': [
+    { roleLabel: '主谋', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '直接目标', fields: ['mainPost', 'traits', 'abilities'] },
+    { roleLabel: '次要目标', fields: ['mainPost', 'allegiance'] },
+  ],
 };
 
 // ── 主入口 ───────────────────────────────────────────────
