@@ -8,47 +8,35 @@ import SchemePanel from './SchemePanel';
 import { useStoryEventBus, type StoryEvent } from '@engine/storyEventBus';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { usePanelStore } from '@ui/stores/panelStore';
+import {
+  IconPalace, IconMap, IconMilitary, IconScroll,
+  IconOfficials, IconScheme, IconFaction, IconDecree, IconGoblet,
+} from './icons/MenuIcons';
 
 interface MenuItem {
   label: string;
-  icon: string;
+  icon: React.ReactNode;
+  key: string;
 }
 
 const menuItems: MenuItem[] = [
-  { label: '政体', icon: '🏛' },
-  { label: '领地', icon: '🗺' },
-  { label: '军事', icon: '⚔' },
-  { label: '官职', icon: '📜' },
-  { label: '廷臣', icon: '👤' },
-  { label: '计谋', icon: '🎯' },
-  { label: '派系', icon: '🤝' },
-  { label: '决议', icon: '📋' },
-  { label: '活动', icon: '🎭' },
+  { label: '政体', icon: <IconPalace size={28} />, key: 'government' },
+  { label: '领地', icon: <IconMap size={28} />, key: 'realm' },
+  { label: '军事', icon: <IconMilitary size={28} />, key: 'military' },
+  { label: '官职', icon: <IconScroll size={28} />, key: 'official' },
+  { label: '廷臣', icon: <IconOfficials size={28} />, key: 'retainers' },
+  { label: '计谋', icon: <IconScheme size={28} />, key: 'scheme' },
+  { label: '派系', icon: <IconFaction size={28} />, key: 'faction' },
+  { label: '决议', icon: <IconDecree size={28} />, key: 'decision' },
+  { label: '活动', icon: <IconGoblet size={28} />, key: 'event' },
 ];
 
 const SideMenu: React.FC = () => {
-  const [showRealmPanel, setShowRealmPanel] = useState(false);
-  const [showOfficialPanel, setShowOfficialPanel] = useState(false);
-  const [showGovernmentPanel, setShowGovernmentPanel] = useState(false);
-  const [showMilitaryPanel, setShowMilitaryPanel] = useState(false);
-  const [showDecisionPanel, setShowDecisionPanel] = useState(false);
-  const [showSchemePanel, setShowSchemePanel] = useState(false);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
   const mapSelectionActive = usePanelStore((s) => s.mapSelectionActive);
 
-  const handleClick = (label: string) => {
-    if (label === '政体') {
-      setShowGovernmentPanel(true);
-    } else if (label === '领地') {
-      setShowRealmPanel(true);
-    } else if (label === '军事') {
-      setShowMilitaryPanel(true);
-    } else if (label === '官职') {
-      setShowOfficialPanel(true);
-    } else if (label === '决议') {
-      setShowDecisionPanel(true);
-    } else if (label === '计谋') {
-      setShowSchemePanel(true);
-    } else if (label === '活动') {
+  const handleClick = (key: string) => {
+    if (key === 'event') {
       // 测试事件：推入虚拟决策事件
       const playerId = useCharacterStore.getState().playerId;
       if (playerId) {
@@ -92,33 +80,64 @@ const SideMenu: React.FC = () => {
         };
         useStoryEventBus.getState().pushStoryEvent(testEvent);
       }
+      return;
     }
+    setActivePanel(key);
   };
 
-  return (
-    <div className="flex flex-col bg-[var(--color-bg-panel)] border-l border-[var(--color-border)] py-2 shrink-0">
-      {menuItems.map((item) => (
-        <button
-          key={item.label}
-          onClick={() => handleClick(item.label)}
-          className="flex flex-col items-center justify-center w-16 h-16 text-[var(--color-text-muted)] hover:bg-[var(--color-bg-surface)] hover:text-[var(--color-text)] transition-colors"
-          title={item.label}
-        >
-          <span className="text-xl">{item.icon}</span>
-          <span className="text-xs mt-0.5">{item.label}</span>
-        </button>
-      ))}
+  const closePanel = () => setActivePanel(null);
 
-      {showGovernmentPanel && <GovernmentPanel onClose={() => setShowGovernmentPanel(false)} />}
-      {showRealmPanel && <RealmPanel onClose={() => setShowRealmPanel(false)} />}
-      {showOfficialPanel && <OfficialPanel onClose={() => setShowOfficialPanel(false)} />}
-      {showMilitaryPanel && (
+  return (
+    <div
+      className="flex flex-col py-1 shrink-0"
+      style={{
+        background: 'linear-gradient(180deg, #1a1610 0%, #141110 100%)',
+        borderLeft: '1px solid var(--color-border)',
+        boxShadow: 'inset 1px 0 4px rgba(0,0,0,0.3)',
+      }}
+    >
+      {menuItems.map((item) => {
+        const isActive = activePanel === item.key;
+        return (
+          <button
+            key={item.key}
+            onClick={() => handleClick(item.key)}
+            className="relative flex flex-col items-center justify-center w-16 h-16 transition-colors cursor-pointer select-none group"
+            style={{
+              color: isActive ? 'var(--color-accent-gold)' : 'var(--color-text)',
+              background: isActive ? 'rgba(184,154,83,0.08)' : undefined,
+            }}
+            title={item.label}
+          >
+            {/* 左侧金色选中条 */}
+            {isActive && (
+              <div
+                className="absolute left-0 top-1 bottom-1 w-0.5 rounded-r"
+                style={{ background: 'var(--color-accent-gold)' }}
+              />
+            )}
+            {/* 图标 */}
+            <span className="transition-colors group-hover:text-[var(--color-accent-gold)]">
+              {item.icon}
+            </span>
+            {/* 标签 */}
+            <span className="text-[11px] mt-0.5 text-[var(--color-text)] transition-colors">
+              {item.label}
+            </span>
+          </button>
+        );
+      })}
+
+      {activePanel === 'government' && <GovernmentPanel onClose={closePanel} />}
+      {activePanel === 'realm' && <RealmPanel onClose={closePanel} />}
+      {activePanel === 'official' && <OfficialPanel onClose={closePanel} />}
+      {activePanel === 'military' && (
         <div style={{ display: mapSelectionActive ? 'none' : undefined }}>
-          <MilitaryPanel onClose={() => setShowMilitaryPanel(false)} />
+          <MilitaryPanel onClose={closePanel} />
         </div>
       )}
-      {showDecisionPanel && <DecisionPanel onClose={() => setShowDecisionPanel(false)} />}
-      {showSchemePanel && <SchemePanel onClose={() => setShowSchemePanel(false)} />}
+      {activePanel === 'decision' && <DecisionPanel onClose={closePanel} />}
+      {activePanel === 'scheme' && <SchemePanel onClose={closePanel} />}
     </div>
   );
 };

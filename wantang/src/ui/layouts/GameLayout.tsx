@@ -32,6 +32,34 @@ const GameLayout: React.FC = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
+      {/* Top: 资源栏横梁（右对齐，左侧透出地图） */}
+      <div className="flex items-stretch justify-end shrink-0 relative z-20"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, #151110 30%)',
+          pointerEvents: 'none',
+        }}
+      >
+        <div style={{ pointerEvents: 'auto' }} className="flex items-stretch">
+          <ResourceBar />
+          <div className="flex items-center gap-1 px-2 shrink-0"
+            style={{
+              background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
+              borderBottom: '1px solid var(--color-border)',
+              borderLeft: '1px solid var(--color-border)',
+            }}
+          >
+            <ChronicleButton />
+            <button
+              onClick={() => setShowSystemMenu(true)}
+              className="w-9 h-9 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-lg"
+              title="系统菜单 (ESC)"
+            >
+              ⚙
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Middle: Left Panel + Map + Side Menu */}
       <div className="flex-1 flex flex-row min-h-0 relative">
         {/* Left panel (character / territory info) */}
@@ -39,26 +67,6 @@ const GameLayout: React.FC = () => {
 
         {/* Map area with overlays */}
         <div className="flex-1 relative flex">
-          {/* 资源栏书简（右上浮层） */}
-          <div className="absolute top-0 right-0 z-20 flex items-stretch">
-            <ResourceBar />
-            <div className="flex items-center gap-1 px-2 shrink-0"
-              style={{
-                background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
-                borderBottom: '1px solid var(--color-border)',
-                borderLeft: '1px solid var(--color-border)',
-              }}
-            >
-              <ChronicleButton />
-              <button
-                onClick={() => setShowSystemMenu(true)}
-                className="w-9 h-9 rounded bg-[var(--color-bg-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-gold)] hover:text-[var(--color-accent-gold)] transition-colors flex items-center justify-center text-lg"
-                title="系统菜单 (ESC)"
-              >
-                ⚙
-              </button>
-            </div>
-          </div>
           {/* Alert bar overlaid top-left（行政任务通知） */}
           <div className="absolute top-0 left-0 z-10">
             <AlertBar />
