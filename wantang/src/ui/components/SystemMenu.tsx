@@ -9,6 +9,7 @@ import { ModalHeader } from './base/ModalHeader';
 import { Button } from './base/Button';
 import SaveDialog from './SaveDialog';
 import LoadDialog from './LoadDialog';
+import CharacterSwitcher from './CharacterSwitcher';
 import {
   exportToFile,
   importFromFile,
@@ -23,6 +24,7 @@ interface SystemMenuProps {
 const SystemMenu: React.FC<SystemMenuProps> = ({ onClose }) => {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
+  const [showSwitcher, setShowSwitcher] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -70,6 +72,9 @@ const SystemMenu: React.FC<SystemMenuProps> = ({ onClose }) => {
           <Button onClick={handleExport}>📤 导出为文件</Button>
           <Button onClick={() => importInputRef.current?.click()}>📥 从文件导入</Button>
           <div className="border-t border-[var(--color-border)] my-1" />
+          <Button onClick={() => setShowSwitcher(true)}>
+            🔄 切换角色
+          </Button>
           <Button variant="danger" onClick={handleNewGame}>
             🆕 新游戏
           </Button>
@@ -101,6 +106,16 @@ const SystemMenu: React.FC<SystemMenuProps> = ({ onClose }) => {
           onClose={() => setShowLoadDialog(false)}
           onLoaded={() => {
             setShowLoadDialog(false);
+            onClose();
+          }}
+        />
+      )}
+
+      {showSwitcher && (
+        <CharacterSwitcher
+          onClose={() => setShowSwitcher(false)}
+          onSwitched={() => {
+            setShowSwitcher(false);
             onClose();
           }}
         />

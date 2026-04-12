@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
@@ -43,14 +43,14 @@ export function Tooltip({ content, position = 'bottom', disabled, children }: To
     setVisible(false);
   }, []);
 
-  // 计算位置 + 视口边界修正
-  useEffect(() => {
-    if (!visible || !triggerRef.current) return;
+  // 渲染后测量真实 tooltip 尺寸，计算位置 + 视口边界修正
+  useLayoutEffect(() => {
+    if (!visible || !triggerRef.current || !tooltipRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
+    const tt = tooltipRef.current.getBoundingClientRect();
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // 先按期望方向计算，再做修正
     let pos = position;
     let top = 0;
     let left = 0;
@@ -78,15 +78,18 @@ export function Tooltip({ content, position = 'bottom', disabled, children }: To
 
     calcPos(pos);
 
-    // 边界修正：翻转方向
-    if (pos === 'bottom' && top + 120 > vh) { pos = 'top'; calcPos(pos); }
-    else if (pos === 'top' && top < 40) { pos = 'bottom'; calcPos(pos); }
-    else if (pos === 'right' && left + 200 > vw) { pos = 'left'; calcPos(pos); }
-    else if (pos === 'left' && left < 200) { pos = 'right'; calcPos(pos); }
+    // 边界修正：用真实 tooltip 尺寸判断翻转
+    if (pos === 'bottom' && top + tt.height > vh) { pos = 'top'; calcPos(pos); }
+    else if (pos === 'top' && top - tt.height < 0) { pos = 'bottom'; calcPos(pos); }
+    else if (pos === 'right' && left + tt.width > vw) { pos = 'left'; calcPos(pos); }
+    else if (pos === 'left' && left - tt.width < 0) { pos = 'right'; calcPos(pos); }
 
-    // 水平越界修正
-    if (left < 10) left = 10;
-    if (left > vw - 10) left = vw - 10;
+    // 水平越界修正（top/bottom 模式下居中可能溢出）
+    if (pos === 'top' || pos === 'bottom') {
+      const halfW = tt.width / 2;
+      if (left - halfW < 4) left = halfW + 4;
+      if (left + halfW > vw - 4) left = vw - halfW - 4;
+    }
 
     setFinalPos(pos);
     setCoords({ top, left });
@@ -127,14 +130,14 @@ export function Tooltip({ content, position = 'bottom', disabled, children }: To
       >
         {children}
       </div>
-      {visible && coords && createPortal(
+      {visible && createPortal(
         <div
           ref={tooltipRef}
           style={{
             position: 'fixed',
-            top: coords.top,
-            left: coords.left,
-            transform: getTransform(finalPos),
+            top: coords?.top ?? -9999,
+            left: coords?.left ?? -9999,
+            transform: coords ? getTransform(finalPos) : undefined,
             transformOrigin: transformOrigin[finalPos],
             zIndex: 9999,
             pointerEvents: 'none',
@@ -146,6 +149,7 @@ export function Tooltip({ content, position = 'bottom', disabled, children }: To
             maxWidth: '320px',
             color: 'var(--color-text)',
             fontSize: 'var(--text-sm)',
+            visibility: coords ? 'visible' : 'hidden',
           }}
         >
           {content}

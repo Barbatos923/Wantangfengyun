@@ -1,58 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCharacterStore } from '@engine/character/CharacterStore';
 import { useTerritoryStore } from '@engine/territory/TerritoryStore';
-import { useTurnManager } from '@engine/TurnManager';
-import { getDynamicTitle, calculateMonthlyLedger } from '@engine/official/officialUtils';
-import { useLedgerStore } from '@engine/official/LedgerStore';
+import { getDynamicTitle } from '@engine/official/officialUtils';
 
 interface PlayerIdentityCardProps {
   onClick?: () => void;
 }
 
 const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
-  const [showSwitcher, setShowSwitcher] = useState(false);
   const player = useCharacterStore((s) => {
     const pid = s.playerId;
     return pid ? s.characters.get(pid) : undefined;
   });
-  const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
-  const currentYear = useTurnManager((s) => s.currentDate.year);
 
-  const age = player ? currentYear - player.birthYear : 0;
   const healthPct = player ? Math.max(0, Math.min(100, player.health)) : 0;
   const stressPct = player ? Math.max(0, Math.min(100, player.stress)) : 0;
 
-  function switchPlayer(newId: string) {
-    const charStore = useCharacterStore.getState();
-    const oldId = charStore.playerId;
-
-    if (oldId) {
-      charStore.updateCharacter(oldId, { isPlayer: false });
-    }
-    charStore.updateCharacter(newId, { isPlayer: true });
-    charStore.setPlayerId(newId);
-
-    const newPlayer = charStore.getCharacter(newId);
-    if (newPlayer) {
-      const territories = useTerritoryStore.getState().territories;
-      const characters = charStore.characters;
-      const ledger = calculateMonthlyLedger(newPlayer, territories, characters);
-      useLedgerStore.getState().updatePlayerLedger(ledger);
-    }
-
-    setShowSwitcher(false);
-  }
-
-  const switchable = Array.from(characters.values()).filter(
-    (c) => c.alive && c.id !== player?.id
-  );
-
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="flex flex-col items-center">
       {/* ═══ 第一行：大头像 ═══ */}
       <button
-        className="cursor-pointer transition-all hover:brightness-110 relative"
+        className="cursor-pointer transition-all hover:brightness-110"
         onClick={onClick}
         title="查看人物"
       >
@@ -69,23 +38,6 @@ const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
           }}
         >
           {player?.name?.charAt(0) ?? '?'}
-        </div>
-        {/* 切换角色 debug 按钮 */}
-        <div
-          className="absolute -top-1.5 -right-1.5 w-4 h-4 flex items-center justify-center rounded-full cursor-pointer opacity-0 hover:opacity-100 transition-opacity"
-          style={{
-            background: 'rgba(21,17,16,0.9)',
-            border: '1px solid rgba(74,62,49,0.5)',
-          }}
-          onClick={(e) => { e.stopPropagation(); setShowSwitcher(!showSwitcher); }}
-          title="切换角色"
-        >
-          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="7,3 7,10" />
-            <polyline points="4,7 7,10 10,7" />
-            <polyline points="17,21 17,14" />
-            <polyline points="14,17 17,14 20,17" />
-          </svg>
         </div>
       </button>
 
@@ -163,45 +115,6 @@ const PlayerIdentityCard: React.FC<PlayerIdentityCardProps> = ({ onClick }) => {
           />
         </div>
       </div>
-
-      {/* 角色切换下拉 */}
-      {showSwitcher && (
-        <div
-          className="absolute bottom-full left-0 mb-1 max-h-64 overflow-y-auto w-72 z-50"
-          style={{
-            background: 'linear-gradient(180deg, #1e1a14 0%, #151110 100%)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            boxShadow: 'var(--shadow-panel)',
-          }}
-        >
-          <div className="px-3 py-2 border-b border-[var(--color-border)] text-xs font-bold text-[var(--color-accent-gold)]">
-            切换扮演角色
-          </div>
-          {switchable.map((c) => (
-            <button
-              key={c.id}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-surface)] transition-colors text-left"
-              onClick={() => switchPlayer(c.id)}
-            >
-              <div
-                className="w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0"
-                style={{
-                  background: 'var(--color-bg)',
-                  border: '1px solid var(--color-border)',
-                  color: 'var(--color-accent-gold)',
-                }}
-              >
-                {c.name[0]}
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm text-[var(--color-text)] font-bold truncate">{c.name}</span>
-                <span className="text-xs text-[var(--color-text-muted)] truncate">{getDynamicTitle(c, territories)}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

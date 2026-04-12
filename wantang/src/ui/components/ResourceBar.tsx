@@ -39,6 +39,8 @@ const ResourceBar: React.FC = () => {
   });
   const characters = useCharacterStore((s) => s.characters);
   const territories = useTerritoryStore((s) => s.territories);
+  const controllerIndex = useTerritoryStore((s) => s.controllerIndex);
+  const expectedLegitimacy = useTerritoryStore((s) => s.expectedLegitimacy);
   const playerLedger = useLedgerStore((s) => s.playerLedger);
   const { armies: milArmies, battalions: milBattalions } = useMilitaryStore();
 
@@ -85,7 +87,6 @@ const ResourceBar: React.FC = () => {
       treasuryGrainChange = playerLedger.net.grain - privateGrainChange;
     }
 
-    const controllerIndex = useTerritoryStore.getState().controllerIndex;
     const treasury = getTotalTreasury(player.id, territories, controllerIndex);
 
     // 结构化 tooltip 数据
@@ -116,7 +117,7 @@ const ResourceBar: React.FC = () => {
     ] : undefined;
 
     // 正统性 tooltip：当前值 vs 期望值
-    const expectedLeg = useTerritoryStore.getState().expectedLegitimacy.get(player.id) ?? null;
+    const expectedLeg = expectedLegitimacy.get(player.id) ?? null;
     const legitimacyTooltip: TooltipEntry[] = [
       { label: '当前正统性', value: player.resources.legitimacy, neutral: true },
     ];
@@ -147,7 +148,7 @@ const ResourceBar: React.FC = () => {
       { label: '兵力', icon: <IconSword size={22} className="text-[var(--color-accent-gold)]" />, value: totalTroops, change: 0, group: 'power', tooltipTitle: '兵力分布', tooltipEntries: armyTooltip.length > 0 ? armyTooltip : [{ label: '无军队', value: 0 }], tooltipShowTotal: false },
       { label: '领地', icon: <IconCastle size={22} className="text-[var(--color-accent-gold)]" />, value: territoryCount, change: 0, valueStr: `${territoryCount}/${getDirectControlLimit(player)}`, group: 'power', tooltipTitle: '领地', tooltipEntries: [{ label: '直辖州数', value: territoryCount, neutral: true }, { label: '直辖上限', value: getDirectControlLimit(player), neutral: true }], tooltipShowTotal: false },
     ];
-  }, [player, characters, territories, playerLedger, milArmies, milBattalions]);
+  }, [player, characters, territories, controllerIndex, expectedLegitimacy, playerLedger, milArmies, milBattalions]);
 
   // 按组聚合
   const grouped = GROUP_META.map((g) => ({

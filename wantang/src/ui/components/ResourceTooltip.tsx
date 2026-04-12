@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatAmount } from '@ui/utils/formatAmount';
 
 export interface TooltipEntry {
