@@ -15,10 +15,12 @@ import SystemMenu from '../components/SystemMenu';
 import GameOverScreen from '../components/GameOverScreen';
 import ChronicleButton from '../components/chronicle/ChronicleButton';
 import { usePanelOpen, usePanelStore } from '@ui/stores/panelStore';
+import { useUiSettingsStore } from '@ui/stores/uiSettingsStore';
 
 const GameLayout: React.FC = () => {
   const panelOpen = usePanelOpen();
   const [showSystemMenu, setShowSystemMenu] = useState(false);
+  const uiScale = useUiSettingsStore((s) => s.uiScale);
 
   // ESC 键唤起/收起系统菜单
   useEffect(() => {
@@ -32,7 +34,14 @@ const GameLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen flex flex-row overflow-hidden">
+    <div
+      className="flex flex-row overflow-hidden"
+      style={{
+        width: `${100 / uiScale}vw`,
+        height: `${100 / uiScale}vh`,
+        zoom: uiScale,
+      }}
+    >
       {/* Left panel — 全高度，独立于资源栏 */}
       {panelOpen && <LeftPanel />}
 

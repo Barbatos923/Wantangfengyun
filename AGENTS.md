@@ -1,6 +1,7 @@
-# CLAUDE.md — 《晚唐风云》项目指南
+# AGENTS.md — 《晚唐风云》项目指南
 
 > **开始任务前先读本文件，再只读取与任务直接相关的文件。**
+> 你是该项目的审查员，负责审查Claude撰写的代码，没有用户的明确指示，不得修改代码。
 > 子系统细节见 `docs/reference/`，开发进度见 `docs/milestones.md`。
 
 ---
@@ -274,7 +275,6 @@ Phase 7（UI 美术 + 地图升级）进行中 40%。详细进度见 `docs/miles
 - ✅ 第三批续：TerritoryPanel CK3 式重构（拆分4文件 + ProgressBar + 道级子州可跳转）
 - ✅ 全局表单风格化：Select 自定义下拉（Portal渲染）+ number input 隐藏原生 spinner + 全局 title→Tooltip
 - ✅ RealmPanel 细调：领地Tab精简（去收入列）+ 经济Tab字号/颜色统一 + 属下赋税仅显示有地臣属
-- ✅ GovernmentPanel 拆分（CapitalOfficialsTab + LocalOfficialsTab + PostRow）+ 设置面板 + UI 缩放（uiSettingsStore + CSS zoom + resize 自动适配）
 - ⬜ 后续：其他核心面板跟进 → 流程面板 → 地图数据扩展(100州) → 地图分层重构 → 角色头像
 
 **UI 升级约束**：纹理用 PNG tile、SVG 滤镜限小面积、动画纯 CSS、无新 npm 依赖。SVG 图标统一 viewBox="0 0 24 24" + stroke=currentColor。基础组件在 `ui/components/base/`（Modal / ModalHeader / Button / Tooltip / PanelSection / InfoRow / AvatarBadge / ProgressBar / Select）。图标在 `ui/components/icons/`（ResourceIcons / MenuIcons）。

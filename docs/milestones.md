@@ -15,7 +15,7 @@ Phase 3  军事系统           ████████████  100%  ✅ 
 Phase 4  继承 + 王朝周期    ████████████  100%   ✅ 完成
 Phase 5  AI 史书            ██████████░░   85%  🔧 v1完成，v2精修完成，年稿不等月稿+史书可编辑
 Phase 6  谋略 + 派系 + 事件 ██████████░░   97%  ⬜ NPC Engine 35 行为 + 军事编制AI + 决议 + 多方参战 + 好感实时化 + 留后指定 + 停战协议 + 宣战平衡 + 外放内调 + 逼迫授权 + 自身政策调整 + 议定进奉 + 归附 + 玩家通知补全 + 04-10 系统性 BugFix Wave + 角色地理位置 + 指挥官唯一性 + 同盟系统 + 计谋系统v1（拉拢+离间）+ 计谋 v1.1 频率/权重/成功率精修 + 计谋 v2 AI 方法（自拟妙计）+ 时代系统中兴路径
-Phase 7  UI美术 + 地图升级   ██████░░░░░░   50%  🔧 第一批（全局色+资源栏+Tooltip+侧栏）+ 第二批（CK3式底部浮动：身份牌+时间管理器）+ 第三批（CharacterPanel+TerritoryPanel CK3式重构）+ 全局Select/spinner/Tooltip风格化 + RealmPanel细调
+Phase 7  UI美术 + 地图升级   ██████░░░░░░   55%  🔧 第一批（全局色+资源栏+Tooltip+侧栏）+ 第二批（CK3式底部浮动：身份牌+时间管理器）+ 第三批（CharacterPanel+TerritoryPanel CK3式重构）+ 全局Select/spinner/Tooltip风格化 + RealmPanel细调 + GovernmentPanel拆分+设置面板+UI缩放
 Phase 8  内容填充           ██░░░░░░░░░░   15%  ⬜ 已有初始数据集
 Phase 9  整合测试 + 发布    ░░░░░░░░░░░░    0%  ⬜ 未开始
 ```
@@ -566,12 +566,25 @@ Phase 0 ──→ Phase 1 ──→ Phase 2 ──→ Phase 3 ──┐
 - ✅ 史书/系统按钮整合入资源栏右端
 - ✅ 顶部横梁布局：资源栏一右到底 + SideMenu 下移
 
-**第二批：高频 HUD 区（待做）**
-- ⬜ BottomBar 升级（玩家身份卡、头像预留位）
-- ⬜ TimeControl 升级（统一材质、制度感）
+**第二批：CK3 式底部浮动（2026-04-12）— ✅ 完成**
+- ✅ PlayerIdentityCard + TimeControl 底部浮动
+- ✅ 角色切换移入系统菜单
+
+**第三批：核心面板 CK3 式重构（2026-04-12）— ✅ 完成**
+- ✅ CharacterPanel 拆分4文件 + 公共组件 + 全局滚动条
+- ✅ TerritoryPanel 拆分4文件 + ProgressBar + 道级子州可跳转
+
+**第四批：全局表单 + 面板细调（2026-04-12）— ✅ 完成**
+- ✅ Select 自定义下拉（Portal渲染）+ number input 隐藏原生 spinner + 全局 title→Tooltip
+- ✅ RealmPanel 细调：领地Tab精简 + 经济Tab字号/颜色统一 + 属下赋税仅显示有地臣属
+
+**第五批：GovernmentPanel 拆分 + 设置面板 + UI 缩放（2026-04-13）— ✅ 完成**
+- ✅ GovernmentPanel 拆分为 CapitalOfficialsTab + LocalOfficialsTab + PostRow 三个子组件
+- ✅ 新增 SettingsPanel（系统菜单→设置入口）：界面缩放滑块 + 手动/自动适配切换
+- ✅ uiSettingsStore：localStorage 持久化 + 自动适配随窗口 resize 实时更新 + SSR 安全守卫
+- ✅ GameLayout 通过 CSS zoom 实现全局 UI 缩放
 
 **后续批次**
-- ⬜ 核心面板（CharacterPanel 做样板 → 其他跟进）
 - ⬜ 流程面板模板化（16 个 Flow 统一风格）
 - ⬜ 地图数据扩展（72→100 州 + 30 道）
 - ⬜ 地图分层重构（Voronoi 降级为逻辑骨架 + 地理表现层）
